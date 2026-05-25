@@ -6,6 +6,95 @@
 
 ---
 
+
+## Resumo
+
+Abertura do workshop com panorama de adoção de IA em 2026: curva de ROI (DORA), diferença entre dev usuário vs construtor de agentes, vibe coding vs desenvolvimento assistido, fundamentos de LLM/agente/harness, Context Engineering (AGENTS.md, on-demand loading, context rot), fluxo RPI (Research → Plan → Implement), Skills, MCP, design docs, tasks no Linear e Q&A sobre legado, idioma, gestão de contexto e segurança.
+
+**Palestrante:** Waldemar Neto (Valdemar)
+
+## Tópicos tratados
+
+- Estado da adoção de IA e métricas de produtividade (DORA, METR, Microsoft)
+- Iceberg: uso de IA vs construção de agentes
+- Vibe coding vs desenvolvimento assistido por IA
+- LLM probabilística, agente, harness e Context Engineering
+- AGENTS.md, carregamento sob demanda e context rot
+- MCP para contexto externo (Linear, Confluence)
+- Fluxo RPI e modo plano no Cursor
+- Skills (padrão Anthropic) vs rules — carregamento lazy
+- Technical Design Doc e quebra de projetos em fases/tasks
+- Sub-agentes genéricos e gestão de janela de contexto
+- Q&A: legado, inglês vs português, MCP seguro, CLAUDE.md vs AGENTS.md
+
+## Links compartilhados
+
+Lista completa: [`aula-01-shared-files.md`](./aula-01-shared-files.md)
+
+| # | Categoria | Recurso | URL |
+|---|-----------|---------|-----|
+| 1 | Arquivo de Apresentação | Parte 1 - Início e Context Engineering (Slides — 2,5 MB) | https://assets-v2.circle.so/8pju9o80oc18d0xh8fvlk9fdt82x |
+| 2 | Pesquisas e Referências Citadas | The Pragmatic Engineer — AI Tooling Survey 2026 | https://newsletter.pragmaticengineer.com/p/ai-tooling-2026 |
+| 3 | Pesquisas e Referências Citadas | Writer.com — Enterprise Generative AI Survey 2025 | https://go.writer.com/enterprise-ai-adoption-survey |
+| 4 | Pesquisas e Referências Citadas | DORA 2026 — ROI Report (Google/DORA) | https://dora.dev/ai/roi/report/ |
+| 5 | Pesquisas e Referências Citadas | METR — Measuring the Impact of Early-2025 AI on Experienced OSS Developer Productivity | https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/ |
+| 6 | Pesquisas e Referências Citadas | METR 2026 — Uplift Update | https://metr.org/blog/2026-02-24-uplift-update/ |
+| 7 | Pesquisas e Referências Citadas | Paper: Lost in the Middle — Context Window Degradation (arXiv 2402.01438) | https://arxiv.org/abs/2402.01438 |
+| 8 | Pesquisas e Referências Citadas | Tweet do Uncle Bob — revisão de código gerado por IA | https://x.com/unclebobmartin/status/2044114698451476492 |
+| 9 | Livros | AI Engineering: Building Applications with Foundation Models — Chip Huyen (O'Reilly) | https://www.oreilly.com/library/view/ai-engineering/9781098166298/ |
+| 10 | Livros | Engenheiro de Software com Mentalidade de Produto (Novatec) | https://novatec.com.br/livros/engenheiro-software-com-mentalidade-produto/ |
+| 11 | Skills e Agentes | Repositório oficial de Skills da Tech Leads Club (open-source) | https://github.com/tech-leads-club/agent-skills |
+| 12 | Skills e Agentes | Repositório de Skills do Anthropic — skill-creator | https://github.com/anthropics/skills/tree/main/skills/skill-creator |
+| 13 | Skills e Agentes | Repositório de Skills do Matt Pocock | https://github.com/mattpocock/skills |
+| 14 | Skills e Agentes | Skill: grill-with-docs (Matt Pocock) | https://github.com/mattpocock/skills/blob/main/skills/engineering/grill-with-docs/SKILL.md |
+| 15 | Skills e Agentes | skills.sh — diretório de skills | http://skills.sh/ |
+| 16 | Skills e Agentes | Agent OS (Builder Methods) | https://buildermethods.com/agent-os |
+| 17 | Skills e Agentes | Live do Agent OS no YouTube | https://www.youtube.com/watch?v=omkEi4GTCj8 |
+| 18 | MCP e Ferramentas | MCP Docs — Server Concepts (Tools) | https://modelcontextprotocol.io/docs/learn/server-concepts#tools |
+| 19 | MCP e Ferramentas | Claude Docs — Sub-agents | https://code.claude.com/docs/en/sub-agents |
+| 20 | MCP e Ferramentas | AGENTS.md — padrão de instrução para LLMs | http://agents.md/ |
+| 21 | MCP e Ferramentas | CLAUDE.md — referência de arquivo Claude | http://claude.md/ |
+| 22 | MCP e Ferramentas | GEMINI.md — referência de arquivo Gemini | http://gemini.md/ |
+| 23 | MCP e Ferramentas | RTK — ferramenta de IA (GitHub) | https://github.com/rtk-ai/rtk |
+| 24 | MCP e Ferramentas | RTK — site oficial | https://www.rtk-ai.app/ |
+| 25 | MCP e Ferramentas | pi.dev — ferramenta mencionada | http://pi.dev/ |
+| 26 | MCP e Ferramentas | pi-prompt-reviewer (NPM) | https://www.npmjs.com/package/pi-prompt-reviewer |
+| 27 | MCP e Ferramentas | Quatro ferramentas que radicalizam a otimização de tokens — Ricardo Coelho | https://rcoelho.dev/post?slug=quatro-ferramentas-radicalizam-otimizacao-tokens |
+| 28 | Contexto e Padrões de Arquitetura | agentic-patterns.com — padrões para agentes | http://agentic-patterns.com/ |
+| 29 | Contexto e Padrões de Arquitetura | GitAgentProtocol | https://www.gitagent.sh/ |
+| 30 | Contexto e Padrões de Arquitetura | Context-Mode (GitHub) | https://github.com/mksglu/context-mode |
+| 31 | Contexto e Padrões de Arquitetura | Context-Mesh | https://www.context-mesh.org/ |
+| 32 | Contexto e Padrões de Arquitetura | Caveman — skill de compactação de contexto (mencionado negativamente) | https://github.com/juliusbrussee/caveman |
+| 33 | Vídeos de Referência | Vídeo 1 — referência da aula | https://youtu.be/q7GU98RFIp4 |
+| 34 | Vídeos de Referência | Vídeo 2 — referência da aula | https://youtu.be/UdtR6VAGRVk |
+| 35 | Vídeos de Referência | What Happens When You Press Enter — João Lopes | https://joaolopes.dev.br/pt-br/posts/what-happens-when-you-press-enter/ |
+| 36 | Excalidraw (Quadro Visual da Aula) | Excalidraw — diagrama compartilhado ao vivo | https://link.excalidraw.com/l/7V6DWtFSy3p/17NLUnE2HMl |
+| 37 | Canais da Tech Leads Club | Newsletter Substack | https://techleadsclub.substack.com/ |
+| 38 | Canais da Tech Leads Club | awesome-tech-lead (GitHub) | https://github.com/tech-leads-club/awesome-tech-lead |
+| 39 | Canais da Tech Leads Club | Dev Lab YouTube — Waldemar Neto | https://www.youtube.com/@waldemarnetodevlab |
+| 40 | Canais da Tech Leads Club | Instagram — @waldemar.devlab | https://www.instagram.com/waldemar.devlab/ |
+
+## Referências na fala
+
+Cruzamento entre o que foi dito e os links da tabela acima:
+
+- **Estado da adoção de IA e métricas de produtividade (DORA, METR, Microsoft)** → links #4, #5, #6
+- **Iceberg: uso de IA vs construção de agentes** → links #11, #12, #13, #14, #15, #16, #17, #28
+- **Vibe coding vs desenvolvimento assistido por IA**
+- **LLM probabilística, agente, harness e Context Engineering** → links #1, #2, #7, #9, #11, #12, #13, #14, #15, #16, #17, #28, #29, #30, #31, #32
+- **AGENTS.md, carregamento sob demanda e context rot** → links #1, #7, #19, #20, #28, #29, #30, #31, #32
+- **MCP para contexto externo (Linear, Confluence)** → links #20, #28, #29, #30, #31, #32
+- **Fluxo RPI e modo plano no Cursor**
+- **Skills (padrão Anthropic) vs rules — carregamento lazy** → links #11, #12, #13, #14, #15, #16, #17, #20
+- **Technical Design Doc e quebra de projetos em fases/tasks**
+- **Sub-agentes genéricos e gestão de janela de contexto** → links #11, #12, #13, #14, #15, #16, #17, #28, #29, #30, #31, #32
+- **Q&A: legado, inglês vs português, MCP seguro, CLAUDE.md vs AGENTS.md** → links #19, #20, #21
+
+
+> **Como usar:** consulte o resumo e os tópicos para contexto rápido; use a tabela numerada e a seção *Referências na fala* para cruzar o conteúdo falado com os links em [`aula-01-shared-files.md`](./aula-01-shared-files.md).
+
+---
+
 ## Transcrição
 
 Galera vamos começar então mão na massa aqui foi os as apresentações para vocês ficarem na mesma página e tal e a gente vai começar bom desenvolvimento assistido por real o que que mudou até agora galera quem tava aqui no primeiro manda manda no chat aqui 1 fazer 1 joinha qualquer coisa quem tava aqui no primeiro workshop que a gente botou 2015 pessoas ó Júlio tava Jonathan Álvaro o Álvaro tá em tudo mas show então galera no primeiro a gente estava naquele momento de adoção de ali de 30% das pessoas e tal hoje galera pessoas escrevendo 30% do código e a isso fazia fazer uns 4 meses atrás hoje nas últimas pesquisas tem muita gente falando que já escreve 100 por 100 do código com IA 90 por 100 do código IA só que do pragmaco pragmática engenheiro essa pesquisa que é bem confiável e aí o pessoal falando que escreve 100 por 100 do código com IA é isso real antigo estava no no Vale do Silício agora várias praticamente todo mundo dizendo cara eu só uso a IA para escrever o código eu reviso que ela fez e tal então é 1 realidade que evolui muito rápido mas ao mesmo tempo que 1 slide tem informação mas eu vou passar por ela só para vocês entenderem mas ao mesmo tempo nessa pesquisa que depois eu mando os links para vocês do Ryter que saiu agora a maioria dos líderes falaram que 79% deles tem dificuldade em adotaria então e 29% estão vendo retorno no investimento Por que que as coisas falham tem 1 estratégia que é só fachada para adotaria tem 1 workplace de vida tem muita empresa que tá dividindo o workplace a empresa em 2 né tipo as pessoas que usam e as pessoas que não usam e aí cria 1 rixa entre as pessoas tem desconfiança tem buracos de segurança não conseguem medir produtividade então tá 1 momento bem caótico Mas 1 coisa que tá clara querer que a gente pode usar como base para saber o retorno daí ai é nessa última adora métricas aqui do Google que saiu agora foi em abril se eu não me engano não foi foi má inclusive isso aqui são o Google ele ele pega dados de várias empresas e tal Então eles vão compartilhar a tela.
@@ -120,3 +209,5 @@ Ah isso, massa massa, muito massa.
 Mais 1 da.
 Mais 1 então pra gente fechar.
 Cara, de verdade eu acho que assim tem algumas específicas mas quase tudo que tem vai ser trabalhado no no conteúdo mais pra frente ali Está perfeito.
+
+> 🔗 **Links:** [#20 AGENTS.md](http://agents.md/) · [#21 CLAUDE.md](http://claude.md/) · [#22 GEMINI.md](http://gemini.md/) · [#18 MCP — Server Concepts (Tools)](https://modelcontextprotocol.io/docs/learn/server-concepts#tools) · [#19 Claude Docs — Sub-agents](https://code.claude.com/docs/en/sub-agents) · [#11 Skills TLC (open-source)](https://github.com/tech-leads-club/agent-skills) · [#10 Engenheiro com Mentalidade de Produto (Novatec)](https://novatec.com.br/livros/engenheiro-software-com-mentalidade-produto/) · [#32 Caveman (compactação — mencionado negativamente)](https://github.com/juliusbrussee/caveman) · [#36 Excalidraw da aula](https://link.excalidraw.com/l/7V6DWtFSy3p/17NLUnE2HMl)
