@@ -2,7 +2,19 @@
 
 **GitNexus + Graphify + OpenSpec, integrados no Cursor e VS Code + Claude Code**
 
-> Documento de referência operacional. Cada secção responde a uma das tuas questões. Templates prontos a colar no fim.
+> **Guia canónico de instalação (v1.1.0)** — usar em qualquer repositório Git, manualmente ou via agente de IA. Templates prontos a colar nos anexos 12.x.
+
+## Como usar este documento
+
+| Modo | Acção |
+|------|--------|
+| **Humano** | Seguir §2 na ordem indicada (2.1 → 2.8). |
+| **Agente de IA** | Executar o prompt em §2.0; aplicar templates 12.1–12.2 conforme perfil do repo. |
+| **Piloto / teste** | Após instalar, validar com checklist §2.8. |
+
+- **Padrão `AGENTS.md`:** alinhado a [agents.md](https://agents.md/) + workshop TLC (Context Engineering, on-demand loading).
+- **Versão do guia:** 1.1.0 — ver [Changelog do guia](#changelog-do-guia).
+- **Não substitui** `openspec/project.md` (constituição do projecto) nem specs em `openspec/specs/`.
 
 ---
 
@@ -17,7 +29,7 @@ Segunda fricção: o ecossistema move-se depressa. Versões neste documento são
 ## Índice
 
 1. [Pré-requisitos](#1-pré-requisitos-questão-6)
-2. [Passo a passo de instalação](#2-passo-a-passo-de-instalação-questão-1)
+2. [Passo a passo de instalação](#2-passo-a-passo-de-instalação-questão-1) — inclui §2.0 (IA), §2.5 (AGENTS.md), §2.8 (verificação)
 3. [Classificação de tarefas e pipelines](#3-classificação-de-tarefas-e-pipelines-questões-2-3-31)
 4. [Tabela mestre: ferramenta × responsabilidade × I/O](#4-tabela-mestre-questão-3)
 5. [Documentos e referências cruzadas](#5-documentos-e-referências-cruzadas-questão-32)
@@ -28,6 +40,8 @@ Segunda fricção: o ecossistema move-se depressa. Versões neste documento são
 10. [Configuração VS Code + Claude Code](#10-configuração-vs-code--claude-code-questão-5)
 11. [Protocolos de código](#11-protocolos-de-código-questão-7)
 12. [Anexos: templates completos](#12-anexos-templates-completos)
+13. [Alinhamento workshop ↔ agents.md](#13-alinhamento-workshop--agentsmd)
+14. [Changelog do guia](#changelog-do-guia)
 
 ---
 
@@ -83,6 +97,29 @@ Instala nesta ordem específica. **Não inverter** — cada passo assume que o a
 
 A razão: OpenSpec gera o esqueleto `openspec/`, GitNexus indexa código e cria `AGENTS.md` inicial, Graphify adiciona contexto não-código. Se inverteres, ferramentas posteriores podem sobrescrever ficheiros criadas antes.
 
+### 2.0 Instalação assistida por IA (prompt)
+
+Cola este prompt na raiz do repositório alvo (substitui `REPO_ROOT` e o perfil):
+
+```
+Instala o sistema SDD (OpenSpec + GitNexus + Graphify) neste repositório seguindo
+estritamente o guia em doc/sistema-sdd-pedro.md v1.1 (ou o caminho onde o guia
+estiver no repo).
+
+Perfil do repositório: [APP | DOCS_SPECS | HYBRID]
+- APP = aplicação com npm/pnpm dev, testes, deploy
+- DOCS_SPECS = specs, documentação, scripts (sem npm run dev na raiz)
+- HYBRID = ambos
+
+Ordem: openspec init --tools "cursor,claude" → gitnexus setup → gitnexus analyze
+→ graphify install + graphify install --platform cursor → graphify hook install
+→ graphify update . (ou graphify extract . se houver API key LLM)
+→ curar AGENTS.md com template 12.2a (APP) ou 12.2b (DOCS_SPECS) — NÃO gerar
+AGENTS.md do zero com IA; NÃO colar blocos <!-- gitnexus:start --> completos.
+
+Entregar: checklist §2.8 preenchida + lista de ficheiros criados/alterados.
+```
+
 ### 2.2 Passo 1 — OpenSpec (intenção)
 
 ```bash
@@ -93,12 +130,11 @@ npm install -g @fission-ai/openspec@latest
 openspec --version          # Esperar 1.3.1 ou superior
 
 # Inicializar no projecto
-cd ~/projects/multi-agent-bot   # ou o repo onde queres trabalhar
-openspec init
+cd ~/projects/meu-repo   # raiz do repo alvo
+openspec init --tools "cursor,claude"
 
-# Quando perguntar a ferramenta de AI, selecciona TODAS as que vais usar
-# (Claude Code + Cursor + qualquer outra). Isto gera ficheiros de comandos
-# para cada ferramenta na pasta correcta.
+# Modo não-interactivo: gera comandos opsx em .cursor/ e .claude/
+# Adiciona outras ferramentas separadas por vírgula se necessário (ver openspec init --help)
 ```
 
 O que isto cria:
@@ -149,7 +185,7 @@ AGENTS.md                    # CRIADO ou MODIFICADO — atenção a conflito (ve
 CLAUDE.md                    # CRIADO ou MODIFICADO — atenção a conflito
 ```
 
-**Atenção**: se já tens `AGENTS.md` curado por ti, **renomeia-o antes** (`AGENTS.md.bak`), corre `gitnexus analyze`, depois faz merge manual. GitNexus inclui uma secção "GitNexus Integration" — copia essa secção para o teu `AGENTS.md` curado e descarta o resto.
+**Atenção**: se já tens `AGENTS.md` curado, **renomeia-o antes** (`AGENTS.tools-generated.md`), corre `gitnexus analyze`, depois aplica o template **12.2** — **não** copies o bloco completo `<!-- gitnexus:start -->` para o canónico (ver §2.5.1). O detalhe operacional vive nas skills em `.claude/skills/gitnexus/`.
 
 ### 2.4 Passo 3 — Graphify (conhecimento)
 
@@ -172,12 +208,15 @@ graphify vscode install
 # Instalar hook git para rebuild automático em commits
 graphify hook install
 
-# Construir grafo inicial — corre a partir da raiz do repo
-cd ~/projects/multi-agent-bot
-graphify .                  # processa código + docs + PDFs + imagens
+# Construir grafo inicial — a partir da raiz do repo
+cd ~/projects/meu-repo
+graphify update .           # AST + estrutura (sem API key LLM)
 
-# Se quiseres incluir o vault Obsidian (recomendado para Pedro):
-graphify /caminho/para/obsidian-vault --output graphify-out-vault
+# Com API key (ANTHROPIC/GEMINI/etc.) para semântica completa:
+# graphify extract . --max-workers 4
+
+# Vault Obsidian ou pasta externa (opcional):
+# graphify extract /caminho/para/vault --out graphify-out-vault
 ```
 
 O que isto cria:
@@ -192,30 +231,79 @@ graphify-out/
 AGENTS.md                   # MODIFICADO — atenção a conflito (ver §4)
 ```
 
-**Atenção idêntica ao GitNexus**: faz merge manual da secção "Graphify Integration" para o teu `AGENTS.md` curado.
+**Atenção idêntica ao GitNexus**: no `AGENTS.md` canónico, resume Graphify em 2–3 linhas (ler `GRAPH_REPORT.md`, `graphify update .` após código). Detalhe em `CLAUDE.md` / `.cursor/rules/graphify.mdc` se instalados.
 
 ### 2.5 Passo 4 — Curar o `AGENTS.md` único
 
-Este é o passo que ninguém faz e arrepende-se depois. Tens agora *três* versões de `AGENTS.md` a competir. Resolve assim:
+Este é o passo crítico. Ferramentas geram ou alteram `AGENTS.md`/`CLAUDE.md` — o canónico é **curado por ti**, com template **12.2a** (app) ou **12.2b** (docs/specs).
 
 ```bash
-# Renomeia os outputs automáticos
-mv AGENTS.md AGENTS.tools-generated.md
+# 1. Preserva output automático
+mv AGENTS.md AGENTS.tools-generated.md 2>/dev/null || true
+echo "AGENTS.tools-generated.md" >> .gitignore
+echo "CLAUDE.tools-generated.md" >> .gitignore
 
-# Cria a versão curada (template no anexo 12.2)
+# 2. Cria AGENTS.md a partir do anexo 12.2a ou 12.2b (NÃO pedir à IA para inventar)
 $EDITOR AGENTS.md
 
-# A versão curada DEVE:
-# 1. Listar a stack e convenções do projecto (uma vez só)
-# 2. Apontar para openspec/project.md para regras de processo
-# 3. Apontar para openspec/specs/ para requisitos
-# 4. Apontar para graphify-out/GRAPH_REPORT.md para conhecimento
-# 5. Apontar para .gitnexus/ (via MCP) para estrutura de código
-# 6. Ter um bloco "Task Type Detection" (ver §3)
-
-# Adiciona o ficheiro auxiliar ao .gitignore
-echo "AGENTS.tools-generated.md" >> .gitignore
+# 3. CLAUDE.md mínimo: apontar para ./AGENTS.md (template §10.3)
 ```
+
+**O `AGENTS.md` canónico DEVE conter (formato alvo v1.1):**
+
+| Secção | Conteúdo |
+|--------|----------|
+| Contexto | Aponta `./openspec/project.md` — **não** duplicar stack |
+| **Commands** | Tabela de comandos reais deste repo (dev, test, openspec, gitnexus, graphify) |
+| Fontes de conhecimento | Ordem 1–7 (§5.2) |
+| **Contexto sob demanda** | Tabela situação → ficheiro (§2.5.3) |
+| Protocolo A–E + R1–R9 | §3 e §8.2 |
+| Workflow OpenSpec | `/opsx:*`, graphify update, gitnexus analyze |
+| **Integrações** | GitNexus + Graphify em ≤10 linhas cada; ponte para skills |
+| Segurança + comunicação | §7 |
+
+**Meta:** ~100–150 linhas. Se `gitnexus analyze` ou `graphify install` voltarem a injectar blocos longos, **remover** e manter só o resumo em Integrações.
+
+#### 2.5.1 Anti-padrões (não adoptar no `AGENTS.md` canónico)
+
+| Anti-padrão | Porquê | Em vez disso |
+|-------------|--------|--------------|
+| Pedir à IA para gerar o `AGENTS.md` inicial | Ficheiro gigante, genérico, context rot | Template 12.2 + edição humana iterativa |
+| Colar bloco `<!-- gitnexus:start -->` completo | Duplica skills; +40 linhas sempre no contexto | §2.5 Integrações + skills lazy |
+| Duplicar stack de `openspec/project.md` | Drift em 3 meses | Apontar para `project.md` |
+| YAML AAIF (`agent.name`, `compliance`) | Overhead; não usado por Cursor/Claude | Markdown livre ([agents.md](https://agents.md/)) |
+| Mover tudo para `AGENTS.md` e apagar `.mdc` | Cursor perde auto-attach por glob | `AGENTS.md` + `.cursor/rules/*.mdc` |
+| `AGENTS.md` > 200 linhas sem razão | Confunde modelo; custo de tokens | Quebrar em docs referenciados + Skills |
+
+#### 2.5.2 Perfis de repositório
+
+| Perfil | Sinais | Template Commands | `AGENTS.md` aninhado |
+|--------|--------|-------------------|----------------------|
+| **APP** | `package.json`, `npm run dev`, app Next/etc. | `dev`, `test`, `lint`, `build` (nota: não correr build em sessão agente se agents.md assim disser) | Por package em monorepos |
+| **DOCS_SPECS** | `openspec/`, `doc/`, sem app na raiz | `openspec list`, `gitnexus status`, `graphify update .` | `doc/**/scripts/`, pastas com tooling próprio |
+| **HYBRID** | App + `openspec/` + `doc/` | Combinar ambas tabelas no Commands | Ambos |
+
+#### 2.5.3 Contexto sob demanda (mapa no `AGENTS.md`)
+
+Incluir tabela como esta (adaptar paths ao repo):
+
+```markdown
+## Contexto sob demanda
+
+| Situação | Carregar |
+|----------|----------|
+| Stack, convenções, non-goals | `openspec/project.md` |
+| Requisitos por capability | `openspec/specs/` |
+| Change em curso | `openspec/changes/<id>/` |
+| Relações entre conceitos / teoria | `graphify-out/GRAPH_REPORT.md` |
+| Legado: entender codebase | Perguntar padrões AS-IS **sem criar ficheiros**; depois documentar |
+| Convenções TS/Python/DB (ficheiro aberto) | `.cursor/rules/010-*.mdc`, etc. |
+| Guia SDD completo (instalação) | `doc/sistema-sdd-pedro.md` |
+```
+
+#### 2.5.4 `AGENTS.md` aninhados ([agents.md](https://agents.md/))
+
+Criar `AGENTS.md` em subpastas com lógica própria (scripts, packages). O agente usa o ficheiro **mais próximo** do ficheiro editado. Ver template **12.7**.
 
 ### 2.6 Passo 5 — Verificar configuração MCP
 
@@ -246,6 +334,22 @@ Abre Claude Code ou Cursor e tenta:
 Deves ver o agente a criar `openspec/changes/add-user-input-validation/` com `proposal.md`, `design.md`, `tasks.md` e `specs/`. Se o agente também consultar GitNexus/Graphify durante a propose-phase (lê código existente e contexto), os três stacks estão integrados.
 
 Se algo falhar: corre `gitnexus status`, verifica que `mcp.json` está correcto, e relê AGENTS.md.
+
+### 2.8 Verificação pós-instalação (checklist)
+
+Usar após cada instalação (humano ou IA):
+
+- [ ] `openspec/project.md` editado com Purpose, Stack, Cross-references
+- [ ] `AGENTS.md` existe, ≤150 linhas, **sem** bloco duplicado `<!-- gitnexus:start -->`
+- [ ] `AGENTS.tools-generated.md` e `CLAUDE.tools-generated.md` no `.gitignore`
+- [ ] `CLAUDE.md` aponta para `./AGENTS.md` (≤25 linhas úteis)
+- [ ] `.cursor/rules/000-base.mdc` e `050-security.mdc` presentes
+- [ ] `npx openspec list` corre sem erro
+- [ ] `npx gitnexus status` → index up-to-date
+- [ ] `graphify-out/GRAPH_REPORT.md` existe (após `graphify update .`)
+- [ ] `/opsx:propose` (ou `npx openspec new change teste`) cria change
+- [ ] IDE reiniciada (slash commands e skills)
+- [ ] Perfil APP/DOCS_SPECS reflectido na tabela Commands do `AGENTS.md`
 
 ---
 
@@ -482,20 +586,25 @@ Nível 4 — Conhecimento (regenerável, mas referenciado)
 
 Cada ficheiro deve referenciar explicitamente os outros relevantes. Sem isto, o agente não sabe que existem.
 
-**`AGENTS.md` deve conter** (template completo em 12.2):
+**`AGENTS.md` deve conter** (templates completos em 12.2a / 12.2b):
+
+- Secções obrigatórias: Contexto (aponta `project.md`), **Commands**, Fontes 1–7, **Contexto sob demanda**, Protocolo A–E, R1–R9, Workflow, **Integrações** (resumo), Segurança.
+- Ver §2.5 e anti-padrões §2.5.1.
 
 ```markdown
-## Knowledge sources
+## Fontes de conhecimento (por prioridade)
 
-Before answering or coding, consult these in order:
+1. `./openspec/specs/` — requisitos actuais
+2. `./openspec/changes/` — propostas e arquivo
+3. `./graphify-out/GRAPH_REPORT.md` — knowledge graph
+4. GitNexus via MCP — estrutura de código, impact
+5. Graphify via MCP ou CLI `graphify query` — conceitos
+6. Docs externos citados em `openspec/project.md`
+7. Web search (último recurso)
 
-1. @openspec/project.md — project constitution (stack, conventions, rules)
-2. @openspec/specs/ — current specs by capability
-3. @graphify-out/GRAPH_REPORT.md — extracted concepts and connections
-4. GitNexus via MCP — call `query`, `context`, `impact` tools
-5. Graphify via MCP — call `query_graph`, `get_node`, `shortest_path` tools
+## Contexto sob demanda
 
-For active work, check @openspec/changes/ for in-flight proposals.
+Ver tabela em §2.5.3 do guia de instalação (adaptar paths).
 ```
 
 **`openspec/project.md` deve conter**:
@@ -1321,125 +1430,114 @@ Pulls candidate documents from the pgvector store given a query embedding.
 - We do NOT implement auth from scratch — Supabase Auth handles it.
 ```
 
-### 12.2 Template `AGENTS.md` (curado, fonte de verdade)
+### 12.2 Núcleo comum `AGENTS.md` (todas as instalações)
+
+Bloco partilhado — colar e completar Commands conforme 12.2a ou 12.2b.
 
 ```markdown
-# AGENTS.md — Universal Agent Instructions
+# AGENTS.md — Instruções Universais para Agentes de IA
 
-> This is the canonical instruction file for any AI coding agent (Cursor,
-> Claude Code, Codex, etc.) working in this repository. Tool-specific
-> files (CLAUDE.md, .cursor/rules/) only point to this.
+> Canónico para Cursor, Claude Code, Codex, etc. `CLAUDE.md` e `.cursor/rules/` apenas apontam aqui.
+> Padrão: https://agents.md/
 
-## Project context
+## Contexto do projecto
 
-See `./openspec/project.md` for stack, conventions, and constraints.
+Ver `./openspec/project.md` (stack, convenções, constraints). **Não duplicar** stack aqui.
 
-## Knowledge sources (in priority order)
+## Commands
 
-When you need information, consult these in order:
+[PREENCHER: tabela do perfil 12.2a APP ou 12.2b DOCS_SPECS]
 
-1. `./openspec/specs/` — current requirements per capability
-2. `./openspec/changes/` — active proposals and archived decisions
-3. `./graphify-out/GRAPH_REPORT.md` — extracted knowledge graph summary
-4. GitNexus via MCP — code structure, call chains, blast radius
-5. Graphify via MCP — semantic queries on the knowledge graph
-6. External docs (only if cited in `./openspec/project.md`)
-7. Web search (last resort, with critical scrutiny)
+## Fontes de conhecimento (por prioridade)
 
-NEVER assert a fact that cannot be anchored to one of sources 1-6.
-For type D/E work, ALWAYS consult Graphify and GitNexus before
-writing any code.
+1. `./openspec/specs/`  2. `./openspec/changes/`  3. `./graphify-out/GRAPH_REPORT.md`
+4. GitNexus MCP  5. Graphify MCP ou `graphify query`  6. Docs em `project.md`  7. Web (último recurso)
 
-## Task Type Detection Protocol
+Nunca afirmar factos sem fonte 1–6. Tipo D/E: Graphify + GitNexus antes de código.
 
-Before ANY work, classify the task:
+## Contexto sob demanda
 
-| Type | Signal | Pipeline |
-|------|--------|----------|
-| A — Trivial | One-line change, no semantic risk | Direct edit |
-| B — Bug fix | Reproducible error, known cause | GitNexus impact → patch → test |
-| C — Refactor | Restructure without new behavior | GitNexus AS-IS → OpenSpec proposal → implement |
-| D — Feature (with theory) | New behavior grounded in our knowledge | Graphify + GitNexus research → OpenSpec proposal → implement |
-| E — Exploration | Investigate, compare, decide | Graphify research → research.md |
+| Situação | Ficheiro |
+|----------|----------|
+| Constituição | `openspec/project.md` |
+| Specs | `openspec/specs/` |
+| Change activo | `openspec/changes/<id>/` |
+| Grafo | `graphify-out/GRAPH_REPORT.md` |
+| Guia SDD | `doc/sistema-sdd-pedro.md` |
+| TS / Py / DB | `.cursor/rules/010-*.mdc`, `020-*.mdc`, `030-*.mdc` |
 
-If unsure between two types, ASK before proceeding.
-NEVER assume Type A by default.
+## Protocolo de tarefas (A–E)
 
-## Universal rules
+| Tipo | Pipeline |
+|------|----------|
+| A Trivial | Edição directa |
+| B Bug | GitNexus impact → patch → teste |
+| C Refactor | GitNexus AS-IS → `/opsx:propose` → implementar |
+| D Feature | Graphify ∥ GitNexus → propose → implementar |
+| E Exploração | Graphify → `research.md` |
 
-### R1 — Task classification
-Before any work, classify (A-E). Ask if ambiguous.
+Se ambíguo, PERGUNTAR. Nunca assumir Tipo A.
 
-### R2 — Knowledge priority
-Specs > archived changes > Graphify > GitNexus > external docs > web.
+## Regras R1–R9
 
-### R3 — No hallucinations
-If a fact cannot be anchored to a source in R2, mark `[NEEDS VERIFICATION]`.
-NEVER invent library names, API signatures, or file paths.
+R1 classificar · R2 specs>graphify>gitnexus · R3 `[NEEDS VERIFICATION]` · R4 mudança mínima ·
+R5 refactor sem comportamento novo · R6 teste antes do fix · R7 spec antes de código (C/D/E) ·
+R8 citar fontes · R9 commits com scope/change-id
 
-### R4 — Smallest reasonable change
-Prefer minimal change. No speculative abstractions without a concrete
-second use case in the codebase TODAY.
+## Workflow
 
-### R5 — Behavioral parity in refactors
-Refactors do NOT introduce new behavior. If you find yourself wanting to,
-stop and create a new OpenSpec proposal.
+`/opsx:propose` · `/opsx:apply` · `/opsx:archive` · `/opsx:explore` · `graphify update .` · `npx gitnexus analyze --force`
 
-### R6 — Test before fix
-Bugs require a failing test FIRST, then the fix.
+## Integrações (resumo)
 
-### R7 — Spec before code (non-trivial)
-For tasks C, D, E, OpenSpec proposal must be reviewed BEFORE any code.
+**GitNexus:** impact antes de editar símbolos; `detect_changes` antes de commit. Skills: `.claude/skills/gitnexus/`.
 
-### R8 — Source anchoring
-Every non-trivial claim in design.md, research.md, or commit messages
-must cite a source: spec ID, archived change ID, Graphify node,
-GitNexus function name, or external URL.
+**Graphify:** ler `GRAPH_REPORT.md` antes de grep em perguntas de arquitectura; `graphify update .` após mudanças de código.
 
-### R9 — Auditability
-Every commit references either an OpenSpec change-id (`feat(auth):
-implement add-jwt`) or a fix issue (`fix(api): handle null x (closes
-#42)`). No `wip`, `misc`, or unscoped commits.
+## Testing
 
-## Workflow commands
+[PREENCHER: npm test / pytest / openspec validate / N/A para docs-only]
 
-- `/opsx:propose <description>` — start a new change
-- `/opsx:apply` — implement the current change's tasks
-- `/opsx:archive` — finalize, merge specs, move to archive
-- `/opsx:explore <topic>` — for type E tasks
-- `/graphify --update` — refresh knowledge graph
-- `gitnexus analyze --force` — refresh code graph
+## PR e commits
 
-## Subagents (Claude Code)
+Conventional Commits; referenciar change-id OpenSpec quando aplicável. Não commitar `graphify-out/`, `.gitnexus/`.
 
-- `graphify-researcher` — knowledge research, returns knowledge.md
-- `codebase-researcher` — codebase analysis, returns codebase.md
-- `security-reviewer` — security audit of proposed changes
+## Segurança
 
-For type D tasks, dispatch both researchers IN PARALLEL.
+Sem segredos em git; validar inputs; queries parametrizadas; não ler `.env`.
 
-## Security rules
+## Comunicação
 
-NEVER:
-- Write secrets to any file in this repo
-- Run destructive commands (rm -rf, mkfs, etc.) outside the repo
-- Use `--no-verify` to skip hooks without explaining why
-- Add dependencies without checking security advisories
+[Adaptar: pt-BR, directo, sem preâmbulo]
+```
 
-ALWAYS:
-- Validate external inputs (API, webhook, CSV, env) with Zod/Pydantic
-- Use parameterised queries
-- Sanitize strings before injecting into LLM prompts
-- Redact secrets in logs
+### 12.2a Commands — perfil APP
 
-## Communication style
+```markdown
+| Comando | Uso |
+|---------|-----|
+| `npm run dev` / `pnpm dev` | Desenvolvimento (não `npm run build` em sessão agente) |
+| `npm test` / `pnpm test` | Testes |
+| `npm run lint` | Lint |
+| `npx openspec list` | Changes OpenSpec |
+| `npx gitnexus analyze --force` | Reindexar código |
+| `graphify update .` | Actualizar grafo |
+```
 
-When responding to me (Pedro):
-- Lead with the answer; no preamble
-- State assessments directly; no diplomatic vagueness
-- If my plan has a flaw, say so plainly
-- Hedge only when there's genuine uncertainty
-- Don't manufacture balance; if something is mostly bad, say so
+### 12.2b Commands — perfil DOCS_SPECS
+
+```markdown
+| Comando | Uso |
+|---------|-----|
+| `npx openspec list` | Changes activos |
+| `npx openspec new change "<id>"` | Novo change (CLI) |
+| `/opsx:propose` | Proposta (Cursor/Claude) |
+| `npx gitnexus status` | Estado do index |
+| `npx gitnexus analyze --force` | Reindexar |
+| `graphify update .` | Grafo AST |
+| `graphify query "<pergunta>"` | Busca no grafo |
+
+Nota: não há `npm run dev` na raiz deste perfil.
 ```
 
 ### 12.3 Template `openspec/changes/<id>/design.md` (com cross-references)
@@ -1647,49 +1745,92 @@ alwaysApply: false
 
 ### 12.6 Comando de instalação one-shot
 
-Guardar como `scripts/bootstrap.sh`:
+Guardar como `scripts/bootstrap-sdd.sh` (ajustar `REPO`):
 
 ```bash
 #!/usr/bin/env bash
 set -euo pipefail
+REPO="${1:-.}"
+cd "$REPO"
 
-echo "==> Installing OpenSpec..."
+echo "==> OpenSpec..."
 npm install -g @fission-ai/openspec@latest
+openspec init --tools "cursor,claude" "$REPO" 2>/dev/null || openspec init --tools "cursor,claude"
 
-echo "==> Installing GitNexus..."
+echo "==> GitNexus..."
 npm install -g gitnexus
-
-echo "==> Installing Graphify..."
-if ! command -v uv &>/dev/null; then
-  curl -LsSf https://astral.sh/uv/install.sh | sh
-fi
-uv tool install graphifyy
-
-echo "==> Initializing OpenSpec in project..."
-openspec init
-
-echo "==> Configuring GitNexus MCP..."
 gitnexus setup
-
-echo "==> Indexing repo with GitNexus..."
 gitnexus analyze
 
-echo "==> Installing Graphify skill for Cursor + Claude Code..."
+echo "==> Graphify..."
+command -v uv >/dev/null || curl -LsSf https://astral.sh/uv/install.sh | sh
+uv tool install graphifyy
 graphify install
 graphify install --platform cursor
-
-echo "==> Building knowledge graph..."
-graphify .
-
-echo "==> Installing git hook for graph rebuild..."
 graphify hook install
+graphify update .
 
 echo ""
-echo "✅ Done. Next steps:"
-echo "   1. Edit openspec/project.md (project constitution)"
-echo "   2. Merge any auto-generated AGENTS.md content into your curated AGENTS.md"
-echo "   3. Open Cursor or VS Code and run /opsx:propose <test-feature>"
+echo "✅ Ferramentas instaladas. OBRIGATÓRIO manualmente:"
+echo "   1. Editar openspec/project.md"
+echo "   2. Criar AGENTS.md com template 12.2a ou 12.2b (NÃO gerar com IA)"
+echo "   3. mv AGENTS.md AGENTS.tools-generated.md se ferramentas sobrescreveram"
+echo "   4. Checklist §2.8"
+echo "   5. Reiniciar IDE; testar /opsx:propose"
 ```
+
+### 12.7 Template `AGENTS.md` aninhado (subpasta)
+
+Exemplo para `doc/curso/scripts/AGENTS.md` ou `packages/foo/AGENTS.md`:
+
+```markdown
+# AGENTS.md — [nome da pasta]
+
+Instruções locais; o canónico na raiz é `../../AGENTS.md`.
+
+## Commands
+
+| Comando | Uso |
+|---------|-----|
+| `python script.py` | [descrever] |
+
+## Regras locais
+
+- [Regra específica desta pasta]
+- Herdar segurança e protocolo A–E do `AGENTS.md` raiz
+```
+
+---
+
+## 13. Alinhamento workshop ↔ agents.md
+
+| Tema (Workshop IA 5/2026, Aula 01) | Onde no guia |
+|-----------------------------------|--------------|
+| [agents.md](https://agents.md/) como padrão | §2.5, 12.2 |
+| `AGENTS.md` curto; on-demand loading | §2.5.3, 12.2 |
+| Não pedir à IA para gerar `AGENTS.md` | §2.5.1 |
+| Exemplos reais > regras abstritas | §7, §11 |
+| Context rot; janela nova por tarefa | §3, §7 |
+| Skills lazy vs rules estáticas | §4.2, §8.1 |
+| Legado: AS-IS antes de instrumentar | §2.5.3, §2.0 prompt |
+| `CLAUDE.md` aponta para `AGENTS.md` | §10.3 |
+
+---
+
+## Changelog do guia
+
+### 1.1.0 (2026-05-25)
+
+- Guia explicitamente como **artefacto de instalação** reutilizável (humano + IA).
+- §2.0 prompt de instalação assistida; §2.8 checklist de verificação.
+- Formato alvo `AGENTS.md`: Commands, on-demand, integrações resumidas (agents.md).
+- §2.5.1 anti-padrões; §2.5.2 perfis APP / DOCS_SPECS / HYBRID.
+- Templates 12.2a / 12.2b / 12.7; `graphify update` em vez de `graphify .`.
+- `openspec init --tools`; bootstrap actualizado.
+
+### 1.0.0 (2026-05)
+
+- Versão inicial: OpenSpec + GitNexus + Graphify, Cursor, Claude Code.
 
 ---
 
@@ -1709,4 +1850,4 @@ Se algo falhar na configuração, a ordem habitual de debug é:
 
 ---
 
-*Documento construído com base em pesquisa de implementações reais do ecossistema SDD/MCP em Maio 2026. Versões de ferramentas: OpenSpec 1.3.1, GitNexus 1.4.8+, Graphify 0.8.4, Claude Code 2.1.140, Cursor com suporte `.mdc`, VS Code 1.109+.*
+*Guia v1.1.0 — Maio 2026. Ferramentas de referência: OpenSpec 1.3.1+, GitNexus 1.6+, Graphify 0.8.5+, Claude Code 2.1.140+, Cursor `.mdc`, VS Code 1.109+. Confirmar com `--version` antes de automatizar.*

@@ -1,0 +1,18 @@
+---
+description: Convenções TypeScript
+globs:
+  - "**/*.ts"
+  - "**/*.tsx"
+alwaysApply: false
+---
+
+# Regras TypeScript para este projecto
+
+- Strict mode activo. Sem `any` sem comentário a explicar porquê.
+- Sem default exports (usar named exports).
+- Imports: paths absolutos a partir de `@/` para internos, relativos apenas para siblings.
+- Async/await em vez de chains `.then`.
+- Erros: usar Result types ou typed exceptions; sem silent failures.
+- Schemas: Zod para validação em runtime em todas as fronteiras de I/O.
+- `cn()` (clsx + tailwind-merge) para composição de classes Tailwind.
+- Componentes exportam Props tipadas e aceitam `className?: string`.
