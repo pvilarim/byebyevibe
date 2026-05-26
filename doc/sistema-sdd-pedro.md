@@ -2,7 +2,7 @@
 
 **GitNexus + Graphify + OpenSpec, integrados no Cursor e VS Code + Claude Code**
 
-> **Guia canónico de instalação (v1.1.1)** — usar em qualquer repositório Git, manualmente ou via agente de IA. Templates prontos a colar nos anexos 12.x (incl. **§12.8–12.9** para `tasks.md` e deltas de spec).
+> **Guia canónico de instalação (v1.1.2)** — usar em qualquer repositório Git, manualmente ou via agente de IA. Templates prontos a colar nos anexos 12.x (incl. **§12.8–12.9** para `tasks.md` e deltas de spec). **Fonte única (SSOT)** do *procedimento* e dos *templates* de instalação — ver [contrato abaixo](#contrato--fonte-única-para-instalação-ssot).
 
 ## Como usar este documento
 
@@ -12,9 +12,16 @@
 | **Agente de IA** | Executar o prompt em §2.0; aplicar templates 12.1–12.2 conforme perfil do repo; em OpenSpec, enriquecer `tasks.md` e specs conforme **§12.8–12.9**. |
 | **Piloto / teste** | Após instalar, validar com checklist §2.8. |
 
+### Contrato — fonte única para **instalação** (SSOT)
+
+Para **instalar** o sistema SDD (OpenSpec + GitNexus + Graphify, curadoria de `AGENTS.md` / `CLAUDE.md`, regras Cursor/Claude, convenção OpenSpec §12.8–12.9, etc.) noutro repositório Git, **este ficheiro é a única fonte normativa** do *como* instalar: ordem dos passos (§2), comandos, anti-padrões, prompts (§2.0) e **templates dos anexos 12.x**. Se outra fonte (blog, chat, README de ferramenta) **contradizer** o guia *no âmbito da instalação*, prevalece **este documento** — excepto quando o próprio guia mandar confirmar versão ou flag em `--help` ou changelog oficial da ferramenta.
+
+**O que não pode ser “tudo dentro deste .md” (dependências externas inevitáveis):** a máquina-alvo precisa de runtimes, rede e registos públicos para obter pacotes (`npm`, `uv`, `pip`, imagens); credenciais do motor LLM onde aplicável; e permissões de escrita no repo.
+
+**Conteúdo do *teu* produto após a casca existir:** o `openspec/project.md` que **preenches** seguindo o **template 12.1** *deste* guia torna-se a constituição do projecto-alvo; o guia **não** substitui esse papel nem o de `openspec/specs/` como verdade de **requisitos** — apenas define **como** os criar e curar na instalação e **que relações** manter com `AGENTS.md`.
+
 - **Padrão `AGENTS.md`:** alinhado a [agents.md](https://agents.md/) + workshop TLC (Context Engineering, on-demand loading).
-- **Versão do guia:** 1.1.1 — ver [Changelog do guia](#changelog-do-guia).
-- **Não substitui** `openspec/project.md` (constituição do projecto) nem specs em `openspec/specs/`.
+- **Versão do guia:** 1.1.2 — ver [Changelog do guia](#changelog-do-guia).
 
 ---
 
@@ -103,7 +110,7 @@ Cola este prompt na raiz do repositório alvo (substitui `REPO_ROOT` e o perfil)
 
 ```
 Instala o sistema SDD (OpenSpec + GitNexus + Graphify) neste repositório seguindo
-estritamente o guia em doc/sistema-sdd-pedro.md v1.1.1 (ou o caminho onde o guia
+estritamente o guia em doc/sistema-sdd-pedro.md v1.1.2 (ou o caminho onde o guia
 estiver no repo).
 
 Perfil do repositório: [APP | DOCS_SPECS | HYBRID]
@@ -1913,11 +1920,15 @@ export async function POST(req: Request) {
 
 ## Changelog do guia
 
+### 1.1.2 (2026-05-26)
+
+- **Contrato SSOT (instalação):** secção «Contrato — fonte única» em [Como usar este documento](#como-usar-este-documento); clarifica limites (externos vs. `project.md` / specs).
+
 ### 1.1.1 (2026-05-26)
 
 - **§12.8** — template `tasks.md` com **esboço de código (proposta)** por tarefa; integração com `openspec instructions tasks` (fundir template CLI + convenção SDD).
 - **§12.9** — extensão opcional para deltas `specs/.../spec.md` com exemplos **informativos** (sem misturar com SHALL normativo).
-- **§7.3** — protocolo OpenSpec para `tasks.md` e spec delta; referências em §2.0, §2.7, §4.3, §5.1, tabela §13, template **12.1** (`project.md`), e cabeçalho do guia (v1.1.1).
+- **§7.3** — protocolo OpenSpec para `tasks.md` e spec delta; referências em §2.0, §2.7, §4.3, §5.1, tabela §13, template **12.1** (`project.md`), e cabeçalho do guia (v1.1.2).
 
 ### 1.1.0 (2026-05-25)
 
@@ -1950,4 +1961,4 @@ Se algo falhar na configuração, a ordem habitual de debug é:
 
 ---
 
-*Guia v1.1.1 — Maio 2026. Ferramentas de referência: OpenSpec 1.3.1+, GitNexus 1.6+, Graphify 0.8.5+, Claude Code 2.1.140+, Cursor `.mdc`, VS Code 1.109+. Confirmar com `--version` antes de automatizar.*
+*Guia v1.1.2 — Maio 2026. Ferramentas de referência: OpenSpec 1.3.1+, GitNexus 1.6+, Graphify 0.8.5+, Claude Code 2.1.140+, Cursor `.mdc`, VS Code 1.109+. Confirmar com `--version` antes de automatizar.*
