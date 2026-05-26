@@ -28,4 +28,4 @@
 - [x] `npx openspec list` mostra o change (11/15 tasks no CLI)
 - [x] `AGENTS.md` ~90 linhas, sem `<!-- gitnexus:start -->`
 - [x] `graphify-out/GRAPH_REPORT.md` existe; GitNexus up-to-date
-- [ ] Reiniciar IDE e testar `/opsx:propose` (manual — utilizador)
+- [x] Reiniciar IDE e testar `/opsx:propose` (validado: change `fechar-checklist-instalacao-sdd`)
