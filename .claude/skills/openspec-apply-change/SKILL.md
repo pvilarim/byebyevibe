@@ -56,6 +56,8 @@ Implement tasks from an OpenSpec change.
    - **spec-driven**: proposal, specs, design, tasks
    - Other schemas: follow the contextFiles from CLI output
 
+   **SDD (`doc/sistema-sdd-pedro.md`):** em `tasks.md`, cada tarefa pode incluir **Esboço de código (proposta)** (guia §12.8). Usar como intenção alinhada ao `design.md`; validar paths e APIs com GitNexus antes de assumir que o esboço reflecte o repo actual.
+
 5. **Show current progress**
 
    Display:

@@ -102,6 +102,8 @@ After completing all artifacts, summarize:
   - Do NOT copy `<context>`, `<rules>`, `<project_context>` blocks into the artifact
   - These guide what you write, but should never appear in the output
 
+- **SDD / guia Pedro:** Se existir `doc/sistema-sdd-pedro.md`, ao criar **`tasks.md`** fundir o `template` do OpenSpec com **§12.8** (cada `### Task` com bloco **Esboço de código (proposta)**). Em **`specs/**/*.md`**, aplicar **§12.9** (exemplos «informative only») quando cenários forem ambíguos — sem contradizer WHEN/THEN normativos.
+
 **Guardrails**
 - Create ALL artifacts needed for implementation (as defined by schema's `apply.requires`)
 - Always read dependency artifacts before creating a new one

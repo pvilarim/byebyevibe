@@ -10,7 +10,7 @@ Este ficheiro existe para compatibilidade com a ordem de lookup do Claude Code; 
 - Specs activas: `./openspec/specs/`
 - Propostas activas: `./openspec/changes/`
 - Knowledge graph: `./graphify-out/GRAPH_REPORT.md`
-- Guia de instalação SDD: `./doc/sistema-sdd-pedro.md` (v1.1)
+- Guia de instalação SDD: `./doc/sistema-sdd-pedro.md` (v1.1.1)
 - Code graph: GitNexus MCP
 
 ## Protocolo de tarefa

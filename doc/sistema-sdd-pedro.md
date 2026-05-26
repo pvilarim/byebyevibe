@@ -2,18 +2,18 @@
 
 **GitNexus + Graphify + OpenSpec, integrados no Cursor e VS Code + Claude Code**
 
-> **Guia canónico de instalação (v1.1.0)** — usar em qualquer repositório Git, manualmente ou via agente de IA. Templates prontos a colar nos anexos 12.x.
+> **Guia canónico de instalação (v1.1.1)** — usar em qualquer repositório Git, manualmente ou via agente de IA. Templates prontos a colar nos anexos 12.x (incl. **§12.8–12.9** para `tasks.md` e deltas de spec).
 
 ## Como usar este documento
 
 | Modo | Acção |
 |------|--------|
 | **Humano** | Seguir §2 na ordem indicada (2.1 → 2.8). |
-| **Agente de IA** | Executar o prompt em §2.0; aplicar templates 12.1–12.2 conforme perfil do repo. |
+| **Agente de IA** | Executar o prompt em §2.0; aplicar templates 12.1–12.2 conforme perfil do repo; em OpenSpec, enriquecer `tasks.md` e specs conforme **§12.8–12.9**. |
 | **Piloto / teste** | Após instalar, validar com checklist §2.8. |
 
 - **Padrão `AGENTS.md`:** alinhado a [agents.md](https://agents.md/) + workshop TLC (Context Engineering, on-demand loading).
-- **Versão do guia:** 1.1.0 — ver [Changelog do guia](#changelog-do-guia).
+- **Versão do guia:** 1.1.1 — ver [Changelog do guia](#changelog-do-guia).
 - **Não substitui** `openspec/project.md` (constituição do projecto) nem specs em `openspec/specs/`.
 
 ---
@@ -103,7 +103,7 @@ Cola este prompt na raiz do repositório alvo (substitui `REPO_ROOT` e o perfil)
 
 ```
 Instala o sistema SDD (OpenSpec + GitNexus + Graphify) neste repositório seguindo
-estritamente o guia em doc/sistema-sdd-pedro.md v1.1 (ou o caminho onde o guia
+estritamente o guia em doc/sistema-sdd-pedro.md v1.1.1 (ou o caminho onde o guia
 estiver no repo).
 
 Perfil do repositório: [APP | DOCS_SPECS | HYBRID]
@@ -116,6 +116,10 @@ Ordem: openspec init --tools "cursor,claude" → gitnexus setup → gitnexus ana
 → graphify update . (ou graphify extract . se houver API key LLM)
 → curar AGENTS.md com template 12.2a (APP) ou 12.2b (DOCS_SPECS) — NÃO gerar
 AGENTS.md do zero com IA; NÃO colar blocos <!-- gitnexus:start --> completos.
+
+Em mudanças OpenSpec (`/opsx:propose`): preencher `tasks.md` e deltas em `specs/`
+seguindo a convenção do guia **§12.8** (esboço de código por tarefa) e **§12.9**
+(exemplos informativos na spec quando útil).
 
 Entregar: checklist §2.8 preenchida + lista de ficheiros criados/alterados.
 ```
@@ -331,7 +335,7 @@ Abre Claude Code ou Cursor e tenta:
 /opsx:propose adicionar validação de input no endpoint /users
 ```
 
-Deves ver o agente a criar `openspec/changes/add-user-input-validation/` com `proposal.md`, `design.md`, `tasks.md` e `specs/`. Se o agente também consultar GitNexus/Graphify durante a propose-phase (lê código existente e contexto), os três stacks estão integrados.
+Deves ver o agente a criar `openspec/changes/add-user-input-validation/` com `proposal.md`, `design.md`, `tasks.md` e `specs/`. O `tasks.md` MUST seguir **§12.8** (cada tarefa com esboço de código proposto); deltas de `specs/**/*.md` SHOULD seguir **§12.9** quando cenários forem ambíguos. Se o agente também consultar GitNexus/Graphify durante a propose-phase (lê código existente e contexto), os três stacks estão integrados.
 
 Se algo falhar: corre `gitnexus status`, verifica que `mcp.json` está correcto, e relê AGENTS.md.
 
@@ -506,8 +510,8 @@ A combinação evita ter de escrever explicitamente "agora chama GitNexus" em ca
 │ OUTPUTS                                                                  │
 │   • openspec/changes/<change-id>/proposal.md   (porquê, escopo)          │
 │   • openspec/changes/<change-id>/design.md     (decisões técnicas)       │
-│   • openspec/changes/<change-id>/tasks.md      (checklist)               │
-│   • openspec/changes/<change-id>/specs/        (delta specs ADDED/MOD)   │
+│   • openspec/changes/<change-id>/tasks.md      (checklist + §12.8 esboço)  │
+│   • openspec/changes/<change-id>/specs/        (delta specs; §12.9 opc.)   │
 │   • Após archive: openspec/specs/ actualizado + changes/archive/         │
 └──────────────────────────────────────────────────────────────────────────┘
 
@@ -573,8 +577,8 @@ Nível 3 — Mudanças em curso (efémero, vira spec quando archive)
 └── openspec/changes/<change-id>/
     ├── proposal.md
     ├── design.md
-    ├── tasks.md
-    └── specs/
+    ├── tasks.md                       ← checklist; cada item: esboço código §12.8
+    └── specs/                         ← delta; exemplos informativos §12.9
 
 Nível 4 — Conhecimento (regenerável, mas referenciado)
 ├── graphify-out/GRAPH_REPORT.md     ← linkado de AGENTS.md
@@ -771,6 +775,15 @@ Template para validar uma fonte antes de a adicionar ao Graphify:
 - Output é documento, não código. Recusar PRs de código directos a partir de Tipo E.
 - `research.md` arquivado em `openspec/changes/explore-<topic>/` mesmo se não levar a implementação.
 - Conclusão em formato "Recommendation: <action> because <reason>. Alternatives considered: <list>. Risks: <list>."
+
+### 7.3 OpenSpec — `tasks.md` e deltas de spec (convenção SDD)
+
+Para **todos os tipos** que gerem change OpenSpec (B com spec opcional, C, D):
+
+- **`tasks.md`**: cada tarefa MUST incluir **esboço de código (proposta)** ancorado a ficheiros ou símbolos reais (GitNexus) quando existirem — ver **§12.8**. Marcar incerteza com `[PROPOSTA]` ou `[NEEDS VERIFICATION]` em vez de inventar APIs.
+- **`specs/<capability>/spec.md` (delta)**: os SHALL/WHEN/THEN permanecem normativos; exemplos de código são **informativos** e opcionais — ver **§12.9**.
+
+Isto complementa o `template` devolvido por `openspec instructions` (a skill `/opsx:propose` funde ambos).
 
 ---
 
@@ -1423,6 +1436,14 @@ Pulls candidate documents from the pgvector store given a query embedding.
 - Knowledge graph: `graphify-out/GRAPH_REPORT.md`
 - Specs: `openspec/specs/`
 - Active changes: `openspec/changes/`
+- Guia SDD (instalação + templates tasks/spec): `doc/sistema-sdd-pedro.md` §12.8–12.9
+
+## OpenSpec artefactos (convenção SDD)
+
+Ver `doc/sistema-sdd-pedro.md` **§12.8** (esboço de código por tarefa em `tasks.md`) e **§12.9** (exemplos informativos em deltas de spec). Resumo:
+
+- Cada tarefa em `openspec/changes/<id>/tasks.md` MUST ter bloco **Esboço de código (proposta)** alinhado a `design.md` e a paths reais (GitNexus).
+- Deltas em `openspec/changes/<id>/specs/**/*.md` SHOULD usar exemplos apenas em secções explicitamente não normativas quando reduzirem ambiguidade.
 
 ## Non-goals
 - We do NOT build our own LLM evaluation framework — use Langfuse.
@@ -1800,6 +1821,79 @@ Instruções locais; o canónico na raiz é `../../AGENTS.md`.
 - Herdar segurança e protocolo A–E do `AGENTS.md` raiz
 ```
 
+### 12.8 Template `openspec/changes/<id>/tasks.md` (com esboço de código por tarefa)
+
+**Objectivo:** cada item do checklist diz *o quê* verificar e *como* se espera que o código se pareça, reduzindo interpretação livre do agente.
+
+**Integração com OpenSpec:** ao correr `/opsx:propose`, o CLI devolve `openspec instructions tasks --change "<id>" --json` com `template` e `instruction`. **Fundir** esse esqueleto com a estrutura abaixo: não apagar campos do schema; **acrescentar** blocos «Esboço de código» por tarefa.
+
+**Regras do esboço:**
+
+- Pseudocódigo, assinaturas, ou 5–15 linhas do *happy path* — não precisa compilar na primeira versão.
+- Citar **paths reais** (`src/...`) ou marcar `[NEW FILE]` / `[ASSUMPTION]` se o repo ainda não tiver o módulo.
+- Linguagem alinhada a `openspec/project.md` (TS, Python, SQL, etc.).
+- Se o esboço contradizer `design.md`, prevalece `design.md` — actualizar o esboço na mesma propose.
+
+`````markdown
+# Tasks — <change title>
+
+> Cada `### Task` MUST ter: critérios verificáveis, ficheiros tocados, **Esboço de código (proposta)**.
+
+## Ordem sugerida
+
+1. …
+2. …
+
+## Tasks
+
+### Task 1 — <verbo + objecto, ex.: validar input no POST /users>
+
+- [ ] Critério de aceitação (ligar a `specs/<capability>/spec.md`, Requirement …)
+- **Ficheiros:** `src/app/api/users/route.ts` (alterar) · `[NEW FILE]` `src/lib/validation/user.ts` (opcional)
+- **Esboço de código (proposta):**
+
+```typescript
+// [PROPOSTA] Ajustar a convenções do repo; validar com GitNexus antes de merge
+import { userCreateSchema } from "@/lib/validation/user";
+
+export async function POST(req: Request) {
+  const json = await req.json();
+  const parsed = userCreateSchema.safeParse(json);
+  if (!parsed.success) {
+    return Response.json({ errors: parsed.error.flatten() }, { status: 400 });
+  }
+  // … persistência / service
+}
+```
+
+- **Notas / riscos:** edge cases, dependências, `[NEEDS VERIFICATION]` se API não confirmada no index
+
+### Task 2 — …
+
+- [ ] …
+- **Ficheiros:** …
+- **Esboço de código (proposta):**
+
+```text
+[linguagem ou pseudo-código]
+```
+
+- **Notas:** …
+`````
+
+### 12.9 Extensão opcional — delta `openspec/changes/<id>/specs/<capability>/spec.md`
+
+**Objectivo:** quando requisitos em prosa são ambíguos para agentes, acrescentar **exemplos informativos** sem confundir com requisitos normativos.
+
+**Regras:**
+
+- **Normativo** = `### Requirement:` + `#### Scenario:` com **WHEN** / **THEN** (como já usas).
+- **Informativo** = secções claramente etiquetadas; nunca contradizem os SHALL acima. Se houver conflito, corrigir o exemplo, não o requisito.
+
+**Padrão A — exemplo por cenário** (preferido quando um só fluxo é opaco): incluir após o cenário um sub-heading `##### Example (informative only; non-normative)` seguido de um bloco de código (TypeScript, `curl`, etc.) que ilustra WHEN/THEN — o bloco não substitui os bullets normativos.
+
+**Padrão B — bloco agregado** (quando vários requisitos partilham a mesma superfície): acrescentar no fim do ficheiro uma secção `## Implementation sketches (non-normative)` com snippets e uma nota de que a implementação final MUST satisfazer todos os Requirements.
+
 ---
 
 ## 13. Alinhamento workshop ↔ agents.md
@@ -1809,7 +1903,7 @@ Instruções locais; o canónico na raiz é `../../AGENTS.md`.
 | [agents.md](https://agents.md/) como padrão | §2.5, 12.2 |
 | `AGENTS.md` curto; on-demand loading | §2.5.3, 12.2 |
 | Não pedir à IA para gerar `AGENTS.md` | §2.5.1 |
-| Exemplos reais > regras abstritas | §7, §11 |
+| Exemplos reais > regras abstritas | §7, §11, **§12.8–12.9** |
 | Context rot; janela nova por tarefa | §3, §7 |
 | Skills lazy vs rules estáticas | §4.2, §8.1 |
 | Legado: AS-IS antes de instrumentar | §2.5.3, §2.0 prompt |
@@ -1818,6 +1912,12 @@ Instruções locais; o canónico na raiz é `../../AGENTS.md`.
 ---
 
 ## Changelog do guia
+
+### 1.1.1 (2026-05-26)
+
+- **§12.8** — template `tasks.md` com **esboço de código (proposta)** por tarefa; integração com `openspec instructions tasks` (fundir template CLI + convenção SDD).
+- **§12.9** — extensão opcional para deltas `specs/.../spec.md` com exemplos **informativos** (sem misturar com SHALL normativo).
+- **§7.3** — protocolo OpenSpec para `tasks.md` e spec delta; referências em §2.0, §2.7, §4.3, §5.1, tabela §13, template **12.1** (`project.md`), e cabeçalho do guia (v1.1.1).
 
 ### 1.1.0 (2026-05-25)
 
@@ -1850,4 +1950,4 @@ Se algo falhar na configuração, a ordem habitual de debug é:
 
 ---
 
-*Guia v1.1.0 — Maio 2026. Ferramentas de referência: OpenSpec 1.3.1+, GitNexus 1.6+, Graphify 0.8.5+, Claude Code 2.1.140+, Cursor `.mdc`, VS Code 1.109+. Confirmar com `--version` antes de automatizar.*
+*Guia v1.1.1 — Maio 2026. Ferramentas de referência: OpenSpec 1.3.1+, GitNexus 1.6+, Graphify 0.8.5+, Claude Code 2.1.140+, Cursor `.mdc`, VS Code 1.109+. Confirmar com `--version` antes de automatizar.*
