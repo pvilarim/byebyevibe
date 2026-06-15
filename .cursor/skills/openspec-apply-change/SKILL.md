@@ -87,6 +87,28 @@ Implement tasks from an OpenSpec change.
    - If all done: suggest archive
    - If paused: explain why and wait for guidance
 
+8. **Suggest simplify-review when diff is large (non-blocking)**
+
+   After implementation changes exist in the working tree, run:
+
+   ```bash
+   git diff --stat
+   ```
+
+   If **either** threshold is met:
+   - Total changed lines (insertions + deletions) **> ~80**, or
+   - **> 4** files changed
+
+   Then **suggest** invoking the `simplify-review` skill (see `AGENTS.md` → Reviews pós-implementação). Example message:
+
+   > Diff grande (+X/-Y, N ficheiros). Quer correr `simplify-review` antes do commit? (opcional — não bloqueia archive.)
+
+   Rules:
+   - **Never** auto-invoke without user consent
+   - **Never** block commit, PR, or `/opsx:archive`
+   - Skip suggestion for Type A trivial work or when user already declined in this session
+   - If the change touches auth/API/payments/sensitive data, also mention `security-reviewer` (same optional pattern)
+
 **Output During Implementation**
 
 ```
@@ -116,6 +138,8 @@ Working on task 4/7: <task description>
 ...
 
 All tasks complete! Ready to archive this change.
+
+[If diff > ~80 lines or > 4 files: optional simplify-review suggestion here]
 ```
 
 **Output On Pause (Issue Encountered)**

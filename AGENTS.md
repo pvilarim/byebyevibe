@@ -105,6 +105,19 @@ Se ambíguo entre dois tipos, **PERGUNTAR**. **NUNCA** assumir Tipo A por defeit
 - Referenciar change-id quando relevante: `docs(sdd): guia v1.1 (update-sdd-install-guide-agents-format)`
 - **Não commitar:** `graphify-out/`, `.gitnexus/`, `AGENTS.tools-generated.md`
 
+## Reviews pós-implementação (on-demand)
+
+Skills invocáveis após código escrito — **nunca** always-on, **nunca** bloqueiam commit.
+
+| Skill / agent | Quando invocar | Não invocar |
+|---------------|----------------|-------------|
+| `simplify-review` | Pós-apply ou pré-PR: diff > ~80 linhas ou > 4 ficheiros; Tipo B/C/D; pedido explícito de simplicidade | Tipo A; durante `/opsx:propose`; escopo ainda em debate |
+| `security-reviewer` | Auth, API routes, pagamentos, dados sensíveis, webhooks | — |
+
+Ordem sugerida: implementação → testes (R6) → `simplify-review` (opcional) → `security-reviewer` (se aplicável) → commit.
+
+Detalhe da skill: `.claude/skills/simplify-review/SKILL.md` (espelho em `.cursor/skills/`).
+
 ## Subagentes (Claude Code)
 
 - `graphify-researcher` — research teórico → `knowledge.md`
