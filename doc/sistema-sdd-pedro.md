@@ -2,18 +2,20 @@
 
 **GitNexus + Graphify + OpenSpec, integrados no Cursor e VS Code + Claude Code**
 
-> **Guia canónico de instalação (v1.1.0)** — usar em qualquer repositório Git, manualmente ou via agente de IA. Templates prontos a colar nos anexos 12.x.
+> **Guia canónico de instalação (v1.2.0)** — usar em qualquer repositório Git, manualmente ou via agente de IA. Templates prontos a colar nos anexos 12.x.
 
 ## Como usar este documento
 
 | Modo | Acção |
 |------|--------|
-| **Humano** | Seguir §2 na ordem indicada (2.1 → 2.8). |
-| **Agente de IA** | Executar o prompt em §2.0; aplicar templates 12.1–12.2 conforme perfil do repo. |
-| **Piloto / teste** | Após instalar, validar com checklist §2.8. |
+| **Humano — instalação nova** | Seguir §2 na ordem indicada (2.1 → 2.8). |
+| **Humano — actualização** | Seguir §2.9 (2.9.1 → 2.9.7); comparar ficheiros com §2.9.5 e §12.8. |
+| **Agente de IA — instalação** | Executar o prompt em §2.0; aplicar templates 12.1–12.2 conforme perfil do repo. |
+| **Agente de IA — actualização** | Executar o prompt em §2.9.2; produzir relatório §12.8 **antes** de editar ficheiros curados. |
+| **Piloto / teste** | Após instalar ou actualizar, validar com checklist §2.8 ou §2.9.7. |
 
 - **Padrão `AGENTS.md`:** alinhado a [agents.md](https://agents.md/) + workshop TLC (Context Engineering, on-demand loading).
-- **Versão do guia:** 1.1.0 — ver [Changelog do guia](#changelog-do-guia).
+- **Versão do guia:** 1.2.0 — ver [Changelog do guia](#changelog-do-guia).
 - **Não substitui** `openspec/project.md` (constituição do projecto) nem specs em `openspec/specs/`.
 
 ---
@@ -29,7 +31,7 @@ Segunda fricção: o ecossistema move-se depressa. Versões neste documento são
 ## Índice
 
 1. [Pré-requisitos](#1-pré-requisitos-questão-6)
-2. [Passo a passo de instalação](#2-passo-a-passo-de-instalação-questão-1) — inclui §2.0 (IA), §2.5 (AGENTS.md), §2.8 (verificação)
+2. [Passo a passo de instalação](#2-passo-a-passo-de-instalação-questão-1) — inclui §2.0 (IA), §2.5 (AGENTS.md), §2.8 (verificação), §2.9 (actualização)
 3. [Classificação de tarefas e pipelines](#3-classificação-de-tarefas-e-pipelines-questões-2-3-31)
 4. [Tabela mestre: ferramenta × responsabilidade × I/O](#4-tabela-mestre-questão-3)
 5. [Documentos e referências cruzadas](#5-documentos-e-referências-cruzadas-questão-32)
@@ -103,7 +105,7 @@ Cola este prompt na raiz do repositório alvo (substitui `REPO_ROOT` e o perfil)
 
 ```
 Instala o sistema SDD (OpenSpec + GitNexus + Graphify) neste repositório seguindo
-estritamente o guia em doc/sistema-sdd-pedro.md v1.1 (ou o caminho onde o guia
+estritamente o guia em doc/sistema-sdd-pedro.md v1.2 (ou o caminho onde o guia
 estiver no repo).
 
 Perfil do repositório: [APP | DOCS_SPECS | HYBRID]
@@ -350,6 +352,209 @@ Usar após cada instalação (humano ou IA):
 - [ ] `/opsx:propose` (ou `npx openspec new change teste`) cria change
 - [ ] IDE reiniciada (slash commands e skills)
 - [ ] Perfil APP/DOCS_SPECS reflectido na tabela Commands do `AGENTS.md`
+
+### 2.9 Actualização de instalação existente
+
+Usar quando o repositório **já tem** OpenSpec, GitNexus e/ou Graphify configurados e o objectivo é **actualizar** para uma nova versão do guia ou das ferramentas — **não** repetir §2 como instalação verde.
+
+#### 2.9.1 Quando usar e o que não fazer
+
+| Situação | Acção |
+|----------|--------|
+| Primeira vez no repo | §2.1 → §2.8 (instalação nova) |
+| Nova versão do guia (`v1.1` → `v1.2`, etc.) | §2.9 |
+| Só CLIs desactualizadas, ficheiros curados OK | §2.9.4 (ferramentas) + §2.9.7 parcial |
+| `openspec/` ausente | Instalação nova (§2) |
+
+**Nunca na actualização:**
+
+- Correr `openspec init` de novo (pode duplicar ou conflitar harness).
+- Substituir `AGENTS.md` / `openspec/project.md` pelo output de `gitnexus analyze`, `graphify install` ou `openspec update`.
+- Aplicar templates §12 por cima de conteúdo local **sem** relatório de diff (§12.8).
+- `git push --force` na branch de actualização.
+
+#### 2.9.2 Detecção da versão instalada
+
+Antes de actualizar, registar no relatório (§12.8):
+
+```bash
+# Versão do guia referenciada no repo (se existir)
+grep -E 'sistema-sdd-pedro\.md|Guia de instalação SDD' openspec/project.md || true
+
+# Versões das ferramentas
+openspec --version 2>/dev/null || npx openspec --version
+gitnexus --version
+graphify --version
+
+# Sinais de instalação SDD
+test -d openspec && echo "openspec: OK"
+test -f AGENTS.md && wc -l AGENTS.md
+test -d .cursor/rules && ls .cursor/rules/*.mdc 2>/dev/null | wc -l
+```
+
+| Campo | Onde ler |
+|-------|----------|
+| Versão do guia no repo | `openspec/project.md` → Cross-references (`doc/sistema-sdd-pedro.md` **vX.Y.Z**) |
+| Versão alvo | Cabeçalho deste documento ou changelog §14 |
+| Perfil | APP / DOCS_SPECS / HYBRID (§2.5.2) — inferir de `package.json`, Commands em `AGENTS.md` |
+
+Se `openspec/project.md` não referencia versão do guia, assumir **desconhecida** e tratar merge como **conservador** (manter texto local; só acrescentar secções novas do template).
+
+#### 2.9.3 Actualização assistida por IA (prompt)
+
+Cola na raiz do repositório alvo (substitui `VERSÃO_ALVO` e confirma caminho do guia):
+
+```
+Actualiza a instalação SDD existente neste repositório para o guia
+doc/sistema-sdd-pedro.md VERSÃO_ALVO (ex.: v1.2.0).
+
+NÃO é instalação nova — seguir estritamente §2.9 do guia.
+
+Ordem obrigatória:
+1. Criar branch `chore/upgrade-sdd-VERSÃO_ALVO`.
+2. §2.9.2 — registar versão actual (project.md, --version das ferramentas).
+3. §2.9.5 — extrair templates do guia para
+   `openspec/changes/upgrade-sdd-VERSÃO_ALVO/sdd-staging/` (ficheiros da matriz).
+4. Correr `./scripts/sdd-upgrade-diff.sh openspec/changes/upgrade-sdd-VERSÃO_ALVO/sdd-staging/`
+5. Preencher `openspec/changes/upgrade-sdd-VERSÃO_ALVO/UPGRADE_REPORT.md` (template §12.8)
+   com classificação por ficheiro: KEEP_LOCAL | MERGE | APPLY_TEMPLATE | NEW | SKIP.
+6. PARAR e apresentar o relatório ao utilizador. Não editar ficheiros curados até aprovação
+   explícita (ou instrução "aplicar MERGE/APPLY_TEMPLATE").
+7. Após aprovação: §2.9.4 (actualizar CLIs e harness gerado).
+8. Aplicar apenas linhas/ficheiros aprovados no relatório; preservar Purpose, Stack, Commands
+   e regras específicas do repo.
+9. Actualizar referência em `openspec/project.md` para VERSÃO_ALVO.
+10. §2.9.7 checklist + commit `chore(sdd): upgrade to guia vX.Y.Z`.
+
+Regras de merge (§2.9.6):
+- AGENTS.md: manter Commands e entradas locais da tabela "Contexto sob demanda";
+  sincronizar secções normativas (A–E, R1–R9, Integrações) com template 12.2.
+- openspec/project.md: NUNCA substituir Purpose/Stack/Architecture; só actualizar
+  Cross-references e secções novas do template 12.1.
+- .cursor/rules/*.mdc: APPLY_TEMPLATE só para 000-base e 050-security se o guia
+  indicar breaking change; 010/020/030 — MERGE ou KEEP_LOCAL.
+- CLAUDE.md: manter ≤25 linhas; template §10.3.
+
+Entregar: UPGRADE_REPORT.md + lista de ficheiros alterados + diff resumido.
+```
+
+#### 2.9.4 Actualização das ferramentas (sem tocar ficheiros curados)
+
+Executar **depois** do staging/diff e **antes** do merge aprovado nos ficheiros curados (ou em paralelo se o relatório já estiver pronto):
+
+```bash
+# 1. CLIs globais
+npm install -g @fission-ai/openspec@latest
+npm install -g gitnexus
+uv tool upgrade graphifyy 2>/dev/null || uv tool install graphifyy
+
+# 2. Preservar AGENTS.md canónico
+cp AGENTS.md /tmp/AGENTS.md.backup 2>/dev/null || true
+cp CLAUDE.md /tmp/CLAUDE.md.backup 2>/dev/null || true
+
+# 3. Harness OpenSpec (regenera .cursor/commands, .claude/commands, openspec/AGENTS.md gerado)
+cd REPO_ROOT
+openspec update
+
+# 4. Restaurar canónicos se ferramentas sobrescreveram
+if grep -q 'gitnexus:start' AGENTS.md 2>/dev/null; then
+  mv AGENTS.md AGENTS.tools-generated.md
+  cp /tmp/AGENTS.md.backup AGENTS.md
+fi
+
+# 5. GitNexus + Graphify
+gitnexus setup          # idempotente; actualiza MCP/skills globais
+gitnexus analyze --force
+graphify install
+graphify install --platform cursor
+graphify hook install
+graphify update .
+
+# 6. Confirmar versões
+openspec --version && gitnexus --version && graphify --version
+```
+
+Ficheiros **gerados** (seguro sobrescrever com `openspec update`):
+
+| Caminho | Notas |
+|---------|--------|
+| `.cursor/commands/opsx-*.md` | Slash commands Cursor |
+| `.claude/commands/opsx-*.md` | Slash commands Claude Code |
+| `openspec/AGENTS.md` | Gerado pelo OpenSpec — **não** confundir com `AGENTS.md` raiz |
+
+#### 2.9.5 Matriz de comparação (existente vs template)
+
+Para cada ficheiro **curado**, o agente (ou humano) compara o que está no repo com o template indicado. Usar staging + script:
+
+```bash
+# Extrair templates do guia para staging (agente cria ficheiros a partir de §12 / §9 / §10)
+mkdir -p openspec/changes/upgrade-sdd-v1.2.0/sdd-staging/.cursor/rules
+
+# Exemplo: copiar conteúdo de 12.2 + 12.2b para staging/AGENTS.md, etc.
+
+chmod +x scripts/sdd-upgrade-diff.sh
+./scripts/sdd-upgrade-diff.sh openspec/changes/upgrade-sdd-v1.2.0/sdd-staging/
+```
+
+| Ficheiro no repo | Template no guia | Tipo de merge | O que comparar |
+|------------------|------------------|---------------|----------------|
+| `AGENTS.md` | §12.2 + §12.2a ou §12.2b | MERGE | Secções normativas vs Commands/contexto local; linhas ≤150; sem `gitnexus:start` |
+| `openspec/project.md` | §12.1 | MERGE conservador | Purpose, Stack, Architecture, Constraints — **manter local**; Cross-references e versão do guia — **actualizar** |
+| `CLAUDE.md` | §10.3 | MERGE | Delegação para `AGENTS.md`; não duplicar blocos longos |
+| `.cursor/rules/000-base.mdc` | §9.2 | APPLY ou MERGE | Apontar para `AGENTS.md`; referência a `/opsx:propose` |
+| `.cursor/rules/050-security.mdc` | §9.2 | APPLY ou MERGE | Guardrails; alinhar se guia adicionou regra nova |
+| `.cursor/rules/010-typescript.mdc` | §9.2 | KEEP ou MERGE | Opcional; só se repo usa TS |
+| `.cursor/rules/020-python.mdc` | §12.5 | KEEP ou MERGE | Opcional |
+| `.cursor/rules/030-supabase.mdc` | §12.5 | KEEP ou MERGE | Opcional |
+| `.cursor/rules/graphify.mdc` | §4 / integração Graphify | MERGE | Resumo `graphify update`; não duplicar skill |
+| `doc/**/AGENTS.md` (aninhados) | §12.7 | KEEP_LOCAL | Preservar; só actualizar se guia mudou formato aninhado |
+
+**Classificações** (usar em `UPGRADE_REPORT.md`):
+
+| Tag | Significado |
+|-----|-------------|
+| `KEEP_LOCAL` | Manter ficheiro actual; nenhuma alteração |
+| `MERGE` | Unir manualmente: template fornece secções novas; repo mantém especificidades |
+| `APPLY_TEMPLATE` | Substituir por template (só 000-base / 050-security quando changelog do guia manda) |
+| `NEW` | Ficheiro não existe no repo; criar a partir do template |
+| `SKIP` | Não aplicável a este perfil (ex.: 030-supabase sem Supabase) |
+
+#### 2.9.6 Regras de merge por ficheiro
+
+**`AGENTS.md`**
+
+1. Começar pelo ficheiro **local** (não pelo template).
+2. Do template 12.2, sincronizar: Fontes de conhecimento, Protocolo A–E, R1–R9, Workflow, Integrações (resumo), Segurança.
+3. **Não** apagar linhas da tabela Commands nem entradas extra em "Contexto sob demanda".
+4. Se após merge >150 linhas, mover detalhe para `doc/` ou skills — não inflar o canónico.
+
+**`openspec/project.md`**
+
+1. Preservar integralmente: Purpose, Stack, Architecture, Conventions, Constraints, Non-goals.
+2. Actualizar: linha `Guia de instalação SDD` em Cross-references para a versão alvo.
+3. Se o template 12.1 tiver secção **nova** (ex.: campo que não existia em v1.0), **acrescentar** com placeholder `[PREENCHER]` — não inventar conteúdo.
+
+**`.cursor/rules/*.mdc`**
+
+1. `000-base` e `050-security`: diff linha a linha; aplicar mudanças de segurança do guia.
+2. Regras por glob (`010`, `020`, `030`): só actualizar se o projeto usa essa stack; caso contrário `SKIP`.
+
+**`CLAUDE.md`**
+
+1. Máximo ~25 linhas úteis; deve apontar para `./AGENTS.md`.
+2. Se GitNexus injectou bloco longo, mover para `CLAUDE.tools-generated.md` e restaurar template §10.3.
+
+#### 2.9.7 Checklist pós-atualização
+
+Repetir §2.8 e acrescentar:
+
+- [ ] `UPGRADE_REPORT.md` arquivado em `openspec/changes/upgrade-sdd-*/` (ou commitado no change)
+- [ ] Versão do guia em `openspec/project.md` actualizada (ex.: **v1.2.0**)
+- [ ] `AGENTS.md` sem regressão (Commands locais intactos; sem `gitnexus:start`)
+- [ ] Backups `/tmp/*.backup` ou branch permitem rollback
+- [ ] `openspec update` aplicado; slash commands `/opsx:*` funcionam após reiniciar IDE
+- [ ] `gitnexus analyze --force` e `graphify update .` executados
+- [ ] Changelog do guia §14 lido para **breaking changes** da versão alvo
 
 ---
 
@@ -1464,6 +1669,7 @@ Nunca afirmar factos sem fonte 1–6. Tipo D/E: Graphify + GitNexus antes de có
 | Change activo | `openspec/changes/<id>/` |
 | Grafo | `graphify-out/GRAPH_REPORT.md` |
 | Guia SDD | `doc/sistema-sdd-pedro.md` |
+| Actualização SDD | `doc/sistema-sdd-pedro.md` §2.9 |
 | TS / Py / DB | `.cursor/rules/010-*.mdc`, `020-*.mdc`, `030-*.mdc` |
 
 ## Protocolo de tarefas (A–E)
@@ -1800,6 +2006,103 @@ Instruções locais; o canónico na raiz é `../../AGENTS.md`.
 - Herdar segurança e protocolo A–E do `AGENTS.md` raiz
 ```
 
+### 12.8 Template `UPGRADE_REPORT.md` (actualização SDD)
+
+Guardar em `openspec/changes/upgrade-sdd-<versão>/UPGRADE_REPORT.md` **antes** de editar ficheiros curados.
+
+```markdown
+# Relatório de actualização SDD
+
+| Campo | Valor |
+|-------|--------|
+| Repositório | [nome/caminho] |
+| Perfil | APP / DOCS_SPECS / HYBRID |
+| Versão guia (antes) | vX.Y.Z ou desconhecida |
+| Versão guia (alvo) | vA.B.C |
+| Data | YYYY-MM-DD |
+| Branch | chore/upgrade-sdd-vA.B.C |
+
+## Versões das ferramentas
+
+| Ferramenta | Antes | Depois |
+|------------|-------|--------|
+| OpenSpec | | |
+| GitNexus | | |
+| Graphify | | |
+
+## Resumo executivo
+
+- [ ] Actualização aprovada pelo utilizador
+- Breaking changes do guia aplicáveis: [sim/não — listar]
+
+## Matriz de ficheiros
+
+| Ficheiro | Existe | Linhas (antes) | Classificação | Acção proposta | Aprovado |
+|----------|--------|----------------|---------------|----------------|----------|
+| AGENTS.md | sim/não | | MERGE | Sincronizar 12.2; manter Commands | [ ] |
+| openspec/project.md | | | MERGE | Actualizar Cross-references; manter Purpose/Stack | [ ] |
+| CLAUDE.md | | | MERGE | Template §10.3 | [ ] |
+| .cursor/rules/000-base.mdc | | | APPLY/MERGE | | [ ] |
+| .cursor/rules/050-security.mdc | | | APPLY/MERGE | | [ ] |
+| .cursor/rules/010-typescript.mdc | | | SKIP/KEEP | | [ ] |
+| .cursor/rules/020-python.mdc | | | SKIP/KEEP | | [ ] |
+| .cursor/rules/030-supabase.mdc | | | SKIP/KEEP | | [ ] |
+| .cursor/rules/graphify.mdc | | | MERGE/KEEP | | [ ] |
+
+Classificações: `KEEP_LOCAL` · `MERGE` · `APPLY_TEMPLATE` · `NEW` · `SKIP`
+
+## Diffs relevantes (resumo)
+
+### AGENTS.md
+- Secções só no local: …
+- Secções só no template: …
+- Conflitos: …
+
+### openspec/project.md
+- …
+
+## Ficheiros gerados (não curados)
+
+| Caminho | Acção |
+|---------|--------|
+| `.cursor/commands/opsx-*` | `openspec update` |
+| `openspec/AGENTS.md` | regenerado — ignorar para canónico |
+
+## Pós-actualização
+
+- [ ] §2.9.4 executado
+- [ ] §2.9.7 checklist
+- [ ] IDE reiniciada
+- [ ] `/opsx:propose` testado
+```
+
+### 12.9 Script de diff (`scripts/sdd-upgrade-diff.sh`)
+
+Inventaria ficheiros curados e, com directorio de staging, mostra `diff -u`:
+
+```bash
+# Só inventário
+./scripts/sdd-upgrade-diff.sh
+
+# Com staging (templates extraídos do guia para openspec/changes/.../sdd-staging/)
+./scripts/sdd-upgrade-diff.sh openspec/changes/upgrade-sdd-v1.2.0/sdd-staging/
+```
+
+Estrutura esperada do staging (espelha paths do repo):
+
+```
+sdd-staging/
+├── AGENTS.md
+├── CLAUDE.md
+├── openspec/project.md          # opcional: só para diff de Cross-references
+└── .cursor/rules/
+    ├── 000-base.mdc
+    ├── 050-security.mdc
+    └── …
+```
+
+O agente **extrai** o conteúdo dos blocos de código deste guia (§9.2, §10.3, §12.1–12.2) para esses ficheiros — não inventar templates.
+
 ---
 
 ## 13. Alinhamento workshop ↔ agents.md
@@ -1818,6 +2121,14 @@ Instruções locais; o canónico na raiz é `../../AGENTS.md`.
 ---
 
 ## Changelog do guia
+
+### 1.2.0 (2026-06-15)
+
+- **§2.9** — Actualização de instalação existente (detecção, prompt IA, ferramentas, merge, checklist).
+- **§2.9.5** — Matriz de comparação ficheiros curados vs templates (KEEP_LOCAL / MERGE / APPLY_TEMPLATE / NEW / SKIP).
+- **§12.8** — Template `UPGRADE_REPORT.md` para aprovação humana antes de editar ficheiros.
+- **§12.9** + `scripts/sdd-upgrade-diff.sh` — inventário e diff contra staging.
+- Tabela "Como usar" distingue instalação vs actualização (humano e agente).
 
 ### 1.1.0 (2026-05-25)
 
@@ -1850,4 +2161,4 @@ Se algo falhar na configuração, a ordem habitual de debug é:
 
 ---
 
-*Guia v1.1.0 — Maio 2026. Ferramentas de referência: OpenSpec 1.3.1+, GitNexus 1.6+, Graphify 0.8.5+, Claude Code 2.1.140+, Cursor `.mdc`, VS Code 1.109+. Confirmar com `--version` antes de automatizar.*
+*Guia v1.2.0 — Junho 2026. Ferramentas de referência: OpenSpec 1.3.1+, GitNexus 1.6+, Graphify 0.8.5+, Claude Code 2.1.140+, Cursor `.mdc`, VS Code 1.109+. Confirmar com `--version` antes de automatizar.*
