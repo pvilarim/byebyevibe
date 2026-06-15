@@ -145,14 +145,15 @@ Ausência de comentário em atalho não-trivial → achado opcional **`shrink:`*
 
 ---
 
-## Integração futura (avaliação — não automático ainda)
+## Integração no SDD (activa)
 
-Para adoptar no sistema, escolher **um** gatilho:
-
-1. **Manual:** utilizador invoca após apply ("roda simplify-review neste diff")
-2. **Checklist em `openspec-apply-change`:** se diff > 80 linhas, *sugerir* invocar (não forçar)
-3. **Subagent:** `.claude/agents/simplify-reviewer.md` (paralelo a `security-reviewer`)
-4. **Pre-commit opcional:** script que conta linhas e avisa (humano decide)
+| Nível | Estado | Onde |
+|-------|--------|------|
+| **AGENTS.md** | ✅ | Secção "Reviews pós-implementação" — quando invocar / não invocar |
+| **openspec-apply-change** | ✅ | Passo 8 — *sugere* review se diff > ~80 linhas ou > 4 ficheiros (não bloqueia) |
+| **Manual** | ✅ | Utilizador pede explicitamente |
+| **Subagent** | ⏳ | `.claude/agents/simplify-reviewer.md` — só após validação em repo APP |
+| **Pre-commit / hooks** | ❌ | Não recomendado |
 
 **Não recomendado:** hook always-on, rule `.mdc` alwaysApply, ou bloqueio automático de commit.
 

@@ -1,13 +1,17 @@
 ---
-name: "OPSX: Apply"
-description: Implement tasks from an OpenSpec change (Experimental)
-category: Workflow
-tags: [workflow, artifacts, experimental]
+name: openspec-apply-change
+description: Implement tasks from an OpenSpec change. Use when the user wants to start implementing, continue implementation, or work through tasks.
+license: MIT
+compatibility: Requires openspec CLI.
+metadata:
+  author: openspec
+  version: "1.0"
+  generatedBy: "1.3.1"
 ---
 
 Implement tasks from an OpenSpec change.
 
-**Input**: Optionally specify a change name (e.g., `/opsx:apply add-auth`). If omitted, check if it can be inferred from conversation context. If vague or ambiguous you MUST prompt for available changes.
+**Input**: Optionally specify a change name. If omitted, check if it can be inferred from conversation context. If vague or ambiguous you MUST prompt for available changes.
 
 **Steps**
 
@@ -35,13 +39,13 @@ Implement tasks from an OpenSpec change.
    ```
 
    This returns:
-   - `contextFiles`: artifact ID -> array of concrete file paths (varies by schema)
+   - `contextFiles`: artifact ID -> array of concrete file paths (varies by schema - could be proposal/specs/design/tasks or spec/tests/implementation/docs)
    - Progress (total, complete, remaining)
    - Task list with status
    - Dynamic instruction based on current state
 
    **Handle states:**
-   - If `state: "blocked"` (missing artifacts): show message, suggest using `/opsx:continue`
+   - If `state: "blocked"` (missing artifacts): show message, suggest using openspec-continue-change
    - If `state: "all_done"`: congratulate, suggest archive
    - Otherwise: proceed to implementation
 
@@ -83,6 +87,28 @@ Implement tasks from an OpenSpec change.
    - If all done: suggest archive
    - If paused: explain why and wait for guidance
 
+8. **Suggest simplify-review when diff is large (non-blocking)**
+
+   After implementation changes exist in the working tree, run:
+
+   ```bash
+   git diff --stat
+   ```
+
+   If **either** threshold is met:
+   - Total changed lines (insertions + deletions) **> ~80**, or
+   - **> 4** files changed
+
+   Then **suggest** invoking the `simplify-review` skill (see `AGENTS.md` → Reviews pós-implementação). Example message:
+
+   > Diff grande (+X/-Y, N ficheiros). Quer correr `simplify-review` antes do commit? (opcional — não bloqueia archive.)
+
+   Rules:
+   - **Never** auto-invoke without user consent
+   - **Never** block commit, PR, or `/opsx:archive`
+   - Skip suggestion for Type A trivial work or when user already declined in this session
+   - If the change touches auth/API/payments/sensitive data, also mention `security-reviewer` (same optional pattern)
+
 **Output During Implementation**
 
 ```
@@ -111,7 +137,9 @@ Working on task 4/7: <task description>
 - [x] Task 2
 ...
 
-All tasks complete! You can archive this change with `/opsx:archive`.
+All tasks complete! Ready to archive this change.
+
+[If diff > ~80 lines or > 4 files: optional simplify-review suggestion here]
 ```
 
 **Output On Pause (Issue Encountered)**
