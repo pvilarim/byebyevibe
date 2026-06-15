@@ -55,7 +55,7 @@ Repositório de specs, documentação técnica e cursos do Pedro Vilarim. Serve 
 - Specs activas: `openspec/specs/`
 - Mudanças em curso: `openspec/changes/`
 - Documentação do curso: `doc/curso/` (5 aulas do Workshop IA 5/2026)
-- **Guia de instalação SDD:** `doc/sistema-sdd-pedro.md` **v1.1.0** — usar para instalar o sistema noutros repos
+- **Guia de instalação SDD:** `doc/sistema-sdd-pedro.md` **v1.2.0** — instalação §2; actualização §2.9
 - Comportamento de agentes: `AGENTS.md` (não duplicar regras aqui)
 
 ## Non-goals

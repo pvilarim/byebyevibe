@@ -45,7 +45,8 @@ Para trabalho tipo D/E, **SEMPRE** consultar Graphify e GitNexus antes de escrev
 | Change em curso | `openspec/changes/<id>/` |
 | Teoria / relações entre conceitos | `graphify-out/GRAPH_REPORT.md` |
 | Workshop e transcrições | `doc/curso/aula-*.md` |
-| Guia de instalação SDD (v1.1) | `doc/sistema-sdd-pedro.md` |
+| Guia de instalação SDD (v1.2) | `doc/sistema-sdd-pedro.md` |
+| Actualização SDD (repo já instalado) | `doc/sistema-sdd-pedro.md` §2.9 |
 | Scripts CDP / transcrições | `doc/curso/scripts/AGENTS.md` |
 | TypeScript (se aplicável) | `.cursor/rules/010-typescript.mdc` |
 | Python | `.cursor/rules/020-python.mdc` |
