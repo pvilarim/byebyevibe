@@ -105,7 +105,7 @@ Cola este prompt na raiz do repositório alvo (substitui `REPO_ROOT` e o perfil)
 
 ```
 Instala o sistema SDD (OpenSpec + GitNexus + Graphify) neste repositório seguindo
-estritamente o guia em doc/sistema-sdd-pedro.md v1.1 (ou o caminho onde o guia
+estritamente o guia em doc/sistema-sdd-pedro.md v1.2 (ou o caminho onde o guia
 estiver no repo).
 
 Perfil do repositório: [APP | DOCS_SPECS | HYBRID]
