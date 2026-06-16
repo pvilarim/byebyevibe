@@ -24,6 +24,10 @@ When ready to implement, run /opsx:apply
 
 **Steps**
 
+0. **Read workspace infrastructure**
+
+   Read `openspec/infra.md` before proposing installation of MCP servers, CLIs, plugins, or skills. Items marked ✅ must be used directly — do not reinstall or web-search setup guides.
+
 1. **If no clear input provided, ask what they want to build**
 
    Use the **AskUserQuestion tool** (open-ended, no preset options) to ask:
@@ -108,3 +112,19 @@ After completing all artifacts, summarize:
 - If context is critically unclear, ask the user - but prefer making reasonable decisions to keep momentum
 - If a change with that name already exists, ask if user wants to continue it or create a new one
 - Verify each artifact file exists after writing before proceeding to next
+
+---
+
+## Session Handoff
+
+Esta fase terminou. **Sugestão: abrir novo chat** para a próxima fase (contexto limpo).
+
+Cole no primeiro message do novo chat:
+
+---
+/opsx:apply <change-id>
+
+Change: openspec/changes/<change-id>/
+Ler: proposal.md, design.md, tasks.md, specs/
+Infra: openspec/infra.md (assumir ✅ — não reinstalar)
+---

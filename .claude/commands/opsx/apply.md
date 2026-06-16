@@ -52,6 +52,7 @@ Implement tasks from an OpenSpec change.
 4. **Read context files**
 
    Read every file path listed under `contextFiles` from the apply instructions output.
+   Also read `openspec/infra.md` — assume ✅ items are installed; do not reinstall or web-search setup guides.
    The files depend on the schema being used:
    - **spec-driven**: proposal, specs, design, tasks
    - Other schemas: follow the contextFiles from CLI output
@@ -171,6 +172,23 @@ What would you like to do?
 - Update task checkbox immediately after completing each task
 - Pause on errors, blockers, or unclear requirements - don't guess
 - Use contextFiles from CLI output, don't assume specific file names
+
+---
+
+## Session Handoff
+
+Esta fase terminou ou foi pausada. **Sugestão: abrir novo chat** para continuar (contexto limpo).
+
+Cole no primeiro message do novo chat:
+
+---
+/opsx:archive <change-id>          # se todas as tasks concluídas
+# ou /opsx:apply <change-id>       # se pausado por blocker
+
+Change: openspec/changes/<change-id>/
+Ler: tasks.md (progresso), artefactos pendentes
+Infra: openspec/infra.md (assumir ✅ — não reinstalar)
+---
 
 **Fluid Workflow Integration**
 

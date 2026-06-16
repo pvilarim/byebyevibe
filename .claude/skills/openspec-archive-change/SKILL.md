@@ -112,3 +112,17 @@ All artifacts complete. All tasks complete.
 - Show clear summary of what happened
 - If sync is requested, use openspec-sync-specs approach (agent-driven)
 - If delta specs exist, always run the sync assessment and show the combined summary before prompting
+
+---
+
+## Session Handoff
+
+Arquivo concluído. **Sugestão: novo chat** para a próxima tarefa (contexto limpo).
+
+Cole no primeiro message do novo chat (se aplicável):
+
+---
+/opsx:explore <tópico>   # ou /opsx:propose <descrição>
+
+Infra: openspec/infra.md (assumir ✅ — não reinstalar)
+---

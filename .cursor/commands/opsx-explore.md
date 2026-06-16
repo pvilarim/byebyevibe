@@ -171,3 +171,19 @@ When things crystallize, you might offer a summary - but it's optional. Sometime
 - **Do visualize** - A good diagram is worth many paragraphs
 - **Do explore the codebase** - Ground discussions in reality
 - **Do question assumptions** - Including the user's and your own
+
+---
+
+## Session Handoff
+
+Esta fase terminou. **Sugestão: abrir novo chat** para a próxima fase (contexto limpo).
+
+Cole no primeiro message do novo chat:
+
+---
+/opsx:propose <change-id ou descrição>
+
+Change: openspec/changes/<change-id>/ (se existir)
+Ler: research.md, notas de exploração
+Infra: openspec/infra.md (assumir ✅ — não reinstalar)
+---

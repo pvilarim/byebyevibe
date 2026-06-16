@@ -52,6 +52,7 @@ Para trabalho tipo D/E, **SEMPRE** consultar Graphify e GitNexus antes de escrev
 | Python | `.cursor/rules/020-python.mdc` |
 | Supabase | `.cursor/rules/030-supabase.mdc` |
 | Legado / AS-IS | Perguntar padrões **sem criar ficheiros**; depois documentar no `AGENTS.md` |
+| Infra instalada (MCP, CLIs, skills) | `openspec/infra.md` |
 
 ## Protocolo de Classificação de Tarefas
 
@@ -67,7 +68,7 @@ Antes de **qualquer** trabalho, classificar (A–E):
 
 Se ambíguo entre dois tipos, **PERGUNTAR**. **NUNCA** assumir Tipo A por defeito.
 
-## Regras Universais (R1–R9)
+## Regras Universais (R1–R10)
 
 - **R1** — Classificar tarefa (A–E) antes de agir
 - **R2** — Prioridade: specs > arquivo > Graphify > GitNexus > docs > web
@@ -78,6 +79,7 @@ Se ambíguo entre dois tipos, **PERGUNTAR**. **NUNCA** assumir Tipo A por defeit
 - **R7** — Tarefas C/D/E: proposta OpenSpec revista antes de código
 - **R8** — Citar fontes em design.md, research.md, commits
 - **R9** — Commits com scope ou change-id OpenSpec
+- **R10** — Infra conhecida: ler `openspec/infra.md` antes de instalar MCP/CLIs/skills; ✅ = usar directamente
 
 ## Workflow
 
