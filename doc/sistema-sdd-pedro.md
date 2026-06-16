@@ -836,6 +836,8 @@ Ver tabela em §2.5.3 do guia de instalação (adaptar paths).
 - Previous archived change: openspec/changes/archive/2026-03-15-add-jwt/
 ```
 
+**`openspec/changes/<id>/tasks.md` deve seguir** o template **§12.10** (pattern pointers, gates). Decisões e alternativas ficam em `design.md` (§12.3) — não duplicar rationale nas tasks.
+
 ### 5.3 O que NÃO duplicar
 
 Não copies stack ou convenções do `project.md` para o `AGENTS.md`. Aponta. A duplicação é a origem de drift — daqui a três meses tens duas versões da mesma regra em desacordo.
@@ -966,12 +968,14 @@ Template para validar uma fonte antes de a adicionar ao Graphify:
 **Tipo C — Refactor**
 - OpenSpec proposal obrigatório.
 - `design.md` deve incluir secção "Behavioral parity" — listar invariantes que devem permanecer iguais.
+- `tasks.md` com **Pattern** (ficheiro AS-IS a espelhar) e **Gate** (comando determinístico) por task de código — ver §12.10.
 - Testes existentes devem passar sem mudanças (excepto importação se ficheiros se moveram).
 - Sem novo comportamento adicionado num refactor — caso contrário é Tipo D.
 
 **Tipo D — Feature com base teórica**
 - Dois research docs obrigatórios: `knowledge.md` e `codebase.md`.
 - `design.md` cita explicitamente nodes do Graphify e impact do GitNexus.
+- `tasks.md` com **Pattern** + **Gate** obrigatórios em tasks que tocam código — ver §12.10.
 - Pelo menos uma alternativa rejeitada documentada.
 - Testes para o caso teórico central, não só para o código.
 
@@ -2107,6 +2111,91 @@ sdd-staging/
 
 O agente **extrai** o conteúdo dos blocos de código deste guia (§9.2, §10.3, §12.1–12.2) para esses ficheiros — não inventar templates.
 
+### 12.10 Template `openspec/changes/<id>/tasks.md` (patterns e gates)
+
+Tasks atómicas com sub-bullets estruturados. **Decisões** vivem em `design.md` (§12.3); **passos verificáveis** vivem aqui.
+
+#### Modelo de 3 níveis de ancoragem
+
+| Nível | Quando usar | Formato |
+|-------|-------------|---------|
+| **1 — Pointer** (default) | Já existe implementação clara no repo | `Pattern: path/relativo.ext` |
+| **2 — Esqueleto** | Padrão não óbvio | ≤15 linhas (interface + 1 teste) + pointer |
+| **3 — Boilerplate** | SQL migration, Zod base, hook template | Snippet completo + tag `boilerplate-only` |
+
+**Regra:** snippets com mais de 15 linhas **não** ficam em `tasks.md` — mover para skill (`.cursor/skills/` / `.claude/skills/`) ou referenciar change arquivado.
+
+#### Formato de task (checkbox + sub-bullets)
+
+```markdown
+## 2. Implementação
+
+- [ ] 2.3 Criar `SubscriptionRepository`
+  - **Pattern:** `src/infra/stripe/customer.repo.ts`
+  - **Invariants:** R-BILL-003 (`openspec/specs/billing/spec.md`)
+  - **Gate:** `npm test -- subscription.repo`
+  - **Proibido:** criar `BaseRepository` (já existe em `src/core/`)
+
+- [ ] 2.4 Actualizar guia §12.10
+  - **Pattern:** `doc/sistema-sdd-pedro.md` §12.3
+  - **Gate:** `grep -q '12.10' doc/sistema-sdd-pedro.md`
+```
+
+| Sub-bullet | Obrigatório | Notas |
+|------------|-------------|-------|
+| **Pattern** | Recomendado em código; opcional em docs | Path **relativo ao repo actual** |
+| **Gate** | **Sim** em qualquer task verificável | Comando shell; exit 0 = pronto |
+| **Invariants** | Se spec aplicável | ID de requisito OpenSpec |
+| **Proibido** | Opcional | Anti-patterns (R4) |
+| **Skill** | Cross-repo ou pattern longo | Ver abaixo |
+
+#### Perfil DOCS_SPECS — fronteira de repo (regra normativa)
+
+Em repositórios **DOCS_SPECS** (sem app na raiz — §2.5.2):
+
+1. **`Pattern:`** deve apontar **apenas** para ficheiros **deste repo** (`doc/`, `scripts/`, `openspec/`, etc.).
+2. **Implementação de código APP** (Next.js, `src/`, APIs) → **OpenSpec change no repo APP**, não tasks de código APP neste hub de specs.
+3. **Specs aqui, código lá:** este repo define *o quê* (`openspec/specs/`); o repo APP implementa *como* com GitNexus local.
+4. `scripts/verify-task-patterns.sh` falha se detectar `Pattern: repo:path` em perfil DOCS_SPECS.
+
+Exemplo **válido** (DOCS_SPECS):
+
+```markdown
+- [ ] 1.2 Melhorar `enrich-transcripts.py`
+  - **Pattern:** `doc/curso/scripts/extract-lessons-batch.py`
+  - **Gate:** `python -m py_compile doc/curso/scripts/enrich-transcripts.py`
+```
+
+Exemplo **inválido** (DOCS_SPECS — mover change para repo APP):
+
+```markdown
+- [ ] 2.1 Criar `SubscriptionRepository`
+  - **Pattern:** `multi-agent-bot:src/infra/stripe/customer.repo.ts`  ← PROIBIDO neste perfil
+```
+
+#### Patterns cross-repo — usar Skills (não tasks)
+
+Quando o padrão canónico vive noutro repositório ou é demasiado longo para uma task:
+
+1. Criar ou actualizar skill: `.cursor/skills/<domínio>-pattern/SKILL.md`
+2. Na task, referenciar: `- **Skill:** supabase-repo-pattern`
+3. Na skill: descrever estrutura + path canónico no repo APP (texto, não copy-paste massivo)
+4. Após archive de change bem-sucedido: considerar **promover** pattern estável para skill (checklist archive)
+
+```markdown
+- [ ] 3.1 Implementar gateway Stripe no repo APP
+  - **Skill:** stripe-billing-pattern
+  - **Gate:** _(correr no repo APP)_ `npm test -- billing.gateway`
+```
+
+> Hub DOCS_SPECS pode ter a **spec** e o **design**; a **task de código APP** vive no change do repo APP com skill partilhada ou pointer local GitNexus.
+
+#### Verificação
+
+```bash
+bash scripts/verify-task-patterns.sh   # paths Pattern: existem; DOCS_SPECS sem repo:path
+```
+
 ---
 
 ## 13. Alinhamento workshop ↔ agents.md
@@ -2125,6 +2214,12 @@ O agente **extrai** o conteúdo dos blocos de código deste guia (§9.2, §10.3,
 ---
 
 ## Changelog do guia
+
+### 1.2.1 (2026-06-16)
+
+- **§12.10** — Template `tasks.md` com Pattern, Gate, modelo 3 níveis, regra DOCS_SPECS (specs aqui, código APP no repo APP), patterns cross-repo via Skills.
+- **§5.2 / §7.2** — Referências cruzadas a tasks enriquecidas.
+- **`scripts/verify-task-patterns.sh`** — validação de paths em `Pattern:`.
 
 ### 1.2.0 (2026-06-15)
 

@@ -113,6 +113,17 @@ After completing all artifacts, summarize:
 - If a change with that name already exists, ask if user wants to continue it or create a new one
 - Verify each artifact file exists after writing before proceeding to next
 
+## Enriched tasks (§12.10)
+
+When creating `tasks.md`, follow `doc/sistema-sdd-pedro.md` §12.10:
+
+- **Gate** (required): deterministic shell command per verifiable task; exit 0 = done
+- **Pattern** (recommended for code): repo-relative path to existing file; confirm it exists before finalize
+- **Skill** (cross-repo or long patterns): `- **Skill:** <name>` instead of `repo:path` in tasks
+- Max **15 lines** of code per task; longer patterns → skill or archived change reference
+- **DOCS_SPECS profile:** `Pattern` only within this repo; APP implementation belongs in the APP repo's OpenSpec change — not code tasks here
+- If `scripts/verify-task-patterns.sh` exists, run it before completing propose
+
 ---
 
 ## Session Handoff

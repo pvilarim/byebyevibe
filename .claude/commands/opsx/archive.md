@@ -61,6 +61,14 @@ Archive a completed change in the experimental workflow.
 
    If user chooses sync, use Task tool (subagent_type: "general-purpose", prompt: "Use Skill tool to invoke openspec-sync-specs for change '<name>'. Delta spec analysis: <include the analyzed delta spec summary>"). Proceed to archive regardless of choice.
 
+4b. **Pattern promotion checklist (optional, §12.10)**
+
+   Before archiving, ask the operator:
+
+   > Este change estabeleceu um pattern reutilizável? Se sim, promover para `.cursor/skills/<domínio>-pattern/SKILL.md` ou nota em `openspec/project.md` Cross-references antes de arquivar.
+
+   Do not block archive if the user declines.
+
 5. **Perform the archive**
 
    Create the archive directory if it doesn't exist:

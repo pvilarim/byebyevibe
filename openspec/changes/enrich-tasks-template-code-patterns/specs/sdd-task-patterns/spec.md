@@ -102,3 +102,26 @@ The `openspec-archive-change` skill MUST include an optional checklist step aski
 
 - **WHEN** an agent needs to write or execute enriched tasks
 - **THEN** AGENTS.md directs it to §12.10 without duplicating the full template
+
+### Requirement: DOCS_SPECS repository boundary for patterns
+
+In repositories with profile **DOCS_SPECS** (no application code at repo root), `tasks.md` MUST NOT use cross-repo `Pattern: <repo>:<path>` references. Implementation tasks for application code (e.g. `src/`, Next.js routes) MUST live in an OpenSpec change in the application repository. Cross-repository guidance MUST use `- **Skill:** <name>` pointing to a lazy-loaded skill, not embedded APP code paths in this hub repo.
+
+#### Scenario: DOCS_SPECS rejects cross-repo pattern in task
+
+- **WHEN** a propose-phase agent adds `Pattern: multi-agent-bot:src/infra/foo.ts` in a DOCS_SPECS hub repo
+- **THEN** `scripts/verify-task-patterns.sh` exits non-zero and the agent must use a Skill reference or move implementation to the APP repo change
+
+#### Scenario: DOCS_SPECS allows in-repo script pattern
+
+- **WHEN** a task modifies `doc/curso/scripts/enrich-transcripts.py` with `Pattern: doc/curso/scripts/extract-lessons-batch.py`
+- **THEN** the pattern is valid and verifiable within the DOCS_SPECS repository
+
+### Requirement: Cross-repo patterns via skills
+
+When a canonical pattern lives in another repository or exceeds 15 lines, the task MUST reference `- **Skill:** <skill-name>` instead of embedding code or using `repo:path` in DOCS_SPECS hubs. The skill body MAY describe structure and canonical paths in the APP repo as prose.
+
+#### Scenario: Long pattern moved to skill
+
+- **WHEN** a pattern requires more than 15 lines of example code
+- **THEN** the propose phase creates or updates `.cursor/skills/<domain>-pattern/SKILL.md` and the task references the skill name
