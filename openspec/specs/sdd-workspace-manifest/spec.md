@@ -1,0 +1,74 @@
+# sdd-workspace-manifest Specification
+
+## Purpose
+TBD - created by archiving change add-session-handoff-infra-manifest. Update Purpose after archive.
+## Requirements
+### Requirement: Workspace infrastructure manifest exists
+
+The repository MUST have `openspec/infra.md` — a versioned, human-readable manifest of installed infrastructure. The file MUST NOT contain secret values (API keys, tokens, passwords). It MAY contain env var **names** and presence indicators (✅/❌), MCP server **names**, CLI **versions**, and skill **paths**.
+
+#### Scenario: Agent starts propose or apply phase
+
+- **WHEN** an agent begins `/opsx:propose` or `/opsx:apply` work
+- **THEN** the agent reads `openspec/infra.md` before proposing to install, configure, or web-search setup instructions for any listed tool
+
+#### Scenario: Manifest is committed
+
+- **WHEN** the repository is cloned or a new agent session starts
+- **THEN** `openspec/infra.md` is available in git without requiring IDE-global configuration discovery
+
+### Requirement: Assume installed until proven otherwise
+
+`AGENTS.md` MUST include rule R10 stating: before proposing installation of MCP servers, CLIs, plugins, or skills, the agent MUST read `openspec/infra.md`. If an item is marked ✅, the agent MUST use it directly and MUST NOT reinstall or web-search setup instructions.
+
+#### Scenario: Tool marked installed in manifest
+
+- **WHEN** `openspec/infra.md` shows GitNexus MCP as ✅
+- **THEN** the agent uses GitNexus MCP tools directly without running `gitnexus setup` or searching installation guides
+
+#### Scenario: Tool marked missing in manifest
+
+- **WHEN** `openspec/infra.md` shows an item as ❌ or `[NEEDS VERIFICATION]`
+- **THEN** the agent runs `scripts/verify-infra.sh` or asks the user before proposing installation
+
+### Requirement: Infrastructure verification script
+
+The repository MUST have `scripts/verify-infra.sh` — an idempotent script that checks SDD stack (OpenSpec, GitNexus, Graphify), MCP registration (names only), and env var presence (from `.env.example`, without reading `.env` values). The script MUST update verification timestamps in `openspec/infra.md` or print instructions to update them.
+
+#### Scenario: Operator runs verification
+
+- **WHEN** the operator runs `bash scripts/verify-infra.sh`
+- **THEN** the script exits 0 when core SDD tools are operational and reports ✅/❌ for each checked item
+
+#### Scenario: Post-install bootstrap
+
+- **WHEN** SDD bootstrap completes (`scripts/bootstrap-sdd.sh` or manual §2.8 checklist)
+- **THEN** `openspec/infra.md` is created or updated with initial ✅ states for installed components
+
+### Requirement: Manifest sections
+
+`openspec/infra.md` MUST include at minimum these sections: SDD Stack (repo), MCP Servers, Skills (repo), Env vars present (names only), and Agent rules summary. Each section MUST include a "verify with" column or command reference.
+
+#### Scenario: Agent reads manifest structure
+
+- **WHEN** an agent opens `openspec/infra.md`
+- **THEN** it finds tabular entries for OpenSpec, GitNexus, and Graphify with version and status columns
+
+### Requirement: Infra manifest in AGENTS context table
+
+`AGENTS.md` "Contexto sob demanda" table MUST include an entry pointing to `openspec/infra.md` for infrastructure already installed in the workspace.
+
+#### Scenario: Agent loads context on demand
+
+- **WHEN** an agent needs to know if a tool is available
+- **THEN** the AGENTS.md context table directs it to `openspec/infra.md` before external search
+
+### Requirement: Security constraints on manifest
+
+The manifest MUST NEVER contain values from `.env`. Env var verification MUST use presence checks only (`test -n "${VAR:-}"` or equivalent). The agent MUST NOT read `.env` per existing security rules.
+
+#### Scenario: Script checks env vars
+
+- **WHEN** `verify-infra.sh` checks environment variables
+- **THEN** it reads names from `.env.example` and reports only whether each var is set, never its value
+

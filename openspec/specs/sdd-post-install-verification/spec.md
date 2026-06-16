@@ -93,3 +93,26 @@ A tabela Commands em `AGENTS.md` MUST reflectir o perfil instalado (APP, DOCS_SP
 - **WHEN** o repositório é perfil DOCS_SPECS sem app na raiz
 - **THEN** `AGENTS.md` documenta workflows `/opsx:*` e prioridade Graphify/OpenSpec sobre stack de app
 
+### Requirement: Infrastructure manifest present after install
+
+Após instalação SDD, `openspec/infra.md` MUST existir e estar actualizado com estado ✅ para componentes core (OpenSpec, GitNexus, Graphify).
+
+#### Scenario: Post-install checklist item
+
+- **WHEN** o operador executa o checklist §2.8
+- **THEN** `openspec/infra.md` existe, contém secções SDD Stack e MCP Servers, e timestamp de verificação recente
+
+#### Scenario: Verify infra script available
+
+- **WHEN** o operador corre `bash scripts/verify-infra.sh` após instalação
+- **THEN** o script completa sem erro e confirma estado dos componentes listados em `openspec/infra.md`
+
+### Requirement: Session handoff rules present after install
+
+Após instalação SDD, `.cursor/rules/015-session-phases.mdc` MUST existir e as skills `/opsx:*` MUST conter secção Session Handoff.
+
+#### Scenario: Handoff rule active
+
+- **WHEN** o Cursor abre o workspace após instalação SDD actualizada
+- **THEN** a regra `015-session-phases.mdc` está activa (alwaysApply: true)
+
