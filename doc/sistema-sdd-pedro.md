@@ -43,7 +43,8 @@ Segunda fricção: o ecossistema move-se depressa. Versões neste documento são
 11. [Protocolos de código](#11-protocolos-de-código-questão-7)
 12. [Anexos: templates completos](#12-anexos-templates-completos)
 13. [Alinhamento workshop ↔ agents.md](#13-alinhamento-workshop--agentsmd)
-14. [Changelog do guia](#changelog-do-guia)
+14. [Integrações futuras (Cline)](#14-integrações-futuras-cline)
+15. [Changelog do guia](#changelog-do-guia)
 
 ---
 
@@ -2120,7 +2121,30 @@ O agente **extrai** o conteúdo dos blocos de código deste guia (§9.2, §10.3,
 
 ---
 
+## 14. Integrações futuras (Cline)
+
+> **Não implementado.** Avaliação e roadmap em documento separado — não altera instalação §2 nem actualização §2.9 até adopção formal.
+
+O runtime [Cline](https://cline.bot/) foi avaliado como complemento opcional ao SDD, com papéis **fora** da competição directa com Cursor Agent no IDE:
+
+| Papel | Descrição resumida |
+|-------|-------------------|
+| Verificador pós-apply (C1) | Auditar diff vs OpenSpec após implementação |
+| Orquestrador CI (C2) | `openspec validate`, checklists §2.8/§2.9 em pipeline |
+| Coordinator research (C3) | Paralelizar Graphify ∥ GitNexus em Tipo D |
+| Gateway externo (C4) | Slack/Linear → classificação A–E (opcional) |
+
+**Documento completo:** [`doc/cline-integracao-sdd.md`](./cline-integracao-sdd.md) (v0.1.0).
+
+**Regra provisória:** Cline não é fonte de regras — `AGENTS.md` permanece canónico. Implementação prevista em fases documentadas no roadmap §9 daquele ficheiro.
+
+---
+
 ## Changelog do guia
+
+### 1.2.1 (2026-06-16)
+
+- **§14** — Referência a integração futura Cline (`doc/cline-integracao-sdd.md`); sem alteração de procedimentos de instalação.
 
 ### 1.2.0 (2026-06-15)
 

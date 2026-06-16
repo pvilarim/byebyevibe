@@ -47,6 +47,7 @@ Para trabalho tipo D/E, **SEMPRE** consultar Graphify e GitNexus antes de escrev
 | Workshop e transcrições | `doc/curso/aula-*.md` |
 | Guia de instalação SDD (v1.2) | `doc/sistema-sdd-pedro.md` |
 | Actualização SDD (repo já instalado) | `doc/sistema-sdd-pedro.md` §2.9 |
+| Integração Cline (futuro; avaliação) | `doc/cline-integracao-sdd.md` |
 | Scripts CDP / transcrições | `doc/curso/scripts/AGENTS.md` |
 | TypeScript (se aplicável) | `.cursor/rules/010-typescript.mdc` |
 | Python | `.cursor/rules/020-python.mdc` |
