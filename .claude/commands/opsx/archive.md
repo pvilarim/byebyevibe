@@ -155,3 +155,17 @@ Target archive directory already exists.
 - Show clear summary of what happened
 - If sync is requested, use the Skill tool to invoke `openspec-sync-specs` (agent-driven)
 - If delta specs exist, always run the sync assessment and show the combined summary before prompting
+
+---
+
+## Session Handoff
+
+Arquivo concluído. **Sugestão: novo chat** para a próxima tarefa (contexto limpo).
+
+Cole no primeiro message do novo chat (se aplicável):
+
+---
+/opsx:explore <tópico>   # ou /opsx:propose <descrição>
+
+Infra: openspec/infra.md (assumir ✅ — não reinstalar)
+---

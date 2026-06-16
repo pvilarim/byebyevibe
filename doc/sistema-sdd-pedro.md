@@ -352,6 +352,9 @@ Usar após cada instalação (humano ou IA):
 - [ ] `/opsx:propose` (ou `npx openspec new change teste`) cria change
 - [ ] IDE reiniciada (slash commands e skills)
 - [ ] Perfil APP/DOCS_SPECS reflectido na tabela Commands do `AGENTS.md`
+- [ ] `openspec/infra.md` existe com secções SDD Stack e MCP Servers
+- [ ] `.cursor/rules/015-session-phases.mdc` presente (alwaysApply)
+- [ ] `bash scripts/verify-infra.sh` completa sem erro (ou documentar ❌ pendentes)
 
 ### 2.9 Actualização de instalação existente
 
@@ -650,19 +653,19 @@ A síntese acontece *após* os dois subagents terminarem, no agente principal, c
         │             │                   │                   │             ▼
         │             │                   │              ⊕ human gate   arquivar
         │             │                   │                   │             em
-        │             │                   │           /opsx:propose      openspec/
-        │             │                   │                   │             changes/
-        │             │             /opsx:propose       ⊕ human gate
+        │             │                   │           ⊕ novo chat + handoff   openspec/
+        │             │             /opsx:propose       ⊕ novo chat + handoff
         │             │                   │                   │
         │             │             ⊕ human gate         /opsx:apply
+        │             │                   │           ⊕ novo chat + handoff
         │             │                   │                   │
         ▼             ▼            /opsx:apply                ▼
      edição        patch                  │            /opsx:archive
-       ↓            ↓                     ▼                   │
-     testes       testes           /opsx:archive              ▼
-                                          │             /graphify --update
-                                          ▼                  (loop)
-                                  /graphify --update
+       ↓            ↓                     ▼           ⊕ novo chat + handoff
+     testes       testes           /opsx:archive              │
+                                          │                   ▼
+                                          ▼             /graphify --update
+                                  /graphify --update           (loop)
                                        (loop)
 ```
 
@@ -1668,6 +1671,7 @@ Nunca afirmar factos sem fonte 1–6. Tipo D/E: Graphify + GitNexus antes de có
 | Specs | `openspec/specs/` |
 | Change activo | `openspec/changes/<id>/` |
 | Grafo | `graphify-out/GRAPH_REPORT.md` |
+| Infra instalada | `openspec/infra.md` |
 | Guia SDD | `doc/sistema-sdd-pedro.md` |
 | Actualização SDD | `doc/sistema-sdd-pedro.md` §2.9 |
 | TS / Py / DB | `.cursor/rules/010-*.mdc`, `020-*.mdc`, `030-*.mdc` |
@@ -1684,11 +1688,11 @@ Nunca afirmar factos sem fonte 1–6. Tipo D/E: Graphify + GitNexus antes de có
 
 Se ambíguo, PERGUNTAR. Nunca assumir Tipo A.
 
-## Regras R1–R9
+## Regras R1–R10
 
 R1 classificar · R2 specs>graphify>gitnexus · R3 `[NEEDS VERIFICATION]` · R4 mudança mínima ·
 R5 refactor sem comportamento novo · R6 teste antes do fix · R7 spec antes de código (C/D/E) ·
-R8 citar fontes · R9 commits com scope/change-id
+R8 citar fontes · R9 commits com scope/change-id · R10 infra conhecida (`openspec/infra.md`)
 
 ## Workflow
 
