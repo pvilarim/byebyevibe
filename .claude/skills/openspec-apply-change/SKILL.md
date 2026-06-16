@@ -173,6 +173,14 @@ What would you like to do?
 - Pause on errors, blockers, or unclear requirements - don't guess
 - Use contextFiles from CLI output, don't assume specific file names
 
+## Task execution (§12.10)
+
+- Read `doc/sistema-sdd-pedro.md` §12.10 when executing enriched tasks
+- Before the **first task that modifies code**: run GitNexus impact (or read the `Pattern` file in full)
+- For each task with `- **Gate:**`: run the gate command; mark `- [x]` only on exit 0
+- If a `Pattern` path does not exist: **pause**, report broken pointer, suggest updating `tasks.md`
+- **DOCS_SPECS:** do not implement APP `src/` code in this repo — pause and recommend an OpenSpec change in the APP repo
+
 ---
 
 ## Session Handoff

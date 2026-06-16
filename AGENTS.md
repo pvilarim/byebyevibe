@@ -52,6 +52,7 @@ Para trabalho tipo D/E, **SEMPRE** consultar Graphify e GitNexus antes de escrev
 | Python | `.cursor/rules/020-python.mdc` |
 | Supabase | `.cursor/rules/030-supabase.mdc` |
 | Legado / AS-IS | Perguntar padrões **sem criar ficheiros**; depois documentar no `AGENTS.md` |
+| Tasks atómicas (Pattern, Gate) | `doc/sistema-sdd-pedro.md` §12.10 |
 | Infra instalada (MCP, CLIs, skills) | `openspec/infra.md` |
 
 ## Protocolo de Classificação de Tarefas
