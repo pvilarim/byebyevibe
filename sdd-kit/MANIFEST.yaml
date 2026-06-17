@@ -1,0 +1,125 @@
+version: "1.3.0"
+guide_version: "1.3.0"
+min_openspec: "1.3.1"
+profiles: [APP, DOCS_SPECS, HYBRID]
+
+files:
+  - path: scripts/verify-infra.sh
+    source: templates/scripts/verify-infra.sh
+    merge: COPY
+    profiles: [APP, DOCS_SPECS, HYBRID]
+    gate: "test -x scripts/verify-infra.sh"
+
+  - path: scripts/verify-task-patterns.sh
+    source: templates/scripts/verify-task-patterns.sh
+    merge: COPY
+    profiles: [DOCS_SPECS, HYBRID]
+    gate: "test -x scripts/verify-task-patterns.sh"
+
+  - path: scripts/sdd-session-lib.sh
+    source: templates/scripts/sdd-session-lib.sh
+    merge: COPY
+    profiles: [APP, DOCS_SPECS, HYBRID]
+    gate: "test -f scripts/sdd-session-lib.sh"
+
+  - path: scripts/sdd-session-register.sh
+    source: templates/scripts/sdd-session-register.sh
+    merge: COPY
+    profiles: [APP, DOCS_SPECS, HYBRID]
+    gate: "test -x scripts/sdd-session-register.sh"
+
+  - path: scripts/sdd-session-check.sh
+    source: templates/scripts/sdd-session-check.sh
+    merge: COPY
+    profiles: [APP, DOCS_SPECS, HYBRID]
+    gate: "bash scripts/sdd-session-check.sh --phase explore"
+
+  - path: scripts/sdd-session-status.sh
+    source: templates/scripts/sdd-session-status.sh
+    merge: COPY
+    profiles: [APP, DOCS_SPECS, HYBRID]
+    gate: "bash scripts/sdd-session-status.sh"
+
+  - path: scripts/sdd-session-heartbeat.sh
+    source: templates/scripts/sdd-session-heartbeat.sh
+    merge: COPY
+    profiles: [APP, DOCS_SPECS, HYBRID]
+    gate: "test -x scripts/sdd-session-heartbeat.sh"
+
+  - path: scripts/sdd-session-release.sh
+    source: templates/scripts/sdd-session-release.sh
+    merge: COPY
+    profiles: [APP, DOCS_SPECS, HYBRID]
+    gate: "test -x scripts/sdd-session-release.sh"
+
+  - path: scripts/sdd-upgrade-diff.sh
+    source: templates/scripts/sdd-upgrade-diff.sh
+    merge: COPY
+    profiles: [APP, DOCS_SPECS, HYBRID]
+    gate: "test -x scripts/sdd-upgrade-diff.sh"
+
+  - path: .cursor/rules/000-base.mdc
+    source: templates/.cursor/rules/000-base.mdc
+    merge: COPY
+    profiles: [APP, DOCS_SPECS, HYBRID]
+    gate: "test -f .cursor/rules/000-base.mdc"
+
+  - path: .cursor/rules/015-session-phases.mdc
+    source: templates/.cursor/rules/015-session-phases.mdc
+    merge: COPY
+    profiles: [APP, DOCS_SPECS, HYBRID]
+    gate: "test -f .cursor/rules/015-session-phases.mdc"
+
+  - path: .cursor/rules/016-session-coordination.mdc
+    source: templates/.cursor/rules/016-session-coordination.mdc
+    merge: COPY
+    profiles: [APP, DOCS_SPECS, HYBRID]
+    gate: "test -f .cursor/rules/016-session-coordination.mdc"
+
+  - path: .cursor/rules/050-security.mdc
+    source: templates/.cursor/rules/050-security.mdc
+    merge: COPY
+    profiles: [APP, DOCS_SPECS, HYBRID]
+    gate: "test -f .cursor/rules/050-security.mdc"
+
+  - path: .cursor/rules/010-typescript.mdc
+    source: templates/.cursor/rules/010-typescript.mdc
+    merge: COPY
+    profiles: [APP, HYBRID]
+    gate: "test -f .cursor/rules/010-typescript.mdc || echo SKIP"
+
+  - path: .cursor/rules/020-python.mdc
+    source: templates/.cursor/rules/020-python.mdc
+    merge: COPY
+    profiles: [APP, DOCS_SPECS, HYBRID]
+    gate: "test -f .cursor/rules/020-python.mdc || echo SKIP"
+
+  - path: .cursor/rules/030-supabase.mdc
+    source: templates/.cursor/rules/030-supabase.mdc
+    merge: COPY
+    profiles: [APP, HYBRID]
+    gate: "test -f .cursor/rules/030-supabase.mdc || echo SKIP"
+
+  - path: .cursor/rules/graphify.mdc
+    source: templates/.cursor/rules/graphify.mdc
+    merge: COPY
+    profiles: [APP, DOCS_SPECS, HYBRID]
+    gate: "test -f .cursor/rules/graphify.mdc"
+
+  - path: CLAUDE.md
+    source: templates/CLAUDE.md
+    merge: MERGE
+    profiles: [APP, DOCS_SPECS, HYBRID]
+    gate: "test -f CLAUDE.md"
+
+  - path: AGENTS.md
+    source: templates/AGENTS.core.md
+    merge: MERGE_PROFILE
+    profiles: [APP, DOCS_SPECS, HYBRID]
+    gate: "test $(wc -l < AGENTS.md) -le 150"
+
+  - path: openspec/infra.md
+    source: templates/openspec/infra.md
+    merge: MERGE
+    profiles: [APP, DOCS_SPECS, HYBRID]
+    gate: "test -f openspec/infra.md"

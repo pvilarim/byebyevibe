@@ -1,0 +1,17 @@
+---
+description: Convenções Python
+globs:
+  - "**/*.py"
+alwaysApply: false
+---
+
+# Convenções Python
+
+- Python 3.11+; type hints em todo o lado
+- Pydantic v2 para todos os schemas de I/O
+- Async via `asyncio`; sem `time.sleep` em código async
+- Erros: hierarquia de excepções custom em `core/errors.py`; nunca bare `except:`
+- Logging: estruturado (structlog), nunca `print()`
+- Testes: pytest com `pytest-asyncio`; co-localizados em `tests/` adjacente ao módulo
+- Imports: absolutos; ordenados (stdlib, third-party, interno)
+- Sem argumentos default mutáveis
