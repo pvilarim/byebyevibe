@@ -354,6 +354,10 @@ Usar após cada instalação (humano ou IA):
 - [ ] Perfil APP/DOCS_SPECS reflectido na tabela Commands do `AGENTS.md`
 - [ ] `openspec/infra.md` existe com secções SDD Stack e MCP Servers
 - [ ] `.cursor/rules/015-session-phases.mdc` presente (alwaysApply)
+- [ ] `.cursor/rules/016-session-coordination.mdc` presente (alwaysApply)
+- [ ] `scripts/sdd-session-check.sh` e `scripts/sdd-session-status.sh` executáveis
+- [ ] `.sdd/runtime/` no `.gitignore`
+- [ ] `openspec/infra.md` secção Session Coordination presente
 - [ ] `bash scripts/verify-infra.sh` completa sem erro (ou documentar ❌ pendentes)
 
 ### 2.9 Actualização de instalação existente
@@ -630,6 +634,38 @@ Quando há paralelismo (Tipo D), as duas threads de research devem rodar em **su
 - **Cursor**: usa o Explore agent built-in para um lado, e prompt directo no Composer para outro — ou abre dois worktrees git e duas sessões.
 
 A síntese acontece *após* os dois subagents terminarem, no agente principal, com base nos dois `.md` produzidos.
+
+#### Apply sequencial vs paralelo (mesma máquina)
+
+O risco de paralelismo não é merge Git — é **dois agentes a editar o mesmo working tree** (status sujo partilhado, last-write-wins).
+
+| Modo | Quando usar | Como |
+|------|-------------|------|
+| **Sequencial (default)** | Um change de cada vez na mesma pasta | `/opsx:apply` num chat; outro apply só após `sdd-session-release` |
+| **Paralelo seguro** | Dois changes em simultâneo | `git worktree add ../repo-wt-b -b feat/b` + segunda sessão IDE na pasta do worktree |
+
+**Scripts de coordenação** (locks locais por worktree root):
+
+```bash
+# Início de apply (skill /opsx:apply)
+bash scripts/sdd-session-register.sh --phase apply --change-id "<id>"
+bash scripts/sdd-session-check.sh --phase apply --change-id "<id>"
+
+# Durante apply longo (opcional)
+bash scripts/sdd-session-heartbeat.sh
+
+# Fim ou pause (Session Handoff)
+bash scripts/sdd-session-release.sh
+
+# Inspecção humana/agente
+bash scripts/sdd-session-status.sh
+```
+
+- Lock exclusivo: `flock` em `.sdd/runtime/apply.lock` (gitignored).
+- Presença: `.sdd/runtime/sessions/<uuid>.json` com heartbeat TTL 5 min.
+- Se `sdd-session-check` falha: outro apply activo na **mesma** worktree — parar ou mudar para worktree separado.
+- Explore/propose read-only: check devolve exit 0 (advisory); apply é bloqueio hard.
+- Regra always-on: `.cursor/rules/016-session-coordination.mdc` · R11 em `AGENTS.md`.
 
 ### 3.4 Pipeline visual completa
 
@@ -1692,11 +1728,12 @@ Nunca afirmar factos sem fonte 1–6. Tipo D/E: Graphify + GitNexus antes de có
 
 Se ambíguo, PERGUNTAR. Nunca assumir Tipo A.
 
-## Regras R1–R10
+## Regras R1–R11
 
 R1 classificar · R2 specs>graphify>gitnexus · R3 `[NEEDS VERIFICATION]` · R4 mudança mínima ·
 R5 refactor sem comportamento novo · R6 teste antes do fix · R7 spec antes de código (C/D/E) ·
-R8 citar fontes · R9 commits com scope/change-id · R10 infra conhecida (`openspec/infra.md`)
+R8 citar fontes · R9 commits com scope/change-id · R10 infra conhecida (`openspec/infra.md`) ·
+R11 coordenação local (`sdd-session-check` antes de apply; `sdd-session-release` ao fim)
 
 ## Workflow
 
@@ -1750,6 +1787,7 @@ Sem segredos em git; validar inputs; queries parametrizadas; não ler `.env`.
 | `npx gitnexus analyze --force` | Reindexar |
 | `graphify update .` | Grafo AST |
 | `graphify query "<pergunta>"` | Busca no grafo |
+| `bash scripts/sdd-session-status.sh` | Sessões SDD activas (worktree local) |
 
 Nota: não há `npm run dev` na raiz deste perfil.
 ```

@@ -99,6 +99,25 @@ else
 fi
 echo "Env vars: checked from .env.example (values not read)"
 
+# --- Session coordination scripts ---
+SESSION_STATUS="ok"
+for script in sdd-session-register.sh sdd-session-check.sh sdd-session-status.sh sdd-session-heartbeat.sh sdd-session-release.sh; do
+  if [[ ! -x "$REPO_ROOT/scripts/$script" ]]; then
+    SESSION_STATUS="fail"
+    echo "Session script missing or not executable: scripts/$script"
+  fi
+done
+if ! grep -q '.sdd/runtime' "$REPO_ROOT/.gitignore" 2>/dev/null; then
+  SESSION_STATUS="fail"
+  echo "Missing .sdd/runtime in .gitignore"
+fi
+if [[ ! -f "$REPO_ROOT/.cursor/rules/016-session-coordination.mdc" ]]; then
+  SESSION_STATUS="fail"
+  echo "Missing .cursor/rules/016-session-coordination.mdc"
+fi
+echo "Session coordination: $(to_emoji "$SESSION_STATUS")"
+[[ "$SESSION_STATUS" == "fail" ]] && ((FAILURES++)) || true
+
 # --- Update infra.md timestamps and status markers ---
 if [[ -f "$INFRA_FILE" ]]; then
   sed -i "s|> Última verificação: .* · Script:|> Última verificação: ${TODAY} · Script:|" "$INFRA_FILE"
