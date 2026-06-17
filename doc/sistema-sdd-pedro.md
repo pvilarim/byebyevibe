@@ -2,20 +2,23 @@
 
 **GitNexus + Graphify + OpenSpec, integrados no Cursor e VS Code + Claude Code**
 
-> **Guia canónico de instalação (v1.2.0)** — usar em qualquer repositório Git, manualmente ou via agente de IA. Templates prontos a colar nos anexos 12.x.
+> **Guia canónico de instalação (v1.3.0)** — usar em qualquer repositório Git, manualmente ou via agente de IA. Payloads em `sdd-kit/`; procedimento neste documento.
 
 ## Como usar este documento
 
 | Modo | Acção |
 |------|--------|
-| **Humano — instalação nova** | Seguir §2 na ordem indicada (2.1 → 2.8). |
-| **Humano — actualização** | Seguir §2.9 (2.9.1 → 2.9.7); comparar ficheiros com §2.9.5 e §12.8. |
-| **Agente de IA — instalação** | Executar o prompt em §2.0; aplicar templates 12.1–12.2 conforme perfil do repo. |
-| **Agente de IA — actualização** | Executar o prompt em §2.9.2; produzir relatório §12.8 **antes** de editar ficheiros curados. |
-| **Piloto / teste** | Após instalar ou actualizar, validar com checklist §2.8 ou §2.9.7. |
+| **Humano — instalação nova (C1)** | §2.1 → CLIs → `bash sdd-kit/install.sh --profile X` → §2.8 |
+| **Humano — actualização (C2)** | §2.9 + `bash sdd-kit/upgrade.sh --dry-run` → §12.8 → `--apply` |
+| **Humano — só CLIs (C2b)** | §2.9.4 — sem tocar `sdd-kit/templates/` |
+| **Propagação specs (C3)** | git/referência em `openspec/specs/` — **sem** `install.sh` |
+| **Agente de IA — instalação** | Prompt §2.0; usar `sdd-kit/install.sh`, **não** extrair §12 |
+| **Agente de IA — actualização** | §2.9.2 + `sdd-kit/upgrade.sh --dry-run` + §12.8 antes de editar |
+| **Piloto / teste** | `bash sdd-kit/verify.sh` + checklist §2.8 ou §2.9.7 |
 
 - **Padrão `AGENTS.md`:** alinhado a [agents.md](https://agents.md/) + workshop TLC (Context Engineering, on-demand loading).
-- **Versão do guia:** 1.2.0 — ver [Changelog do guia](#changelog-do-guia).
+- **Versão do guia:** 1.3.0 — ver [Changelog do guia](#changelog-do-guia).
+- **Payload versionado:** `sdd-kit/MANIFEST.yaml` — ver §1.6 e `sdd-kit/README.md`.
 - **Não substitui** `openspec/project.md` (constituição do projecto) nem specs em `openspec/specs/`.
 
 ---
@@ -30,7 +33,7 @@ Segunda fricção: o ecossistema move-se depressa. Versões neste documento são
 
 ## Índice
 
-1. [Pré-requisitos](#1-pré-requisitos-questão-6)
+1. [Pré-requisitos](#1-pré-requisitos-questão-6) — inclui §1.6 (organização e cenários C1–C3)
 2. [Passo a passo de instalação](#2-passo-a-passo-de-instalação-questão-1) — inclui §2.0 (IA), §2.5 (AGENTS.md), §2.8 (verificação), §2.9 (actualização)
 3. [Classificação de tarefas e pipelines](#3-classificação-de-tarefas-e-pipelines-questões-2-3-31)
 4. [Tabela mestre: ferramenta × responsabilidade × I/O](#4-tabela-mestre-questão-3)
@@ -85,6 +88,43 @@ Claude Pro/Max OU API key Anthropic. Sem isto, Claude Code não funciona. OpenSp
 - Confortável em terminal (vais usar bastante `cd`, `npm`, `pip`, `git`)
 - Compreender MCP a alto nível (o protocolo que liga as ferramentas ao agente)
 
+### 1.6 Organização do projecto e tipos de instalação
+
+O stack SDD organiza-se em **quatro camadas** — não confundir procedimento com payload:
+
+| Camada | Artefacto | Papel |
+|--------|-----------|-------|
+| **Procedimento** | `doc/sistema-sdd-pedro.md` | Como instalar/actualizar; cenários C1–C3 |
+| **Payload versionado** | `sdd-kit/templates/` + `MANIFEST.yaml` | Ficheiros copiáveis, gates shell |
+| **Requisitos normativos** | `openspec/specs/sdd-*` | O que MUST existir após instalação |
+| **Estado do workspace** | `openspec/infra.md`, `project.md` | O que está ✅ neste repo |
+
+#### Cenários de instalação
+
+| Código | Situação | Comando de entrada |
+|--------|----------|-------------------|
+| **C1** | Instalação verde (primeira vez SDD) | `bootstrap-sdd.sh` → `bash sdd-kit/install.sh --profile APP\|DOCS_SPECS\|HYBRID` |
+| **C2** | Actualização SDD (guia/kit nova versão) | `bash sdd-kit/upgrade.sh --from X --to Y --dry-run` → aprovação → `--apply` |
+| **C2b** | Só CLIs desactualizadas | §2.9.4 — **sem** tocar kit curado |
+| **C3** | Propagação de specs de domínio | Referência em `openspec/specs/<domínio>/` — **não** correr `install.sh` |
+
+**Regra de ouro:** C3 (conteúdo normativo de produto) ≠ C2 (infra SDD). Publicar uma spec de billing no hub **não** exige reinstall nos repos APP.
+
+#### Perfis de repositório
+
+| Perfil | O que muda no `install.sh` |
+|--------|---------------------------|
+| **APP** | Commands §12.2a; rules TS/Supabase |
+| **DOCS_SPECS** | Commands §12.2b; `verify-task-patterns.sh` |
+| **HYBRID** | APP commands + rules opcionais |
+
+#### Hub vs consumidor
+
+- **Hub (ex.: spec-pedro, DOCS_SPECS):** commitar `sdd-kit/` completo para distribuir upgrades C2.
+- **APP consumidor:** pode manter só ficheiros expandidos (`scripts/`, `.cursor/rules/`); copiar `sdd-kit/` pontualmente no upgrade.
+
+Comandos exactos: `sdd-kit/README.md`.
+
 ---
 
 ## 2. Passo a passo de instalação (questão 1)
@@ -105,21 +145,21 @@ Cola este prompt na raiz do repositório alvo (substitui `REPO_ROOT` e o perfil)
 
 ```
 Instala o sistema SDD (OpenSpec + GitNexus + Graphify) neste repositório seguindo
-estritamente o guia em doc/sistema-sdd-pedro.md v1.2 (ou o caminho onde o guia
-estiver no repo).
+estritamente o guia em doc/sistema-sdd-pedro.md v1.3.0 e o install kit em sdd-kit/.
 
 Perfil do repositório: [APP | DOCS_SPECS | HYBRID]
-- APP = aplicação com npm/pnpm dev, testes, deploy
-- DOCS_SPECS = specs, documentação, scripts (sem npm run dev na raiz)
-- HYBRID = ambos
 
-Ordem: openspec init --tools "cursor,claude" → gitnexus setup → gitnexus analyze
-→ graphify install + graphify install --platform cursor → graphify hook install
-→ graphify update . (ou graphify extract . se houver API key LLM)
-→ curar AGENTS.md com template 12.2a (APP) ou 12.2b (DOCS_SPECS) — NÃO gerar
-AGENTS.md do zero com IA; NÃO colar blocos <!-- gitnexus:start --> completos.
+Ordem:
+1. bash scripts/bootstrap-sdd.sh  (ou CLIs manuais §2.2–2.4)
+2. bash sdd-kit/install.sh --profile <PERFIL> [--dry-run primeiro]
+3. Editar openspec/project.md (Purpose, Stack — NÃO substituir por template)
+4. Merge AGENTS.md se já existia (templates: sdd-kit/templates/AGENTS.core.md + commands)
+5. bash sdd-kit/verify.sh + checklist §2.8
 
-Entregar: checklist §2.8 preenchida + lista de ficheiros criados/alterados.
+NÃO extrair scripts do markdown §12 — usar sdd-kit/templates/.
+NÃO colar blocos <!-- gitnexus:start --> completos em AGENTS.md.
+
+Entregar: checklist §2.8 + output de sdd-kit/verify.sh.
 ```
 
 ### 2.2 Passo 1 — OpenSpec (intenção)
@@ -491,21 +531,22 @@ Ficheiros **gerados** (seguro sobrescrever com `openspec update`):
 
 #### 2.9.5 Matriz de comparação (existente vs template)
 
-Para cada ficheiro **curado**, o agente (ou humano) compara o que está no repo com o template indicado. Usar staging + script:
+Para cada ficheiro **curado**, comparar o repo com `sdd-kit/templates/` (fonte determinística). Usar staging opcional + script:
 
 ```bash
-# Extrair templates do guia para staging (agente cria ficheiros a partir de §12 / §9 / §10)
-mkdir -p openspec/changes/upgrade-sdd-v1.2.0/sdd-staging/.cursor/rules
-
-# Exemplo: copiar conteúdo de 12.2 + 12.2b para staging/AGENTS.md, etc.
-
+# Opção A: diff directo contra templates do kit (recomendado v1.3+)
 chmod +x scripts/sdd-upgrade-diff.sh
-./scripts/sdd-upgrade-diff.sh openspec/changes/upgrade-sdd-v1.2.0/sdd-staging/
+./scripts/sdd-upgrade-diff.sh sdd-kit/templates/
+
+# Opção B: staging local para revisão humana
+mkdir -p openspec/changes/upgrade-sdd-v1.3.0/sdd-staging
+cp -r sdd-kit/templates/* openspec/changes/upgrade-sdd-v1.3.0/sdd-staging/
+./scripts/sdd-upgrade-diff.sh openspec/changes/upgrade-sdd-v1.3.0/sdd-staging/
 ```
 
-| Ficheiro no repo | Template no guia | Tipo de merge | O que comparar |
+| Ficheiro no repo | Template (fonte) | Tipo de merge | O que comparar |
 |------------------|------------------|---------------|----------------|
-| `AGENTS.md` | §12.2 + §12.2a ou §12.2b | MERGE | Secções normativas vs Commands/contexto local; linhas ≤150; sem `gitnexus:start` |
+| `AGENTS.md` | `sdd-kit/templates/AGENTS.core.md` + commands | MERGE | Secções normativas vs Commands/contexto local; linhas ≤150; sem `gitnexus:start` |
 | `openspec/project.md` | §12.1 | MERGE conservador | Purpose, Stack, Architecture, Constraints — **manter local**; Cross-references e versão do guia — **actualizar** |
 | `CLAUDE.md` | §10.3 | MERGE | Delegação para `AGENTS.md`; não duplicar blocos longos |
 | `.cursor/rules/000-base.mdc` | §9.2 | APPLY ou MERGE | Apontar para `AGENTS.md`; referência a `/opsx:propose` |
@@ -1997,39 +2038,17 @@ alwaysApply: false
 
 ### 12.6 Comando de instalação one-shot
 
-Guardar como `scripts/bootstrap-sdd.sh` (ajustar `REPO`):
+> **v1.3.0:** O script completo vive em `scripts/bootstrap-sdd.sh` (repo) e `sdd-kit/templates/scripts/bootstrap-sdd.sh` (kit). Após CLIs, delega payloads a `sdd-kit/install.sh`. **Não** copiar blocos bash deste anexo — usar `sdd-kit/templates/`.
+
+Resumo da ordem:
 
 ```bash
-#!/usr/bin/env bash
-set -euo pipefail
-REPO="${1:-.}"
-cd "$REPO"
-
-echo "==> OpenSpec..."
-npm install -g @fission-ai/openspec@latest
-openspec init --tools "cursor,claude" "$REPO" 2>/dev/null || openspec init --tools "cursor,claude"
-
-echo "==> GitNexus..."
-npm install -g gitnexus
-gitnexus setup
-gitnexus analyze
-
-echo "==> Graphify..."
-command -v uv >/dev/null || curl -LsSf https://astral.sh/uv/install.sh | sh
-uv tool install graphifyy
-graphify install
-graphify install --platform cursor
-graphify hook install
-graphify update .
-
-echo ""
-echo "✅ Ferramentas instaladas. OBRIGATÓRIO manualmente:"
-echo "   1. Editar openspec/project.md"
-echo "   2. Criar AGENTS.md com template 12.2a ou 12.2b (NÃO gerar com IA)"
-echo "   3. mv AGENTS.md AGENTS.tools-generated.md se ferramentas sobrescreveram"
-echo "   4. Checklist §2.8"
-echo "   5. Reiniciar IDE; testar /opsx:propose"
+bash scripts/bootstrap-sdd.sh          # CLIs globais + openspec init
+bash sdd-kit/install.sh --profile DOCS_SPECS [--dry-run]
+bash sdd-kit/verify.sh
 ```
+
+Ver `sdd-kit/README.md` para perfis e cenários C1–C3.
 
 ### 12.7 Template `AGENTS.md` aninhado (subpasta)
 
@@ -2124,30 +2143,37 @@ Classificações: `KEEP_LOCAL` · `MERGE` · `APPLY_TEMPLATE` · `NEW` · `SKIP`
 
 ### 12.9 Script de diff (`scripts/sdd-upgrade-diff.sh`)
 
+### 12.9 Script de diff (`scripts/sdd-upgrade-diff.sh`)
+
+> **v1.3.0:** Fonte canónica de templates = `sdd-kit/templates/`. O script lê a lista de ficheiros de `sdd-kit/MANIFEST.yaml` quando presente.
+
 Inventaria ficheiros curados e, com directorio de staging, mostra `diff -u`:
 
 ```bash
-# Só inventário
+# Só inventário (lê MANIFEST.yaml)
 ./scripts/sdd-upgrade-diff.sh
 
-# Com staging (templates extraídos do guia para openspec/changes/.../sdd-staging/)
-./scripts/sdd-upgrade-diff.sh openspec/changes/upgrade-sdd-v1.2.0/sdd-staging/
+# Diff contra templates do kit (recomendado)
+./scripts/sdd-upgrade-diff.sh sdd-kit/templates/
+
+# Staging local para revisão
+./scripts/sdd-upgrade-diff.sh openspec/changes/upgrade-sdd-v1.3.0/sdd-staging/
 ```
 
-Estrutura esperada do staging (espelha paths do repo):
+Estrutura do kit (`sdd-kit/templates/` espelha paths do repo):
 
 ```
-sdd-staging/
-├── AGENTS.md
+sdd-kit/templates/
+├── AGENTS.core.md
+├── AGENTS.commands.APP.md
+├── AGENTS.commands.DOCS_SPECS.md
 ├── CLAUDE.md
-├── openspec/project.md          # opcional: só para diff de Cross-references
+├── scripts/
+├── openspec/infra.md
 └── .cursor/rules/
-    ├── 000-base.mdc
-    ├── 050-security.mdc
-    └── …
 ```
 
-O agente **extrai** o conteúdo dos blocos de código deste guia (§9.2, §10.3, §12.1–12.2) para esses ficheiros — não inventar templates.
+**Não** extrair scripts do markdown deste guia — copiar de `sdd-kit/templates/` ou correr `sdd-kit/install.sh`.
 
 ### 12.10 Template `openspec/changes/<id>/tasks.md` (patterns e gates)
 
@@ -2252,6 +2278,16 @@ bash scripts/verify-task-patterns.sh   # paths Pattern: existem; DOCS_SPECS sem 
 ---
 
 ## Changelog do guia
+
+### 1.3.0 (2026-06-17)
+
+- **`sdd-kit/`** — Install kit versionado: `MANIFEST.yaml`, `install.sh`, `upgrade.sh`, `verify.sh`, `templates/`.
+- **§1.6** — Organização em quatro camadas; cenários C1 / C2 / C2b / C3; perfis APP / DOCS_SPECS / HYBRID; hub vs consumidor.
+- **§2.0 / §2.9.5** — Instalação e upgrade usam `sdd-kit/templates/` em vez de extrair markdown §12.
+- **§12.6 / §12.9** — Scripts inteiros deprecados no guia; ponteiro para `sdd-kit/templates/`.
+- **`scripts/sdd-upgrade-diff.sh`** — Inventário lê paths de `sdd-kit/MANIFEST.yaml`.
+- **Session coordination** — Entrada no changelog; rules `015`/`016` e scripts `sdd-session-*` no MANIFEST.
+- **`openspec/infra.md`** — Secção Install Kit.
 
 ### 1.2.1 (2026-06-16)
 

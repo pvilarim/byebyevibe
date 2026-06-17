@@ -24,7 +24,7 @@ Repositório de specs, documentação técnica e cursos do Pedro Vilarim. Serve 
 - Repositório monorepo com `doc/` para especificações/cursos e `openspec/` para controlo de mudanças
 - Documentação de curso em `doc/curso/` — transcrições enriched de aulas do Workshop IA 5/2026
 - Código de produção vive em projectos separados; **este repo é perfil DOCS_SPECS** (sem app na raiz)
-- `AGENTS.md` é o entry point universal (formato [agents.md](https://agents.md/), guia v1.2)
+- `AGENTS.md` é o entry point universal (formato [agents.md](https://agents.md/), guia v1.3)
 - `graphify-out/` mantém o knowledge graph do repositório (regenerável, gitignored)
 - `.gitnexus/` mantém o code graph (regenerável, gitignored)
 
@@ -55,7 +55,8 @@ Repositório de specs, documentação técnica e cursos do Pedro Vilarim. Serve 
 - Specs activas: `openspec/specs/`
 - Mudanças em curso: `openspec/changes/`
 - Documentação do curso: `doc/curso/` (5 aulas do Workshop IA 5/2026)
-- **Guia de instalação SDD:** `doc/sistema-sdd-pedro.md` **v1.2.0** — instalação §2; actualização §2.9
+- **Guia de instalação SDD:** `doc/sistema-sdd-pedro.md` **v1.3.0** — instalação §2 + `sdd-kit/install.sh`; actualização §2.9 + `sdd-kit/upgrade.sh`
+- **Install kit:** `sdd-kit/` (MANIFEST v1.3.0) — payloads versionados para C1/C2
 - Comportamento de agentes: `AGENTS.md` (não duplicar regras aqui)
 
 ## Non-goals

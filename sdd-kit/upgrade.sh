@@ -1,0 +1,176 @@
+#!/usr/bin/env bash
+# SDD Install Kit — upgrade diff and apply (C2)
+# Usage: bash sdd-kit/upgrade.sh --from X.Y.Z --to X.Y.Z [--dry-run] [--apply] [--repo PATH]
+set -euo pipefail
+
+KIT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+MANIFEST="$KIT_DIR/MANIFEST.yaml"
+FROM_VER=""
+TO_VER=""
+DRY_RUN=false
+APPLY=false
+REPO_ROOT="."
+
+usage() {
+  cat <<'EOF'
+Usage: upgrade.sh --from VERSION --to VERSION [--dry-run] [--apply] [--repo PATH]
+
+Classifies manifest files vs target repo. Default is dry-run report only.
+Use --apply only after human approval of UPGRADE_REPORT.md.
+
+Options:
+  --from      Current guide/kit version
+  --to        Target version (must match MANIFEST.yaml)
+  --dry-run   Produce diff report (default if --apply omitted)
+  --apply     Apply COPY/APPLY_TEMPLATE files (never auto-merges AGENTS.md or project.md)
+  --repo      Target repository root
+  -h, --help  Show this help
+EOF
+  exit "${1:-0}"
+}
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --from) FROM_VER="${2:-}"; shift 2 ;;
+    --to) TO_VER="${2:-}"; shift 2 ;;
+    --dry-run) DRY_RUN=true; shift ;;
+    --apply) APPLY=true; shift ;;
+    --repo) REPO_ROOT="${2:-}"; shift 2 ;;
+    -h|--help) usage 0 ;;
+    *) echo "Unknown option: $1" >&2; usage 2 ;;
+  esac
+done
+
+[[ -n "$FROM_VER" && -n "$TO_VER" ]] || { echo "ERROR: --from and --to are required" >&2; usage 2; }
+$APPLY || DRY_RUN=true
+
+REPO_ROOT="$(cd "$REPO_ROOT" && pwd)"
+cd "$REPO_ROOT"
+
+MANIFEST_VER="$(grep -E '^version:' "$MANIFEST" | head -1 | sed 's/.*"\(.*\)".*/\1/')"
+if [[ "$TO_VER" != "$MANIFEST_VER" ]]; then
+  echo "WARN: --to ($TO_VER) differs from MANIFEST ($MANIFEST_VER)" >&2
+fi
+
+echo "=== SDD UPGRADE REPORT (dry-run) ==="
+echo "From: v$FROM_VER  To: v$TO_VER"
+echo "Repo: $REPO_ROOT"
+echo ""
+
+classify() {
+  local dest="$1" merge="$2" src="$KIT_DIR/$3"
+  if [[ ! -f "$REPO_ROOT/$dest" ]]; then
+    echo "NEW          $dest"
+    return
+  fi
+  if [[ ! -f "$src" ]]; then
+    echo "SKIP         $dest (no template)"
+    return
+  fi
+  if diff -q "$REPO_ROOT/$dest" "$src" &>/dev/null; then
+    echo "KEEP_LOCAL   $dest (identical to template)"
+    return
+  fi
+  case "$merge" in
+    MERGE|MERGE_PROFILE) echo "MERGE        $dest" ;;
+    COPY) echo "APPLY_TEMPLATE $dest" ;;
+    *) echo "MERGE        $dest" ;;
+  esac
+}
+
+echo "--- File classification ---"
+while IFS=$'\t' read -r src dest merge; do
+  [[ -n "$dest" ]] || continue
+  classify "$dest" "$merge" "$src"
+done < <(python3 - <<'PY' "$MANIFEST"
+import sys, re
+text = open(sys.argv[1]).read()
+entries, block = [], None
+for line in text.splitlines():
+    if line.strip().startswith("- path:"):
+        if block and "path" in block: entries.append(block)
+        block = {"path": line.split(":",1)[1].strip()}
+    elif block:
+        m = re.match(r"\s+(\w+):\s*(.+)", line)
+        if m:
+            k,v = m.group(1), m.group(2).strip().strip('"')
+            if k in ("source","merge","path"): block[k]=v
+if block and "path" in block: entries.append(block)
+for e in entries:
+    print(f"{e.get('source','')}\t{e['path']}\t{e.get('merge','COPY')}")
+PY
+)
+
+REPORT_DIR="$REPO_ROOT/openspec/changes/upgrade-sdd-v${TO_VER}"
+REPORT_FILE="$REPORT_DIR/UPGRADE_REPORT.md"
+
+if $DRY_RUN && ! $APPLY; then
+  echo ""
+  echo "Scaffold: $REPORT_FILE"
+  if [[ ! -f "$REPORT_FILE" ]]; then
+    mkdir -p "$REPORT_DIR"
+    cat > "$REPORT_FILE" <<EOF
+# Relatório de actualização SDD
+
+| Campo | Valor |
+|-------|--------|
+| Repositório | $(basename "$REPO_ROOT") |
+| Versão guia (antes) | v$FROM_VER |
+| Versão guia (alvo) | v$TO_VER |
+| Data | $(date +%Y-%m-%d) |
+
+## Resumo executivo
+
+- [ ] Actualização aprovada pelo utilizador
+
+## Matriz de ficheiros
+
+Ver output de \`bash sdd-kit/upgrade.sh --from $FROM_VER --to $TO_VER --dry-run\`
+
+Classificações: KEEP_LOCAL · MERGE · APPLY_TEMPLATE · NEW · SKIP
+
+## Aprovação
+
+- [ ] Humano aprovou merge de AGENTS.md e openspec/project.md
+EOF
+    echo "Created UPGRADE_REPORT scaffold."
+  else
+    echo "UPGRADE_REPORT already exists — not overwriting."
+  fi
+  echo ""
+  echo "PARAR: revisar relatório antes de --apply"
+  exit 0
+fi
+
+if $APPLY; then
+  echo ""
+  echo "--- Applying COPY/APPLY_TEMPLATE only ---"
+  while IFS=$'\t' read -r src dest merge; do
+    [[ -n "$dest" ]] || continue
+    [[ "$merge" == "COPY" ]] || continue
+    [[ -f "$KIT_DIR/$src" ]] || continue
+    mkdir -p "$(dirname "$REPO_ROOT/$dest")"
+    cp "$KIT_DIR/$src" "$REPO_ROOT/$dest"
+    [[ "$dest" == *.sh ]] && chmod +x "$REPO_ROOT/$dest"
+    echo "  APPLIED $dest"
+  done < <(python3 - <<'PY' "$MANIFEST"
+import sys, re
+text = open(sys.argv[1]).read()
+entries, block = [], None
+for line in text.splitlines():
+    if line.strip().startswith("- path:"):
+        if block and "path" in block: entries.append(block)
+        block = {"path": line.split(":",1)[1].strip()}
+    elif block:
+        m = re.match(r"\s+(\w+):\s*(.+)", line)
+        if m:
+            k,v = m.group(1), m.group(2).strip().strip('"')
+            if k in ("source","merge","path"): block[k]=v
+if block and "path" in block: entries.append(block)
+for e in entries:
+    if e.get("merge") == "COPY":
+        print(f"{e.get('source','')}\t{e['path']}\t{e.get('merge','COPY')}")
+PY
+)
+  echo "Apply complete. Run: bash sdd-kit/verify.sh"
+fi
