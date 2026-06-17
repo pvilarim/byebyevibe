@@ -1,0 +1,12 @@
+---
+description: Coordenação local de sessões SDD — locks e worktrees
+alwaysApply: true
+---
+
+# Coordenação de sessões SDD (máquina local)
+
+- **Apply MUST** correr `scripts/sdd-session-register.sh` e `scripts/sdd-session-check.sh` **antes** de editar ficheiros; **MUST** correr `scripts/sdd-session-release.sh` ao concluir ou pausar.
+- **Paralelismo seguro:** apply simultâneo só em **git worktrees separados** (locks por worktree root).
+- **Explore/propose** read-only: advisory — usar `bash scripts/sdd-session-status.sh` se houver dúvida.
+- **Procedimento operacional:** `doc/sistema-sdd-pedro.md` §3.3 · requisitos: `openspec/specs/sdd-session-coordination/` (após archive).
+- **R11** em `AGENTS.md` — ponteiro curto; detalhe em `openspec/infra.md` (Session Coordination).

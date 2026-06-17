@@ -173,6 +173,23 @@ What would you like to do?
 - Pause on errors, blockers, or unclear requirements - don't guess
 - Use contextFiles from CLI output, don't assume specific file names
 
+## Session coordination (apply)
+
+Antes de editar ficheiros:
+
+```bash
+bash scripts/sdd-session-register.sh --phase apply --change-id "<id>"
+bash scripts/sdd-session-check.sh --phase apply --change-id "<id>"
+```
+
+Se exit ≠ 0: **parar** e informar o utilizador (outro apply activo na mesma worktree).
+
+Ao concluir ou pausar (incluindo Session Handoff):
+
+```bash
+bash scripts/sdd-session-release.sh
+```
+
 ## Task execution (§12.10)
 
 - Read `doc/sistema-sdd-pedro.md` §12.10 when executing enriched tasks
@@ -196,6 +213,7 @@ Cole no primeiro message do novo chat:
 Change: openspec/changes/<change-id>/
 Ler: tasks.md (progresso), artefactos pendentes
 Infra: openspec/infra.md (assumir ✅ — não reinstalar)
+Libertar lock: bash scripts/sdd-session-release.sh  # se apply pausado
 ---
 
 **Fluid Workflow Integration**

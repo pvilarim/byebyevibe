@@ -32,6 +32,20 @@
 | `.claude/skills/gitnexus/` | impact/debug | ✅ |
 | `.cursor/skills/simplify-review/` | review | ✅ |
 
+## Session Coordination
+
+| Script | Função | Estado | Verificar com |
+|--------|--------|--------|---------------|
+| `scripts/sdd-session-register.sh` | Registo + flock apply | ✅ | `test -x scripts/sdd-session-register.sh` |
+| `scripts/sdd-session-check.sh` | Validação antes de writes | ✅ | `bash scripts/sdd-session-check.sh --phase explore` |
+| `scripts/sdd-session-status.sh` | Listar sessões activas | ✅ | `bash scripts/sdd-session-status.sh` |
+| `scripts/sdd-session-heartbeat.sh` | Actualizar heartbeat | ✅ | `test -x scripts/sdd-session-heartbeat.sh` |
+| `scripts/sdd-session-release.sh` | Libertar lock/presença | ✅ | `test -x scripts/sdd-session-release.sh` |
+
+Runtime local (gitignored): `.sdd/runtime/` (`apply.lock`, `sessions/*.json`).
+
+Regra always-on: `.cursor/rules/016-session-coordination.mdc`.
+
 ## Env vars (nomes apenas)
 
 > Lidos de `.env.example` se existir. **Nunca** commitar valores nem ler `.env`.

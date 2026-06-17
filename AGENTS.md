@@ -20,6 +20,7 @@ Ver `./openspec/project.md` (stack, convenções, constraints). **Não duplicar*
 | `graphify update .` | Actualizar grafo (AST, sem LLM) |
 | `graphify query "<pergunta>"` | Busca no knowledge graph |
 | `python doc/curso/scripts/enrich-transcripts.py` | Re-enriquecer transcrições do curso |
+| `bash scripts/sdd-session-status.sh` | Sessões SDD activas na worktree local |
 
 Nota: não há `npm run dev` na raiz — repo de specs e documentação (perfil DOCS_SPECS).
 
@@ -69,7 +70,7 @@ Antes de **qualquer** trabalho, classificar (A–E):
 
 Se ambíguo entre dois tipos, **PERGUNTAR**. **NUNCA** assumir Tipo A por defeito.
 
-## Regras Universais (R1–R10)
+## Regras Universais (R1–R11)
 
 - **R1** — Classificar tarefa (A–E) antes de agir
 - **R2** — Prioridade: specs > arquivo > Graphify > GitNexus > docs > web
@@ -81,6 +82,7 @@ Se ambíguo entre dois tipos, **PERGUNTAR**. **NUNCA** assumir Tipo A por defeit
 - **R8** — Citar fontes em design.md, research.md, commits
 - **R9** — Commits com scope ou change-id OpenSpec
 - **R10** — Infra conhecida: ler `openspec/infra.md` antes de instalar MCP/CLIs/skills; ✅ = usar directamente
+- **R11** — Coordenação local: antes de apply, `sdd-session-register` + `sdd-session-check`; ao fim/pause, `sdd-session-release` (§3.3 guia SDD)
 
 ## Workflow
 
