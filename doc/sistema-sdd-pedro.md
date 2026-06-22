@@ -15,6 +15,7 @@
 | **Agente de IA — instalação** | Prompt §2.0; usar `sdd-kit/install.sh`, **não** extrair §12 |
 | **Agente de IA — actualização** | §2.9.2 + `sdd-kit/upgrade.sh --dry-run` + §12.8 antes de editar |
 | **Piloto / teste** | `bash sdd-kit/verify.sh` + checklist §2.8 ou §2.9.7 |
+| **Avaliação gaps harness (roadmap)** | `doc/sdd-harness-gaps-avaliacao.md` — sem instalação; decisão futura |
 
 - **Padrão `AGENTS.md`:** alinhado a [agents.md](https://agents.md/) + workshop TLC (Context Engineering, on-demand loading).
 - **Versão do guia:** 1.3.0 — ver [Changelog do guia](#changelog-do-guia).

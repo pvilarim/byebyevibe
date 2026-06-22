@@ -47,6 +47,7 @@ Para trabalho tipo D/E, **SEMPRE** consultar Graphify e GitNexus antes de escrev
 | Teoria / relações entre conceitos | `graphify-out/GRAPH_REPORT.md` |
 | Workshop e transcrições | `doc/curso/aula-*.md` |
 | Guia de instalação SDD (v1.3) | `doc/sistema-sdd-pedro.md` |
+| Avaliação gaps harness (roadmap) | `doc/sdd-harness-gaps-avaliacao.md` |
 | Install kit (payload SDD) | `sdd-kit/` |
 | Actualização SDD (repo já instalado) | `doc/sistema-sdd-pedro.md` §2.9 |
 | Scripts CDP / transcrições | `doc/curso/scripts/AGENTS.md` |
