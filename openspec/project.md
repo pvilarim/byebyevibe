@@ -57,6 +57,7 @@ Repositório de specs, documentação técnica e cursos do Pedro Vilarim. Serve 
 - Documentação do curso: `doc/curso/` (5 aulas do Workshop IA 5/2026)
 - **Guia de instalação SDD:** `doc/sistema-sdd-pedro.md` **v1.3.0** — instalação §2 + `sdd-kit/install.sh`; actualização §2.9 + `sdd-kit/upgrade.sh`
 - **Install kit:** `sdd-kit/` (MANIFEST v1.3.0) — payloads versionados para C1/C2
+- **Avaliações de integração (histórico):** `doc/avaliacoes/` — ferramentas pesquisadas para o stack SDD
 - Comportamento de agentes: `AGENTS.md` (não duplicar regras aqui)
 
 ## Non-goals
@@ -65,3 +66,4 @@ Repositório de specs, documentação técnica e cursos do Pedro Vilarim. Serve 
 - Não implementamos auth do zero — Supabase Auth
 - Não usamos vector DB externo — Supabase pgvector
 - Não duplicamos regras entre AGENTS.md e openspec/project.md — sempre apontar, nunca copiar
+- Não integramos Headroom nem compressão automática de contexto no pipeline SDD — avaliado e descartado (ver `doc/avaliacoes/2026-03-26-headroom-context-compression.md`)

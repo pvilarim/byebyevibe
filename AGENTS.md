@@ -57,6 +57,7 @@ Para trabalho tipo D/E, **SEMPRE** consultar Graphify e GitNexus antes de escrev
 | Tasks atómicas (Pattern, Gate) | `doc/sistema-sdd-pedro.md` §12.10 |
 | Infra instalada (MCP, CLIs, skills) | `openspec/infra.md` |
 | Install kit (payload versionado) | `sdd-kit/` |
+| Avaliações de integração / ferramentas descartadas | `doc/avaliacoes/` |
 
 ## Protocolo de Classificação de Tarefas
 

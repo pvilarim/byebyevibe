@@ -37,7 +37,7 @@ Segunda fricção: o ecossistema move-se depressa. Versões neste documento são
 2. [Passo a passo de instalação](#2-passo-a-passo-de-instalação-questão-1) — inclui §2.0 (IA), §2.5 (AGENTS.md), §2.8 (verificação), §2.9 (actualização)
 3. [Classificação de tarefas e pipelines](#3-classificação-de-tarefas-e-pipelines-questões-2-3-31)
 4. [Tabela mestre: ferramenta × responsabilidade × I/O](#4-tabela-mestre-questão-3)
-5. [Documentos e referências cruzadas](#5-documentos-e-referências-cruzadas-questão-32)
+5. [Documentos e referências cruzadas](#5-documentos-e-referências-cruzadas-questão-32) — inclui §5.5 (avaliações de integração)
 6. [Dimensão de research e prevenção de fontes duvidosas](#6-dimensão-de-research-questão-33)
 7. [Protocolos por tarefa: tokens, alucinações, segurança, auditoria](#7-protocolos-por-tarefa-questão-34)
 8. [Regras gerais do sistema e onde vivem](#8-regras-gerais-do-sistema-questão-4)
@@ -928,6 +928,18 @@ Não copies stack ou convenções do `project.md` para o `AGENTS.md`. Aponta. A 
 | Acabaste uma feature | `/opsx:archive` (actualiza specs) |
 | Onboarding novo dev/agente | Apenas garantir que abre o repo, AGENTS.md carrega tudo |
 | Hook automático | `graphify hook install` faz rebuild em cada commit |
+
+### 5.5 Avaliações de integração e aperfeiçoamento
+
+Registo histórico de ferramentas e ideias **pesquisadas** para evoluir o stack SDD — adoptadas ou descartadas.
+
+| Artefacto | Papel |
+|-----------|--------|
+| `doc/avaliacoes/README.md` | Índice e estados de decisão |
+| `doc/avaliacoes/TEMPLATE.md` | Modelo para novas avaliações |
+| `doc/avaliacoes/<data>-<slug>.md` | Avaliação individual |
+
+**Regra:** candidatos descartados aqui **não** entram no `sdd-kit` sem nova proposta OpenSpec. Exemplo: [Headroom](https://github.com/chopratejas/headroom) — compressão de contexto — **descartado** em 2026-03-26 (`doc/avaliacoes/2026-03-26-headroom-context-compression.md`).
 
 ---
 
