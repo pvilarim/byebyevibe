@@ -2,7 +2,7 @@
 
 **GitNexus + Graphify + OpenSpec, integrados no Cursor e VS Code + Claude Code**
 
-> **Guia canónico de instalação (v1.3.0)** — usar em qualquer repositório Git, manualmente ou via agente de IA. Payloads em `sdd-kit/`; procedimento neste documento.
+> **Guia canónico de instalação (v1.3.1)** — usar em qualquer repositório Git, manualmente ou via agente de IA. Payloads em `sdd-kit/`; procedimento neste documento.
 
 ## Como usar este documento
 
@@ -17,7 +17,7 @@
 | **Piloto / teste** | `bash sdd-kit/verify.sh` + checklist §2.8 ou §2.9.7 |
 
 - **Padrão `AGENTS.md`:** alinhado a [agents.md](https://agents.md/) + workshop TLC (Context Engineering, on-demand loading).
-- **Versão do guia:** 1.3.0 — ver [Changelog do guia](#changelog-do-guia).
+- **Versão do guia:** 1.3.1 — ver [Changelog do guia](#changelog-do-guia).
 - **Payload versionado:** `sdd-kit/MANIFEST.yaml` — ver §1.6 e `sdd-kit/README.md`.
 - **Não substitui** `openspec/project.md` (constituição do projecto) nem specs em `openspec/specs/`.
 
@@ -107,6 +107,7 @@ O stack SDD organiza-se em **quatro camadas** — não confundir procedimento co
 | **C2** | Actualização SDD (guia/kit nova versão) | `bash sdd-kit/upgrade.sh --from X --to Y --dry-run` → aprovação → `--apply` |
 | **C2b** | Só CLIs desactualizadas | §2.9.4 — **sem** tocar kit curado |
 | **C3** | Propagação de specs de domínio | Referência em `openspec/specs/<domínio>/` — **não** correr `install.sh` |
+| **C1-UI** | Módulo UI opcional (pós-C1) | `bash sdd-kit/install-ui-module.sh --detect` → `--apply [--yes]` — ver §2.11 |
 
 **Regra de ouro:** C3 (conteúdo normativo de produto) ≠ C2 (infra SDD). Publicar uma spec de billing no hub **não** exige reinstall nos repos APP.
 
@@ -399,6 +400,43 @@ Usar após cada instalação (humano ou IA):
 - [ ] `.sdd/runtime/` no `.gitignore`
 - [ ] `openspec/infra.md` secção Session Coordination presente
 - [ ] `bash scripts/verify-infra.sh` completa sem erro (ou documentar ❌ pendentes)
+
+### 2.11 Módulo de desenvolvimento de UI (C1-UI, opcional)
+
+**Pré-requisito:** C1 concluído (checklist §2.8 acima).
+
+**Perfis:** APP e HYBRID com frontend (`app/` ou `apps/web/`). DOCS_SPECS sem app: `--detect` reporta `SKIP`; docs de referência distribuídos pelo kit.
+
+| Passo | Acção |
+|-------|--------|
+| 1 | `bash sdd-kit/install-ui-module.sh --detect` |
+| 2 | Ler `doc/design/002-ui-module-install.md` §1 (decisão shadcn — recomendado + opt-out) |
+| 3 | `bash sdd-kit/install-ui-module.sh --apply [--yes]` |
+| 4 | Checklist §2.11.1 |
+
+**O que o módulo inclui:**
+
+- Documentação `doc/design/000`–`003` (pipeline, instalação, adapters)
+- Actualização de `openspec/infra.md` (secção UI Development Module)
+- Impeccable (`npx impeccable install`) **apenas** com `--yes` e Node 24+
+
+**O que não inclui:** Open Design, Pencil, Figma MCP (instalar sob demanda — ver `002` §5).
+
+**Detalhe operacional:** [`doc/design/001-pipeline-open-design-shadcn-impeccable.md`](design/001-pipeline-open-design-shadcn-impeccable.md) — **não** duplicar fluxos A–D neste guia (§5.3).
+
+#### 2.11.1 Checklist verificação UI module
+
+Após C1-UI (`--apply`):
+
+- [ ] `bash sdd-kit/install-ui-module.sh --detect` reporta `UI stack` correcto
+- [ ] `doc/design/002-ui-module-install.md` e `003-ui-stack-adapters.md` presentes
+- [ ] `openspec/infra.md` — secção **UI Development Module** actualizada
+- [ ] `UI stack:` em `openspec/project.md` reflecte a decisão (shadcn | tailwind-custom | other | none)
+- [ ] Node 24+ confirmado antes de Impeccable (gate M3)
+- [ ] `DESIGN.md` na raiz (se Impeccable instalado) — distinto de `openspec/changes/<id>/design.md`
+- [ ] `npx gitnexus analyze --force` se `components/ui/` foi alterado
+- [ ] `graphify update .` para indexar `doc/design/*`
+- [ ] `.cursor/skills/impeccable/` presente (se Impeccable aplicado) — separado de skills SDD
 
 ### 2.9 Actualização de instalação existente
 
@@ -940,6 +978,21 @@ Registo histórico de ferramentas e ideias **pesquisadas** para evoluir o stack 
 | `doc/avaliacoes/<data>-<slug>.md` | Avaliação individual |
 
 **Regra:** candidatos descartados aqui **não** entram no `sdd-kit` sem nova proposta OpenSpec. Exemplo: [Headroom](https://github.com/chopratejas/headroom) — compressão de contexto — **descartado** em 2026-03-26 (`doc/avaliacoes/2026-03-26-headroom-context-compression.md`).
+
+### 5.6 Referências cruzadas — módulo de desenvolvimento de UI
+
+| Tema | Documento | Guia SDD |
+|------|-----------|----------|
+| Instalação C1-UI | `doc/design/002-ui-module-install.md` | §2.11 |
+| Pipeline completa (shadcn default) | `doc/design/001-pipeline-open-design-shadcn-impeccable.md` | §2.11 passo 2 |
+| Impeccable isolado | `doc/design/000-impeccable-design-system-guia.md` | §2.11 |
+| Stacks sem shadcn | `doc/design/003-ui-stack-adapters.md` | §2.11 |
+| Script add-on | `sdd-kit/install-ui-module.sh` | §2.11 passo 3 |
+| Avaliação agregada | `doc/avaliacoes/2026-06-27-sdd-ui-development-module.md` | §5.5 |
+| Spec normativa | `openspec/specs/sdd-ui-module/spec.md` | após archive |
+| Estado workspace | `openspec/infra.md` — UI Development Module | §2.11.1 |
+
+**Regra §5.3:** este guia **aponta** para `doc/design/*`; não copiar matrizes, prompts ou fluxos A–D do `001`.
 
 ---
 
@@ -2290,6 +2343,14 @@ bash scripts/verify-task-patterns.sh   # paths Pattern: existem; DOCS_SPECS sem 
 ---
 
 ## Changelog do guia
+
+### 1.3.1 (2026-06-27)
+
+- **C1-UI** — Módulo de desenvolvimento de UI opcional pós-C1: `sdd-kit/install-ui-module.sh`, `doc/design/002-*`, `003-*`.
+- **§2.11 / §2.11.1** — Procedimento e checklist do módulo UI (ponteiros, sem duplicar pipeline).
+- **§5.6** — Tabela de referências cruzadas ao módulo UI.
+- **§1.6** — Cenário C1-UI na tabela de instalação.
+- **`doc/avaliacoes/2026-06-27-sdd-ui-development-module.md`** — Avaliação agregada Impeccable + OD + Pencil (**Adopted**).
 
 ### 1.3.0 (2026-06-17)
 

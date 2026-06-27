@@ -1,5 +1,5 @@
-version: "1.3.0"
-guide_version: "1.3.0"
+version: "1.3.1"
+guide_version: "1.3.1"
 min_openspec: "1.3.1"
 profiles: [APP, DOCS_SPECS, HYBRID]
 
@@ -123,3 +123,33 @@ files:
     merge: MERGE
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f openspec/infra.md"
+
+  - path: sdd-kit/install-ui-module.sh
+    source: templates/install-ui-module.sh
+    merge: COPY
+    profiles: [APP, DOCS_SPECS, HYBRID]
+    gate: "test -x sdd-kit/install-ui-module.sh"
+
+  - path: doc/design/000-impeccable-design-system-guia.md
+    source: templates/doc/design/000-impeccable-design-system-guia.md
+    merge: COPY
+    profiles: [APP, DOCS_SPECS, HYBRID]
+    gate: "test -f doc/design/000-impeccable-design-system-guia.md"
+
+  - path: doc/design/001-pipeline-open-design-shadcn-impeccable.md
+    source: templates/doc/design/001-pipeline-open-design-shadcn-impeccable.md
+    merge: COPY
+    profiles: [APP, DOCS_SPECS, HYBRID]
+    gate: "test -f doc/design/001-pipeline-open-design-shadcn-impeccable.md"
+
+  - path: doc/design/002-ui-module-install.md
+    source: templates/doc/design/002-ui-module-install.md
+    merge: COPY
+    profiles: [APP, DOCS_SPECS, HYBRID]
+    gate: "test -f doc/design/002-ui-module-install.md"
+
+  - path: doc/design/003-ui-stack-adapters.md
+    source: templates/doc/design/003-ui-stack-adapters.md
+    merge: COPY
+    profiles: [APP, DOCS_SPECS, HYBRID]
+    gate: "test -f doc/design/003-ui-stack-adapters.md"

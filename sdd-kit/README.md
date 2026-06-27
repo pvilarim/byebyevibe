@@ -1,4 +1,4 @@
-# SDD Install Kit v1.3.0
+# SDD Install Kit v1.3.1
 
 Payload versionado para instalação reproduzível do stack SDD (scripts, rules, skeletons), separado do guia de procedimento `doc/sistema-sdd-pedro.md`.
 
@@ -10,6 +10,7 @@ Payload versionado para instalação reproduzível do stack SDD (scripts, rules,
 | **C2** | Actualização SDD (guia/kit nova versão) | `bash sdd-kit/upgrade.sh --from X --to Y --dry-run` → aprovação → `--apply` |
 | **C2b** | Só CLIs desactualizadas | `doc/sistema-sdd-pedro.md` §2.9.4 — **sem** tocar no kit |
 | **C3** | Propagação de specs de domínio | git/referência em `openspec/specs/` — **não** correr `install.sh` nem `upgrade.sh` |
+| **C1-UI** | Módulo UI opcional (pós-C1) | `bash sdd-kit/install-ui-module.sh --detect` → `--apply [--yes]` — ver guia §2.11 |
 
 ## Perfis
 
@@ -41,9 +42,10 @@ bash sdd-kit/verify.sh
 sdd-kit/
 ├── MANIFEST.yaml      # Versão, ficheiros, merge strategy, gates
 ├── install.sh         # C1 — copia templates para paths canónicos
+├── install-ui-module.sh  # C1-UI — módulo UI opcional pós-C1
 ├── upgrade.sh         # C2 — diff + UPGRADE_REPORT + --apply
 ├── verify.sh          # Orquestra verify-infra + task-patterns + session-status
-└── templates/         # Espelha paths no repo alvo (scripts/, .cursor/rules/, …)
+└── templates/         # Espelha paths no repo alvo (scripts/, .cursor/rules/, doc/design/, …)
 ```
 
 ## Hub vs consumidor

@@ -47,6 +47,7 @@ Para trabalho tipo D/E, **SEMPRE** consultar Graphify e GitNexus antes de escrev
 | Teoria / relações entre conceitos | `graphify-out/GRAPH_REPORT.md` |
 | Workshop e transcrições | `doc/curso/aula-*.md` |
 | Guia de instalação SDD (v1.3) | `doc/sistema-sdd-pedro.md` |
+| Módulo UI (C1-UI) | `doc/sistema-sdd-pedro.md` §2.11 · `doc/design/002-ui-module-install.md` |
 | Install kit (payload SDD) | `sdd-kit/` |
 | Actualização SDD (repo já instalado) | `doc/sistema-sdd-pedro.md` §2.9 |
 | Scripts CDP / transcrições | `doc/curso/scripts/AGENTS.md` |
@@ -58,6 +59,21 @@ Para trabalho tipo D/E, **SEMPRE** consultar Graphify e GitNexus antes de escrev
 | Infra instalada (MCP, CLIs, skills) | `openspec/infra.md` |
 | Install kit (payload versionado) | `sdd-kit/` |
 | Avaliações de integração / ferramentas descartadas | `doc/avaliacoes/` |
+| Impeccable + shadcn — guia de adoção | `doc/design/000-impeccable-design-system-guia.md` |
+| Pipeline OD / Pencil / Figma → shadcn → Impeccable | `doc/design/001-pipeline-open-design-shadcn-impeccable.md` |
+| Instalação módulo UI (C1-UI) | `doc/design/002-ui-module-install.md` |
+| UI stack adapters (sem shadcn) | `doc/design/003-ui-stack-adapters.md` |
+
+## Documentação relacionada (design system)
+
+| Documento | Tema |
+|-----------|------|
+| [`doc/design/000-impeccable-design-system-guia.md`](./doc/design/000-impeccable-design-system-guia.md) | Impeccable + shadcn — guia de adoção |
+| [`doc/design/001-pipeline-open-design-shadcn-impeccable.md`](./doc/design/001-pipeline-open-design-shadcn-impeccable.md) | Pipeline OD / Pencil / Figma → shadcn → Impeccable |
+| [`doc/design/002-ui-module-install.md`](./doc/design/002-ui-module-install.md) | Instalação C1-UI (`install-ui-module.sh`) |
+| [`doc/design/003-ui-stack-adapters.md`](./doc/design/003-ui-stack-adapters.md) | Adapters tailwind-custom / other |
+
+> Integrado no guia canónico `doc/sistema-sdd-pedro.md` §2.11 (v1.3.1).
 
 ## Protocolo de Classificação de Tarefas
 
