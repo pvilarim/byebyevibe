@@ -191,6 +191,20 @@ Novos entries (exemplo):
 - C3 (propagação specs) **não** dispara `install-ui-module.sh`.
 - `doc/design/000` e `001` conteúdo técnico **preservado**; apenas notas de adaptação no topo.
 
+## Compatibilidade com stack SDD (pre-apply)
+
+Ver `research.md` (2026-06-27): **sem bloqueio estrutural**. Mitigações obrigatórias na implementação:
+
+| ID | Mitigação |
+|----|-----------|
+| M1 | Disambiguação `openspec/.../design.md` vs `DESIGN.md` (raiz) em `002` |
+| M2 | Impeccable não altera blocos GitNexus em `AGENTS.md` |
+| M3 | Gate Node 24+ antes de `npx impeccable install` |
+| M4 | Nota hook Impeccable vs `/opsx:apply` intensivo |
+| M5 | Pós C1-UI: `gitnexus analyze` + `graphify update .` |
+| M6 | MCP design (OD/Pencil/Figma) sob demanda; registo em `infra.md` |
+| M7 | Skills Impeccable fora de `verify-task-patterns` |
+
 ## Open questions (resolvidas neste design)
 
 | Pergunta | Resolução |

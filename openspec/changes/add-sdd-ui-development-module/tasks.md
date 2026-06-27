@@ -17,10 +17,10 @@
 
 ## 2. Documentos de procedimento (002 e 003)
 
-- [ ] 2.1 Criar `doc/design/002-ui-module-install.md` — C1-UI, árvore shadcn, checklist, conflito skills
-  - **Pattern:** `doc/design/000-impeccable-design-system-guia.md` §5
-  - **Invariants:** `sdd-ui-module` — shadcn recommended + opt-out
-  - **Gate:** `test -f doc/design/002-ui-module-install.md && grep -q 'opt-out\|opt.out' doc/design/002-ui-module-install.md && grep -q 'install-ui-module' doc/design/002-ui-module-install.md`
+- [ ] 2.1 Criar `doc/design/002-ui-module-install.md` — C1-UI, árvore shadcn, checklist, conflito skills, mitigações M1–M7
+  - **Pattern:** `openspec/changes/add-sdd-ui-development-module/research.md`
+  - **Invariants:** `sdd-ui-module` — shadcn recommended + opt-out; compatibilidade SDD
+  - **Gate:** `test -f doc/design/002-ui-module-install.md && grep -q 'opt-out\|opt.out' doc/design/002-ui-module-install.md && grep -q 'install-ui-module' doc/design/002-ui-module-install.md && grep -q 'DESIGN.md' doc/design/002-ui-module-install.md`
 
 - [ ] 2.2 Criar `doc/design/003-ui-stack-adapters.md` — Caminho B (tailwind-custom) e C (other)
   - **Pattern:** `doc/design/001-pipeline-open-design-shadcn-impeccable.md` §4
@@ -30,7 +30,7 @@
 
 - [ ] 3.1 Implementar `sdd-kit/install-ui-module.sh` com `--detect`, `--dry-run`, `--apply`, `--yes`
   - **Pattern:** `sdd-kit/install.sh`
-  - **Invariants:** `sdd-ui-module` — detect SKIP sem frontend
+  - **Invariants:** `sdd-ui-module` — detect SKIP sem frontend; M3 gate Node 24+
   - **Gate:** `bash sdd-kit/install-ui-module.sh --help >/dev/null 2>&1 || bash sdd-kit/install-ui-module.sh --detect 2>&1 | grep -qi 'SKIP\|shadcn\|tailwind\|frontend'`
 
 - [ ] 3.2 Lógica `--detect`: `components.json` / `components/ui/` → shadcn; tailwind sem ui → prompt path

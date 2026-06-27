@@ -55,6 +55,11 @@ Each file MUST state that shadcn is the **default recommended** path; alternativ
 
 For repositories with Next.js (or equivalent) + Tailwind and no detected design system, `install-ui-module.sh` MUST recommend shadcn/ui installation and MUST allow explicit refusal.
 
+#### Scenario: Node version gate before Impeccable
+
+- **WHEN** Node.js version is below 24 and operator runs `--apply` with Impeccable install
+- **THEN** the script MUST warn and skip `npx impeccable install` unless Node 24+ is available (per `research.md` M3)
+
 #### Scenario: Operator accepts shadcn recommendation
 
 - **WHEN** detection yields `tailwind-custom` candidate and operator confirms shadcn install
