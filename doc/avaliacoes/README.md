@@ -30,6 +30,7 @@ Registo histórico de ferramentas, padrões e ideias **avaliadas** para o stack 
 | Data | Candidato | Decisão | Documento |
 |------|-----------|---------|-----------|
 | 2026-03-26 | [Headroom](https://github.com/chopratejas/headroom) — compressão de contexto para agentes | **Descartado** | [2026-03-26-headroom-context-compression.md](./2026-03-26-headroom-context-compression.md) |
+| 2026-06-27 | Módulo UI SDD (Impeccable + Open Design + Pencil + shadcn) — `add-sdd-ui-development-module` | **Adopted** | [2026-06-27-sdd-ui-development-module.md](./2026-06-27-sdd-ui-development-module.md) |
 
 ## Relação com o stack
 

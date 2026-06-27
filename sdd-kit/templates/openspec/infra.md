@@ -37,6 +37,16 @@
 | `sdd-kit/install.sh` | — | <!-- kit-install-status -->❌<!-- /kit-install-status --> | `test -x sdd-kit/install.sh` |
 | `sdd-kit/verify.sh` | — | <!-- kit-verify-status -->❌<!-- /kit-verify-status --> | `bash sdd-kit/verify.sh` |
 
+## UI Development Module
+
+| Componente | Estado | Verificar com |
+|------------|--------|---------------|
+| UI stack | [NEEDS VERIFICATION] | `grep 'UI stack' openspec/project.md` |
+| Impeccable | pending | `test -d .cursor/skills/impeccable` |
+| Open Design | manual / not installed | sob demanda — ver doc/design/002 |
+| Pencil | manual / not installed | sob demanda — ver doc/design/002 |
+| Figma MCP | manual / not installed | `mcp_get_tools` na sessão |
+
 ## Session Coordination
 
 | Script | Função | Estado | Verificar com |

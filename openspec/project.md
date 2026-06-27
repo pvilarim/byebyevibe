@@ -8,6 +8,7 @@ Repositório de specs, documentação técnica e cursos do Pedro Vilarim. Serve 
 
 - **Runtime**: Node.js 22.x, Python 3.13
 - **Framework UI**: Next.js 16+ (App Router), Tailwind CSS v3.4, shadcn/ui
+- **UI stack**: none (shadcn | tailwind-custom | other | none) — registado após C1-UI; ver `doc/sistema-sdd-pedro.md` §2.11
 - **Backend**: Next.js Server Actions + Supabase
 - **Database**: Supabase (Postgres + pgvector + Auth)
 - **LLM**: Anthropic Claude (primário)
@@ -55,8 +56,9 @@ Repositório de specs, documentação técnica e cursos do Pedro Vilarim. Serve 
 - Specs activas: `openspec/specs/`
 - Mudanças em curso: `openspec/changes/`
 - Documentação do curso: `doc/curso/` (5 aulas do Workshop IA 5/2026)
-- **Guia de instalação SDD:** `doc/sistema-sdd-pedro.md` **v1.3.0** — instalação §2 + `sdd-kit/install.sh`; actualização §2.9 + `sdd-kit/upgrade.sh`
-- **Install kit:** `sdd-kit/` (MANIFEST v1.3.0) — payloads versionados para C1/C2
+- **Guia de instalação SDD:** `doc/sistema-sdd-pedro.md` **v1.3.1** — instalação §2 + `sdd-kit/install.sh`; actualização §2.9 + `sdd-kit/upgrade.sh`; módulo UI §2.11 + `sdd-kit/install-ui-module.sh`
+- **Install kit:** `sdd-kit/` (MANIFEST v1.3.1) — payloads versionados para C1/C2/C1-UI
+- **Módulo UI (design system):** `doc/design/` — `002-ui-module-install.md`, `001-pipeline-open-design-shadcn-impeccable.md`
 - **Avaliações de integração (histórico):** `doc/avaliacoes/` — ferramentas pesquisadas para o stack SDD
 - Comportamento de agentes: `AGENTS.md` (não duplicar regras aqui)
 

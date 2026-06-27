@@ -50,12 +50,25 @@ Regra always-on: `.cursor/rules/016-session-coordination.mdc`.
 
 | Artefacto | Versão | Estado | Verificar com |
 |-----------|--------|--------|---------------|
-| `sdd-kit/MANIFEST.yaml` | <!-- kit-version -->1.3.0<!-- /kit-version --> | <!-- kit-status -->✅<!-- /kit-status --> | `grep version sdd-kit/MANIFEST.yaml` |
+| `sdd-kit/MANIFEST.yaml` | <!-- kit-version -->1.3.1<!-- /kit-version --> | <!-- kit-status -->✅<!-- /kit-status --> | `grep version sdd-kit/MANIFEST.yaml` |
 | `sdd-kit/install.sh` | — | <!-- kit-install-status -->✅<!-- /kit-install-status --> | `test -x sdd-kit/install.sh` |
+| `sdd-kit/install-ui-module.sh` | — | ✅ | `test -x sdd-kit/install-ui-module.sh` |
 | `sdd-kit/upgrade.sh` | — | ✅ | `test -x sdd-kit/upgrade.sh` |
 | `sdd-kit/verify.sh` | — | <!-- kit-verify-status -->✅<!-- /kit-verify-status --> | `bash sdd-kit/verify.sh` |
 
-Fonte de payloads: `sdd-kit/templates/` (não extrair scripts do markdown §12). Ver `sdd-kit/README.md` para cenários C1–C3.
+Fonte de payloads: `sdd-kit/templates/` (não extrair scripts do markdown §12). Ver `sdd-kit/README.md` para cenários C1–C3 e C1-UI.
+
+## UI Development Module
+
+| Componente | Estado | Verificar com |
+|------------|--------|---------------|
+| UI stack | none (DOCS_SPECS hub) | `grep 'UI stack' openspec/project.md` |
+| Impeccable | SKIP — hub sem frontend | `test -d .cursor/skills/impeccable` |
+| Open Design | manual / not installed | sob demanda — ver `doc/design/002-ui-module-install.md` |
+| Pencil | manual / not installed | sob demanda — ver `doc/design/002-ui-module-install.md` |
+| Figma MCP | manual / not installed | `mcp_get_tools` na sessão |
+| `doc/design/002-ui-module-install.md` | ✅ | `test -f doc/design/002-ui-module-install.md` |
+| `doc/design/003-ui-stack-adapters.md` | ✅ | `test -f doc/design/003-ui-stack-adapters.md` |
 
 ## Env vars (nomes apenas)
 
