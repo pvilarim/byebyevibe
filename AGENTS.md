@@ -58,6 +58,17 @@ Para trabalho tipo D/E, **SEMPRE** consultar Graphify e GitNexus antes de escrev
 | Infra instalada (MCP, CLIs, skills) | `openspec/infra.md` |
 | Install kit (payload versionado) | `sdd-kit/` |
 | Avaliações de integração / ferramentas descartadas | `doc/avaliacoes/` |
+| Impeccable + shadcn — guia de adoção | `doc/design/000-impeccable-design-system-guia.md` |
+| Pipeline OD / Pencil / Figma → shadcn → Impeccable | `doc/design/001-pipeline-open-design-shadcn-impeccable.md` |
+
+## Documentação relacionada (design system)
+
+| Documento | Tema |
+|-----------|------|
+| [`doc/design/000-impeccable-design-system-guia.md`](./doc/design/000-impeccable-design-system-guia.md) | Impeccable + shadcn — guia de adoção |
+| [`doc/design/001-pipeline-open-design-shadcn-impeccable.md`](./doc/design/001-pipeline-open-design-shadcn-impeccable.md) | Pipeline OD / Pencil / Figma → shadcn → Impeccable |
+
+> Importados de `topocnc-art` (jun/2026). Integração no guia canónico `doc/sistema-sdd-pedro.md` pendente.
 
 ## Protocolo de Classificação de Tarefas
 
