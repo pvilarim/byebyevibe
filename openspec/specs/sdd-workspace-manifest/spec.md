@@ -47,12 +47,21 @@ The repository MUST have `scripts/verify-infra.sh` — an idempotent script that
 
 ### Requirement: Manifest sections
 
-`openspec/infra.md` MUST include at minimum these sections: SDD Stack (repo), MCP Servers, Skills (repo), **Install Kit**, Session Coordination (when applicable), Env vars present (names only), and Agent rules summary. Each section MUST include a "verify with" column or command reference.
+`openspec/infra.md` MUST include at minimum these sections: SDD Stack (repo), MCP Servers, Skills (repo), **Install Kit**, **UI Development Module**, Session Coordination (when applicable), Env vars present (names only), and Agent rules summary. Each section MUST include a "verify with" column or command reference.
 
 #### Scenario: Agent reads manifest structure
 
 - **WHEN** an agent opens `openspec/infra.md`
 - **THEN** it finds tabular entries for OpenSpec, GitNexus, Graphify, and Install Kit with version and status columns
+
+### Requirement: UI Development Module section in infrastructure manifest
+
+`openspec/infra.md` template in `sdd-kit/templates/` MUST include a **UI Development Module** section documenting Impeccable status, detected UI stack, and optional design tools (Open Design, Pencil, Figma MCP).
+
+#### Scenario: Fresh APP install includes UI infra skeleton
+
+- **WHEN** `sdd-kit/install.sh --profile APP` copies `openspec/infra.md`
+- **THEN** the UI Development Module section exists with default values `pending` or `SKIP`
 
 ### Requirement: Install kit section in infrastructure manifest
 

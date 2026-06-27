@@ -8,7 +8,7 @@ Normative requirements for versioned, reproducible distribution of SDD stack art
 
 ### Requirement: Versioned install kit directory
 
-The distribution repository MUST include `sdd-kit/` at repository root with at minimum: `MANIFEST.yaml`, `README.md`, `install.sh`, `upgrade.sh`, `verify.sh`, and `templates/` mirroring target repository paths.
+The distribution repository MUST include `sdd-kit/` at repository root with at minimum: `MANIFEST.yaml`, `README.md`, `install.sh`, `upgrade.sh`, `verify.sh`, `install-ui-module.sh`, and `templates/` mirroring target repository paths.
 
 #### Scenario: Hub repository layout
 
@@ -19,6 +19,11 @@ The distribution repository MUST include `sdd-kit/` at repository root with at m
 
 - **WHEN** `MANIFEST.yaml` is read
 - **THEN** every file required by `sdd-post-install-verification` and `sdd-session-coordination` for a complete SDD install appears with `path`, `source`, `merge` strategy, and `gate` command
+
+#### Scenario: Manifest lists UI module files
+
+- **WHEN** `MANIFEST.yaml` is read after UI module release
+- **THEN** entries exist for `sdd-kit/install-ui-module.sh` and `doc/design/002-ui-module-install.md` with `gate` commands
 
 ### Requirement: Deterministic greenfield install
 
@@ -59,7 +64,7 @@ The distribution repository MUST include `sdd-kit/` at repository root with at m
 
 ### Requirement: Guide documents project organization and scenarios
 
-`doc/sistema-sdd-pedro.md` MUST include section **§1.6** (or equivalent numbered section) documenting: four-layer model (procedure / payload / specs / workspace state), scenarios C1 (greenfield), C2 (SDD upgrade), C2b (CLI-only), C3 (spec propagation without SDD reinstall), and profile differences APP / DOCS_SPECS / HYBRID.
+`doc/sistema-sdd-pedro.md` MUST include section **§1.6** (or equivalent numbered section) documenting: four-layer model (procedure / payload / specs / workspace state), scenarios C1 (greenfield), C2 (SDD upgrade), C2b (CLI-only), C3 (spec propagation without SDD reinstall), **C1-UI** (optional UI development module after C1), and profile differences APP / DOCS_SPECS / HYBRID.
 
 #### Scenario: Human reads installation scenarios
 
@@ -70,6 +75,11 @@ The distribution repository MUST include `sdd-kit/` at repository root with at m
 
 - **WHEN** an agent is prompted to install SDD in a foreign repository
 - **THEN** the guide directs it to `sdd-kit/install.sh` with profile flag rather than extracting §12 code blocks for scripts
+
+#### Scenario: Human reads C1-UI scenario
+
+- **WHEN** an operator opens §1.6 before UI module install
+- **THEN** C1-UI is listed as optional post-C1 with entry command `sdd-kit/install-ui-module.sh`
 
 ### Requirement: Version alignment on release
 
