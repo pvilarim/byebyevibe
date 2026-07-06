@@ -68,6 +68,8 @@ try:
     with open(path) as f:
         data = json.load(f)
     val = data.get(field, "")
+    if val is None:
+        val = ""
     if isinstance(val, list):
         print(",".join(val))
     else:
@@ -82,6 +84,7 @@ sdd_session_write_json() {
   python3 - <<'PY' "$file"
 import json, os, sys
 path = sys.argv[1]
+lock_holder_pid_raw = os.environ.get("SDD_LOCK_HOLDER_PID", "")
 payload = {
     "session_id": os.environ["SDD_SESSION_ID"],
     "phase": os.environ["SDD_PHASE"],
@@ -89,7 +92,13 @@ payload = {
     "worktree_path": os.environ["SDD_WORKTREE_PATH"],
     "branch": os.environ["SDD_BRANCH"],
     "paths_scope": os.environ.get("SDD_PATHS_SCOPE", "").split(",") if os.environ.get("SDD_PATHS_SCOPE") else [],
+    # Informational only — this is register.sh's own PID, which exits right
+    # after writing this file. NOT a liveness signal (see lock_holder_pid).
     "pid": int(os.environ["SDD_PID"]),
+    # Authoritative liveness signal for phase=apply: the background flock
+    # holder started by sdd_session_start_lock_holder, alive for the whole
+    # session. Empty/null for explore/propose (no lock holder is started).
+    "lock_holder_pid": int(lock_holder_pid_raw) if lock_holder_pid_raw else None,
     "started_at": os.environ["SDD_STARTED_AT"],
     "heartbeat_at": os.environ["SDD_HEARTBEAT_AT"],
 }
@@ -108,11 +117,18 @@ sdd_session_start_lock_holder() {
     fi
   fi
 
+  # Redirect the holder's own stdin/stdout/stderr away from the caller's fds:
+  # without this, the infinite loop keeps the caller's stdout pipe open
+  # forever, hanging any `$(...)` command substitution around register.sh
+  # (e.g. capturing the SESSION_ID= line) even after register.sh itself exits.
   (
     flock -x 200
     while true; do sleep 3600; done
-  ) 200>"$LOCK_FILE" &
-  echo $! > "$LOCK_HOLDER_PID_FILE"
+  ) 200>"$LOCK_FILE" </dev/null >/dev/null 2>&1 &
+  # Global on purpose: the caller (register.sh) reads this right after the
+  # call to persist it as lock_holder_pid in the session JSON.
+  LOCK_HOLDER_PID=$!
+  echo "$LOCK_HOLDER_PID" > "$LOCK_HOLDER_PID_FILE"
 }
 
 sdd_session_stop_lock_holder() {
@@ -130,5 +146,18 @@ sdd_session_stop_lock_holder() {
 sdd_session_current_id() {
   if [[ -f "$CURRENT_SESSION_FILE" ]]; then
     cat "$CURRENT_SESSION_FILE"
+  fi
+}
+
+# Warn when a caller falls back to the shared current-session pointer while
+# more than one session is registered on this worktree — the pointer only
+# ever names the most recently registered session, so heartbeat/release/check
+# calls relying on it can silently target the wrong session. Prefer an
+# explicit --session-id in that case.
+sdd_session_warn_if_shared_pointer_ambiguous() {
+  local count
+  count="$(find "$SESSIONS_DIR" -maxdepth 1 -name '*.json' 2>/dev/null | wc -l | tr -d ' ')"
+  if [[ "${count:-0}" -gt 1 ]]; then
+    echo "WARN: using shared current-session pointer with $count sessions registered on this worktree — pass --session-id explicitly to avoid targeting the wrong session" >&2
   fi
 }

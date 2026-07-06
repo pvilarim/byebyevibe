@@ -1,4 +1,4 @@
-# SDD Install Kit v1.3.2
+# SDD Install Kit v1.3.3
 
 Payload versionado para instalação reproduzível do stack SDD (scripts, rules, skeletons), separado do guia de procedimento `doc/sistema-sdd-pedro.md`.
 

@@ -5,7 +5,7 @@ alwaysApply: true
 
 # Coordenação de sessões SDD (máquina local)
 
-- **Apply MUST** correr `scripts/sdd-session-register.sh` e `scripts/sdd-session-check.sh` **antes** de editar ficheiros; **MUST** correr `scripts/sdd-session-release.sh` ao concluir ou pausar.
+- **Apply MUST** correr `scripts/sdd-session-register.sh --phase apply --change-id <id>`, capturar o `SESSION_ID=<uuid>` emitido em stdout, e passá-lo explicitamente via `--session-id <id>` a `scripts/sdd-session-check.sh` **antes** de editar ficheiros e a `scripts/sdd-session-release.sh` ao concluir ou pausar. Não depender só do ponteiro partilhado `current-session.id` quando mais de uma sessão pode estar activa na mesma worktree (ex.: explore + apply em simultâneo).
 - **Paralelismo seguro:** apply simultâneo só em **git worktrees separados** (locks por worktree root).
 - **Explore/propose** read-only: advisory — usar `bash scripts/sdd-session-status.sh` se houver dúvida.
 - **Procedimento operacional:** `doc/sistema-sdd-pedro.md` §3.3 · requisitos: `openspec/specs/sdd-session-coordination/` (após archive).

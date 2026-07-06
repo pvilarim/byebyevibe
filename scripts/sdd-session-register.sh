@@ -42,17 +42,27 @@ export SDD_PATHS_SCOPE="$PATHS_SCOPE"
 export SDD_PID="$$"
 export SDD_STARTED_AT="$NOW"
 export SDD_HEARTBEAT_AT="$NOW"
+export SDD_LOCK_HOLDER_PID=""
+
+# Acquire the apply lock BEFORE writing the session file: on failure there is
+# nothing to clean up, and the session JSON never exists in a half-registered
+# state.
+if [[ "$PHASE" == "apply" ]]; then
+  if ! sdd_session_start_lock_holder; then
+    echo "ERROR: another apply session holds the lock on this worktree ($WORKTREE)" >&2
+    exit 1
+  fi
+  export SDD_LOCK_HOLDER_PID="$LOCK_HOLDER_PID"
+fi
 
 SESSION_FILE="$SESSIONS_DIR/${SESSION_ID}.json"
 sdd_session_write_json "$SESSION_FILE"
 echo "$SESSION_ID" > "$CURRENT_SESSION_FILE"
 
-if [[ "$PHASE" == "apply" ]]; then
-  if ! sdd_session_start_lock_holder; then
-    echo "ERROR: another apply session holds the lock on this worktree ($WORKTREE)" >&2
-    rm -f "$SESSION_FILE" "$CURRENT_SESSION_FILE"
-    exit 1
-  fi
-fi
-
-echo "Registered session $SESSION_ID (phase=$PHASE, change=$CHANGE_ID)"
+# Human-readable log on stderr; stdout carries only the parseable line below
+# so the caller can capture it and pass it explicitly to
+# sdd-session-heartbeat.sh --session-id and sdd-session-release.sh --session-id
+# (see rule 016-session-coordination — do not rely solely on current-session.id
+# when more than one session may be active on this worktree).
+echo "Registered session $SESSION_ID (phase=$PHASE, change=$CHANGE_ID)" >&2
+echo "SESSION_ID=$SESSION_ID"

@@ -142,6 +142,9 @@ if [[ -f "$INFRA_FILE" ]]; then
   replace_between "$INFRA_FILE" "graphify-version" "$GRAPHIFY_VERSION"
   replace_between "$INFRA_FILE" "graphify-status" "$(to_emoji "$GRAPHIFY_STATUS")"
   replace_between "$INFRA_FILE" "mcp-list" "$MCP_LIST"
+  if grep -q 'session-status' "$INFRA_FILE" 2>/dev/null; then
+    replace_between "$INFRA_FILE" "session-status" "$(to_emoji "$SESSION_STATUS")"
+  fi
   if grep -q 'kit-version' "$INFRA_FILE" 2>/dev/null; then
     replace_between "$INFRA_FILE" "kit-version" "$KIT_VERSION"
     replace_between "$INFRA_FILE" "kit-status" "$(to_emoji "$KIT_STATUS")"

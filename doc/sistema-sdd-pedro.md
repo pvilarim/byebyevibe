@@ -2,7 +2,7 @@
 
 **GitNexus + Graphify + OpenSpec, integrados no Cursor e VS Code + Claude Code**
 
-> **Guia canónico de instalação (v1.3.2)** — usar em qualquer repositório Git, manualmente ou via agente de IA. Payloads em `sdd-kit/`; procedimento neste documento.
+> **Guia canónico de instalação (v1.3.3)** — usar em qualquer repositório Git, manualmente ou via agente de IA. Payloads em `sdd-kit/`; procedimento neste documento.
 
 ## Como usar este documento
 
@@ -17,7 +17,7 @@
 | **Piloto / teste** | `bash sdd-kit/verify.sh` + checklist §2.8 ou §2.9.7 |
 
 - **Padrão `AGENTS.md`:** alinhado a [agents.md](https://agents.md/) + workshop TLC (Context Engineering, on-demand loading).
-- **Versão do guia:** 1.3.2 — ver [Changelog do guia](#changelog-do-guia).
+- **Versão do guia:** 1.3.3 — ver [Changelog do guia](#changelog-do-guia).
 - **Payload versionado:** `sdd-kit/MANIFEST.yaml` — ver §1.6 e `sdd-kit/README.md`.
 - **Não substitui** `openspec/project.md` (constituição do projecto) nem specs em `openspec/specs/`.
 
@@ -2343,6 +2343,18 @@ bash scripts/verify-task-patterns.sh   # paths Pattern: existem; DOCS_SPECS sem 
 ---
 
 ## Changelog do guia
+
+### 1.3.3 (2026-07-06)
+
+Redesenho da coordenação de sessões (`openspec/changes/redesign-sdd-session-coordination/`) — causa raiz: `pid` gravado por `sdd-session-register.sh` era o do próprio processo (morto em milissegundos), tornando o critério de liveness em `sdd-session-check.sh` estruturalmente inútil.
+
+- **`sdd-session-lib.sh`** — `sdd_session_start_lock_holder()` expõe o PID do lock holder em background (`LOCK_HOLDER_PID`); `sdd_session_write_json` grava `lock_holder_pid` no JSON da sessão (sinal de liveness autoritativo para apply, distinto do `pid` de auditoria). Corrigido bug crítico: o subshell do lock holder herdava stdout/stderr do chamador e os mantinha abertos (`while true; sleep 3600`), travando qualquer `$(...)` que capturasse a saída de `register.sh` — agora redirecionado para `/dev/null`.
+- **`sdd-session-register.sh`** — lock adquirido **antes** de escrever o ficheiro de sessão (nada a limpar em caso de falha); emite `SESSION_ID=<uuid>` parseável em stdout (log humano movido para stderr).
+- **`sdd-session-check.sh`** — conflito de apply decidido por liveness de `lock_holder_pid` (não heartbeat/TTL); aceita `--session-id` explícito para auto-identificação robusta ao ponteiro partilhado ser sobrescrito por outra sessão.
+- **`sdd-session-heartbeat.sh` / `sdd-session-release.sh`** — aceitam `--session-id` explícito, com aviso ao cair no fallback `current-session.id` quando há mais de uma sessão activa na worktree. `release.sh` só termina o lock holder quando a sessão libertada é `apply` (antes matava-o incondicionalmente, mesmo ao libertar uma sessão explore/propose noutra sessão apply activa).
+- **`verify-infra.sh` / `openspec/infra.md`** — secção "Session Coordination" passa a reflectir o estado real via marcador `<!-- session-status -->`, em vez de ficar sempre desactualizada.
+- **`.cursor/rules/016-session-coordination.mdc`** — documenta capturar e propagar `--session-id` explicitamente.
+- Testado end-to-end: self-skip sob ponteiro sobrescrito, conflito real entre sessões, `register.sh` recusa segunda apply, `release.sh` selectivo não afecta lock de outra sessão.
 
 ### 1.3.2 (2026-07-06)
 
