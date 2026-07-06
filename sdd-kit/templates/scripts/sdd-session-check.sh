@@ -34,11 +34,10 @@ if [[ "$PHASE" != "apply" ]]; then
   exit 0
 fi
 
-# Non-blocking flock probe
-if ! flock -n 200; then
-  echo "ERROR: apply lock busy — another apply session is active on worktree $(sdd_session_repo_root)" >&2
-  exit 1
-fi 200>"$LOCK_FILE"
+# Conflict detection is done via the session-file scan below. Mutual exclusion
+# is owned by sdd-session-register.sh's exclusive background lock holder; a
+# non-blocking flock probe here would always collide with the current session's
+# own holder (register runs before check — see rule 016-session-coordination).
 
 shopt -s nullglob
 for session_file in "$SESSIONS_DIR"/*.json; do
@@ -69,10 +68,11 @@ for session_file in "$SESSIONS_DIR"/*.json; do
     continue
   fi
 
-  if [[ "$age" -le "$HEARTBEAT_TTL" ]]; then
-    echo "ERROR: apply session $other_id active (change=$other_change) on same worktree — wait or use a separate git worktree (see doc/sistema-sdd-pedro.md §3.3)" >&2
-    exit 1
-  fi
+  # Not provably stale (fresh heartbeat OR live PID) → treat as active conflict.
+  # A stale heartbeat with a still-alive PID (long op without heartbeat) must
+  # still block, so we do NOT gate this on age <= TTL.
+  echo "ERROR: apply session $other_id active (change=$other_change) on same worktree — wait or use a separate git worktree (see doc/sistema-sdd-pedro.md §3.3)" >&2
+  exit 1
 done
 
 exit 0

@@ -40,8 +40,6 @@ Para trabalho tipo D/E, **SEMPRE** consultar Graphify e GitNexus antes de escrev
 | Actualização SDD (repo já instalado) | `doc/sistema-sdd-pedro.md` §2.9 |
 | Install kit (payload versionado) | `sdd-kit/` |
 | Infra instalada (MCP, CLIs, skills) | `openspec/infra.md` |
-| Módulo UI (C1-UI) | `doc/sistema-sdd-pedro.md` §2.11 · `doc/design/002-ui-module-install.md` |
-| Pipeline design / shadcn | `doc/design/001-pipeline-open-design-shadcn-impeccable.md` |
 | TypeScript (se aplicável) | `.cursor/rules/010-typescript.mdc` |
 | Python | `.cursor/rules/020-python.mdc` |
 | Supabase | `.cursor/rules/030-supabase.mdc` |
