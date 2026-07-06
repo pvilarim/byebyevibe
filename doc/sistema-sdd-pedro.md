@@ -2,7 +2,7 @@
 
 **GitNexus + Graphify + OpenSpec, integrados no Cursor e VS Code + Claude Code**
 
-> **Guia canónico de instalação (v1.3.1)** — usar em qualquer repositório Git, manualmente ou via agente de IA. Payloads em `sdd-kit/`; procedimento neste documento.
+> **Guia canónico de instalação (v1.3.2)** — usar em qualquer repositório Git, manualmente ou via agente de IA. Payloads em `sdd-kit/`; procedimento neste documento.
 
 ## Como usar este documento
 
@@ -17,7 +17,7 @@
 | **Piloto / teste** | `bash sdd-kit/verify.sh` + checklist §2.8 ou §2.9.7 |
 
 - **Padrão `AGENTS.md`:** alinhado a [agents.md](https://agents.md/) + workshop TLC (Context Engineering, on-demand loading).
-- **Versão do guia:** 1.3.1 — ver [Changelog do guia](#changelog-do-guia).
+- **Versão do guia:** 1.3.2 — ver [Changelog do guia](#changelog-do-guia).
 - **Payload versionado:** `sdd-kit/MANIFEST.yaml` — ver §1.6 e `sdd-kit/README.md`.
 - **Não substitui** `openspec/project.md` (constituição do projecto) nem specs em `openspec/specs/`.
 
@@ -2343,6 +2343,12 @@ bash scripts/verify-task-patterns.sh   # paths Pattern: existem; DOCS_SPECS sem 
 ---
 
 ## Changelog do guia
+
+### 1.3.2 (2026-07-06)
+
+- **`scripts/bootstrap-sdd.sh`** — GitNexus agora é opcional: falha em install/setup/analyze já não aborta o bootstrap (Graphify + `sdd-kit/install.sh` continuam). Corrigido também line-endings CRLF que quebravam o parse do bash.
+- **`scripts/sdd-session-check.sh`** — Removido probe `flock -n` redundante que colidia com o próprio holder da sessão (register corre antes de check, rule `016`); detecção de conflito continua via scan dos session-files.
+- **`sdd-kit/templates/AGENTS.core.md`** — Removidas linhas duplicadas (Módulo UI / Pipeline design) na tabela "Contexto sob demanda".
 
 ### 1.3.1 (2026-06-27)
 

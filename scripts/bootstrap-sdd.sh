@@ -8,10 +8,13 @@ echo "==> OpenSpec..."
 npm install -g @fission-ai/openspec@latest
 openspec init --tools "cursor,claude" "$REPO" 2>/dev/null || openspec init --tools "cursor,claude"
 
-echo "==> GitNexus..."
-npm install -g gitnexus
-gitnexus setup
-gitnexus analyze
+echo "==> GitNexus (opcional — não aborta o bootstrap se falhar)..."
+if npm install -g gitnexus; then
+  gitnexus setup || echo "WARN: 'gitnexus setup' falhou — a continuar"
+  gitnexus analyze || echo "WARN: 'gitnexus analyze' falhou — a continuar"
+else
+  echo "WARN: instalação do GitNexus falhou (ex.: binário nativo do onnxruntime bloqueado pela rede) — a continuar sem GitNexus"
+fi
 
 echo "==> Graphify..."
 if ! command -v uv &>/dev/null; then
