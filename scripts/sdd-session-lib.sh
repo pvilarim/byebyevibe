@@ -163,14 +163,18 @@ sdd_session_warn_if_shared_pointer_ambiguous() {
 }
 
 # True (exit 0) iff at least one remaining session file for THIS worktree
-# still declares phase=apply, excluding $1 if given (used by release.sh,
-# after removing its own session file, to decide whether it is safe to stop
-# the worktree's lock holder without affecting a still-active apply session
-# it does not own).
+# still declares phase=apply AND has a live lock_holder_pid, excluding $1 if
+# given (used by release.sh, after removing its own session file, to decide
+# whether it is safe to stop the worktree's lock holder without affecting a
+# still-active apply session it does not own). A phase=apply entry whose
+# lock_holder_pid is dead is a stale leftover (e.g. surviving a reboot or a
+# crash that never got cleaned up) and MUST NOT count as "other" — otherwise
+# it would permanently block release.sh from ever stopping a legitimately
+# owned, currently-alive lock holder.
 sdd_session_has_other_apply_session() {
   local exclude_id="${1:-}"
   shopt -s nullglob
-  local f sid phase worktree
+  local f sid phase worktree lock_pid
   for f in "$SESSIONS_DIR"/*.json; do
     [[ -f "$f" ]] || continue
     sid="$(sdd_session_read_json_field "$f" session_id)"
@@ -179,6 +183,8 @@ sdd_session_has_other_apply_session() {
     [[ "$phase" == "apply" ]] || continue
     worktree="$(sdd_session_read_json_field "$f" worktree_path)"
     [[ "$worktree" == "$REPO_ROOT" ]] || continue
+    lock_pid="$(sdd_session_read_json_field "$f" lock_holder_pid)"
+    sdd_session_is_pid_alive "$lock_pid" || continue
     return 0
   done
   return 1
