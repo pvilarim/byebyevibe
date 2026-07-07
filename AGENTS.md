@@ -160,3 +160,14 @@ Tipo D: disparar researchers **em paralelo**.
 ## Comunicação
 
 Quando responder ao Pedro: pt-BR; começar pela resposta; avaliações directas; sem preâmbulo desnecessário.
+
+## Cursor Cloud specific instructions
+
+Perfil **DOCS_SPECS**: não há app nem `npm run dev`. "Rodar" = OpenSpec CLI + scripts de verificação (`scripts/`, `sdd-kit/verify.sh`) + scripts Python de docs (`doc/curso/scripts/`).
+
+- **OpenSpec CLI**: instalado pelo update script em `$HOME/.npm-global/bin` (o prefix npm global padrão é `/`, que exige root). O PATH é ajustado em `~/.bashrc`; se `openspec` não estiver no PATH, use `~/.npm-global/bin/openspec`. Comandos usuais: `openspec list`, `openspec validate --all --strict`, `openspec status --change <id>`, `openspec new change <id>`.
+- **`npx openspec` (bare) NÃO funciona** neste ambiente — o pacote publicado é escopado (`@fission-ai/openspec`). Onde a tabela Commands mostra `npx openspec ...`, rode `openspec ...` (ou `npx -y @fission-ai/openspec@latest ...`). Isto afecta também `scripts/verify-infra.sh`, que por isso reporta OpenSpec como ❌.
+- Use `OPENSPEC_TELEMETRY=0` para silenciar a nota de telemetria.
+- **`scripts/verify-infra.sh` reescreve `openspec/infra.md`** (timestamp + markers de status) como efeito colateral e sai com código ≠ 0 no cloud porque GitNexus/Graphify/OpenSpec-via-npx aparecem ❌ (tooling opcional; MCP GitNexus/Graphify não presentes aqui). Reverta com `git checkout -- openspec/infra.md` se não pretende commitar. Session-coordination e Install-Kit passam ✅.
+- A validação `openspec validate --all` falha só em `add-sdd-ui-development-module` (conteúdo pré-existente: `sdd-ui-module/spec.md` sem headers de delta) — não é problema de ambiente. Os 6 specs passam.
+- **Scripts Python** (`doc/curso/scripts/`): stdlib-only, Python 3.12. `enrich-transcripts.py` tem path Windows hardcoded (`c:\apps\spec-pedro\...`), logo não roda sem edição no Linux (transcrições já estão enriquecidas no repo). `extract-lessons-batch.py` exige Chrome com `--remote-debugging-port=9222` e auto-instala `websockets` — não executável sem esse setup.
