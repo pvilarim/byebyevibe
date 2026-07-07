@@ -44,20 +44,30 @@ export SDD_STARTED_AT="$NOW"
 export SDD_HEARTBEAT_AT="$NOW"
 export SDD_LOCK_HOLDER_PID=""
 
-# Acquire the apply lock BEFORE writing the session file: on failure there is
-# nothing to clean up, and the session JSON never exists in a half-registered
-# state.
+# Acquire the apply lock BEFORE writing the session file: on failure to
+# ACQUIRE there is nothing to clean up, and the session JSON never exists in
+# a half-registered state.
 if [[ "$PHASE" == "apply" ]]; then
   if ! sdd_session_start_lock_holder; then
     echo "ERROR: another apply session holds the lock on this worktree ($WORKTREE)" >&2
     exit 1
   fi
   export SDD_LOCK_HOLDER_PID="$LOCK_HOLDER_PID"
+  # Safety net for the opposite failure mode: if writing the session file or
+  # the current-session pointer fails AFTER the lock was acquired, release it
+  # instead of leaving an orphaned apply lock with no corresponding session
+  # file (undetectable by sdd-session-check.sh's session-file scan). Cleared
+  # once registration completes successfully below.
+  trap 'sdd_session_stop_lock_holder' EXIT
 fi
 
 SESSION_FILE="$SESSIONS_DIR/${SESSION_ID}.json"
 sdd_session_write_json "$SESSION_FILE"
 echo "$SESSION_ID" > "$CURRENT_SESSION_FILE"
+
+if [[ "$PHASE" == "apply" ]]; then
+  trap - EXIT
+fi
 
 # Human-readable log on stderr; stdout carries only the parseable line below
 # so the caller can capture it and pass it explicitly to

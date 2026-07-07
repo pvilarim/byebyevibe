@@ -56,4 +56,12 @@
 
 - [x] 4.4 `bash sdd-kit/verify.sh` limpo, exceto GitNexus (bloqueado pela rede do ambiente) e Graphify (este clone nunca correu `graphify update .` — não relacionado à mudança). `verify-task-patterns.sh` e `sdd-session-status.sh` ✅; "Session coordination" ✅.
 
-- [ ] 4.5 `/opsx:sync` para promover este delta spec a `openspec/specs/sdd-session-coordination/spec.md`, depois `/opsx:archive`
+- [x] 4.5 `/opsx:sync` para promover este delta spec a `openspec/specs/sdd-session-coordination/spec.md`, depois `/opsx:archive` (manual, equivalente ao workflow: spec principal fundido, change movido para `archive/2026-07-06-...`)
+
+## 5. Fixes pós-review (Cursor Bugbot, PR #19, high effort)
+
+- [x] 5.1 `sdd-session-register.sh`: `trap 'sdd_session_stop_lock_holder' EXIT` entre adquirir o lock e completar o registo (write_json + ponteiro) — se algo falhar nesse intervalo, o lock é libertado em vez de ficar órfão sem session file correspondente. Trap limpo (`trap - EXIT`) após sucesso.
+  - **Gate:** injectar falha (python3 indisponível) após lock adquirido; confirmar que nenhum processo `flock`/`sleep 3600` sobrevive ao `register.sh` que falhou
+- [x] 5.2 `sdd-session-lib.sh`: novo helper `sdd_session_has_other_apply_session` (scan de session-files com phase=apply na mesma worktree, excluindo um id opcional)
+- [x] 5.3 `sdd-session-release.sh`: critério de `stop_lock_holder` trocado de "fase da sessão libertada" para "nenhuma OUTRA sessão apply resta registada" — cobre tanto o caso normal (libertar a própria apply) como o lock verdadeiramente órfão (sem session file, sem ponteiro), sem nunca afectar uma sessão apply diferente ainda activa
+  - **Gate:** testado manualmente — release de explore B não mata lock de apply A; release de A mata o próprio lock; `release.sh` sem argumentos com lock genuinamente órfão (session file e ponteiro ausentes) liberta-o correctamente

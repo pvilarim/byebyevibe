@@ -161,3 +161,25 @@ sdd_session_warn_if_shared_pointer_ambiguous() {
     echo "WARN: using shared current-session pointer with $count sessions registered on this worktree — pass --session-id explicitly to avoid targeting the wrong session" >&2
   fi
 }
+
+# True (exit 0) iff at least one remaining session file for THIS worktree
+# still declares phase=apply, excluding $1 if given (used by release.sh,
+# after removing its own session file, to decide whether it is safe to stop
+# the worktree's lock holder without affecting a still-active apply session
+# it does not own).
+sdd_session_has_other_apply_session() {
+  local exclude_id="${1:-}"
+  shopt -s nullglob
+  local f sid phase worktree
+  for f in "$SESSIONS_DIR"/*.json; do
+    [[ -f "$f" ]] || continue
+    sid="$(sdd_session_read_json_field "$f" session_id)"
+    [[ -n "$exclude_id" && "$sid" == "$exclude_id" ]] && continue
+    phase="$(sdd_session_read_json_field "$f" phase)"
+    [[ "$phase" == "apply" ]] || continue
+    worktree="$(sdd_session_read_json_field "$f" worktree_path)"
+    [[ "$worktree" == "$REPO_ROOT" ]] || continue
+    return 0
+  done
+  return 1
+}
