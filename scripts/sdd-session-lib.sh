@@ -117,17 +117,49 @@ sdd_session_start_lock_holder() {
     fi
   fi
 
+  # Use a non-blocking flock (-n) inside the background holder, and rendezvous
+  # with the caller over a FIFO before returning. This makes acquisition
+  # SYNCHRONOUS and DEFINITIVE from the caller's point of view: a "success"
+  # return means the flock was actually granted, not merely that a subshell
+  # was spawned to go try. A blocking flock (-x, no -n) here would let the
+  # subshell queue up and block forever if another process holds the lock,
+  # while this function would still return success immediately — leaving a
+  # session recorded with a "live" lock_holder_pid that isn't actually
+  # holding anything (indistinguishable, by mere PID liveness, from a real
+  # holder — see sdd_session_has_other_apply_session).
+  local ready_pipe
+  ready_pipe="$(mktemp -u "$RUNTIME_DIR/lock-ready.XXXXXX")"
+  mkfifo "$ready_pipe" 2>/dev/null || return 1
+
   # Redirect the holder's own stdin/stdout/stderr away from the caller's fds:
   # without this, the infinite loop keeps the caller's stdout pipe open
   # forever, hanging any `$(...)` command substitution around register.sh
   # (e.g. capturing the SESSION_ID= line) even after register.sh itself exits.
   (
-    flock -x 200
-    while true; do sleep 3600; done
-  ) 200>"$LOCK_FILE" </dev/null >/dev/null 2>&1 &
+    exec 200>"$LOCK_FILE"
+    if flock -n 200; then
+      echo ok > "$ready_pipe"
+      while true; do sleep 3600; done
+    else
+      echo fail > "$ready_pipe"
+    fi
+  ) </dev/null >/dev/null 2>&1 &
+  local holder_pid=$!
+
+  local result=""
+  IFS= read -r -t 5 result < "$ready_pipe" || true
+  rm -f "$ready_pipe"
+
+  if [[ "$result" != "ok" ]]; then
+    # Either the lock was genuinely taken (flock -n failed fast) or the
+    # holder never reported back in time — either way, no lock was granted.
+    wait "$holder_pid" 2>/dev/null || true
+    return 1
+  fi
+
   # Global on purpose: the caller (register.sh) reads this right after the
   # call to persist it as lock_holder_pid in the session JSON.
-  LOCK_HOLDER_PID=$!
+  LOCK_HOLDER_PID="$holder_pid"
   echo "$LOCK_HOLDER_PID" > "$LOCK_HOLDER_PID_FILE"
 }
 
