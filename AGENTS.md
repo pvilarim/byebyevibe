@@ -21,6 +21,7 @@ Ver `./openspec/project.md` (stack, convenções, constraints). **Não duplicar*
 | `graphify query "<pergunta>"` | Busca no knowledge graph |
 | `python doc/curso/scripts/enrich-transcripts.py` | Re-enriquecer transcrições do curso |
 | `bash scripts/sdd-session-status.sh` | Sessões SDD activas na worktree local |
+| `npx openspec validate --all --strict` | Gate de CI local (mesmo comando do workflow `sdd-gates`) |
 
 Nota: não há `npm run dev` na raiz — repo de specs e documentação (perfil DOCS_SPECS).
 
@@ -58,6 +59,7 @@ Para trabalho tipo D/E, **SEMPRE** consultar Graphify e GitNexus antes de escrev
 | Tasks atómicas (Pattern, Gate) | `doc/sistema-sdd-pedro.md` §12.10 |
 | Infra instalada (MCP, CLIs, skills) | `openspec/infra.md` |
 | Install kit (payload versionado) | `sdd-kit/` |
+| Gates de CI (sdd-gates, operação) | `doc/sistema-sdd-pedro.md` §2.12 · `.github/workflows/sdd-gates.yml` |
 | Avaliações de integração / ferramentas descartadas | `doc/avaliacoes/` |
 | Inserção de novas ferramentas SDD (metodologia + gaps) | `openspec/changes/explore-oss-coverage-gaps/` |
 | Impeccable + shadcn — guia de adoção | `doc/design/000-impeccable-design-system-guia.md` |
@@ -118,6 +120,8 @@ Se ambíguo entre dois tipos, **PERGUNTAR**. **NUNCA** assumir Tipo A por defeit
 **GitNexus** — Repo indexado como `gitnexus-graphify-openspec`. Antes de editar símbolos: `gitnexus_impact`. Antes de commit: `gitnexus_detect_changes`. Detalhe: `.claude/skills/gitnexus/gitnexus-impact-analysis/SKILL.md`.
 
 **Graphify** — Ler `graphify-out/GRAPH_REPORT.md` antes de grep em perguntas de arquitectura. Após editar código: `graphify update .`. Detalhe: `.cursor/rules/graphify.mdc`.
+
+**CI Gates (sdd-gates)** — Workflow `.github/workflows/sdd-gates.yml` corre em `push`/`pull_request`, fail-closed: `openspec validate --all --strict` (bloqueante), `verify-task-patterns.sh` (bloqueante), `sdd-kit/verify.sh` (report-only). Só orquestra comandos existentes. Sem skill/rule associada (automático out-of-band — intencional). Antes de push: correr `npx openspec validate --all --strict` localmente. Operação e troubleshooting: guia §2.12.
 
 ## Testing
 

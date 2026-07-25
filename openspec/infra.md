@@ -50,13 +50,23 @@ Regra always-on: `.cursor/rules/016-session-coordination.mdc`.
 
 | Artefacto | Versão | Estado | Verificar com |
 |-----------|--------|--------|---------------|
-| `sdd-kit/MANIFEST.yaml` | <!-- kit-version -->1.3.2<!-- /kit-version --> | <!-- kit-status -->✅<!-- /kit-status --> | `grep version sdd-kit/MANIFEST.yaml` |
+| `sdd-kit/MANIFEST.yaml` | <!-- kit-version -->1.4.0<!-- /kit-version --> | <!-- kit-status -->✅<!-- /kit-status --> | `grep version sdd-kit/MANIFEST.yaml` |
 | `sdd-kit/install.sh` | — | <!-- kit-install-status -->✅<!-- /kit-install-status --> | `test -x sdd-kit/install.sh` |
 | `sdd-kit/install-ui-module.sh` | — | ✅ | `test -x sdd-kit/install-ui-module.sh` |
 | `sdd-kit/upgrade.sh` | — | ✅ | `test -x sdd-kit/upgrade.sh` |
 | `sdd-kit/verify.sh` | — | <!-- kit-verify-status -->✅<!-- /kit-verify-status --> | `bash sdd-kit/verify.sh` |
 
 Fonte de payloads: `sdd-kit/templates/` (não extrair scripts do markdown §12). Ver `sdd-kit/README.md` para cenários C1–C3 e C1-UI.
+
+## CI Gates
+
+| Componente | Estado | Verificar com |
+|------------|--------|---------------|
+| Workflow `sdd-gates` | ✅ | `test -f .github/workflows/sdd-gates.yml` |
+| Template no kit | ✅ | `test -f sdd-kit/templates/.github/workflows/sdd-gates.yml` |
+| Branch protection (required check) | `[AÇÃO MANUAL]` — configurar no GitHub | guia §2.12 |
+
+Fail-closed no `openspec validate --all --strict` (pinado `@fission-ai/openspec@1.3.1` = `min_openspec`). Sem skill/rule — automático out-of-band. Operação: `doc/sistema-sdd-pedro.md` §2.12.
 
 ## UI Development Module
 

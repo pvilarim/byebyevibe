@@ -17,7 +17,7 @@
 | **Piloto / teste** | `bash sdd-kit/verify.sh` + checklist §2.8 ou §2.9.7 |
 
 - **Padrão `AGENTS.md`:** alinhado a [agents.md](https://agents.md/) + workshop TLC (Context Engineering, on-demand loading).
-- **Versão do guia:** 1.3.2 — ver [Changelog do guia](#changelog-do-guia).
+- **Versão do guia:** 1.4.0 — ver [Changelog do guia](#changelog-do-guia).
 - **Payload versionado:** `sdd-kit/MANIFEST.yaml` — ver §1.6 e `sdd-kit/README.md`.
 - **Não substitui** `openspec/project.md` (constituição do projecto) nem specs em `openspec/specs/`.
 
@@ -34,7 +34,7 @@ Segunda fricção: o ecossistema move-se depressa. Versões neste documento são
 ## Índice
 
 1. [Pré-requisitos](#1-pré-requisitos-questão-6) — inclui §1.6 (organização e cenários C1–C3)
-2. [Passo a passo de instalação](#2-passo-a-passo-de-instalação-questão-1) — inclui §2.0 (IA), §2.5 (AGENTS.md), §2.8 (verificação), §2.9 (actualização)
+2. [Passo a passo de instalação](#2-passo-a-passo-de-instalação-questão-1) — inclui §2.0 (IA), §2.5 (AGENTS.md), §2.8 (verificação), §2.9 (actualização), §2.12 (gates de CI)
 3. [Classificação de tarefas e pipelines](#3-classificação-de-tarefas-e-pipelines-questões-2-3-31)
 4. [Tabela mestre: ferramenta × responsabilidade × I/O](#4-tabela-mestre-questão-3)
 5. [Documentos e referências cruzadas](#5-documentos-e-referências-cruzadas-questão-32) — inclui §5.5 (avaliações de integração)
@@ -437,6 +437,37 @@ Após C1-UI (`--apply`):
 - [ ] `npx gitnexus analyze --force` se `components/ui/` foi alterado
 - [ ] `graphify update .` para indexar `doc/design/*`
 - [ ] `.cursor/skills/impeccable/` presente (se Impeccable aplicado) — separado de skills SDD
+
+### 2.12 Gates de CI (sdd-gates) — operação
+
+Enforcement fail-closed dos gates SDD no servidor (gap G1 — `add-sdd-ci-gates-workflow`). O workflow `.github/workflows/sdd-gates.yml` **só orquestra comandos já existentes**; não há skill nem rule associada (modo A — automático out-of-band, R3 do contrato de registro = N/A).
+
+**Quando corre:** `push` para `main`/`master` e qualquer `pull_request`.
+
+**Passos e política:**
+
+| Passo | Comando | Política |
+|-------|---------|----------|
+| OpenSpec validate | `npx --yes @fission-ai/openspec@1.3.1 validate --all --strict --no-interactive` | **Bloqueante** (fail-closed) |
+| Task patterns | `bash scripts/verify-task-patterns.sh` | Bloqueante (SKIP se ausente — perfil APP) |
+| sdd-kit verify | `bash sdd-kit/verify.sh` | Report-only (`continue-on-error`) — inclui `verify-infra.sh`, que verifica CLIs de conhecimento ausentes no runner |
+
+**Como ler o output:** no separador Actions (ou check do PR), o passo vermelho indica o gate que falhou. `OpenSpec validate` lista `✗ change/<id>` — reproduzir localmente com `npx openspec validate <id> --strict` e corrigir o artefacto. `Task patterns` lista `FAIL missing: <path>` — corrigir o `Pattern:` no `tasks.md`. O passo `sdd-kit verify` pode aparecer com aviso sem bloquear (esperado: GitNexus/Graphify não existem no runner).
+
+**Desbloquear merge:** corrigir o artefacto que falhou e fazer push — o check reexecuta. **Não** contornar com edição do workflow no mesmo PR; se o gate estiver errado, abrir change próprio.
+
+**Troubleshooting:**
+
+| Sintoma | Causa provável | Acção |
+|---------|----------------|-------|
+| `✗ change/<id>` no validate | Delta sem `## ADDED/MODIFIED/... Requirements` ou requirement sem `#### Scenario:` | Corrigir o delta; `openspec validate <id> --strict` local |
+| `FAIL missing:` no task patterns | Path de `Pattern:` inexistente | Actualizar `tasks.md` |
+| Workflow verde mas merge não bloqueado | Branch protection não configurada | Ver acção manual abaixo |
+| `notarget`/404 no npx | Versão pinada divergente de `min_openspec` | Alinhar com `sdd-kit/MANIFEST.yaml` |
+
+`[AÇÃO MANUAL NECESSÁRIA]` **Branch protection** — o workflow reporta o check, mas só bloqueia merge de facto com branch protection activa: GitHub → Settings → Branches → Add rule para `main`/`master` → "Require status checks to pass" → seleccionar **SDD Gates**. Confirmar num PR de teste antes de confiar no gate.
+
+**Rollback:** apagar `.github/workflows/sdd-gates.yml` desactiva o gate imediatamente (sem estado residual).
 
 ### 2.9 Actualização de instalação existente
 
@@ -2343,6 +2374,12 @@ bash scripts/verify-task-patterns.sh   # paths Pattern: existem; DOCS_SPECS sem 
 ---
 
 ## Changelog do guia
+
+### 1.4.0 (2026-07-25)
+
+- **CI Gates (G1)** — `.github/workflows/sdd-gates.yml`: enforcement fail-closed dos gates SDD em `push`/`pull_request` (`openspec validate --all --strict` bloqueante; `verify-task-patterns.sh` bloqueante; `sdd-kit/verify.sh` report-only). Só orquestra comandos existentes — zero dependência nova (change `add-sdd-ci-gates-workflow`).
+- **§2.12** — Operação humana dos gates de CI: leitura de output, desbloqueio de merge, troubleshooting, `[AÇÃO MANUAL]` branch protection.
+- **`sdd-kit/`** — Template `templates/.github/workflows/sdd-gates.yml` (COPY, perfis APP/DOCS_SPECS/HYBRID); check do workflow em `verify.sh`; MANIFEST 1.3.2 → 1.4.0.
 
 ### 1.3.2 (2026-07-06)
 

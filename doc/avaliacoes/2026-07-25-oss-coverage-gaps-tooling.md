@@ -16,7 +16,7 @@ Research tipo E identificou 8 gaps na cobertura do sistema SDD para desenvolvime
 
 | Gap | Candidato | Decisão | Nota |
 |-----|-----------|---------|------|
-| G1 Enforcement CI | GitHub Actions (workflow próprio) | **Adoptado** (pendente change) | pre-commit/Lefthook **descartados** — overlap com hooks graphify/gitnexus |
+| G1 Enforcement CI | GitHub Actions (workflow próprio) | **Adoptado** — change [`add-sdd-ci-gates-workflow`](../../openspec/changes/add-sdd-ci-gates-workflow/proposal.md) (2026-07-25) | pre-commit/Lefthook **descartados** — overlap com hooks graphify/gitnexus. Workflow `.github/workflows/sdd-gates.yml` + template no sdd-kit v1.4.0 |
 | G2 Verificação por testes | [TDD Guard](https://github.com/nizos/tdd-guard) | **Adoptado** (pendente change; módulo opcional APP) | Piloto obrigatório: empilhamento PreToolUse + custo LLM |
 | G3 Feedback de runtime | GlitchTip / Sentry + MCP | **Adiado** — módulo sob demanda | Infra por projecto de produção, não payload de kit |
 | G4 Métricas do framework | Apache DevLake | **Adiado** | Correcção manual (`sdd-metrics.sh`) preferida; DevLake se equipe/DORA justificar |
@@ -26,6 +26,8 @@ Research tipo E identificou 8 gaps na cobertura do sistema SDD para desenvolvime
 | G8 Supply chain | [Renovate](https://github.com/renovatebot/renovate) + [OSV-Scanner](https://github.com/google/osv-scanner) | **Adoptado** (pendente change) | Templates por perfil no sdd-kit |
 
 ## Condições de reavaliação (itens descartados/adiados)
+
+- **CI gates G1 (adoptado):** reavaliar a composição do workflow `sdd-gates` quando OSV-Scanner/Renovate (G8) ou PR-Agent (G7) entrarem no CI — novos passos entram *dentro* deste workflow ou como jobs paralelos, decisão no change respectivo.
 
 - **Vibe Kanban (G6):** reavaliar em ~6 meses (2027-01) — categoria de orquestradores multi-agente em consolidação; ou se surgir necessidade real de coordenação multi-máquina.
 - **DevLake (G4):** reavaliar se os repos de produção ganharem CI/CD + equipe em escala que justifique DORA.
