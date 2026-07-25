@@ -46,7 +46,7 @@ Para trabalho tipo D/E, **SEMPRE** consultar Graphify e GitNexus antes de escrev
 | Change em curso | `openspec/changes/<id>/` |
 | Teoria / relações entre conceitos | `graphify-out/GRAPH_REPORT.md` |
 | Workshop e transcrições | `doc/curso/aula-*.md` |
-| Guia de instalação SDD (v1.3) | `doc/sistema-sdd-pedro.md` |
+| Guia de instalação SDD (v1.4.0) | `doc/sistema-sdd-pedro.md` |
 | Módulo UI (C1-UI) | `doc/sistema-sdd-pedro.md` §2.11 · `doc/design/002-ui-module-install.md` |
 | Install kit (payload SDD) | `sdd-kit/` |
 | Actualização SDD (repo já instalado) | `doc/sistema-sdd-pedro.md` §2.9 |
@@ -74,7 +74,7 @@ Para trabalho tipo D/E, **SEMPRE** consultar Graphify e GitNexus antes de escrev
 | [`doc/design/002-ui-module-install.md`](./doc/design/002-ui-module-install.md) | Instalação C1-UI (`install-ui-module.sh`) |
 | [`doc/design/003-ui-stack-adapters.md`](./doc/design/003-ui-stack-adapters.md) | Adapters tailwind-custom / other |
 
-> Integrado no guia canónico `doc/sistema-sdd-pedro.md` §2.11 (v1.3.1).
+> Integrado no guia canónico `doc/sistema-sdd-pedro.md` §2.11 (v1.4.0).
 
 ## Protocolo de Classificação de Tarefas
 

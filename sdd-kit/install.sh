@@ -127,38 +127,6 @@ echo "Repo:    $REPO_ROOT"
 $DRY_RUN && echo "Mode:    DRY-RUN"
 echo ""
 
-python3 - <<'PY' "$MANIFEST" "$PROFILE" "$KIT_DIR"
-import sys, re
-
-manifest_path, profile, kit_dir = sys.argv[1:4]
-text = open(manifest_path).read()
-entries = []
-block = None
-for line in text.splitlines():
-    if line.strip().startswith("- path:"):
-        block = {"path": line.split(":", 1)[1].strip()}
-    elif block is not None:
-        m = re.match(r"\s+(\w+):\s*(.+)", line)
-        if m:
-            key, val = m.group(1), m.group(2).strip()
-            if key == "profiles":
-                block["profiles"] = re.findall(r"\w+", val)
-            elif key in ("path", "source", "merge", "gate"):
-                block[key] = val.strip('"')
-        elif line.strip() == "" or line.strip().startswith("- path:"):
-            if "path" in block:
-                entries.append(block)
-            block = {"path": line.split(":", 1)[1].strip()} if line.strip().startswith("- path:") else None
-if block and "path" in block:
-    entries.append(block)
-
-for e in entries:
-    profiles = e.get("profiles", ["APP", "DOCS_SPECS", "HYBRID"])
-    if profile not in profiles and profile != "HYBRID":
-        continue
-    print(f"{e['source']}\t{e['path']}\t{e.get('merge','COPY')}")
-PY
-
 while IFS=$'\t' read -r src dest merge; do
   [[ -n "$src" ]] || continue
   apply_file "$src" "$dest" "$merge"
