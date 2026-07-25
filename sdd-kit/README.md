@@ -1,4 +1,4 @@
-# SDD Install Kit v1.3.2
+# SDD Install Kit v1.4.0
 
 Payload versionado para instalação reproduzível do stack SDD (scripts, rules, skeletons), separado do guia de procedimento `doc/sistema-sdd-pedro.md`.
 
@@ -47,6 +47,12 @@ sdd-kit/
 ├── verify.sh          # Orquestra verify-infra + task-patterns + session-status
 └── templates/         # Espelha paths no repo alvo (scripts/, .cursor/rules/, doc/design/, …)
 ```
+
+## Gate de CI (sdd-gates)
+
+O kit distribui `.github/workflows/sdd-gates.yml` (template em `templates/.github/workflows/`) — workflow GitHub Actions que corre os gates SDD em `push`/`pull_request`, fail-closed no `openspec validate` (versão pinada = `min_openspec`). Só orquestra comandos já existentes; sem dependência nova.
+
+> `[AÇÃO MANUAL NECESSÁRIA]` Para o gate **bloquear merge de facto**, o operador deve activar branch protection no repositório (Settings → Branches → require status check "SDD Gates"). Ver `doc/sistema-sdd-pedro.md` §2.12.
 
 ## Hub vs consumidor
 
