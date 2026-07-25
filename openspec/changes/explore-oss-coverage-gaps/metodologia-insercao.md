@@ -59,6 +59,8 @@ Responde à questão: *o que verificar antes de implementar para evitar incompat
 
 ## Fase 2 — Piloto (apply controlado)
 
+> **Excepção aprovada (2026-07-25):** o piloto é **dispensável** quando a inserção não instala binário novo nem hook — i.e., apenas orquestra comandos já existentes no repo (ex.: G1 `sdd-gates.yml`) ou adiciona documentação/template de config inerte. Nesses casos, Fase 1 → Fase 3 directo. Qualquer ferramenta com hook, binário, serviço ou consumo de LLM mantém piloto obrigatório.
+
 - Apply com R11 (register/check/release) num **worktree ou repo piloto**, nunca directo em todos os repos.
 - **Critérios de sucesso quantificados ANTES do piloto.** Exemplos: TDD Guard — latência extra p95 < Xs por edit e < Y% de bloqueios falsos; correctness-review — pelo menos 1 achado válido a cada N reviews; Renovate — volume de PRs gerível com o preset conservador.
 - Janela de validação definida (ex.: N changes ou N PRs processados pela ferramenta).
@@ -174,6 +176,7 @@ Fase explore concluída. Para aplicar a metodologia à primeira ferramenta:
 
 Ler: openspec/changes/explore-oss-coverage-gaps/research.md (G1)
      openspec/changes/explore-oss-coverage-gaps/metodologia-insercao.md (Fases 0–3)
+     doc/avaliacoes/2026-07-25-oss-coverage-gaps-tooling.md (decisões registadas)
 Infra: openspec/infra.md (assumir ✅ — não reinstalar)
-Fase 0 output esperado: doc/avaliacoes/2026-XX-XX-sdd-ci-gates.md
+Nota: G1 qualifica para a excepção de piloto (sem binário/hook novo) — Fase 1 → Fase 3 directo.
 ---
