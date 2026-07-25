@@ -59,6 +59,7 @@ Para trabalho tipo D/E, **SEMPRE** consultar Graphify e GitNexus antes de escrev
 | Infra instalada (MCP, CLIs, skills) | `openspec/infra.md` |
 | Install kit (payload versionado) | `sdd-kit/` |
 | Avaliações de integração / ferramentas descartadas | `doc/avaliacoes/` |
+| Inserção de novas ferramentas SDD (metodologia + gaps) | `openspec/changes/explore-oss-coverage-gaps/` |
 | Impeccable + shadcn — guia de adoção | `doc/design/000-impeccable-design-system-guia.md` |
 | Pipeline OD / Pencil / Figma → shadcn → Impeccable | `doc/design/001-pipeline-open-design-shadcn-impeccable.md` |
 | Instalação módulo UI (C1-UI) | `doc/design/002-ui-module-install.md` |
