@@ -67,6 +67,7 @@ Para trabalho tipo D/E, **SEMPRE** consultar Graphify e GitNexus antes de escrev
 | Gates de CI (sdd-gates, operação) | `doc/sistema-sdd-pedro.md` §2.12 · `.github/workflows/sdd-gates.yml` |
 | Supply chain (Renovate + OSV) | `doc/sistema-sdd-pedro.md` §2.13 |
 | Avaliações de integração / ferramentas descartadas | `doc/avaliacoes/` |
+| Discovery / README raiz (EN) + posicionamento vibe→agentic | `README.md` · `doc/avaliacoes/2026-07-26-sdd-discovery-positioning.md` |
 | Inserção de novas ferramentas SDD (metodologia + gaps) | `openspec/changes/explore-oss-coverage-gaps/` |
 | Impeccable + shadcn — guia de adoção | `doc/design/000-impeccable-design-system-guia.md` |
 | Pipeline OD / Pencil / Figma → shadcn → Impeccable | `doc/design/001-pipeline-open-design-shadcn-impeccable.md` |

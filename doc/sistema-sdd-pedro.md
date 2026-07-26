@@ -8,6 +8,7 @@
 
 | Modo | Acção |
 |------|--------|
+| **First contact / vibe coder** | §2.0b → [`README.md`](../README.md) raiz + `bash sdd-kit/install.sh --profile X --dry-run` |
 | **Humano — instalação nova (C1)** | §2.1 → CLIs → `bash sdd-kit/install.sh --profile X` → §2.8 → §2.12 → §2.13 (APP/HYBRID) |
 | **Humano — actualização (C2)** | §2.9 + `bash sdd-kit/upgrade.sh --dry-run` → §12.8 → `--apply` |
 | **Humano — só CLIs (C2b)** | §2.9.4 — sem tocar `sdd-kit/templates/` |
@@ -35,7 +36,7 @@ Segunda fricção: o ecossistema move-se depressa. Versões neste documento são
 ## Índice
 
 1. [Pré-requisitos](#1-pré-requisitos-questão-6) — inclui §1.6 (organização e cenários C1–C3)
-2. [Passo a passo de instalação](#2-passo-a-passo-de-instalação-questão-1) — inclui §2.0 (IA), §2.5 (AGENTS.md), §2.8 (verificação), §2.9 (actualização), §2.12 (gates de CI), §2.13 (supply chain), §2.16 (Probity), §2.17 (métricas SDD)
+2. [Passo a passo de instalação](#2-passo-a-passo-de-instalação-questão-1) — inclui §2.0 (IA), §2.0b (first contact / vibe coder), §2.5 (AGENTS.md), §2.8 (verificação), §2.9 (actualização), §2.12 (gates de CI), §2.13 (supply chain), §2.16 (Probity), §2.17 (métricas SDD)
 3. [Classificação de tarefas e pipelines](#3-classificação-de-tarefas-e-pipelines-questões-2-3-31)
 4. [Tabela mestre: ferramenta × responsabilidade × I/O](#4-tabela-mestre-questão-3)
 5. [Documentos e referências cruzadas](#5-documentos-e-referências-cruzadas-questão-32) — inclui §5.5 (avaliações de integração)
@@ -130,6 +131,23 @@ Comandos exactos: `sdd-kit/README.md`.
 ---
 
 ## 2. Passo a passo de instalação (questão 1)
+
+### 2.0b First contact / vibe coder (quickstart)
+
+Chegaste de *vibe coding* e queres o caminho mínimo **sem** ler o guia inteiro?
+
+1. Lê o hero e a demo em [`README.md`](../README.md) na raiz do hub (EN) — posicionamento “from vibe coding to agentic engineering”; **não** é boilerplate de app.
+2. Pré-visualiza o que o kit instalaria (sem escrever ficheiros):
+
+```bash
+bash sdd-kit/install.sh --profile DOCS_SPECS --dry-run
+# ou, num repo de aplicação: --profile APP
+```
+
+3. Se fizer sentido, segue a instalação completa: §2.1 → CLIs → `install.sh` (sem `--dry-run`) → checklist §2.8.
+4. Mapa amigável C1/C2/C3/G*: [`sdd-kit/README.md`](../sdd-kit/README.md). Análise de mercado / backlog: [`doc/avaliacoes/2026-07-26-sdd-discovery-positioning.md`](../avaliacoes/2026-07-26-sdd-discovery-positioning.md).
+
+Este bloco **não** substitui o procedimento §2.1–§2.8 — só reduz fricção no primeiro contacto.
 
 ### 2.1 Ordem importa
 
@@ -2730,6 +2748,7 @@ bash scripts/verify-task-patterns.sh   # paths Pattern: existem; DOCS_SPECS sem 
 
 - **Cadência + playbook (G4 extensão)** — §2.17: “Interpretar → actuar” (M1–M4 → 1 insight → 1 ajuste); limiares N=5 archives / T=30 dias; stamp `.sdd/metrics-last-run`; flag `--check-cadence`; nudge advisory no Session Handoff de `/opsx:archive` (change `add-sdd-metrics-cadence-nudge`).
 - **`sdd-kit/`** — Script/template `sdd-metrics.sh` actualizado; MANIFEST **1.6.0 → 1.6.1**.
+- **Discovery / first contact** — §2.0b quickstart vibe coder → `README.md` raiz + `install.sh --dry-run`; avaliação `doc/avaliacoes/2026-07-26-sdd-discovery-positioning.md` (change `add-sdd-discovery-positioning`). Sem bump de MANIFEST (só docs).
 
 ### 1.6.0 (2026-07-26)
 
