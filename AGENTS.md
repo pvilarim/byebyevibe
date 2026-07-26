@@ -121,6 +121,8 @@ Se ambíguo entre dois tipos, **PERGUNTAR**. **NUNCA** assumir Tipo A por defeit
 
 **Graphify** — Ler `graphify-out/GRAPH_REPORT.md` antes de grep em perguntas de arquitectura. Após editar código: `graphify update .`. Detalhe: `.cursor/rules/graphify.mdc`.
 
+**sdd-kit — manutenção de checksums** — Ao editar qualquer ficheiro em `sdd-kit/templates/`, correr `bash sdd-kit/gen-manifest-checksums.sh` antes de commitar para actualizar os campos `sha256:` no MANIFEST. Sem este passo, `install.sh` e `upgrade.sh --apply` abortarão com erro de integridade nos repos consumidores.
+
 **CI Gates (sdd-gates)** — Workflow `.github/workflows/sdd-gates.yml` corre em `push`/`pull_request`, fail-closed: `openspec validate --all --strict` (bloqueante), `verify-task-patterns.sh` (bloqueante), `sdd-kit/verify.sh` (report-only). Só orquestra comandos existentes. Sem skill/rule associada (automático out-of-band — intencional). Antes de push: correr `npx --yes @fission-ai/openspec@1.3.1 validate --all --strict` localmente. Operação e troubleshooting: guia §2.12.
 
 ## Testing

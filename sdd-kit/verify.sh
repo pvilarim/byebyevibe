@@ -61,6 +61,85 @@ if [[ -d "$REPO_ROOT/sdd-kit/templates" ]]; then
   run_check "sdd-gates template" test -f "$REPO_ROOT/sdd-kit/templates/.github/workflows/sdd-gates.yml"
 fi
 
+# Kit integrity parity check (hub only — skipped in consumer repos without templates/)
+if [[ -d "$REPO_ROOT/sdd-kit/templates" ]] && [[ -f "$REPO_ROOT/sdd-kit/MANIFEST.yaml" ]]; then
+  echo ""
+  echo "==> kit-integrity (hub only)"
+
+  if ! command -v sha256sum &>/dev/null && ! command -v shasum &>/dev/null; then
+    echo "WARN: sha256sum/shasum not available — kit-integrity check skipped"
+  else
+    KIT_INTEGRITY_RESULT="$(python3 - "$REPO_ROOT/sdd-kit/MANIFEST.yaml" "$REPO_ROOT/sdd-kit" << 'PY'
+import sys, re, subprocess, os
+
+manifest_path = sys.argv[1]
+kit_dir       = sys.argv[2]
+text = open(manifest_path).read()
+
+import shutil
+if shutil.which("sha256sum"):
+    sha256_cmd = ["sha256sum"]
+elif shutil.which("shasum"):
+    sha256_cmd = ["shasum", "-a", "256"]
+else:
+    print("SKIP: no sha256 utility")
+    sys.exit(0)
+
+sources = re.findall(r"^\s{4}source:\s+\"?([^\"'\n]+)\"?\s*$", text, re.MULTILINE)
+
+errors   = 0
+warnings = 0
+
+for src in sources:
+    template_path = os.path.join(kit_dir, src)
+    # Find sha256 for this source in MANIFEST
+    m = re.search(
+        r"    source:\s*\"?" + re.escape(src) + r"\"?\n    sha256:\s*\"?([a-f0-9]+)\"?",
+        text
+    )
+    if not m:
+        print(f"WARN: no sha256 field for {src}")
+        warnings += 1
+        continue
+
+    expected = m.group(1)
+
+    if not os.path.isfile(template_path):
+        print(f"FAIL: template not found: {src}")
+        errors += 1
+        continue
+
+    result = subprocess.run(sha256_cmd + [template_path], capture_output=True, text=True)
+    actual = result.stdout.split()[0] if result.returncode == 0 else ""
+
+    if not actual:
+        print(f"WARN: could not hash {src}")
+        warnings += 1
+    elif actual != expected:
+        print(f"FAIL: sha256 mismatch: {src}")
+        print(f"  expected: {expected}")
+        print(f"  actual:   {actual}")
+        errors += 1
+
+print(f"entries={len(sources)} errors={errors} warnings={warnings}")
+sys.exit(errors)
+PY
+    )" || true
+
+    if echo "$KIT_INTEGRITY_RESULT" | grep -q "^FAIL:"; then
+      echo "$KIT_INTEGRITY_RESULT"
+      echo "FAIL: kit-integrity" >&2
+      ((FAILURES++)) || true
+    elif echo "$KIT_INTEGRITY_RESULT" | grep -q "^WARN:"; then
+      echo "$KIT_INTEGRITY_RESULT"
+      echo "OK: kit-integrity (with warnings)"
+    else
+      echo "$KIT_INTEGRITY_RESULT"
+      echo "OK: kit-integrity"
+    fi
+  fi
+fi
+
 echo ""
 if [[ "$FAILURES" -eq 0 ]]; then
   echo "Summary: sdd-kit verification passed ✅"

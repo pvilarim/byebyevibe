@@ -5,6 +5,18 @@ set -euo pipefail
 
 KIT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 MANIFEST="$KIT_DIR/MANIFEST.yaml"
+
+# _sha256 <file> — returns lowercase hex sha256 digest, or empty string if unavailable
+_sha256() {
+  if command -v sha256sum &>/dev/null; then
+    sha256sum "$1" 2>/dev/null | cut -d' ' -f1
+  elif command -v shasum &>/dev/null; then
+    shasum -a 256 "$1" 2>/dev/null | cut -d' ' -f1
+  else
+    echo "WARN: sha256sum/shasum not available — integrity check skipped for $1" >&2
+    echo ""
+  fi
+}
 FROM_VER=""
 TO_VER=""
 DRY_RUN=false
@@ -205,8 +217,8 @@ if $APPLY; then
   echo ""
   echo "--- Applying COPY files only (profile: $PROFILE) ---"
 
-  # Task 1.4 — apply Python block: filter by profiles
-  while IFS=$'\t' read -r src dest merge; do
+  # apply Python block: filter by profiles, emit sha256 as 4th TSV field
+  while IFS=$'\t' read -r src dest merge sha256; do
     [[ -n "$dest" ]] || continue
     [[ "$merge" == "COPY" ]] || continue
     [[ -f "$KIT_DIR/$src" ]] || continue
@@ -215,6 +227,18 @@ if $APPLY; then
       echo "ERROR: path traversal blocked: $dest" >&2
       exit 1
     }
+
+    # Integrity check: verify sha256 of template before copying (D3 policy)
+    if [[ -n "$sha256" ]]; then
+      actual="$(_sha256 "$KIT_DIR/$src")"
+      if [[ -n "$actual" && "$sha256" != "$actual" ]]; then
+        echo "ERROR: integrity check failed: $src (expected $sha256, got $actual)" >&2
+        exit 1
+      fi
+    else
+      echo "WARN: no sha256 for $src — skipping integrity check" >&2
+    fi
+
     if [[ -f "$REPO_ROOT/$dest" ]] && ! diff -q "$KIT_DIR/$src" "$REPO_ROOT/$dest" &>/dev/null; then
       cp "$REPO_ROOT/$dest" "$REPO_ROOT/$dest.bak.$(date +%s)"
       echo "  BACKUP $dest"
@@ -223,7 +247,7 @@ if $APPLY; then
     cp "$KIT_DIR/$src" "$REPO_ROOT/$dest"
     [[ "$dest" == *.sh ]] && chmod +x "$REPO_ROOT/$dest"
     echo "  APPLIED $dest"
-  done < <(python3 - <<'PY' "$MANIFEST" "$PROFILE"
+  done < <(python3 - "$MANIFEST" "$PROFILE" << 'PY'
 import sys, re
 manifest_path = sys.argv[1]
 profile = sys.argv[2]
@@ -241,13 +265,15 @@ for line in text.splitlines():
                 block["profiles"] = re.findall(r"\w+", v)
             elif k in ("source", "merge", "path"):
                 block[k] = v
+            elif k == "sha256":
+                block["sha256"] = v
 if block and "path" in block: entries.append(block)
 for e in entries:
     entry_profiles = e.get("profiles", ["APP", "DOCS_SPECS", "HYBRID"])
     if profile not in entry_profiles:
         continue
     if e.get("merge") == "COPY":
-        print(f"{e.get('source','')}\t{e['path']}\t{e.get('merge','COPY')}")
+        print(f"{e.get('source','')}\t{e['path']}\t{e.get('merge','COPY')}\t{e.get('sha256','')}")
 PY
 )
   echo "Apply complete. Run: bash sdd-kit/verify.sh"
