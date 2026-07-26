@@ -540,7 +540,7 @@ Gates automáticos de supply chain (gap G8 — `add-supply-chain-gates`). Operam
 
 ### 2.14 Reviews pós-apply — correctness-review
 
-Skill on-demand que detecta bugs lógicos, edge cases não tratados, violações de contrato e erros silenciosos em código gerado por IA. Posicionada na pipeline **após testes (R6/TDD Guard)** e **antes de `simplify-review`**.
+Skill on-demand que detecta bugs lógicos, edge cases não tratados, violações de contrato e erros silenciosos em código gerado por IA. Posicionada na pipeline **após testes (R6/Probity `enforceTdd`)** e **antes de `simplify-review`**.
 
 #### Quando acionar
 
@@ -555,7 +555,7 @@ Skill on-demand que detecta bugs lógicos, edge cases não tratados, violações
 **Posição no pipeline:**
 
 ```
-/opsx:apply  →  [implementação]  →  testes (R6/TDD Guard)
+/opsx:apply  →  [implementação]  →  testes (R6/Probity enforceTdd)
   →  correctness-review (B/C/D)
   →  simplify-review (opcional, C/D)
   →  security-reviewer (se auth/API/pagamentos)
@@ -664,6 +664,76 @@ Actualizar `openspec/infra.md` para ✅ quando confirmado.
 3. Bump MANIFEST + recalcular checksums
 
 Sem impacto em CI — github-mcp não entra no `sdd-gates.yml`.
+
+### 2.16 Módulo Probity (G2) — operação
+
+Módulo opcional pós-C1 que materializa R6 (`enforceTdd`) via PreToolUse hook. Candidato G2; **TDD Guard superseded por Probity (2026-07)** — não re-propor TDD Guard.
+
+**Perfis:** APP/HYBRID com Vitest, Jest ou pytest. DOCS_SPECS sem test runner: SKIP.
+
+#### Instalação
+
+```bash
+bash sdd-kit/install-probity-module.sh --detect
+bash sdd-kit/install-probity-module.sh --apply --yes
+```
+
+Depois, no Claude Code:
+
+```text
+/plugin marketplace add nizos/probity
+/plugin install probity@probity
+# Reiniciar sessão
+```
+
+Pin: `@nizos/probity@1.10.0`. Doc detalhado: `doc/design/004-probity-module-install.md`.
+
+Ordem de hooks PreToolUse sugerida: **GitNexus → Graphify → Probity**.
+
+#### Piloto (obrigatório)
+
+Antes de activar como default num repo APP, validar critérios em `openspec/changes/add-probity-tdd-module/design.md` (p95 < 8s, falsos positivos tipo C < 15%, R6 tipo B 100%, Cursor hooks). Nota de estado do hub: `openspec/changes/add-probity-tdd-module/piloto-nota.md`.
+
+#### Cursor IDE
+
+Probity documenta Claude Code / Codex / Copilot CLI. Cursor third-party hooks: [docs](https://cursor.com/docs/reference/third-party-hooks). Validar no piloto; se não disparar Write/Edit, usar Claude Code como primário e documentar a limitação.
+
+#### Matriz A–E
+
+| Tipo | Probity |
+|------|---------|
+| A | off (globs excluem docs; não editar prod) |
+| B / C / D | on (`enforceTdd`) |
+| E | n/a |
+
+#### Desligar
+
+| Método | Comando / acção |
+|--------|-----------------|
+| Globs | Já exclui `doc/**`, `openspec/**`, `sdd-kit/**` |
+| Plugin | `/plugin uninstall probity@probity` |
+| Repo | `bash sdd-kit/install-probity-module.sh --uninstall` |
+
+#### Troubleshooting
+
+| Sintoma | Causa | Acção |
+|---------|-------|-------|
+| Bloqueio em edit de docs | Glob errado | Confirmar exclusões em `probity.config.ts` |
+| Latência alta por edit | 3 hooks + validator LLM | Restringir `files`; medir p95; abortar se > 8s |
+| Sem config → tudo bloqueado | Fail-closed Probity | Restaurar template; `--apply` |
+| Cursor não dispara hook | Sem suporte nativo | Claude Code; ver resultado do piloto |
+
+#### Lint opt-in
+
+`requireCommand` lint-before-commit **não** está no template default (repos variam). Adicionar manualmente se `npm run lint` for estável.
+
+#### Rollback
+
+```bash
+bash sdd-kit/install-probity-module.sh --uninstall
+/plugin uninstall probity@probity
+# Reverter secção Probity em openspec/infra.md se necessário
+```
 
 ### 2.9 Actualização de instalação existente
 
@@ -2574,9 +2644,12 @@ bash scripts/verify-task-patterns.sh   # paths Pattern: existem; DOCS_SPECS sem 
 
 ### 1.6.0 (2026-07-26)
 
+- **Probity (G2)** — Módulo opcional APP/HYBRID `@nizos/probity@1.10.0` com `enforceTdd` (change `add-probity-tdd-module`). TDD Guard superseded por Probity (2026-07).
+- **§2.16** — Operação humana Probity: install plugin, piloto, Cursor hooks, desligar, troubleshooting, rollback.
+- **`sdd-kit/`** — `install-probity-module.sh`, template `probity.config.ts`, `doc/design/004-probity-module-install.md`.
 - **Supply chain (G8)** — OSV-Scanner bloqueante no `sdd-gates.yml` (quando lockfile presente) + template `renovate.json` conservador para perfis APP/HYBRID (change `add-supply-chain-gates`).
 - **§2.13** — Operação humana supply chain: OSV no Actions, instalar app Renovate, preset, automerge patches (opt-in), troubleshooting, rollback.
-- **Renumerado** — §2.13 correctness-review → §2.14; §2.14 github-mcp → §2.15.
+- **Renumerado** — §2.13 correctness-review → §2.14; §2.14 github-mcp → §2.15; Probity → §2.16.
 - **`sdd-kit/`** — `templates/renovate.json`; OSV em `templates/.github/workflows/sdd-gates.yml`; MANIFEST 1.5.0.
 
 ### 1.5.0 (2026-07-26)

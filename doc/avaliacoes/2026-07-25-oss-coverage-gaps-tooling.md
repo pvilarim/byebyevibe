@@ -17,7 +17,7 @@ Research tipo E identificou 8 gaps na cobertura do sistema SDD para desenvolvime
 | Gap | Candidato | Decisão | Nota |
 |-----|-----------|---------|------|
 | G1 Enforcement CI | GitHub Actions (workflow próprio) | **Adoptado** — change [`add-sdd-ci-gates-workflow`](../../openspec/changes/add-sdd-ci-gates-workflow/proposal.md) (2026-07-25) | pre-commit/Lefthook **descartados** — overlap com hooks graphify/gitnexus. Workflow `.github/workflows/sdd-gates.yml` + template no sdd-kit v1.4.0 |
-| G2 Verificação por testes | [TDD Guard](https://github.com/nizos/tdd-guard) | **Adoptado** (pendente change; módulo opcional APP) | Piloto obrigatório: empilhamento PreToolUse + custo LLM |
+| G2 Verificação por testes | [Probity](https://github.com/nizos/probity) (`@nizos/probity@1.10.0`) | **Adoptado — change [`add-probity-tdd-module`](../../openspec/changes/add-probity-tdd-module/proposal.md), piloto pendente** | TDD Guard **superseded** por Probity (2026-07). Piloto APP obrigatório (p95/hooks) — ver `piloto-nota.md` |
 | G3 Feedback de runtime | GlitchTip / Sentry + MCP | **Adiado** — módulo sob demanda | Infra por projecto de produção, não payload de kit |
 | G4 Métricas do framework | Apache DevLake | **Adiado** | Correcção manual (`sdd-metrics.sh`) preferida; DevLake se equipe/DORA justificar |
 | G5 Rastreabilidade issues | [github-mcp-server](https://github.com/github/github-mcp-server) | **Adoptado** — change [`add-github-mcp-issue-traceability`](../../openspec/changes/add-github-mcp-issue-traceability/proposal.md) | MCP passivo (modo D) + campo `**Issue:**` no template de proposal. Reavaliação: se instrução em AGENTS.md ultrapassar 10 linhas → skill dedicada; se projecto migrar de GitHub Issues → avaliar Linear/Jira MCP |

@@ -13,7 +13,7 @@
 | # | Gap | Ferramenta candidata | Decisão recomendada |
 |---|-----|----------------------|---------------------|
 | G1 | Enforcement dos gates em CI | GitHub Actions (nativo) | **Correcção manual** — workflow chamando comandos já existentes |
-| G2 | Loop de verificação por testes | TDD Guard | **Adicionar ao kit** como módulo opcional (perfis APP) |
+| G2 | Loop de verificação por testes | Probity (`@nizos/probity`) | **Adicionar ao kit** como módulo opcional (perfis APP/HYBRID) — change `add-probity-tdd-module` |
 | G3 | Feedback de runtime/produção | GlitchTip / Sentry + MCP | **Não adicionar ao kit core** — documentar como módulo sob demanda |
 | G4 | Métricas de eficácia do framework | Apache DevLake | **Correcção manual** — script `sdd-metrics.sh`; DevLake só em escala de equipe |
 | G5 | Rastreabilidade a issues | github-mcp-server (oficial) | **Híbrido** — MCP ao `infra.md` + campo Issue no template de proposal |
@@ -57,19 +57,21 @@
 
 **Problema:** R6 (teste que falha primeiro) é regra sem enforcement; a conclusão de tasks é auto-declarada pelo agente.
 
-**Candidato principal: [TDD Guard](https://github.com/nizos/tdd-guard)** (nizos/tdd-guard)
+**Candidato principal: [Probity](https://github.com/nizos/probity)** (`@nizos/probity@1.10.0`)
+
+> **Nota histórica:** o candidato original era [TDD Guard](https://github.com/nizos/tdd-guard); o maintainer declarou-o **superseded** por Probity (2026-07). Novos projectos MUST adoptar Probity; não re-propor TDD Guard.
 
 | Critério | Avaliação |
 |----------|-----------|
-| C1 instalação | 🟡 plugin Claude Code + hook PreToolUse + reporter por test runner (Vitest/Jest/pytest/Go/PHP/Rust) |
-| C2 compatibilidade | 🟢 usa o mesmo mecanismo PreToolUse já usado por GitNexus/Graphify (hooks empilham); suporta Vitest e pytest — exactamente o stack de testes declarado em `openspec/project.md` |
-| C3 overlap | 🟢 nenhum componente do sistema valida TDD hoje; **materializa o R6** em enforcement |
+| C1 instalação | 🟡 plugin Claude Code + `probity.config.ts` + `@nizos/probity@1.10.0` (sem reporters por test runner — lê transcript) |
+| C2 compatibilidade | 🟢 mesmo PreToolUse que GitNexus/Graphify; Vitest + pytest — stack em `openspec/project.md` |
+| C3 overlap | 🟢 nenhum componente valida TDD hoje; **materializa o R6** via `enforceTdd()` |
 | C4 fluxo | 🟢 actua só na fase apply (bloqueia Write/Edit sem teste falhando); irrelevante em explore/propose |
-| C5 comunidade | 🟢 2.2k ★, MIT, 20 contribuidores, 78 releases, ~18.5k downloads/semana no npm, v1.7.0 (jun/2026) — activo e em crescimento |
+| C5 comunidade | 🟢 maintainer nizos (mesmo de TDD Guard); MIT; v1.10.0 npm (jul/2026); activo |
 
-**Limitações:** funciona via hooks do **Claude Code**; no Cursor a cobertura depende do suporte a hooks equivalentes — verificar na instalação. Adiciona latência por validação (usa uma sessão LLM para validar cada edit); tem toggle on/off por sessão.
+**Limitações:** Claude Code / Codex / Copilot CLI oficiais; Cursor via third-party hooks — validar no piloto. Latência LLM por edit; desligar via globs / uninstall (não toggle de sessão TDD Guard).
 
-**Recomendação: adicionar ao kit** como módulo **opcional**, análogo ao C1-UI: `sdd-kit/install-tdd-module.sh`, activado apenas em perfis APP (não faz sentido no perfil DOCS_SPECS deste repo). Documentar toggle off para tarefas tipo A e docs.
+**Recomendação: adicionar ao kit** como módulo **opcional**, análogo ao C1-UI: `sdd-kit/install-probity-module.sh`, activado em perfis APP/HYBRID com testes (SKIP DOCS_SPECS). Change: `add-probity-tdd-module`.
 
 ---
 
@@ -186,7 +188,7 @@
 ```
                           ADICIONAR AO KIT          CORRECÇÃO MANUAL           NÃO ADOPTAR AGORA
                           ┌──────────────────┐      ┌────────────────────┐     ┌─────────────────┐
-                          │ G2 TDD Guard     │      │ G1 workflow CI     │     │ G6 Vibe Kanban  │
+                          │ G2 Probity       │      │ G1 workflow CI     │     │ G6 Vibe Kanban  │
                           │    (módulo APP)  │      │    sdd-gates.yml   │     │    (órfão)      │
                           │ G8 Renovate +    │      │ G4 sdd-metrics.sh  │     │ G4 DevLake      │
                           │    OSV-Scanner   │      │ G5 campo Issue no  │     │    (overkill)   │
@@ -205,7 +207,7 @@
 2. **G7 fase 1** — skill `correctness-review` (padrão já estabelecido pelas skills existentes)
 3. **G5** — github-mcp-server no `infra.md` + campo Issue no template de proposal
 4. **G8** — templates Renovate + OSV-Scanner no sdd-kit
-5. **G2** — módulo TDD Guard (requer teste de integração com hooks GitNexus/Graphify antes de entrar no MANIFEST)
+5. **G2** — módulo Probity (requer piloto APP com hooks GitNexus/Graphify antes de activação default; change `add-probity-tdd-module`)
 6. **G4** — `scripts/sdd-metrics.sh`
 7. **G3/G6** — apenas documentação (módulos sob demanda / reavaliação futura)
 
@@ -213,15 +215,15 @@ Cada item 1–6 é candidato a change OpenSpec próprio (tipo C/D conforme o cas
 
 ## Riscos transversais
 
-- **Empilhamento de hooks (G2):** TDD Guard, GitNexus e Graphify partilham PreToolUse; validar latência acumulada e ordem de execução antes de promover ao MANIFEST.
+- **Empilhamento de hooks (G2):** Probity, GitNexus e Graphify partilham PreToolUse; validar latência acumulada e ordem de execução no piloto APP antes de activação default.
 - **Governança em transição (G7):** PR-Agent mudou de dono em abr/2026; pin de versão obrigatório e reavaliação no próximo upgrade do kit.
-- **Custo LLM (G2, G7):** TDD Guard e PR-Agent consomem chamadas de modelo por validação/review — orçar antes de activar por defeito.
+- **Custo LLM (G2, G7):** Probity e PR-Agent consomem chamadas de modelo por validação/review — orçar antes de activar por defeito.
 - **Perfil do repo:** nada de G2/G8-Renovate se aplica a este repo (DOCS_SPECS); os módulos servem os repos de produção que consomem o sdd-kit.
 
 ## Fontes consultadas
 
 - Gaps: análise da sessão anterior sobre `AGENTS.md`, `openspec/infra.md`, `doc/sistema-sdd-pedro.md` §3–§5, `doc/avaliacoes/`
-- TDD Guard: [github.com/nizos/tdd-guard](https://github.com/nizos/tdd-guard) (2.2k ★, MIT, v1.7.0 jun/2026; npm ~18.5k downloads/semana)
+- Probity: [github.com/nizos/probity](https://github.com/nizos/probity) (MIT, `@nizos/probity@1.10.0`); TDD Guard legado superseded: [github.com/nizos/tdd-guard](https://github.com/nizos/tdd-guard)
 - PR-Agent: [github.com/qodo-ai/pr-agent](https://github.com/qodo-ai/pr-agent) (12.1k ★, v0.39.0 jul/2026); anúncio de transferência comunitária Qodo (abr/2026)
 - Apache DevLake: [devlake.apache.org](https://devlake.apache.org/) (Apache TLP out/2025, 3.1k ★, 200 contribuidores)
 - Renovate: [github.com/renovatebot/renovate](https://github.com/renovatebot/renovate) (22k ★, Mend, 62k installs do app GitHub)

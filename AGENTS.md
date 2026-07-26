@@ -21,6 +21,7 @@ Ver `./openspec/project.md` (stack, convenções, constraints). **Não duplicar*
 | `graphify query "<pergunta>"` | Busca no knowledge graph |
 | `python doc/curso/scripts/enrich-transcripts.py` | Re-enriquecer transcrições do curso |
 | `bash scripts/sdd-session-status.sh` | Sessões SDD activas na worktree local |
+| `bash sdd-kit/install-probity-module.sh --detect` | Probity G2 — detectar test runner / aplicabilidade |
 | `npx --yes @fission-ai/openspec@1.3.1 validate --all --strict` | Gate de CI local (mesmo comando do workflow `sdd-gates`) |
 
 Nota: não há `npm run dev` na raiz — repo de specs e documentação (perfil DOCS_SPECS).
@@ -50,6 +51,7 @@ Para trabalho tipo D/E, **SEMPRE** consultar Graphify e GitNexus antes de escrev
 | Guia de instalação SDD (v1.5.0) | `doc/sistema-sdd-pedro.md` |
 | GitHub Issues MCP (operação humana) | `doc/sistema-sdd-pedro.md` §2.15 |
 | Módulo UI (C1-UI) | `doc/sistema-sdd-pedro.md` §2.11 · `doc/design/002-ui-module-install.md` |
+| Módulo Probity (G2) | `doc/sistema-sdd-pedro.md` §2.16 · `doc/design/004-probity-module-install.md` |
 | Install kit (payload SDD) | `sdd-kit/` |
 | Actualização SDD (repo já instalado) | `doc/sistema-sdd-pedro.md` §2.9 |
 | Scripts CDP / transcrições | `doc/curso/scripts/AGENTS.md` |
@@ -131,6 +133,8 @@ Se ambíguo entre dois tipos, **PERGUNTAR**. **NUNCA** assumir Tipo A por defeit
 
 **CI Gates (sdd-gates)** — Workflow `.github/workflows/sdd-gates.yml` corre em `push`/`pull_request`, fail-closed: `openspec validate --all --strict` (bloqueante), `verify-task-patterns.sh` (bloqueante), **OSV-Scanner** (bloqueante quando lockfile presente), `sdd-kit/verify.sh` (report-only). Antes de push: correr `npx --yes @fission-ai/openspec@1.3.1 validate --all --strict` localmente. Operação: guia §2.12.
 
+**Probity (G2)** — Módulo opcional APP/HYBRID: `bash sdd-kit/install-probity-module.sh --detect` → `--apply [--yes]`; pin `@nizos/probity@1.10.0`. Matriz A–E: off em A (globs); on em B/C/D via `enforceTdd`. DOCS_SPECS sem testes: SKIP. Operação: guia §2.16.
+
 ## Testing
 
 - Scripts Python: validar manualmente ou com testes ao alterar `doc/curso/scripts/*.py`
@@ -153,7 +157,7 @@ Skills invocáveis após código escrito — **nunca** always-on, **nunca** bloq
 | `simplify-review` | Pós-apply ou pré-PR: diff > ~80 linhas ou > 4 ficheiros; Tipo B/C/D; pedido explícito de simplicidade | Tipo A; durante `/opsx:propose`; escopo ainda em debate |
 | `security-reviewer` | Auth, API routes, pagamentos, dados sensíveis, webhooks | — |
 
-Ordem sugerida: implementação → testes (R6) → `correctness-review` (B/C/D) → `simplify-review` (opcional) → `security-reviewer` (se aplicável) → commit.
+Ordem sugerida: implementação → testes (R6/Probity `enforceTdd`) → `correctness-review` (B/C/D) → `simplify-review` (opcional) → `security-reviewer` (se aplicável) → commit.
 
 Detalhe das skills: `.claude/skills/correctness-review/SKILL.md` · `.claude/skills/simplify-review/SKILL.md` (espelhos em `.cursor/skills/`).
 

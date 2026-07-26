@@ -11,6 +11,7 @@ Payload versionado para instalação reproduzível do stack SDD (scripts, rules,
 | **C2b** | Só CLIs desactualizadas | `doc/sistema-sdd-pedro.md` §2.9.4 — **sem** tocar no kit |
 | **C3** | Propagação de specs de domínio | git/referência em `openspec/specs/` — **não** correr `install.sh` nem `upgrade.sh` |
 | **C1-UI** | Módulo UI opcional (pós-C1) | `bash sdd-kit/install-ui-module.sh --detect` → `--apply [--yes]` — ver guia §2.11 |
+| **G2** | Módulo Probity (TDD enforce, pós-C1) | `bash sdd-kit/install-probity-module.sh --detect` → `--apply [--yes]` — pin `@nizos/probity@1.10.0`; guia §2.16 |
 
 ## Perfis
 
@@ -42,7 +43,8 @@ bash sdd-kit/verify.sh
 sdd-kit/
 ├── MANIFEST.yaml      # Versão, ficheiros, merge strategy, gates
 ├── install.sh         # C1 — copia templates para paths canónicos
-├── install-ui-module.sh  # C1-UI — módulo UI opcional pós-C1
+├── install-ui-module.sh      # C1-UI — módulo UI opcional pós-C1
+├── install-probity-module.sh # G2 — Probity (enforceTdd) opcional pós-C1; APP/HYBRID
 ├── upgrade.sh         # C2 — diff + UPGRADE_REPORT + --apply
 ├── verify.sh          # Orquestra verify-infra + task-patterns + session-status
 └── templates/         # Espelha paths no repo alvo (scripts/, .cursor/rules/, doc/design/, …)
