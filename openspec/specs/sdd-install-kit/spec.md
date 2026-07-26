@@ -3,9 +3,7 @@
 ## Purpose
 
 Normative requirements for versioned, reproducible distribution of SDD stack artifacts (scripts, rules, skeletons) via `sdd-kit/`, separate from the procedural guide `doc/sistema-sdd-pedro.md`. Enables safe greenfield install (C1), SDD upgrade (C2), and distinguishes infra install from spec propagation (C3).
-
 ## Requirements
-
 ### Requirement: Versioned install kit directory
 
 The distribution repository MUST include `sdd-kit/` at repository root with at minimum: `MANIFEST.yaml`, `README.md`, `install.sh`, `upgrade.sh`, `verify.sh`, and `templates/` mirroring target repository paths.
@@ -83,31 +81,31 @@ When `sdd-kit/verify.sh` runs in a repository where `sdd-kit/templates/` is pres
 
 ### Requirement: Deterministic greenfield install
 
-`sdd-kit/install.sh` MUST support `--profile APP|DOCS_SPECS|HYBRID`, `--dry-run`, and MUST copy or merge files from `templates/` into the target repository root without requiring an LLM to extract content from markdown.
+`sdd-kit/install.sh` MUST validate every destination path against the repository root before writing any file. If a computed destination path escapes `$REPO_ROOT` (e.g. via `..` segments in a MANIFEST `path:` field), the script MUST abort with `ERROR: path traversal blocked` and exit non-zero.
 
-#### Scenario: Dry-run greenfield install
+#### Scenario: MANIFEST with path traversal attempt
 
-- **WHEN** the operator runs `bash sdd-kit/install.sh --profile APP --dry-run` on a repo without SDD scripts
-- **THEN** the script prints planned file operations and exits 0 without writing files
-
-#### Scenario: Apply greenfield install
-
-- **WHEN** the operator runs `bash sdd-kit/install.sh --profile DOCS_SPECS` after `openspec init`
-- **THEN** `scripts/sdd-session-check.sh`, `scripts/verify-infra.sh`, `.cursor/rules/015-session-phases.mdc`, and `.cursor/rules/016-session-coordination.mdc` exist and are executable where applicable
+- **WHEN** a MANIFEST entry contains `path: ../../etc/passwd` (or any path resolving outside `$REPO_ROOT`)
+- **THEN** `install.sh` prints `ERROR: path traversal blocked` to stderr and exits non-zero without writing any file
 
 ### Requirement: Deterministic SDD upgrade
 
-`sdd-kit/upgrade.sh` MUST support `--from`, `--to`, `--dry-run`, and MUST generate or update scaffold for `UPGRADE_REPORT.md` per guide §12.8. It MUST NOT apply merges to curated files without `--apply` after human approval.
+`sdd-kit/upgrade.sh` MUST support `--from`, `--to`, `--dry-run`, and MUST generate or update scaffold for `UPGRADE_REPORT.md` per guide §12.8. It MUST NOT apply merges to curated files without `--apply` after human approval. O MANIFEST MUST classificar ficheiros de ferramentas de upgrade (ex.: `scripts/sdd-upgrade-diff.sh`) com `merge: MERGE` para preservar customizações locais.
 
-#### Scenario: Upgrade dry-run
+#### Scenario: Dry-run produces UPGRADE_REPORT scaffold
 
-- **WHEN** the operator runs `bash sdd-kit/upgrade.sh --from 1.2.0 --to 1.3.0 --dry-run`
-- **THEN** a file-level diff report is produced classifying each manifest entry as KEEP_LOCAL, MERGE, APPLY_TEMPLATE, NEW, or SKIP
+- **WHEN** the operator runs `bash sdd-kit/upgrade.sh --from 1.3.2 --to 1.4.0 --dry-run`
+- **THEN** `openspec/changes/upgrade-sdd-v1.4.0/UPGRADE_REPORT.md` is created with unchecked approval checkbox and no files are modified in the repo
 
-#### Scenario: Upgrade blocked without apply flag
+#### Scenario: Apply blocked without prior approval
 
-- **WHEN** the operator runs `upgrade.sh` without `--apply` after dry-run
-- **THEN** curated files `AGENTS.md` and `openspec/project.md` Purpose/Stack sections are not modified
+- **WHEN** the operator runs `bash sdd-kit/upgrade.sh --from 1.3.2 --to 1.4.0 --apply --profile DOCS_SPECS` without first approving the UPGRADE_REPORT.md
+- **THEN** the script exits non-zero with an error message explaining that the UPGRADE_REPORT must be approved
+
+#### Scenario: sdd-upgrade-diff.sh preserved on apply
+
+- **WHEN** the operator runs `--apply` and has a locally customised `scripts/sdd-upgrade-diff.sh`
+- **THEN** the script is classified as `MERGE` and NOT overwritten — the local version is preserved
 
 ### Requirement: Kit verification orchestration
 
@@ -167,3 +165,82 @@ Repositories with profile DOCS_SPECS that act as SDD distribution hubs MUST comm
 
 - **WHEN** spec-pedro archives this change
 - **THEN** `sdd-kit/` remains in git for C2 upgrades by other repos
+
+### Requirement: bootstrap-sdd.sh emite aviso em repo HYBRID ambíguo
+
+Quando `package.json` e `openspec/` coexistem, `bootstrap-sdd.sh` MUST emitir um aviso (stderr) pedindo confirmação explícita do perfil antes de continuar com o perfil por defeito (APP). Não deve terminar com erro — o aviso é informativo.
+
+#### Scenario: Repo com package.json e openspec/ coexistindo
+
+- **WHEN** o operador executa `bash scripts/bootstrap-sdd.sh` num repo que tem `package.json` e `openspec/`
+- **THEN** o script imprime para stderr `WARN: package.json e openspec/ coexistem — perfil pode ser HYBRID.` e continua a instalação com perfil APP
+
+#### Scenario: Repo APP sem openspec/ não recebe aviso
+
+- **WHEN** o operador executa `bash scripts/bootstrap-sdd.sh` num repo que tem `package.json` mas não tem `openspec/`
+- **THEN** o script continua com perfil APP sem nenhum aviso
+
+### Requirement: upgrade.sh classify label alinhado com MANIFEST merge strategy
+
+A saída de `upgrade.sh --dry-run` para ficheiros com `merge: COPY` MUST usar o rótulo `COPY` (não `APPLY_TEMPLATE`), mantendo alinhamento visual com os valores declarados no MANIFEST.
+
+#### Scenario: Dry-run mostra rótulo COPY para ficheiros merge COPY
+
+- **WHEN** o operador corre `bash sdd-kit/upgrade.sh --from X --to Y --dry-run`
+- **THEN** ficheiros classificados com `merge: COPY` no MANIFEST aparecem no output com o prefixo `COPY` (não `APPLY_TEMPLATE`)
+
+### Requirement: upgrade.sh header distingue modo dry-run de modo apply
+
+O header impresso por `upgrade.sh` no início do output MUST reflectir o modo de execução: `dry-run` em modo `--dry-run`, `APPLY` em modo `--apply`.
+
+#### Scenario: Header dry-run
+
+- **WHEN** o operador corre `bash sdd-kit/upgrade.sh --from X --to Y --dry-run`
+- **THEN** o output contém `SDD UPGRADE REPORT (dry-run)`
+
+#### Scenario: Header apply
+
+- **WHEN** o operador corre `bash sdd-kit/upgrade.sh --from X --to Y --apply --profile DOCS_SPECS` após aprovar o relatório
+- **THEN** o output contém `SDD UPGRADE APPLY` (sem `dry-run`)
+
+### Requirement: Upgrade safety — mutual exclusion of --dry-run and --apply
+
+`sdd-kit/upgrade.sh` MUST reject the combination of `--dry-run` and `--apply` flags with exit code 2 and an explicit error message. These flags are mutually exclusive; accepting both silently would discard the `--dry-run` intent.
+
+#### Scenario: Operator passes both flags
+
+- **WHEN** the operator runs `bash sdd-kit/upgrade.sh --dry-run --apply --from X --to Y`
+- **THEN** the script prints an error stating the flags are mutually exclusive and exits with code 2 without modifying any file
+
+### Requirement: Upgrade safety — automatic backup before overwrite
+
+`sdd-kit/upgrade.sh --apply` MUST create a timestamped backup (`$dest.bak.TIMESTAMP`) of any destination file that differs from the kit template before overwriting it.
+
+#### Scenario: Destination file differs from kit template
+
+- **WHEN** `--apply` is about to overwrite a file that exists in the repository and differs from the template
+- **THEN** the script creates `$dest.bak.<timestamp>` before copying, and prints `BACKUP $dest`
+
+### Requirement: Upgrade safety — UPGRADE_REPORT approval gate
+
+`sdd-kit/upgrade.sh --apply` MUST verify that the `UPGRADE_REPORT.md` file exists and contains `[x] Actualização aprovada` before performing any write operation. If the report is absent or unapproved, the script MUST abort with a descriptive error and exit non-zero.
+
+#### Scenario: UPGRADE_REPORT absent
+
+- **WHEN** `--apply` is run without a prior `--dry-run` (no `UPGRADE_REPORT.md`)
+- **THEN** the script prints an error directing the operator to run `--dry-run` first and exits non-zero
+
+#### Scenario: UPGRADE_REPORT present but not approved
+
+- **WHEN** `UPGRADE_REPORT.md` exists but does not contain `[x] Actualização aprovada`
+- **THEN** the script prints an error directing the operator to mark the approval checkbox and exits non-zero
+
+### Requirement: Upgrade diff — source-aware AGENTS.md lookup
+
+`sdd-kit/templates/scripts/sdd-upgrade-diff.sh` MUST use the `source` field from `MANIFEST.yaml` to locate each kit file in the staging directory. Files with a `source` that differs from `path` (e.g. `AGENTS.md` sourced from `templates/AGENTS.core.md`) MUST appear in the diff output.
+
+#### Scenario: AGENTS.md has diverged from kit template
+
+- **WHEN** the repository's `AGENTS.md` differs from `sdd-kit/templates/AGENTS.core.md`
+- **THEN** `sdd-upgrade-diff.sh` includes `AGENTS.md` (or `AGENTS.core.md`) in its diff output
+
