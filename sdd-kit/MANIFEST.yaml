@@ -58,6 +58,12 @@ files:
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -x scripts/sdd-upgrade-diff.sh"
 
+  - path: scripts/bootstrap-sdd.sh
+    source: templates/scripts/bootstrap-sdd.sh
+    merge: COPY
+    profiles: [APP, DOCS_SPECS, HYBRID]
+    gate: "test -x scripts/bootstrap-sdd.sh"
+
   - path: .github/workflows/sdd-gates.yml
     source: templates/.github/workflows/sdd-gates.yml
     merge: COPY
