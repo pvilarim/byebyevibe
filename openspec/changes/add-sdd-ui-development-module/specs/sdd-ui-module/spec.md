@@ -4,7 +4,7 @@
 
 Normative requirements for the optional **UI development module** (C1-UI) distributed via `sdd-kit/`, separate from core SDD install (C1). Covers detection of frontend/UI stack, shadcn recommendation with explicit opt-out, documentation pointers in the canonical guide, and post-install state in `openspec/infra.md`. Enables reproducible adoption of the Open Design → Pencil/Figma → UI stack → Impeccable pipeline without duplicating operational detail in `doc/sistema-sdd-pedro.md`.
 
-## Requirements
+## ADDED Requirements
 
 ### Requirement: UI module documentation set
 

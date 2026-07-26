@@ -48,6 +48,12 @@ else
   ((FAILURES++)) || true
 fi
 
+# CI gates (G1): workflow instalado + template no hub (add-sdd-ci-gates-workflow)
+run_check "sdd-gates workflow" test -f "$REPO_ROOT/.github/workflows/sdd-gates.yml"
+if [[ -d "$REPO_ROOT/sdd-kit/templates" ]]; then
+  run_check "sdd-gates template" test -f "$REPO_ROOT/sdd-kit/templates/.github/workflows/sdd-gates.yml"
+fi
+
 echo ""
 if [[ "$FAILURES" -eq 0 ]]; then
   echo "Summary: sdd-kit verification passed ✅"
