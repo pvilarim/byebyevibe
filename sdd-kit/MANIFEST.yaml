@@ -11,8 +11,8 @@
 # The `gate:` field is documentary metadata only — the suggested verification
 # command for manual or CI use. It MUST NOT be executed via `eval` or any
 # equivalent by install.sh, upgrade.sh, or any other script.
-version: "1.5.0"
-guide_version: "1.5.0"
+version: "1.6.0"
+guide_version: "1.6.0"
 min_openspec: "1.3.1"
 profiles: [APP, DOCS_SPECS, HYBRID]
 
@@ -79,6 +79,13 @@ files:
     merge: MERGE
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -x scripts/sdd-upgrade-diff.sh"
+
+  - path: scripts/sdd-metrics.sh
+    source: templates/scripts/sdd-metrics.sh
+    sha256: "2d9fbacd7012b2a4946bff473ab7c48dd4b4c16a75081904edd1812ac69809a3"
+    merge: COPY
+    profiles: [APP, DOCS_SPECS, HYBRID]
+    gate: "test -x scripts/sdd-metrics.sh"
 
   - path: scripts/bootstrap-sdd.sh
     source: templates/scripts/bootstrap-sdd.sh
@@ -159,14 +166,14 @@ files:
 
   - path: AGENTS.md
     source: templates/AGENTS.core.md
-    sha256: "63e7b0dc45d5720174a66d018e51c0b9d3462885822ca36461d1a17b1efbb13a"
+    sha256: "2d8aa484093c15d4b3bcf9fdb7d8762a71fb2c0362b3c49f8639ef53d4f5fe42"
     merge: MERGE_PROFILE
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test $(wc -l < AGENTS.md) -le 150"
 
   - path: openspec/infra.md
     source: templates/openspec/infra.md
-    sha256: "381a2f88c625b436d7f6a1cb54a30e36993f9a26884f5d6baea07dfe8b83fd5f"
+    sha256: "5182d0a9063bab05795d50bc260f06ad0e72f0b659e76a1782021106cc8b912e"
     merge: MERGE
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f openspec/infra.md"

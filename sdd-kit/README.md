@@ -1,4 +1,4 @@
-# SDD Install Kit v1.4.0
+# SDD Install Kit v1.6.0
 
 Payload versionado para instalação reproduzível do stack SDD (scripts, rules, skeletons), separado do guia de procedimento `doc/sistema-sdd-pedro.md`.
 
@@ -12,6 +12,7 @@ Payload versionado para instalação reproduzível do stack SDD (scripts, rules,
 | **C3** | Propagação de specs de domínio | git/referência em `openspec/specs/` — **não** correr `install.sh` nem `upgrade.sh` |
 | **C1-UI** | Módulo UI opcional (pós-C1) | `bash sdd-kit/install-ui-module.sh --detect` → `--apply [--yes]` — ver guia §2.11 |
 | **G2** | Módulo Probity (TDD enforce, pós-C1) | `bash sdd-kit/install-probity-module.sh --detect` → `--apply [--yes]` — pin `@nizos/probity@1.10.0`; guia §2.16 |
+| **G4** | Métricas SDD sob demanda (modo C) | `bash scripts/sdd-metrics.sh` — guia §2.17; **não** Apache DevLake |
 
 ## Perfis
 

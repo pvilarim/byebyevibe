@@ -81,6 +81,17 @@ else
   echo "INFO: Probity module artifacts absent (report-only)"
 fi
 
+# SDD metrics (G4) — on-demand mode C; presence check only (not a CI gate)
+echo ""
+echo "==> sdd-metrics.sh (G4)"
+if [[ -x "$REPO_ROOT/scripts/sdd-metrics.sh" ]]; then
+  echo "OK: scripts/sdd-metrics.sh present"
+elif [[ -f "$REPO_ROOT/sdd-kit/templates/scripts/sdd-metrics.sh" ]]; then
+  echo "OK: sdd-metrics template present in kit (not yet copied to scripts/)"
+else
+  echo "INFO: sdd-metrics.sh absent (report-only)"
+fi
+
 # Kit integrity parity check (hub only — skipped in consumer repos without templates/)
 if [[ -d "$REPO_ROOT/sdd-kit/templates" ]] && [[ -f "$REPO_ROOT/sdd-kit/MANIFEST.yaml" ]]; then
   echo ""
