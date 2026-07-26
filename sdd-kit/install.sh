@@ -44,7 +44,12 @@ cd "$REPO_ROOT"
 apply_file() {
   local src="$1" dest="$2" merge="$3"
   local src_path="$KIT_DIR/$src"
-  local dest_path="$REPO_ROOT/$dest"
+  local dest_path
+  dest_path="$(realpath --no-symlinks "$REPO_ROOT/$dest")"
+  [[ "$dest_path" == "$REPO_ROOT"/* ]] || {
+    echo "ERROR: path traversal blocked: $dest" >&2
+    exit 1
+  }
 
   if [[ ! -f "$src_path" ]]; then
     echo "  SKIP missing source: $src"

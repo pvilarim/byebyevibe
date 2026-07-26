@@ -17,3 +17,8 @@ alwaysApply: true
 - Sanitizar todos os inputs de utilizador em API routes (Zod, valibot ou equivalente)
 - Usar queries parametrizadas para qualquer acesso a DB; sem concatenação de strings
 - Adicionar validação de input como PRIMEIRA linha em qualquer route handler
+
+## openspec CLI — telemetria
+- `@fission-ai/openspec` envia dados via PostHog por defeito; definir `OPENSPEC_TELEMETRY=0` para desactivar
+- Em CI: a variável está configurada no workflow `sdd-gates.yml` (`OPENSPEC_TELEMETRY: "0"`)
+- Em local: definir no shell ou no `.env` do repo consumidor (nunca commitar o valor)
