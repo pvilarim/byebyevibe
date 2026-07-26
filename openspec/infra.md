@@ -114,6 +114,15 @@ Módulo opcional G2 (APP/HYBRID com testes). Piloto APP obrigatório antes de ac
 
 Script local (git + `openspec/changes/archive/`) — **não** adoptar Apache DevLake. Operação: `doc/sistema-sdd-pedro.md` §2.17.
 
+## Docs language / i18n
+
+| Componente | Estado | Verificar com |
+|------------|--------|---------------|
+| `scripts/verify-i18n-wave.sh` | ✅ | `test -x scripts/verify-i18n-wave.sh` · `bash scripts/verify-i18n-wave.sh --help` |
+| `doc/i18n/GLOSSARY.md` · `WAVES.md` · `WAVE-PROPOSAL-TEMPLATE.md` | ✅ | `test -s doc/i18n/GLOSSARY.md` |
+
+Mode C for translation waves (not a blocking `sdd-gates` step by default). Capability: `sdd-docs-language`.
+
 ## Env vars (nomes apenas)
 
 > Lidos de `.env.example` se existir. **Nunca** commitar valores nem ler `.env`.

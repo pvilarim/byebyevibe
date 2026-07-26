@@ -1,10 +1,10 @@
-# sdd-docs-language Specification (delta)
+# sdd-docs-language Specification
 
 ## Purpose
 
 Normative requirements for English as the canonical default language of versioned repository artifacts, controlled PT→EN substitution waves, glossary and inventory, verification gates, and the F7 distinction between chat language and repository language.
 
-## ADDED Requirements
+## Requirements
 
 ### Requirement: English is the canonical default for versioned artifacts
 

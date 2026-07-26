@@ -39,7 +39,7 @@ Repositório de specs, documentação técnica e cursos do Pedro Vilarim. Serve 
 - `cn()` (clsx + tailwind-merge) para composição de classes Tailwind
 - Sem estilos inline; usar classes Tailwind e variáveis CSS semânticas
 - Componentes novos em `components/ui/` com Props tipadas e `className?: string`
-- Português (pt-BR) na comunicação; inglês em variáveis, commits e documentação técnica
+- **Language (F7):** versioned artifacts MUST be English (canonical default — `sdd-docs-language`); human↔agent chat MAY remain pt-BR; variables/commits stay English. Legacy PT in files is replaced by waves (`doc/i18n/`)
 
 ## Constraints
 
