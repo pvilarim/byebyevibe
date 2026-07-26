@@ -1,4 +1,10 @@
-## ADDED Requirements
+# sdd-correctness-review Specification
+
+## Purpose
+
+Normative requirements for the `correctness-review` on-demand skill in the SDD system. The skill detects logic errors, unhandled edge cases, contract violations, invariant breaches, and silent failures in AI-generated code — filling the gap between `simplify-review` (complexity) and `security-reviewer` (vulnerabilities). Operates in mode C (on-demand), invoked explicitly after `/opsx:apply` on type B, C, or D tasks.
+
+## Requirements
 
 ### Requirement: Skill file exists in canonical locations
 
