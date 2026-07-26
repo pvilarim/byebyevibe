@@ -92,9 +92,6 @@ apply_file() {
       ;;
   esac
 
-  if [[ "$dest" == scripts/*.sh || "$dest" == */*.sh ]]; then
-    chmod +x "$dest_path" 2>/dev/null || true
-  fi
   if [[ "$dest" == *.sh ]]; then
     chmod +x "$dest_path" 2>/dev/null || true
   fi

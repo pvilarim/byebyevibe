@@ -29,11 +29,15 @@ graphify update .
 echo ""
 echo "==> SDD Install Kit (payloads)..."
 if [[ -f "$REPO/sdd-kit/install.sh" ]]; then
-  # Profile: infer DOCS_SPECS if no package.json app at root
-  PROFILE="APP"
-  if [[ ! -f "$REPO/package.json" ]] && grep -q 'DOCS_SPECS' "$REPO/openspec/project.md" 2>/dev/null; then
-    PROFILE="DOCS_SPECS"
-  elif [[ ! -f "$REPO/package.json" ]]; then
+  # Profile: detect HYBRID when both package.json and openspec/ coexist; warn and default to APP
+  if [[ -f "$REPO/package.json" ]] && [[ -d "$REPO/openspec" ]]; then
+    echo "WARN: package.json e openspec/ coexistem — perfil pode ser HYBRID." >&2
+    echo "      Confirmar: relançar com --profile HYBRID ou DOCS_SPECS se não for APP." >&2
+    echo "      A continuar com --profile APP por defeito (passar 'APP', 'DOCS_SPECS' ou 'HYBRID' como 1º argumento)." >&2
+    PROFILE="APP"
+  elif [[ -f "$REPO/package.json" ]]; then
+    PROFILE="APP"
+  else
     PROFILE="DOCS_SPECS"
   fi
   bash "$REPO/sdd-kit/install.sh" --profile "$PROFILE" --repo "$REPO" || {

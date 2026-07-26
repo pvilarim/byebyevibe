@@ -59,4 +59,4 @@ jobs:
 
       - name: Restore infra.md mutated by verify-infra.sh
         if: always()
-        run: git checkout -- openspec/infra.md 2>/dev/null || true
+        run: git checkout -- openspec/infra.md 2>/dev/null || true  # No-op if untracked (new install) — runner is ephemeral

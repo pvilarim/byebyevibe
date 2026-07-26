@@ -26,7 +26,7 @@ Options:
   --profile   Profile filter: APP, DOCS_SPECS, or HYBRID.
               Required when --apply is used. Optional for dry-run (shows all with [all-profiles] label).
   --dry-run   Produce diff report (default if --apply omitted)
-  --apply     Apply COPY/APPLY_TEMPLATE files (never auto-merges AGENTS.md or project.md).
+  --apply     Apply COPY files (never auto-merges AGENTS.md or project.md).
               Requires --profile. Blocked on main/master branch unless --force is passed.
   --force     Bypass branch safety check (allow --apply directly on main/master)
   --repo      Target repository root
@@ -72,7 +72,7 @@ if [[ "$TO_VER" != "$MANIFEST_VER" ]]; then
   echo "WARN: --to ($TO_VER) differs from MANIFEST ($MANIFEST_VER)" >&2
 fi
 
-echo "=== SDD UPGRADE REPORT (dry-run) ==="
+$DRY_RUN && echo "=== SDD UPGRADE REPORT (dry-run) ===" || echo "=== SDD UPGRADE APPLY ==="
 echo "From: v$FROM_VER  To: v$TO_VER"
 echo "Repo: $REPO_ROOT"
 [[ -n "$PROFILE" ]] && echo "Profile: $PROFILE" || echo "Profile: (all — supply --profile to filter)"
@@ -96,7 +96,7 @@ classify() {
   fi
   case "$merge" in
     MERGE|MERGE_PROFILE) echo "MERGE        ${prefix}$dest" ;;
-    COPY) echo "APPLY_TEMPLATE ${prefix}$dest" ;;
+    COPY) echo "COPY           ${prefix}$dest" ;;
     *) echo "MERGE        ${prefix}$dest" ;;
   esac
 }
@@ -163,7 +163,7 @@ if $DRY_RUN && ! $APPLY; then
 
 Ver output de \`bash sdd-kit/upgrade.sh --from $FROM_VER --to $TO_VER --dry-run\`
 
-Classificações: KEEP_LOCAL · MERGE · APPLY_TEMPLATE · NEW · SKIP
+Classificações: KEEP_LOCAL · MERGE · COPY · NEW · SKIP
 
 ## Aprovação
 
@@ -203,7 +203,7 @@ if $APPLY; then
     exit 1
   fi
   echo ""
-  echo "--- Applying COPY/APPLY_TEMPLATE only (profile: $PROFILE) ---"
+  echo "--- Applying COPY files only (profile: $PROFILE) ---"
 
   # Task 1.4 — apply Python block: filter by profiles
   while IFS=$'\t' read -r src dest merge; do
