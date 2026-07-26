@@ -1,5 +1,6 @@
 
 .sdd/runtime/
+.sdd/metrics-last-run
 
 AGENTS.tools-generated.md
 CLAUDE.tools-generated.md
