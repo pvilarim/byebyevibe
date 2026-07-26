@@ -1,10 +1,4 @@
-# sdd-discovery-positioning Specification
-
-## Purpose
-
-Normative requirements for public discovery and positioning surfaces of ByeByeVibe (SDD Install Kit payload in `sdd-kit/`): root README, market/competitive evaluation document, first-contact quickstart, and manual GitHub About/topics checklist. Positions the project as the control plane from vibe coding to shippable AI engineering — not as an application boilerplate.
-
-## Requirements
+## MODIFIED Requirements
 
 ### Requirement: Root README exists with vibe-to-agentic positioning
 
@@ -25,19 +19,19 @@ The hub repository MUST include a root `README.md` written primarily in English 
 - **WHEN** a visitor reads the opening or a glossary near the top of the root README
 - **THEN** they can tell that **ByeByeVibe** is the public name and `sdd-kit/` is the install payload path
 
-### Requirement: Root README includes demo and capability overview
+### Requirement: Manual GitHub About and topics checklist
 
-The root README MUST include (1) a short narrative or dialogue demonstrating the `/opsx:explore` → `/opsx:propose` → `/opsx:apply` → `/opsx:archive` flow (or equivalent OpenSpec workflow names) and (2) a structured overview of what the kit includes (at least: specs/OpenSpec, code graph/GitNexus, knowledge graph/Graphify, CI gates, and optional modules such as UI or Probity when present in the kit).
+Discovery metadata that cannot be versioned in git (repository About description, GitHub topics, and repository rename) MUST be documented as an `[AÇÃO MANUAL NECESSÁRIA]` checklist in the evaluation document and/or root README. The checklist MUST include: (1) recommended About blurb naming **ByeByeVibe** and the vibe→agentic positioning; (2) topic list from the research (at least: `vibe-coding`, `spec-driven-development`, `context-engineering`, `claude-code`, `cursor`); (3) recommended repository slug rename from `gitnexus-graphify-openspec` to `byebyevibe` (or the slug recorded in the change design).
 
-#### Scenario: Demo section present
+#### Scenario: Operator finds manual checklist
 
-- **WHEN** the root README is read
-- **THEN** it contains a demo section referencing the opsx (or OpenSpec) propose/apply/archive workflow
+- **WHEN** an operator finishes applying this capability’s documentation tasks
+- **THEN** they can locate a checklist that lists the About text, topics, and repo rename action to perform in GitHub repository settings
 
-#### Scenario: Capability table or list present
+#### Scenario: About names ByeByeVibe
 
-- **WHEN** the root README is read
-- **THEN** it lists or tables the major kit capabilities including OpenSpec, GitNexus, and Graphify
+- **WHEN** the operator reads the recommended About blurb in the checklist
+- **THEN** the blurb includes the display name **ByeByeVibe** (not only the legacy working title “SDD Install Kit”)
 
 ### Requirement: Competitive evaluation document is the lasting research artifact
 
@@ -53,29 +47,6 @@ The repository MUST include `doc/avaliacoes/2026-07-26-sdd-discovery-positioning
 - **WHEN** the evaluation document is read
 - **THEN** it records adopted discovery surfaces, the ByeByeVibe public-name decision for P10, remaining deferred items (e.g. GIF, i18n waves), and explicit non-goals for app scaffolding
 
-### Requirement: First-contact quickstart in the canonical guide
-
-`doc/sistema-sdd-pedro.md` MUST include a short first-contact / vibe-coder quickstart section that points to the root README and `sdd-kit/install.sh`, without replacing the full installation procedure. The section MUST be linked from the guide’s “Como usar este documento” table or index.
-
-#### Scenario: Vibe coder path exists in guide
-
-- **WHEN** a newcomer opens `doc/sistema-sdd-pedro.md` looking for a minimal path
-- **THEN** they find a short quickstart section that references the root README and an install dry-run command
-
-### Requirement: Manual GitHub About and topics checklist
-
-Discovery metadata that cannot be versioned in git (repository About description, GitHub topics, and repository rename) MUST be documented as an `[AÇÃO MANUAL NECESSÁRIA]` checklist in the evaluation document and/or root README. The checklist MUST include: (1) recommended About blurb naming **ByeByeVibe** and the vibe→agentic positioning; (2) topic list from the research (at least: `vibe-coding`, `spec-driven-development`, `context-engineering`, `claude-code`, `cursor`); (3) recommended repository slug rename from `gitnexus-graphify-openspec` to `byebyevibe` (or the slug recorded in the change design).
-
-#### Scenario: Operator finds manual checklist
-
-- **WHEN** an operator finishes applying this capability’s documentation tasks
-- **THEN** they can locate a checklist that lists the About text, topics, and repo rename action to perform in GitHub repository settings
-
-#### Scenario: About names ByeByeVibe
-
-- **WHEN** the operator reads the recommended About blurb in the checklist
-- **THEN** the blurb includes the display name **ByeByeVibe** (not only the legacy working title “SDD Install Kit”)
-
 ### Requirement: Positioning forbids pretending to be an app starter
 
 Public discovery surfaces (root README and kit README positioning intro) MUST NOT claim ByeByeVibe / the SDD install kit is a full-stack application template, Next.js starter, or equivalent Camada B boilerplate. They MUST describe the project as a control plane / install kit for agent-assisted development.
@@ -84,6 +55,8 @@ Public discovery surfaces (root README and kit README positioning intro) MUST NO
 
 - **WHEN** the root README hero or equivalent opening is read
 - **THEN** it explicitly disclaims being an application boilerplate or starter template
+
+## ADDED Requirements
 
 ### Requirement: Root README includes maintainer links
 
