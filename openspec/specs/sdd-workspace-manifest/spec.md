@@ -54,6 +54,15 @@ The repository MUST have `scripts/verify-infra.sh` — an idempotent script that
 - **WHEN** an agent opens `openspec/infra.md`
 - **THEN** it finds tabular entries for OpenSpec, GitNexus, Graphify, and Install Kit with version and status columns
 
+### Requirement: Skills section lists all active review skills
+
+The Skills section of `openspec/infra.md` MUST list all active on-demand review skills installed in the repository. It MUST include `correctness-review` alongside `simplify-review`.
+
+#### Scenario: Agent reads infra.md to discover review skills
+
+- **WHEN** an agent reads `openspec/infra.md` looking for available review skills (R10 compliance)
+- **THEN** it finds both `simplify-review` and `correctness-review` listed with status ✅ and their respective phases
+
 ### Requirement: Install kit section in infrastructure manifest
 
 `openspec/infra.md` MUST include an **Install Kit** section listing: kit version, path (`sdd-kit/` or "expanded only"), `install.sh` / `upgrade.sh` / `verify.sh` status, and last verification timestamp.
