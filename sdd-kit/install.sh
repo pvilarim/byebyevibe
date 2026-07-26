@@ -56,6 +56,14 @@ apply_file() {
     return 0
   fi
 
+  # Task 4.1 — warn when installing GitHub Actions workflows in non-GitHub CI environments
+  if [[ "$dest" == .github/workflows/* ]]; then
+    if [[ -n "${GITLAB_CI:-}" || -n "${GITEA_ACTIONS:-}" || -n "${TF_BUILD:-}" || -n "${CIRCLECI:-}" ]]; then
+      echo "WARN: Installing '$dest' in a non-GitHub CI environment." \
+           "The workflow uses GitHub Actions syntax and will need adaptation for your CI platform." >&2
+    fi
+  fi
+
   if $DRY_RUN; then
     echo "  PLAN [$merge] $dest <- $src"
     return 0
