@@ -72,7 +72,7 @@ O agente **não** altera Settings do repositório. Operador humano deve aplicar:
 
 **About sugerido (≤160 chars):**
 
-> ByeByeVibe — from vibe coding to shippable AI engineering. SDD control plane (OpenSpec + graphs + gates) for Cursor & Claude Code. Not a Next.js starter.
+> ByeByeVibe — SDD install kit from vibe coding to shippable AI engineering. Control plane (OpenSpec + graphs + gates) for Cursor & Claude Code. Not a Next.js starter.
 
 **Topics (mínimo):**
 
