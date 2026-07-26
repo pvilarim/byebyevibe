@@ -19,162 +19,189 @@ profiles: [APP, DOCS_SPECS, HYBRID]
 files:
   - path: scripts/verify-infra.sh
     source: templates/scripts/verify-infra.sh
+    sha256: "f296108c5734edb71f166d6ec716b541714d52c5760309117f103183c37893cf"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -x scripts/verify-infra.sh"
 
   - path: scripts/verify-task-patterns.sh
     source: templates/scripts/verify-task-patterns.sh
+    sha256: "16006f809d34599bcc1c29f8e14369b5719dbb5cb63d2be2e75e68d05ba49b60"
     merge: COPY
     profiles: [DOCS_SPECS, HYBRID]
     gate: "test -x scripts/verify-task-patterns.sh"
 
   - path: scripts/sdd-session-lib.sh
     source: templates/scripts/sdd-session-lib.sh
+    sha256: "e74fbb6050eeefb80ebe5bac2067dd09854c70a617c207e03934b387b7df475f"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f scripts/sdd-session-lib.sh"
 
   - path: scripts/sdd-session-register.sh
     source: templates/scripts/sdd-session-register.sh
+    sha256: "08de79074dabcb6e464632a92b0fbbb5e0dcd0db76f3967a627b9cc2b18c2b25"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -x scripts/sdd-session-register.sh"
 
   - path: scripts/sdd-session-check.sh
     source: templates/scripts/sdd-session-check.sh
+    sha256: "fe4b98d3d4c980ced865dbcfbe7caf38064930a8b3c5ba1b2c345a17b9399d3a"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "bash scripts/sdd-session-check.sh --phase explore"
 
   - path: scripts/sdd-session-status.sh
     source: templates/scripts/sdd-session-status.sh
+    sha256: "5cf73d31fb6678aa1e2483ff6eaa85a9ee08e62fc067de69dffb4396ef5bc2af"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "bash scripts/sdd-session-status.sh"
 
   - path: scripts/sdd-session-heartbeat.sh
     source: templates/scripts/sdd-session-heartbeat.sh
+    sha256: "43d434e5f271022380a100cfecb77328029f929c50d85c019c56ab99dadaa2d0"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -x scripts/sdd-session-heartbeat.sh"
 
   - path: scripts/sdd-session-release.sh
     source: templates/scripts/sdd-session-release.sh
+    sha256: "1939e35e0cd8e1e53e82305c22d2fa3e9fb27b17c3861c8892d0b5725606d66f"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -x scripts/sdd-session-release.sh"
 
   - path: scripts/sdd-upgrade-diff.sh
     source: templates/scripts/sdd-upgrade-diff.sh
+    sha256: "e8cd3070564a47e11417e8ea1c561f5c13574cb75c78ffc81ddf50d55784b3b7"
     merge: MERGE
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -x scripts/sdd-upgrade-diff.sh"
 
   - path: scripts/bootstrap-sdd.sh
     source: templates/scripts/bootstrap-sdd.sh
+    sha256: "7cc3bdfb2caa19fc3a8506b9ae9c30fcbb4bdf3512d9a02549f82b0732aa0c67"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -x scripts/bootstrap-sdd.sh"
 
   - path: .github/workflows/sdd-gates.yml
     source: templates/.github/workflows/sdd-gates.yml
+    sha256: "50460c5b36161b0cfc120d5fdbf69b84ac57957f7d4ddbbc86f2ef3b36028e68"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f .github/workflows/sdd-gates.yml"
 
   - path: .cursor/rules/000-base.mdc
     source: templates/.cursor/rules/000-base.mdc
+    sha256: "8fb9f30268a38633c295bc5ae4031dd37f18ab93ae2e4838863f2f192f4d35be"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f .cursor/rules/000-base.mdc"
 
   - path: .cursor/rules/015-session-phases.mdc
     source: templates/.cursor/rules/015-session-phases.mdc
+    sha256: "b466d3f81f9b2fef6c81d64fe5e3dfdf180491ab87a9e7591af9e06ebbf1b948"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f .cursor/rules/015-session-phases.mdc"
 
   - path: .cursor/rules/016-session-coordination.mdc
     source: templates/.cursor/rules/016-session-coordination.mdc
+    sha256: "25d962f99e0beff0265166efafb50f7a2797d095ced9b78e343ac9baa6bb2959"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f .cursor/rules/016-session-coordination.mdc"
 
   - path: .cursor/rules/050-security.mdc
     source: templates/.cursor/rules/050-security.mdc
+    sha256: "d36083abc4f4c697adb0b687f637be91d8efcd36bb5ab8ce4b902f50a062e8b2"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f .cursor/rules/050-security.mdc"
 
   - path: .cursor/rules/010-typescript.mdc
     source: templates/.cursor/rules/010-typescript.mdc
+    sha256: "1021df6cf78476f2ce42728c4737caf54f0fbe8729afe7dd97b16dad2e123d2e"
     merge: COPY
     profiles: [APP, HYBRID]
     gate: "test -f .cursor/rules/010-typescript.mdc || echo SKIP"
 
   - path: .cursor/rules/020-python.mdc
     source: templates/.cursor/rules/020-python.mdc
+    sha256: "238343e24953e48272a85d2d4292e7f1689bd251b37e6981554611a42e17b533"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f .cursor/rules/020-python.mdc || echo SKIP"
 
   - path: .cursor/rules/030-supabase.mdc
     source: templates/.cursor/rules/030-supabase.mdc
+    sha256: "9d47835f0b0914d205ef4de2fd983a5d1a931614487c3a9f03dda5e2f7737cc4"
     merge: COPY
     profiles: [APP, HYBRID]
     gate: "test -f .cursor/rules/030-supabase.mdc || echo SKIP"
 
   - path: .cursor/rules/graphify.mdc
     source: templates/.cursor/rules/graphify.mdc
+    sha256: "63eeb04932115568ab6b9ae4d51187210397f6395cbf3d14e7c8db9df01ab0b9"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f .cursor/rules/graphify.mdc"
 
   - path: CLAUDE.md
     source: templates/CLAUDE.md
+    sha256: "79f528dcf569352fa357e738cd1e8eb6a38f0787b7ef31c7bd82e6f3eca8ca6d"
     merge: MERGE
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f CLAUDE.md"
 
   - path: AGENTS.md
     source: templates/AGENTS.core.md
+    sha256: "23de5fd7ef6487fb7d238c7aac8f1e44d4f3d553dec530079d6beae38e729f5c"
     merge: MERGE_PROFILE
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test $(wc -l < AGENTS.md) -le 150"
 
   - path: openspec/infra.md
     source: templates/openspec/infra.md
+    sha256: "03d93edcbf3677b1ba8ab549c491c05770d3cc3f875fb9547f07ba701b7844e6"
     merge: MERGE
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f openspec/infra.md"
 
   - path: sdd-kit/install-ui-module.sh
     source: templates/install-ui-module.sh
+    sha256: "ad16d863f0e6447af0dd4dec49f7270140ebef3536e7e2f14954a97170e1bdea"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -x sdd-kit/install-ui-module.sh"
 
   - path: doc/design/000-impeccable-design-system-guia.md
     source: templates/doc/design/000-impeccable-design-system-guia.md
+    sha256: "ef9907065e1fe0751a812ec3dd91b9b97596d00c4c0df699f0f1bc5de1c2687b"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f doc/design/000-impeccable-design-system-guia.md"
 
   - path: doc/design/001-pipeline-open-design-shadcn-impeccable.md
     source: templates/doc/design/001-pipeline-open-design-shadcn-impeccable.md
+    sha256: "a1e9c28fb3b0e78b4c6aeedfa0e8ed3a6992aa5363774f53d0cea38b69e9eb4b"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f doc/design/001-pipeline-open-design-shadcn-impeccable.md"
 
   - path: doc/design/002-ui-module-install.md
     source: templates/doc/design/002-ui-module-install.md
+    sha256: "d311e33a0a913ae1804cc1c452a8f1225807be51e1e181900fa1615e921c593a"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f doc/design/002-ui-module-install.md"
 
   - path: doc/design/003-ui-stack-adapters.md
     source: templates/doc/design/003-ui-stack-adapters.md
+    sha256: "f7a06e6b90d700d0394a90046c6647c08e52510c21129799821fad18ed4ff6d5"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f doc/design/003-ui-stack-adapters.md"

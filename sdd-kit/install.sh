@@ -5,6 +5,18 @@ set -euo pipefail
 
 KIT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 MANIFEST="$KIT_DIR/MANIFEST.yaml"
+
+# _sha256 <file> — returns lowercase hex sha256 digest, or empty string if unavailable
+_sha256() {
+  if command -v sha256sum &>/dev/null; then
+    sha256sum "$1" 2>/dev/null | cut -d' ' -f1
+  elif command -v shasum &>/dev/null; then
+    shasum -a 256 "$1" 2>/dev/null | cut -d' ' -f1
+  else
+    echo "WARN: sha256sum/shasum not available — integrity check skipped for $1" >&2
+    echo ""
+  fi
+}
 PROFILE=""
 DRY_RUN=false
 REPO_ROOT="."
@@ -42,7 +54,7 @@ REPO_ROOT="$(cd "$REPO_ROOT" && pwd)"
 cd "$REPO_ROOT"
 
 apply_file() {
-  local src="$1" dest="$2" merge="$3"
+  local src="$1" dest="$2" merge="$3" sha256="${4:-}"
   local src_path="$KIT_DIR/$src"
   local dest_path
   dest_path="$(realpath --no-symlinks "$REPO_ROOT/$dest")"
@@ -54,6 +66,18 @@ apply_file() {
   if [[ ! -f "$src_path" ]]; then
     echo "  SKIP missing source: $src"
     return 0
+  fi
+
+  # Integrity check: verify sha256 of template before copying (D3 policy)
+  if [[ -n "$sha256" ]]; then
+    local actual
+    actual="$(_sha256 "$src_path")"
+    if [[ -n "$actual" && "$sha256" != "$actual" ]]; then
+      echo "ERROR: integrity check failed: $src (expected $sha256, got $actual)" >&2
+      exit 1
+    fi
+  else
+    echo "WARN: no sha256 for $src — skipping integrity check" >&2
   fi
 
   # Task 4.1 — warn when installing GitHub Actions workflows in non-GitHub CI environments
@@ -137,13 +161,13 @@ echo "Repo:    $REPO_ROOT"
 $DRY_RUN && echo "Mode:    DRY-RUN"
 echo ""
 
-while IFS=$'\t' read -r src dest merge; do
+while IFS=$'\t' read -r src dest merge sha256; do
   [[ -n "$src" ]] || continue
-  apply_file "$src" "$dest" "$merge"
+  apply_file "$src" "$dest" "$merge" "$sha256"
   if [[ "$dest" == *.sh ]]; then
     chmod +x "$REPO_ROOT/$dest" 2>/dev/null || true
   fi
-done < <(python3 - <<'PY' "$MANIFEST" "$PROFILE"
+done < <(python3 - "$MANIFEST" "$PROFILE" << 'PY'
 import sys, re
 manifest_path, profile = sys.argv[1:3]
 text = open(manifest_path).read()
@@ -162,13 +186,15 @@ for line in text.splitlines():
                 block["profiles"] = re.findall(r"\w+", val)
             elif key in ("path", "source", "merge"):
                 block[key] = val.strip('"')
+            elif key == "sha256":
+                block["sha256"] = val.strip('"')
 if block and "path" in block:
     entries.append(block)
 for e in entries:
     profiles = e.get("profiles", ["APP", "DOCS_SPECS", "HYBRID"])
     if profile not in profiles:
         continue
-    print(f"{e['source']}\t{e['path']}\t{e.get('merge','COPY')}")
+    print(f"{e['source']}\t{e['path']}\t{e.get('merge','COPY')}\t{e.get('sha256','')}")
 PY
 )
 
