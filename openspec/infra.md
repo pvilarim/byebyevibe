@@ -1,6 +1,6 @@
 # Workspace Infrastructure Manifest
 
-> Última verificação: 2026-07-25 · Script: `scripts/verify-infra.sh`
+> Última verificação: 2026-07-26 · Script: `scripts/verify-infra.sh`
 >
 > **Regra:** sem valores de secrets. Env vars listam apenas **nomes** e presença (✅/❌).
 
@@ -9,7 +9,7 @@
 | Componente | Versão | Estado | Verificar com |
 |------------|--------|--------|---------------|
 | OpenSpec | <!-- openspec-version -->—<!-- /openspec-version --> | <!-- openspec-status -->❌<!-- /openspec-status --> | `npx openspec list` |
-| GitNexus | <!-- gitnexus-version -->1.6.7<!-- /gitnexus-version --> | <!-- gitnexus-status -->❌<!-- /gitnexus-status --> | `npx gitnexus status` |
+| GitNexus | <!-- gitnexus-version -->1.6.9<!-- /gitnexus-version --> | <!-- gitnexus-status -->❌<!-- /gitnexus-status --> | `npx gitnexus status` |
 | Graphify | <!-- graphify-version -->—<!-- /graphify-version --> | <!-- graphify-status -->❌<!-- /graphify-status --> | `test -f graphify-out/GRAPH_REPORT.md` |
 
 ## MCP Servers
@@ -18,6 +18,7 @@
 
 | Servidor | Estado | Verificar com |
 |----------|--------|---------------|
+| github-mcp-server (v1.7.0 local; remoto via `api.githubcopilot.com/mcp/`) | `[NEEDS VERIFICATION]` | `mcp_get_tools` ou `~/.cursor/mcp.json` |
 | <!-- mcp-list -->[NEEDS VERIFICATION]<!-- /mcp-list --> | — | `~/.cursor/mcp.json` ou `mcp_get_tools` |
 
 ## Skills (repo)
@@ -51,7 +52,7 @@ Regra always-on: `.cursor/rules/016-session-coordination.mdc`.
 
 | Artefacto | Versão | Estado | Verificar com |
 |-----------|--------|--------|---------------|
-| `sdd-kit/MANIFEST.yaml` | <!-- kit-version -->1.4.0<!-- /kit-version --> | <!-- kit-status -->✅<!-- /kit-status --> | `grep version sdd-kit/MANIFEST.yaml` |
+| `sdd-kit/MANIFEST.yaml` | <!-- kit-version -->1.5.0<!-- /kit-version --> | <!-- kit-status -->✅<!-- /kit-status --> | `grep version sdd-kit/MANIFEST.yaml` |
 | `sdd-kit/install.sh` | — | <!-- kit-install-status -->✅<!-- /kit-install-status --> | `test -x sdd-kit/install.sh` |
 | `sdd-kit/install-ui-module.sh` | — | ✅ | `test -x sdd-kit/install-ui-module.sh` |
 | `sdd-kit/upgrade.sh` | — | ✅ | `test -x sdd-kit/upgrade.sh` |

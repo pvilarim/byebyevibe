@@ -47,7 +47,8 @@ Para trabalho tipo D/E, **SEMPRE** consultar Graphify e GitNexus antes de escrev
 | Change em curso | `openspec/changes/<id>/` |
 | Teoria / relações entre conceitos | `graphify-out/GRAPH_REPORT.md` |
 | Workshop e transcrições | `doc/curso/aula-*.md` |
-| Guia de instalação SDD (v1.4.0) | `doc/sistema-sdd-pedro.md` |
+| Guia de instalação SDD (v1.5.0) | `doc/sistema-sdd-pedro.md` |
+| GitHub Issues MCP (operação humana) | `doc/sistema-sdd-pedro.md` §2.14 |
 | Módulo UI (C1-UI) | `doc/sistema-sdd-pedro.md` §2.11 · `doc/design/002-ui-module-install.md` |
 | Install kit (payload SDD) | `sdd-kit/` |
 | Actualização SDD (repo já instalado) | `doc/sistema-sdd-pedro.md` §2.9 |
@@ -120,6 +121,8 @@ Se ambíguo entre dois tipos, **PERGUNTAR**. **NUNCA** assumir Tipo A por defeit
 **GitNexus** — Repo indexado como `gitnexus-graphify-openspec`. Antes de editar símbolos: `gitnexus_impact`. Antes de commit: `gitnexus_detect_changes`. Detalhe: `.claude/skills/gitnexus/gitnexus-impact-analysis/SKILL.md`.
 
 **Graphify** — Ler `graphify-out/GRAPH_REPORT.md` antes de grep em perguntas de arquitectura. Após editar código: `graphify update .`. Detalhe: `.cursor/rules/graphify.mdc`.
+
+**github-mcp-server** — MCP passivo (modo D) para contexto de GitHub Issues. Consultar em tipos **B**, **D** e **E** (opcional em **C** se há issue); nunca em tipo **A**. Em `/opsx:propose`, ler issue de origem quando `**Issue:**` está preenchido; em B/D sem issue explícita, verificar issues abertas para evitar duplicatas. Preencher `**Issue:**` em `proposal.md` (URL, `#123`, ou `—`). Cloud agents: `gh` CLI read-only cobre consultas ad-hoc — MCP local é para sessões interactivas. Operação humana: guia §2.14.
 
 **sdd-kit — manutenção de checksums** — Ao editar qualquer ficheiro em `sdd-kit/templates/`, correr `bash sdd-kit/gen-manifest-checksums.sh` antes de commitar para actualizar os campos `sha256:` no MANIFEST. Sem este passo, `install.sh` e `upgrade.sh --apply` abortarão com erro de integridade nos repos consumidores.
 

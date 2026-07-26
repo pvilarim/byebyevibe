@@ -18,7 +18,8 @@
 
 | Servidor | Estado | Verificar com |
 |----------|--------|---------------|
-| <!-- mcp-list -->[NEEDS VERIFICATION]<!-- /mcp-list --> | — | `~/.cursor/mcp.json` ou `mcp_get_tools` |
+| github-mcp-server (v1.7.0 local; remoto via `api.githubcopilot.com/mcp/`) | `[NEEDS VERIFICATION]` | `mcp_get_tools` ou `~/.cursor/mcp.json` |
+| <!-- mcp-list -->outros MCPs<!-- /mcp-list --> | — | `~/.cursor/mcp.json` ou `mcp_get_tools` |
 
 ## Skills (repo)
 

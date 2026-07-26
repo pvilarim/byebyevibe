@@ -77,6 +77,20 @@ The repository MUST have `scripts/verify-infra.sh` — an idempotent script that
 - **WHEN** an agent needs to know if a tool is available
 - **THEN** the AGENTS.md context table directs it to `openspec/infra.md` before external search
 
+### Requirement: github-mcp-server in MCP Servers section
+
+`openspec/infra.md` MUST include an entry for `github-mcp-server` in the MCP Servers section with: pinned version reference (v1.7.0 for local binary), status indicator (✅/❌/`[NEEDS VERIFICATION]`), and a "verify with" command (e.g. `mcp_get_tools` or `~/.cursor/mcp.json`).
+
+#### Scenario: Agent reads MCP inventory
+
+- **WHEN** an agent opens `openspec/infra.md` MCP Servers section
+- **THEN** it finds a row for `github-mcp-server` with version, status, and verification command
+
+#### Scenario: Infra template in sdd-kit mirrors hub
+
+- **WHEN** a consumer repo installs or upgrades from sdd-kit
+- **THEN** `sdd-kit/templates/openspec/infra.md` contains the same github-mcp-server entry as the hub `openspec/infra.md`
+
 ### Requirement: Security constraints on manifest
 
 The manifest MUST NEVER contain values from `.env`. Env var verification MUST use presence checks only (`test -n "${VAR:-}"` or equivalent). The agent MUST NOT read `.env` per existing security rules.
