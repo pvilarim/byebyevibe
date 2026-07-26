@@ -48,12 +48,12 @@ N/A this wave: **G-MIRROR** (no `.cursor`/`.claude` skill pair in scope), **G-Do
 
 ## Freeze / allowlist checklist
 
-- [ ] Shell/CI fences byte-stable (except intentional non-i18n fixes)
-- [ ] Paths, change-ids, `/opsx:*`, pins, brand names untouched
-- [ ] `<!-- SDD_KIT_COMMANDS_START -->` / `<!-- SDD_KIT_COMMANDS_END -->` markers byte-stable and still wrapping the commands slot
-- [ ] Glossary forms used; new terms added to `GLOSSARY.md`
-- [ ] No dual-file EN/PT siblings introduced
-- [ ] `bash sdd-kit/gen-manifest-checksums.sh` run after template edits; `bash sdd-kit/verify.sh` green
+- [x] Shell/CI fences byte-stable (except intentional non-i18n fixes)
+- [x] Paths, change-ids, `/opsx:*`, pins, brand names untouched
+- [x] `<!-- SDD_KIT_COMMANDS_START -->` / `<!-- SDD_KIT_COMMANDS_END -->` markers byte-stable and still wrapping the commands slot
+- [x] Glossary forms used; new terms added to `GLOSSARY.md`
+- [x] No dual-file EN/PT siblings introduced
+- [x] `bash sdd-kit/gen-manifest-checksums.sh` run after template edits; `bash sdd-kit/verify.sh` green
 
 ## Session Handoff stub
 

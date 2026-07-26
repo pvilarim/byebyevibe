@@ -166,7 +166,7 @@ files:
 
   - path: AGENTS.md
     source: templates/AGENTS.core.md
-    sha256: "84def70d8f5ea66e76139317779fe43c7fb684cfe2b67703b483126b8b3a4e95"
+    sha256: "21a2482dc9c9da759c4b6dbe76f9cc3df662d721c10f8bdc372ad504039c54d4"
     merge: MERGE_PROFILE
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test $(wc -l < AGENTS.md) -le 150"
