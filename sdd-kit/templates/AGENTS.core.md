@@ -43,6 +43,7 @@ Para trabalho tipo D/E, **SEMPRE** consultar Graphify e GitNexus antes de escrev
 | Gates de CI (sdd-gates, operação) | `doc/sistema-sdd-pedro.md` §2.12 · `.github/workflows/sdd-gates.yml` |
 | Supply chain (Renovate + OSV) | `doc/sistema-sdd-pedro.md` §2.13 |
 | GitHub Issues MCP (operação humana) | `doc/sistema-sdd-pedro.md` §2.15 |
+| Métricas SDD (G4, modo C) | `doc/sistema-sdd-pedro.md` §2.17 · `bash scripts/sdd-metrics.sh` |
 | TypeScript (se aplicável) | `.cursor/rules/010-typescript.mdc` |
 | Python | `.cursor/rules/020-python.mdc` |
 | Supabase | `.cursor/rules/030-supabase.mdc` |
@@ -97,6 +98,8 @@ Se ambíguo entre dois tipos, **PERGUNTAR**. **NUNCA** assumir Tipo A por defeit
 **CI Gates (sdd-gates)** — Workflow `.github/workflows/sdd-gates.yml` corre em `push`/`pull_request`, fail-closed: `openspec validate --all --strict` (bloqueante), `verify-task-patterns.sh` (bloqueante), **OSV-Scanner** (bloqueante quando lockfile presente), `sdd-kit/verify.sh` (report-only). Antes de push: correr `npx --yes @fission-ai/openspec@1.3.1 validate --all --strict` localmente. Operação: guia §2.12.
 
 **Probity (G2)** — Módulo opcional APP/HYBRID: `bash sdd-kit/install-probity-module.sh --detect` → `--apply [--yes]`; pin `@nizos/probity@1.10.0`. Matriz A–E: off em A (globs); on em B/C/D via `enforceTdd`. DOCS_SPECS sem testes: SKIP. Operação: guia §2.16.
+
+**SDD Metrics (G4)** — Script local sob demanda (modo C): `bash scripts/sdd-metrics.sh [--since YYYY-MM-DD] [--output PATH]`. Relatório markdown (volume, lead time propose→archive, rework `fix` pós-archive). Proxies git+archive; **não** adoptar Apache DevLake. Sem skill/rule (R3 N/A). Operação: guia §2.17.
 
 ## Testing
 

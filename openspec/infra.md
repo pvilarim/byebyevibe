@@ -52,7 +52,7 @@ Regra always-on: `.cursor/rules/016-session-coordination.mdc`.
 
 | Artefacto | Versão | Estado | Verificar com |
 |-----------|--------|--------|---------------|
-| `sdd-kit/MANIFEST.yaml` | <!-- kit-version -->1.5.0<!-- /kit-version --> | <!-- kit-status -->✅<!-- /kit-status --> | `grep version sdd-kit/MANIFEST.yaml` |
+| `sdd-kit/MANIFEST.yaml` | <!-- kit-version -->1.6.0<!-- /kit-version --> | <!-- kit-status -->✅<!-- /kit-status --> | `grep version sdd-kit/MANIFEST.yaml` |
 | `sdd-kit/install.sh` | — | <!-- kit-install-status -->✅<!-- /kit-install-status --> | `test -x sdd-kit/install.sh` |
 | `sdd-kit/install-ui-module.sh` | — | ✅ | `test -x sdd-kit/install-ui-module.sh` |
 | `sdd-kit/install-probity-module.sh` | — | ✅ | `test -x sdd-kit/install-probity-module.sh` |
@@ -104,6 +104,15 @@ OSV corre no job `SDD Gates` quando há lockfile na raiz; SKIP explícito quando
 | `sdd-kit/install-probity-module.sh` | ✅ (kit) | `test -x sdd-kit/install-probity-module.sh` |
 
 Módulo opcional G2 (APP/HYBRID com testes). Piloto APP obrigatório antes de activação default — `openspec/changes/add-probity-tdd-module/piloto-nota.md`. Operação: guia §2.16 · `doc/design/004-probity-module-install.md`.
+
+## SDD Metrics (G4)
+
+| Componente | Estado | Verificar com |
+|------------|--------|---------------|
+| `scripts/sdd-metrics.sh` | ✅ | `test -x scripts/sdd-metrics.sh` |
+| Relatório sob demanda (modo C) | ✅ | `bash scripts/sdd-metrics.sh --help` |
+
+Script local (git + `openspec/changes/archive/`) — **não** adoptar Apache DevLake. Operação: `doc/sistema-sdd-pedro.md` §2.17.
 
 ## Env vars (nomes apenas)
 

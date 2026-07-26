@@ -2,7 +2,7 @@
 
 **GitNexus + Graphify + OpenSpec, integrados no Cursor e VS Code + Claude Code**
 
-> **Guia canónico de instalação (v1.5.0)** — usar em qualquer repositório Git, manualmente ou via agente de IA. Payloads em `sdd-kit/`; procedimento neste documento.
+> **Guia canónico de instalação (v1.6.0)** — usar em qualquer repositório Git, manualmente ou via agente de IA. Payloads em `sdd-kit/`; procedimento neste documento.
 
 ## Como usar este documento
 
@@ -15,9 +15,10 @@
 | **Agente de IA — instalação** | Prompt §2.0; usar `sdd-kit/install.sh`, **não** extrair §12 |
 | **Agente de IA — actualização** | §2.9.2 + `sdd-kit/upgrade.sh --dry-run` + §12.8 antes de editar |
 | **Piloto / teste** | `bash sdd-kit/verify.sh` + checklist §2.8 ou §2.9.7 |
+| **Métricas SDD (G4)** | `bash scripts/sdd-metrics.sh` — §2.17 (modo C; sem DevLake) |
 
 - **Padrão `AGENTS.md`:** alinhado a [agents.md](https://agents.md/) + workshop TLC (Context Engineering, on-demand loading).
-- **Versão do guia:** 1.5.0 — ver [Changelog do guia](#changelog-do-guia).
+- **Versão do guia:** 1.6.0 — ver [Changelog do guia](#changelog-do-guia).
 - **Payload versionado:** `sdd-kit/MANIFEST.yaml` — ver §1.6 e `sdd-kit/README.md`.
 - **Não substitui** `openspec/project.md` (constituição do projecto) nem specs em `openspec/specs/`.
 
@@ -34,7 +35,7 @@ Segunda fricção: o ecossistema move-se depressa. Versões neste documento são
 ## Índice
 
 1. [Pré-requisitos](#1-pré-requisitos-questão-6) — inclui §1.6 (organização e cenários C1–C3)
-2. [Passo a passo de instalação](#2-passo-a-passo-de-instalação-questão-1) — inclui §2.0 (IA), §2.5 (AGENTS.md), §2.8 (verificação), §2.9 (actualização), §2.12 (gates de CI), §2.13 (supply chain)
+2. [Passo a passo de instalação](#2-passo-a-passo-de-instalação-questão-1) — inclui §2.0 (IA), §2.5 (AGENTS.md), §2.8 (verificação), §2.9 (actualização), §2.12 (gates de CI), §2.13 (supply chain), §2.16 (Probity), §2.17 (métricas SDD)
 3. [Classificação de tarefas e pipelines](#3-classificação-de-tarefas-e-pipelines-questões-2-3-31)
 4. [Tabela mestre: ferramenta × responsabilidade × I/O](#4-tabela-mestre-questão-3)
 5. [Documentos e referências cruzadas](#5-documentos-e-referências-cruzadas-questão-32) — inclui §5.5 (avaliações de integração)
@@ -734,6 +735,58 @@ bash sdd-kit/install-probity-module.sh --uninstall
 /plugin uninstall probity@probity
 # Reverter secção Probity em openspec/infra.md se necessário
 ```
+
+### 2.17 Métricas SDD (sdd-metrics.sh) — operação
+
+Script local sob demanda (**modo C**) que gera um relatório markdown de eficácia do framework SDD a partir de `git` + `openspec/changes/` / `openspec/changes/archive/`. Materializa o gap **G4** sem adoptar Apache DevLake (DORA pesado; não mede métricas por change-id).
+
+**Perfis:** APP, DOCS_SPECS, HYBRID — útil onde existir archive OpenSpec + histórico git.
+
+#### Quando correr
+
+| Situação | Acção |
+|----------|--------|
+| Retrospectiva / calibração de overhead SDD | `bash scripts/sdd-metrics.sh` |
+| Janela temporal | `bash scripts/sdd-metrics.sh --since YYYY-MM-DD` |
+| Guardar artefacto | `bash scripts/sdd-metrics.sh --output path/relatorio.md` |
+| Durante explore/propose/apply/archive | **Não** acionar — fora da pipeline |
+
+Não é gate de CI (`sdd-gates`). Sem skill/rule dedicada (R3 N/A) — descoberta via `AGENTS.md` Commands.
+
+#### Como ler o relatório (M1–M4)
+
+| Secção | Significado |
+|--------|-------------|
+| **M1 Volume** | Changes activos vs arquivados (no período) |
+| **M2 Lead time** | Dias entre o primeiro commit que menciona o change-id (proxy de propose) e a data do prefixo do dir de archive; inclui média e mediana |
+| **M3 Rework** | Commits `fix:` / `fix(...):` **após** a data de archive que ainda mencionam o change-id (R9) |
+| **M4 Actividade pós-archive** | Resumo usando M3 como proxy primário de correcções pós-archive |
+
+#### Proxies e limites (honestidade)
+
+- **M2** — o propose real pode ser anterior ao primeiro commit (chat-only) ou o change-id só entrar no commit de archive.
+- **M3** — depende de disciplina R9; commits sem change-id **não** contam (subcontagem).
+- **t_end** canónico = prefixo `YYYY-MM-DD` do dir `openspec/changes/archive/YYYY-MM-DD-<id>/`.
+- Dirs de archive sem esse prefixo são ignorados com `WARN` em stderr.
+
+#### Troubleshooting
+
+| Sintoma | Causa | Acção |
+|---------|-------|-------|
+| Exit 2 | Flag inválida ou `--since` malformado | `bash scripts/sdd-metrics.sh --help` |
+| M2 tudo `n/a` | Histórico git sem menção ao change-id | Confirmar R9; archives antigos podem não ter âncora |
+| M3 sempre 0 | Poucos `fix:` com change-id | Esperado se não houver rework; ou reforçar R9 |
+| WARN skip archive | Nome sem `YYYY-MM-DD-` | Renomear na convenção OpenSpec do hub |
+
+#### Rollback
+
+```bash
+rm -f scripts/sdd-metrics.sh
+# Em consumidores: remover entry do MANIFEST / reverter upgrade do kit
+# Reverter secção SDD Metrics em openspec/infra.md se necessário
+```
+
+Sem estado em `.sdd/`; sem hooks; sem serviços. **Apache DevLake permanece fora de escopo** — reavaliar só se equipe/DORA justificar (ver `doc/avaliacoes/2026-07-25-oss-coverage-gaps-tooling.md`).
 
 ### 2.9 Actualização de instalação existente
 
@@ -2644,13 +2697,16 @@ bash scripts/verify-task-patterns.sh   # paths Pattern: existem; DOCS_SPECS sem 
 
 ### 1.6.0 (2026-07-26)
 
+- **Métricas SDD (G4)** — Script local sob demanda `scripts/sdd-metrics.sh` (modo C): volume, lead time propose→archive, rework pós-archive; **sem** Apache DevLake (change `add-sdd-metrics-script`).
+- **§2.17** — Operação humana das métricas: quando correr, leitura M1–M4, proxies, troubleshooting, rollback.
+- **`sdd-kit/`** — Template `scripts/sdd-metrics.sh`; MANIFEST **1.5.0 → 1.6.0**.
 - **Probity (G2)** — Módulo opcional APP/HYBRID `@nizos/probity@1.10.0` com `enforceTdd` (change `add-probity-tdd-module`). TDD Guard superseded por Probity (2026-07).
 - **§2.16** — Operação humana Probity: install plugin, piloto, Cursor hooks, desligar, troubleshooting, rollback.
 - **`sdd-kit/`** — `install-probity-module.sh`, template `probity.config.ts`, `doc/design/004-probity-module-install.md`.
 - **Supply chain (G8)** — OSV-Scanner bloqueante no `sdd-gates.yml` (quando lockfile presente) + template `renovate.json` conservador para perfis APP/HYBRID (change `add-supply-chain-gates`).
 - **§2.13** — Operação humana supply chain: OSV no Actions, instalar app Renovate, preset, automerge patches (opt-in), troubleshooting, rollback.
 - **Renumerado** — §2.13 correctness-review → §2.14; §2.14 github-mcp → §2.15; Probity → §2.16.
-- **`sdd-kit/`** — `templates/renovate.json`; OSV em `templates/.github/workflows/sdd-gates.yml`; MANIFEST 1.5.0.
+- **`sdd-kit/`** — `templates/renovate.json`; OSV em `templates/.github/workflows/sdd-gates.yml`.
 
 ### 1.5.0 (2026-07-26)
 

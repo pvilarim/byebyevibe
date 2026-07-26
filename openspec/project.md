@@ -56,8 +56,8 @@ Repositório de specs, documentação técnica e cursos do Pedro Vilarim. Serve 
 - Specs activas: `openspec/specs/`
 - Mudanças em curso: `openspec/changes/`
 - Documentação do curso: `doc/curso/` (5 aulas do Workshop IA 5/2026)
-- **Guia de instalação SDD:** `doc/sistema-sdd-pedro.md` **v1.6.0** — instalação §2 + `sdd-kit/install.sh`; actualização §2.9 + `sdd-kit/upgrade.sh`; módulo UI §2.11 + `sdd-kit/install-ui-module.sh`; gates de CI §2.12; Probity (G2) §2.16 + `sdd-kit/install-probity-module.sh`
-- **Install kit:** `sdd-kit/` (MANIFEST v1.5.0) — payloads versionados para C1/C2/C1-UI/G2 + workflow `sdd-gates`
+- **Guia de instalação SDD:** `doc/sistema-sdd-pedro.md` **v1.6.0** — instalação §2 + `sdd-kit/install.sh`; actualização §2.9 + `sdd-kit/upgrade.sh`; módulo UI §2.11 + `sdd-kit/install-ui-module.sh`; gates de CI §2.12; Probity (G2) §2.16 + `sdd-kit/install-probity-module.sh`; métricas SDD (G4) §2.17 + `scripts/sdd-metrics.sh`
+- **Install kit:** `sdd-kit/` (MANIFEST v1.6.0) — payloads versionados para C1/C2/C1-UI/G2/G4 + workflow `sdd-gates`
 - **Módulo UI (design system):** `doc/design/` — `002-ui-module-install.md`, `001-pipeline-open-design-shadcn-impeccable.md`
 - **Avaliações de integração (histórico):** `doc/avaliacoes/` — ferramentas pesquisadas para o stack SDD
 - Comportamento de agentes: `AGENTS.md` (não duplicar regras aqui)

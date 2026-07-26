@@ -8,5 +8,6 @@
 | `graphify update .` | Grafo AST |
 | `graphify query "<pergunta>"` | Busca no grafo |
 | `bash scripts/sdd-session-status.sh` | Sessões SDD activas (worktree local) |
+| `bash scripts/sdd-metrics.sh` | Métricas SDD sob demanda (G4, modo C) |
 
 Nota: não há `npm run dev` na raiz deste perfil.

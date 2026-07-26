@@ -81,6 +81,15 @@ Operação: `doc/sistema-sdd-pedro.md` §2.13.
 Módulo opcional G2 (APP/HYBRID com testes). DOCS_SPECS sem test runner: SKIP.
 Operação: `doc/sistema-sdd-pedro.md` §2.16 · `doc/design/004-probity-module-install.md`.
 
+## SDD Metrics (G4)
+
+| Componente | Estado | Verificar com |
+|------------|--------|---------------|
+| `scripts/sdd-metrics.sh` | ❌ | `test -x scripts/sdd-metrics.sh` |
+| Relatório sob demanda (modo C) | ❌ | `bash scripts/sdd-metrics.sh --help` |
+
+Script local (git + `openspec/changes/archive/`) — **não** adoptar Apache DevLake. Operação: `doc/sistema-sdd-pedro.md` §2.17.
+
 ## Session Coordination
 
 | Script | Função | Estado | Verificar com |
