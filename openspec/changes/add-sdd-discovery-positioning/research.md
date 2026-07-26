@@ -216,13 +216,14 @@ ESTE KIT         ●●●●    ●●           ●●●●        ●●●�
 1. Hero (tagline + anti-boilerplate + CTA `install.sh --dry-run`)
 2. Problem (agente esquece / alucina / sobrescreve AGENTS.md)
 3. Demo texto (`/opsx:explore → propose → apply → archive`)
-4. What's included (tabela: specs / code graph / knowledge / gates / UI / Probity)
+4. What's included (tabela: specs / code graph / knowledge / gates / UI / Probity / **SDD metrics + cadence**)
 5. Not another starter kit
 6. 30-second install + perfis
 7. Who it's for
 8. Compare (resumo; detalhe na avaliação)
 9. Stack & companions (links OpenSpec, GitNexus, Graphify, agents.md)
 10. Docs (guia pt-BR, kit README)
+11. **Calibrate as you go** (opcional secção curta ou fundido em 4) — ver §12; tom honesto, sem ML
 
 Idioma: **EN no README raiz** (descoberta GitHub). Avaliação e guia neste apply podem permanecer **pt-BR** até à wave de i18n (research §11 passo ④).
 
@@ -329,3 +330,75 @@ Registo pré-apply (pedido humano): ordem das melhorias de discovery, rebrand, t
 - Não cria Landing, Discord, one-liner viral, scaffold, nem BMAD
 
 Idioma neste apply: README raiz **EN**; avaliação e quickstart no guia podem permanecer **pt-BR** até à wave ④ (consistente com o hub actual).
+
+## 12. SDD Metrics (G4) como gancho de README — explore pré-apply (2026-07-26)
+
+Pergunta humana: a ferramenta de análise periódica (`scripts/sdd-metrics.sh` + cadência) pode ser divulgada no README como forma de o sistema “aprender” e ficar mais adaptável quanto mais se usa?
+
+### 12.1 O que a ferramenta é (AS-IS, ancorado)
+
+| Peça | Função |
+|------|--------|
+| `bash scripts/sdd-metrics.sh` | Relatório markdown **modo C** (sob demanda): M1 volume, M2 lead time propose→archive, M3 rework `fix` pós-archive, M4 resumo |
+| Fontes | Só `git` + `openspec/changes/` / `archive/` — sem rede, sem DevLake |
+| Playbook §2.17 | **Interpretar → actuar:** 1 insight → 1 ajuste de *processo* (WIP, escopo, gates, R9) |
+| `--check-cadence` | Advisory: nudge se ≥**5** archives desde last-run **ou** ≥**30** dias (stamp `.sdd/metrics-last-run`) |
+| Session Handoff `/opsx:archive` | Pode sugerir correr métricas; **nunca** auto-executa o relatório; **não** bloqueia archive |
+| Spec | `openspec/specs/sdd-metrics/` — não é gate CI; sem skill always-on |
+
+### 12.2 O que **não** é
+
+| Claim enganoso | Realidade |
+|----------------|-----------|
+| “O sistema aprende sozinho / ML / personaliza o agente” | Zero modelo; zero escrita automática em `AGENTS.md` ou specs a partir do relatório |
+| “Quanto mais usas, o kit adapta-se a ti automaticamente” | Quem adapta és **tu** (ou o time), com 1 ajuste consciente no processo |
+| “Dashboard vivo / telemetria contínua” | Modo C + nudge pontual; stamp local gitignored |
+| “Métricas perfeitas” | Proxies explícitos (M2/M3 dependem de R9 e de commits) |
+
+### 12.3 O ganho prático real (honestidade + valor)
+
+```
+usar o loop (/opsx)  →  archives acumulam  →  cadência pede retrospectiva
+        →  relatório M1–M4  →  1 insight → 1 ajuste no teu SDD
+        →  próximo ciclo com menos rework / escopo mais curto / menos WIP
+```
+
+**Sim, há um efeito “quanto mais usas, melhor calibração”** — mas o objecto que melhora é o **processo humano + convenções do repo**, não um cérebro embutido no kit. O diferencial vs Spec Kit / OpenSpec / BMAD: quase nenhum vende **métricas de eficácia do próprio framework SDD** com playbook de acção e nudge pós-archive.
+
+Exemplos concretos de adaptação (playbook §2.17):
+
+- M1 alto de activos → reduzes WIP / archives pendentes  
+- M2 a subir → changes mais pequenos, handoffs mais curtos  
+- M3 alto → endureces gates antes de archive (menos “archive e depois fix”)
+
+### 12.4 Como divulgar no README (copy permitida vs proibida)
+
+**Permitido (recomendado — bullet em “What's included” ou secção curta):**
+
+> **Built-in SDD retrospectives** — `sdd-metrics.sh` turns your archive history into volume, lead-time, and rework signals. After every few shipped changes, a gentle cadence nudge asks you to run the report and make **one** process adjustment. The more you ship through the loop, the more signal you have to calibrate *your* workflow — not magic, measurable.
+
+Versão curta:
+
+> **Calibrate as you go** — periodic SDD metrics (lead time, rework) + a playbook so the process improves with use.
+
+**Proibido / evitar:**
+
+- “AI that learns your style”  
+- “Self-adapting agent OS”  
+- “Automatic personalization”  
+- Qualquer implicação de que o relatório reescreve rules sozinho  
+
+### 12.5 Compatibilidade e decisão para o apply ①
+
+| Critério | Avaliação |
+|----------|-----------|
+| Cabe no README deste change? | **Sim** — já é capacidade do kit (G4); não é feature nova |
+| Conflito com anti-boilerplate? | Não — reforça “control plane / process OS” |
+| Precisa de change novo? | Não para mencionar; só se no futuro se quiser auto-aplicar insights (isso seria explore/propose **nova** e fora do escopo actual) |
+| Onde no README | Tabela “What's included” + 2–3 frases; link ao guia §2.17 (pt-BR até i18n) |
+
+**Decisão para apply:** incluir o gancho **honesto** (§12.4). Não reivindicar aprendizado automático. Na avaliação canónica, listar G4 metrics como diferencial de divulgação (não como P5–P10).
+
+### 12.6 Evolução futura (fora deste apply — só se explore pedir)
+
+Auto-aplicar ajustes a partir de métricas (ex. agente propõe change “reduce WIP”) seria um salto de produto — **não** existe hoje. Tratar como ideia separada, não como texto do README.

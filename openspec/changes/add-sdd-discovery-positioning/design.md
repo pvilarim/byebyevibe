@@ -109,6 +109,16 @@ Registo pré-apply (pedido humano). Fonte canónica detalhada: `research.md` §1
 
 **Razões condensadas:** discovery imediata sem bloquear em rename/i18n; nome antes de traduzir evita double work; GIF depois de narrativa/marca estáveis; chat pt-BR permanente para velocidade do Pedro.
 
+### D11: README menciona SDD Metrics como calibração de processo (2026-07-26)
+
+Explore pré-apply: `sdd-metrics.sh` + cadência + playbook §2.17.
+
+- **Incluir** no README (What's included / short blurb) o diferencial G4.
+- **Framing:** retrospectives / “calibrate as you go” / signal grows as you archive — **humano** aplica 1 insight → 1 ajuste.
+- **Não** claim de ML, self-learning agent, ou adaptação automática do kit.
+- Detalhe e copy permitida/proibida: `research.md` §12.
+- Não exige tasks novas de código — só copy no apply das tasks 1.x/2.x existentes.
+
 ## Risks / Trade-offs
 
 | Risco | Mitigação |

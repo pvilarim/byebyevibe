@@ -7,7 +7,7 @@ O hub SDD (`gitnexus-graphify-openspec`) **não tem `README.md` na raiz** e o `s
 ## What Changes
 
 - **Documento canónico de análise** em `doc/avaliacoes/` (promovido a partir de `research.md` deste change) + linha no índice de avaliações — base para divulgação e para backlog de melhorias.
-- **`README.md` na raiz (EN-first):** hero “From vibe coding to agentic engineering”, anti-boilerplate, demo `/opsx`, tabela do que inclui, compare resumido, CTA `install.sh --dry-run`, links ao guia pt-BR.
+- **`README.md` na raiz (EN-first):** hero “From vibe coding to agentic engineering”, anti-boilerplate, demo `/opsx`, tabela do que inclui (incl. **SDD metrics / calibrate-as-you-go** — `research.md` §12; sem claim ML), compare resumido, CTA `install.sh --dry-run`, links ao guia pt-BR.
 - **`sdd-kit/README.md`:** intro de posicionamento + mapa amigável C1/C2/G* → nomes humanos; manter secções operacionais.
 - **Quickstart short-path** no guia (`doc/sistema-sdd-pedro.md`): secção curta “vibe coder em ~5 min” apontando ao README/kit (sem duplicar o guia).
 - **Cross-refs:** `AGENTS.md`, `openspec/project.md`, `doc/avaliacoes/README.md`.

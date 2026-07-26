@@ -15,10 +15,10 @@
 
 ## 2. README raiz (discovery EN)
 
-- [ ] 2.1 Criar `README.md` na raiz: hero from-vibe-to-agentic; anti-boilerplate; CTA `sdd-kit/install.sh`; demo opsx; overview OpenSpec/GitNexus/Graphify/gates/módulos; compare resumido; link guia pt-BR; checklist About/topics ou ponteiro à avaliação
+- [ ] 2.1 Criar `README.md` na raiz: hero from-vibe-to-agentic; anti-boilerplate; CTA `sdd-kit/install.sh`; demo opsx; overview OpenSpec/GitNexus/Graphify/gates/módulos/**SDD metrics (calibrate as you go — research §12 / design D11, sem claim ML)**; compare resumido; link guia pt-BR; checklist About/topics ou ponteiro à avaliação
   - **Pattern:** `openspec/changes/add-sdd-discovery-positioning/research.md`
   - **Invariants:** `sdd-discovery-positioning` — Root README exists with vibe-to-agentic positioning; Root README includes demo and capability overview; Positioning forbids pretending to be an app starter
-  - **Gate:** `test -f README.md && grep -qiE 'vibe coding|agentic' README.md && grep -qiE 'not another|boilerplate|starter' README.md && grep -q 'sdd-kit/install.sh' README.md && grep -qiE 'opsx|OpenSpec' README.md && grep -qi 'GitNexus' README.md && grep -qi 'Graphify' README.md`
+  - **Gate:** `test -f README.md && grep -qiE 'vibe coding|agentic' README.md && grep -qiE 'not another|boilerplate|starter' README.md && grep -q 'sdd-kit/install.sh' README.md && grep -qiE 'opsx|OpenSpec' README.md && grep -qi 'GitNexus' README.md && grep -qi 'Graphify' README.md && grep -qiE 'sdd-metrics|calibrat|retrospective|rework|lead.time' README.md`
 
 ## 3. Kit README (posicionamento + mapa amigável)
 
