@@ -1,22 +1,22 @@
-# CLAUDE.md — Entry point para Claude Code
+# CLAUDE.md — Entry point for Claude Code
 
-Seguir estritamente as regras e convenções em `./AGENTS.md`.
+Follow the rules and conventions in `./AGENTS.md` strictly.
 
-Este ficheiro existe para compatibilidade com a ordem de lookup do Claude Code; a fonte de verdade é `AGENTS.md`.
+This file exists for compatibility with Claude Code’s lookup order; the source of truth is `AGENTS.md`.
 
-## Contexto rápido
+## Quick context
 
-- Stack e convenções: `./openspec/project.md`
-- Specs activas: `./openspec/specs/`
-- Propostas activas: `./openspec/changes/`
+- Stack and conventions: `./openspec/project.md`
+- Active specs: `./openspec/specs/`
+- Active proposals: `./openspec/changes/`
 - Knowledge graph: `./graphify-out/GRAPH_REPORT.md`
-- Guia de instalação SDD: `./doc/sistema-sdd-pedro.md` (v1.2)
+- SDD install guide: `./doc/sistema-sdd-pedro.md` (v1.2)
 - Code graph: GitNexus MCP
 
-## Protocolo de tarefa
+## Task protocol
 
-Ver "Protocolo de Classificação de Tarefas" em `AGENTS.md`. Classificar sempre antes de agir.
+See "Task Classification Protocol" in `AGENTS.md`. Always classify before acting.
 
 ## graphify
 
-Este projecto tem knowledge graph em `graphify-out/`. Regras completas em `AGENTS.md` (secção Integrações) e `.cursor/rules/graphify.mdc`.
+This project has a knowledge graph under `graphify-out/`. Full rules are in `AGENTS.md` (Integrations section) and `.cursor/rules/graphify.mdc`.
