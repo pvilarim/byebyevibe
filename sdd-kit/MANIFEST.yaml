@@ -159,7 +159,7 @@ files:
 
   - path: CLAUDE.md
     source: templates/CLAUDE.md
-    sha256: "79f528dcf569352fa357e738cd1e8eb6a38f0787b7ef31c7bd82e6f3eca8ca6d"
+    sha256: "5440300f7edfbac8cd6103d06a8f6e31f2f1cf0c3395cf7f8e249b78ce6c7be2"
     merge: MERGE
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f CLAUDE.md"
@@ -173,7 +173,7 @@ files:
 
   - path: openspec/infra.md
     source: templates/openspec/infra.md
-    sha256: "5182d0a9063bab05795d50bc260f06ad0e72f0b659e76a1782021106cc8b912e"
+    sha256: "e7091200592c39fc216d5625a83bea0603253845983c8b1f681a956802882978"
     merge: MERGE
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f openspec/infra.md"
