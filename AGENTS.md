@@ -22,6 +22,7 @@ Ver `./openspec/project.md` (stack, convenções, constraints). **Não duplicar*
 | `python doc/curso/scripts/enrich-transcripts.py` | Re-enriquecer transcrições do curso |
 | `bash scripts/sdd-session-status.sh` | Sessões SDD activas na worktree local |
 | `bash scripts/sdd-metrics.sh` | Métricas SDD sob demanda (G4, modo C) — volume, lead time, rework |
+| `bash scripts/verify-i18n-wave.sh` | Gates i18n por wave / DoD global (`doc/i18n/`) |
 | `bash sdd-kit/install-probity-module.sh --detect` | Probity G2 — detectar test runner / aplicabilidade |
 | `npx --yes @fission-ai/openspec@1.3.1 validate --all --strict` | Gate de CI local (mesmo comando do workflow `sdd-gates`) |
 
@@ -54,6 +55,7 @@ Para trabalho tipo D/E, **SEMPRE** consultar Graphify e GitNexus antes de escrev
 | Módulo UI (C1-UI) | `doc/sistema-sdd-pedro.md` §2.11 · `doc/design/002-ui-module-install.md` |
 | Módulo Probity (G2) | `doc/sistema-sdd-pedro.md` §2.16 · `doc/design/004-probity-module-install.md` |
 | Métricas SDD (G4, modo C) | `doc/sistema-sdd-pedro.md` §2.17 · `bash scripts/sdd-metrics.sh` |
+| Docs language / i18n (EN default, waves) | `doc/i18n/GLOSSARY.md` · `doc/i18n/WAVES.md` · `bash scripts/verify-i18n-wave.sh` |
 | Install kit (payload SDD) | `sdd-kit/` |
 | Actualização SDD (repo já instalado) | `doc/sistema-sdd-pedro.md` §2.9 |
 | Scripts CDP / transcrições | `doc/curso/scripts/AGENTS.md` |
@@ -182,4 +184,6 @@ Tipo D: disparar researchers **em paralelo**.
 
 ## Comunicação
 
-Quando responder ao Pedro: pt-BR; começar pela resposta; avaliações directas; sem preâmbulo desnecessário.
+**F7 — chat vs artefactos:** human↔agent chat **MAY** use pt-BR; versioned repository artifacts (proposals, designs, specs, tasks, skills, guide prose, evaluations, kit templates) **MUST** be English after `sdd-docs-language` policy. Chat language does **not** authorize PT commits. Glossary / waves: `doc/i18n/`.
+
+Quando responder ao Pedro: pt-BR no chat; começar pela resposta; avaliações directas; sem preâmbulo desnecessário.
