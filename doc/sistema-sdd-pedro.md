@@ -2,7 +2,7 @@
 
 **GitNexus + Graphify + OpenSpec, integrados no Cursor e VS Code + Claude Code**
 
-> **Guia canónico de instalação (v1.4.0)** — usar em qualquer repositório Git, manualmente ou via agente de IA. Payloads em `sdd-kit/`; procedimento neste documento.
+> **Guia canónico de instalação (v1.5.0)** — usar em qualquer repositório Git, manualmente ou via agente de IA. Payloads em `sdd-kit/`; procedimento neste documento.
 
 ## Como usar este documento
 
@@ -17,7 +17,7 @@
 | **Piloto / teste** | `bash sdd-kit/verify.sh` + checklist §2.8 ou §2.9.7 |
 
 - **Padrão `AGENTS.md`:** alinhado a [agents.md](https://agents.md/) + workshop TLC (Context Engineering, on-demand loading).
-- **Versão do guia:** 1.4.0 — ver [Changelog do guia](#changelog-do-guia).
+- **Versão do guia:** 1.5.0 — ver [Changelog do guia](#changelog-do-guia).
 - **Payload versionado:** `sdd-kit/MANIFEST.yaml` — ver §1.6 e `sdd-kit/README.md`.
 - **Não substitui** `openspec/project.md` (constituição do projecto) nem specs em `openspec/specs/`.
 
@@ -531,6 +531,71 @@ A skill produz achados com 5 tags:
 **Skill files:** `.claude/skills/correctness-review/SKILL.md` (espelho em `.cursor/skills/correctness-review/SKILL.md`).
 
 **Rollback:** `rm -r .claude/skills/correctness-review/ .cursor/skills/correctness-review/` + reverter `AGENTS.md` e `openspec/infra.md`.
+
+### 2.14 GitHub Issues MCP (github-mcp-server) — operação
+
+MCP passivo (modo D — gap G5, change `add-github-mcp-issue-traceability`) para ligar changes OpenSpec a GitHub Issues. O agente consulta quando relevante em explore/propose; **não** intercepta edições nem adiciona etapa ao fluxo interactivo.
+
+#### Instalação
+
+**Opção primária — endpoint remoto (OAuth, sem token commitado):**
+
+1. Cursor → Settings → MCP → Add server
+2. URL: `https://api.githubcopilot.com/mcp/`
+3. Autenticar via OAuth quando solicitado
+4. Limitar toolsets a **issues** onde o cliente permitir
+
+**Alternativa — binário local (air-gapped):**
+
+```bash
+# Imagem Docker oficial — pin por digest em produção
+docker pull ghcr.io/github/github-mcp-server:v1.7.0
+```
+
+Configurar em `~/.cursor/mcp.json` (gitignored) com `--toolsets issues`. **NUNCA** commitar tokens ou `GITHUB_PERSONAL_ACCESS_TOKEN` no repo.
+
+#### Verificar
+
+```bash
+# Na sessão do agente
+mcp_get_tools   # deve listar tools do github-mcp-server
+
+# Ou inspeccionar config local
+cat ~/.cursor/mcp.json   # confirmar entrada github-mcp-server
+```
+
+Actualizar `openspec/infra.md` para ✅ quando confirmado.
+
+#### Quando o agente deve consultar (matriz A–E)
+
+| Tipo | Consultar? | Quando |
+|------|------------|--------|
+| **A — Trivial** | ❌ Não | — |
+| **B — Bug fix** | ✅ Sim | Framing do change — issue de origem, critérios de aceite |
+| **C — Refactor** | ⬜ Opcional | Se change referencia issue |
+| **D — Feature** | ✅ Sim | Durante `/opsx:propose` — user story, critérios, dependências |
+| **E — Exploração** | ✅ Sim | Durante research — duplicatas, contexto de bugs anteriores |
+
+**Campo `**Issue:**` em `proposal.md`:** URL completo, `#123`, ou `—` (sem issue). Valores aceites mas não validados por gate de CI.
+
+**Cloud agents:** `gh` CLI read-only já cobre consultas ad-hoc em runners efémeros; github-mcp é para sessões interactivas locais.
+
+#### Troubleshooting
+
+| Sintoma | Causa provável | Acção |
+|---------|----------------|-------|
+| MCP não aparece em `mcp_get_tools` | Servidor não configurado ou auth falhou | Rever `~/.cursor/mcp.json`; repetir OAuth |
+| Tools de PR/repo/code visíveis | Escopo excessivo | Limitar a `--toolsets issues` |
+| Agente não consulta issues | Tipo A ou MCP indisponível | Modo D é fail-open — fluxo continua sem contexto |
+| Token exposto no repo | Config commitada por engano | Revogar token; mover para `~/.cursor/mcp.json` |
+
+#### Desligar / rollback
+
+1. Remover entrada `github-mcp-server` de `~/.cursor/mcp.json`
+2. Reverter `openspec/infra.md`, `AGENTS.md` e template `proposal.md` via change de remoção
+3. Bump MANIFEST + recalcular checksums
+
+Sem impacto em CI — github-mcp não entra no `sdd-gates.yml`.
 
 ### 2.9 Actualização de instalação existente
 
@@ -2438,6 +2503,12 @@ bash scripts/verify-task-patterns.sh   # paths Pattern: existem; DOCS_SPECS sem 
 ---
 
 ## Changelog do guia
+
+### 1.5.0 (2026-07-26)
+
+- **GitHub Issues MCP (G5)** — `github-mcp-server` como MCP passivo (modo D) + campo `**Issue:**` no template de `proposal.md` para rastreabilidade issue → change → PR (change `add-github-mcp-issue-traceability`).
+- **§2.14** — Operação humana do github-mcp: instalação (endpoint remoto OAuth + binário local), escopo mínimo `--toolsets issues`, matriz A–E, troubleshooting, rollback.
+- **`sdd-kit/`** — Template `openspec/changes/_template/proposal.md`; MANIFEST 1.4.0 → 1.5.0.
 
 ### 1.4.0 (2026-07-25)
 

@@ -20,7 +20,7 @@ Research tipo E identificou 8 gaps na cobertura do sistema SDD para desenvolvime
 | G2 Verificação por testes | [TDD Guard](https://github.com/nizos/tdd-guard) | **Adoptado** (pendente change; módulo opcional APP) | Piloto obrigatório: empilhamento PreToolUse + custo LLM |
 | G3 Feedback de runtime | GlitchTip / Sentry + MCP | **Adiado** — módulo sob demanda | Infra por projecto de produção, não payload de kit |
 | G4 Métricas do framework | Apache DevLake | **Adiado** | Correcção manual (`sdd-metrics.sh`) preferida; DevLake se equipe/DORA justificar |
-| G5 Rastreabilidade issues | [github-mcp-server](https://github.com/github/github-mcp-server) | **Adoptado** (pendente change) | + campo Issue no template de proposal |
+| G5 Rastreabilidade issues | [github-mcp-server](https://github.com/github/github-mcp-server) | **Adoptado** — change [`add-github-mcp-issue-traceability`](../../openspec/changes/add-github-mcp-issue-traceability/proposal.md) | MCP passivo (modo D) + campo `**Issue:**` no template de proposal. Reavaliação: se instrução em AGENTS.md ultrapassar 10 linhas → skill dedicada; se projecto migrar de GitHub Issues → avaliar Linear/Jira MCP |
 | G6 Multi-agente distribuído | Vibe Kanban / Claude Squad | **Descartado** | Projecto líder órfão (BloopAI encerrou 04/2026); overlap com `sdd-session-*` |
 | G7 Review de correctness | [PR-Agent](https://github.com/qodo-ai/pr-agent) | **Adoptado** — skill local criada, change [`add-correctness-review-skill`](../../openspec/changes/add-correctness-review-skill/proposal.md) | Fase 1: skill local `correctness-review` (`.claude/skills/` + `.cursor/skills/`). PR-Agent opcional (Fase 2, change separado). Reavaliação: conversão para subagente autónomo (piloto obrigatório), adoção PR-Agent fase 2 (jan/2027). |
 | G8 Supply chain | [Renovate](https://github.com/renovatebot/renovate) + [OSV-Scanner](https://github.com/google/osv-scanner) | **Adoptado** (pendente change) | Templates por perfil no sdd-kit |
@@ -31,7 +31,8 @@ Research tipo E identificou 8 gaps na cobertura do sistema SDD para desenvolvime
 
 - **Vibe Kanban (G6):** reavaliar em ~6 meses (2027-01) — categoria de orquestradores multi-agente em consolidação; ou se surgir necessidade real de coordenação multi-máquina.
 - **DevLake (G4):** reavaliar se os repos de produção ganharem CI/CD + equipe em escala que justifique DORA.
-- **GlitchTip/Sentry (G3):** activar sob demanda por projecto de produção; convenção de citar issue do tracker em proposals tipo B já pode ser adoptada sem a infra.
+- **GlitchTip/Sentry (G3):** activar sob demanda por projecto de produção; convenção de citar issue do tracker em proposals tipo B já adoptada via campo `**Issue:**` (change `add-github-mcp-issue-traceability`).
+- **github-mcp-server (G5):** reavaliar se instrução em AGENTS.md ultrapassar 10 linhas (promover para skill) ou se o projecto migrar de GitHub Issues para outro tracker.
 
 ## Referências
 
