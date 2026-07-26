@@ -14,7 +14,7 @@ permissions:
   contents: read
 
 env:
-  OPENSPEC_TELEMETRY: "0"
+  OPENSPEC_TELEMETRY: "0"  # Disable CLI telemetry — PostHog
 
 jobs:
   sdd-gates:
