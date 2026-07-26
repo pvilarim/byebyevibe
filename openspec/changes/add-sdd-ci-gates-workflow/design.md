@@ -41,6 +41,8 @@
 
 **Rejeitado (research G1):** overlap com hooks existentes (graphify/gitnexus) — C3 🔴; hooks locais são contornáveis (`--no-verify`); enforcement pertence ao servidor.
 
+> **Nota sobre tipos de hooks:** Os hooks referenciados aqui são **git hooks** (`.git/hooks/`, geridos por `pre-commit`/Lefthook) — estes rebuild triggers do graphify/gitnexus são contornáveis com `--no-verify`. São distintos de **`.claude/hooks/`** (PreToolUse hooks do Claude Code), que são ortogonais ao gate de CI e não conflitam nem cobrem enforcement no servidor.
+
 ### B — Workflow GitHub Actions chamando comandos existentes (ESCOLHIDO)
 
 | Prós | Contras |

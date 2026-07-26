@@ -135,7 +135,7 @@ Comandos exactos: `sdd-kit/README.md`.
 Instala nesta ordem específica. **Não inverter** — cada passo assume que o anterior está feito:
 
 ```
-1. OpenSpec    → 2. GitNexus    → 3. Graphify    → 4. Curar AGENTS.md    → 5. Configurar IDEs
+1. OpenSpec    → 2. GitNexus    → 3. Graphify    → 3b. sdd-kit/install.sh    → 4. Curar AGENTS.md    → 5. Configurar IDEs
 ```
 
 A razão: OpenSpec gera o esqueleto `openspec/`, GitNexus indexa código e cria `AGENTS.md` inicial, Graphify adiciona contexto não-código. Se inverteres, ferramentas posteriores podem sobrescrever ficheiros criadas antes.
@@ -669,7 +669,8 @@ Repetir §2.8 e acrescentar:
 - [ ] `UPGRADE_REPORT.md` arquivado em `openspec/changes/upgrade-sdd-*/` (ou commitado no change)
 - [ ] Versão do guia em `openspec/project.md` actualizada (ex.: **v1.2.0**)
 - [ ] `AGENTS.md` sem regressão (Commands locais intactos; sem `gitnexus:start`)
-- [ ] Backups `/tmp/*.backup` ou branch permitem rollback
+- [ ] Backups `.bak.*` gerados pelo `--apply` ou branch de isolamento permitem rollback
+      `git restore --source=HEAD~1 <ficheiro>` para rollback por ficheiro; `git reset --hard HEAD~1` para reverter commit inteiro
 - [ ] `openspec update` aplicado; slash commands `/opsx:*` funcionam após reiniciar IDE
 - [ ] `gitnexus analyze --force` e `graphify update .` executados
 - [ ] Changelog do guia §14 lido para **breaking changes** da versão alvo
