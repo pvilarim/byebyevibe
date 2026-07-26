@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# SDD Install Kit — post-install verification orchestration
+# ByeByeVibe (sdd-kit) — post-install verification orchestration
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"

@@ -1,10 +1,12 @@
-# SDD Install Kit v1.6.1
+# ByeByeVibe — sdd-kit v1.6.1
+
+**ByeByeVibe** is the public name of this project. This folder (`sdd-kit/`) is the versioned **install payload** — commands and paths stay `sdd-kit/*`.
 
 Payload versionado para instalação reproduzível do stack SDD (scripts, rules, skeletons), separado do guia de procedimento `doc/sistema-sdd-pedro.md`.
 
 ## What this is (first contact)
 
-**For newcomers from vibe coding / AI-assisted workflows:** this folder is the **install kit** — a versioned control plane (OpenSpec + GitNexus + Graphify, gates, optional modules), **not** an app boilerplate or Next.js starter.
+**For newcomers from vibe coding / AI-assisted workflows:** this folder is the **install kit** for ByeByeVibe — a versioned control plane (OpenSpec + GitNexus + Graphify, gates, optional modules), **not** an app boilerplate or Next.js starter.
 
 | Human name | Code | When to use |
 |------------|------|-------------|

@@ -60,7 +60,7 @@ Repositório de specs, documentação técnica e cursos do Pedro Vilarim. Serve 
 - **Install kit:** `sdd-kit/` (MANIFEST v1.6.1) — payloads versionados para C1/C2/C1-UI/G2/G4 + workflow `sdd-gates`
 - **Módulo UI (design system):** `doc/design/` — `002-ui-module-install.md`, `001-pipeline-open-design-shadcn-impeccable.md`
 - **Avaliações de integração (histórico):** `doc/avaliacoes/` — ferramentas pesquisadas para o stack SDD
-- **Discovery / posicionamento (hub):** `README.md` (EN) — from vibe coding to agentic engineering; análise e backlog em `doc/avaliacoes/2026-07-26-sdd-discovery-positioning.md`; first-contact no guia §2.0b
+- **Discovery / posicionamento (hub):** marca pública **ByeByeVibe** — `README.md` (EN) — from vibe coding to shippable AI engineering; payload em `sdd-kit/`; análise e backlog em `doc/avaliacoes/2026-07-26-sdd-discovery-positioning.md`; first-contact no guia §2.0b
 - Comportamento de agentes: `AGENTS.md` (não duplicar regras aqui)
 
 ## Non-goals

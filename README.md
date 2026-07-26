@@ -1,11 +1,13 @@
-# SDD Install Kit
+# ByeByeVibe
 
 **From vibe coding to shippable AI engineering.**
 
-The missing operating system between your coding agent and a maintainable repo — specs, code & knowledge graphs, CI gates, and session discipline, packaged so you don't invent process from scratch.
+> **Not another Next.js starter — the SDD control plane**  
+> **(OpenSpec + graphs + gates) your repo is missing.**
 
-> **Not another Next.js / full-stack starter.**  
-> This is the **control plane** your starter is missing: OpenSpec + GitNexus + Graphify, curated `AGENTS.md`, install/upgrade kit, and fail-closed gates.
+**ByeByeVibe** is the public name of this project. The install payload lives in `sdd-kit/`.
+
+The missing operating system between your coding agent and a maintainable repo — specs, code & knowledge graphs, CI gates, and session discipline, packaged so you don't invent process from scratch.
 
 ## Get started (30 seconds)
 
@@ -82,8 +84,8 @@ If you need a Camada B vibe *template*, use one — then install this kit on top
 
 Stars are order-of-magnitude (~2026-07-26). Full table: [`doc/avaliacoes/2026-07-26-sdd-discovery-positioning.md`](./doc/avaliacoes/2026-07-26-sdd-discovery-positioning.md).
 
-| | Spec Kit | OpenSpec | BMAD | **This kit** |
-|--|----------|----------|------|--------------|
+| | Spec Kit | OpenSpec | BMAD | **ByeByeVibe** |
+|--|----------|----------|------|----------------|
 | Spec workflow | ●●●● | ●●●● (CLI we use) | ●●● | ●●●● |
 | Code + knowledge graphs | ○ | ○ | ○ | ●●●● |
 | Versioned install/upgrade kit | ●●● | ●● | ●●● | ●●●● |
@@ -105,14 +107,23 @@ We **compose** OpenSpec; we don't replace it.
 | [`sdd-kit/README.md`](./sdd-kit/README.md) | pt-BR (+ EN intro) | Kit scenarios & commands |
 | [`doc/avaliacoes/2026-07-26-sdd-discovery-positioning.md`](./doc/avaliacoes/2026-07-26-sdd-discovery-positioning.md) | pt-BR | Market / SEO / backlog decisions |
 
-## [AÇÃO MANUAL NECESSÁRIA] — GitHub About & topics
+## [AÇÃO MANUAL NECESSÁRIA] — GitHub rename, About & topics
 
-Settings are not in git. After merge, set:
+Settings are not in git. After merge, the operator should:
+
+1. **Rename repo** (Settings → General → Repository name): `gitnexus-graphify-openspec` → **`byebyevibe`**
+2. Update local remotes: `git remote set-url origin git@github.com:pvilarim/byebyevibe.git` (or HTTPS)
+3. Set **About** and **Topics** (below)
+4. Optional **Homepage**: `https://pedrocodeart.netlify.app/`
 
 **About:**
 
-> Spec-driven toolkit for Cursor & Claude Code: OpenSpec + GitNexus + Graphify, AGENTS.md, CI gates, TDD enforce. Upgrade vibe coding to agentic engineering.
+> ByeByeVibe — from vibe coding to shippable AI engineering. SDD control plane (OpenSpec + graphs + gates) for Cursor & Claude Code. Not a Next.js starter.
 
 **Topics:** `vibe-coding` · `spec-driven-development` · `context-engineering` · `claude-code` · `cursor`
 
 Full checklist: [evaluation doc](./doc/avaliacoes/2026-07-26-sdd-discovery-positioning.md).
+
+## Maintainer
+
+Pedro Vilarim — [LinkedIn](https://www.linkedin.com/in/pedrovilarim/) · [Portfolio](https://pedrocodeart.netlify.app/)

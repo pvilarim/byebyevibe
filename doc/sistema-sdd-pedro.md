@@ -8,7 +8,7 @@
 
 | Modo | Acção |
 |------|--------|
-| **First contact / vibe coder** | §2.0b → [`README.md`](../README.md) raiz + `bash sdd-kit/install.sh --profile X --dry-run` |
+| **First contact / vibe coder** | §2.0b → [`README.md`](../README.md) raiz (**ByeByeVibe**) + `bash sdd-kit/install.sh --profile X --dry-run` |
 | **Humano — instalação nova (C1)** | §2.1 → CLIs → `bash sdd-kit/install.sh --profile X` → §2.8 → §2.12 → §2.13 (APP/HYBRID) |
 | **Humano — actualização (C2)** | §2.9 + `bash sdd-kit/upgrade.sh --dry-run` → §12.8 → `--apply` |
 | **Humano — só CLIs (C2b)** | §2.9.4 — sem tocar `sdd-kit/templates/` |
@@ -136,7 +136,7 @@ Comandos exactos: `sdd-kit/README.md`.
 
 Chegaste de *vibe coding* e queres o caminho mínimo **sem** ler o guia inteiro?
 
-1. Lê o hero e a demo em [`README.md`](../README.md) na raiz do hub (EN) — posicionamento “from vibe coding to agentic engineering”; **não** é boilerplate de app.
+1. Lê o hero e a demo em [`README.md`](../README.md) na raiz do hub (EN) — marca pública **ByeByeVibe**; posicionamento “from vibe coding to shippable AI engineering”; **não** é boilerplate de app (payload continua em `sdd-kit/`).
 2. Pré-visualiza o que o kit instalaria (sem escrever ficheiros):
 
 ```bash
@@ -2748,7 +2748,7 @@ bash scripts/verify-task-patterns.sh   # paths Pattern: existem; DOCS_SPECS sem 
 
 - **Cadência + playbook (G4 extensão)** — §2.17: “Interpretar → actuar” (M1–M4 → 1 insight → 1 ajuste); limiares N=5 archives / T=30 dias; stamp `.sdd/metrics-last-run`; flag `--check-cadence`; nudge advisory no Session Handoff de `/opsx:archive` (change `add-sdd-metrics-cadence-nudge`).
 - **`sdd-kit/`** — Script/template `sdd-metrics.sh` actualizado; MANIFEST **1.6.0 → 1.6.1**.
-- **Discovery / first contact** — §2.0b quickstart vibe coder → `README.md` raiz + `install.sh --dry-run`; avaliação `doc/avaliacoes/2026-07-26-sdd-discovery-positioning.md` (change `add-sdd-discovery-positioning`). Sem bump de MANIFEST (só docs).
+- **Discovery / first contact** — §2.0b quickstart vibe coder → `README.md` raiz (**ByeByeVibe**) + `install.sh --dry-run`; avaliação `doc/avaliacoes/2026-07-26-sdd-discovery-positioning.md` (change `add-sdd-discovery-positioning`; rename público `rename-byebyevibe-public-name`). Sem bump de MANIFEST (só docs).
 
 ### 1.6.0 (2026-07-26)
 
