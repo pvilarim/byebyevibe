@@ -70,7 +70,7 @@
 
 - [ ] 6.2 Promover `specs/sdd-ci-gates/spec.md` para `openspec/specs/` (no archive)
   - **Pattern:** `openspec/specs/sdd-install-kit/spec.md`
-  - **Gate:** `test -f openspec/changes/add-sdd-ci-gates-workflow/specs/sdd-ci-gates/spec.md`
+  - **Gate:** `test -f openspec/specs/sdd-ci-gates/spec.md`
 
 - [ ] 6.3 Correr `scripts/verify-task-patterns.sh` sobre este `tasks.md`
   - **Pattern:** `scripts/verify-task-patterns.sh`

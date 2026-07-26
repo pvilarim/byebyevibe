@@ -1,6 +1,6 @@
 # Workspace Infrastructure Manifest
 
-> Última verificação: 2026-06-17 · Script: `scripts/verify-infra.sh`
+> Última verificação: 2026-07-25 · Script: `scripts/verify-infra.sh`
 >
 > **Regra:** sem valores de secrets. Env vars listam apenas **nomes** e presença (✅/❌).
 

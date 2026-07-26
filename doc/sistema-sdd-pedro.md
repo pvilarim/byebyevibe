@@ -2,7 +2,7 @@
 
 **GitNexus + Graphify + OpenSpec, integrados no Cursor e VS Code + Claude Code**
 
-> **Guia canónico de instalação (v1.3.2)** — usar em qualquer repositório Git, manualmente ou via agente de IA. Payloads em `sdd-kit/`; procedimento neste documento.
+> **Guia canónico de instalação (v1.4.0)** — usar em qualquer repositório Git, manualmente ou via agente de IA. Payloads em `sdd-kit/`; procedimento neste documento.
 
 ## Como usar este documento
 
@@ -17,7 +17,7 @@
 | **Piloto / teste** | `bash sdd-kit/verify.sh` + checklist §2.8 ou §2.9.7 |
 
 - **Padrão `AGENTS.md`:** alinhado a [agents.md](https://agents.md/) + workshop TLC (Context Engineering, on-demand loading).
-- **Versão do guia:** 1.3.2 — ver [Changelog do guia](#changelog-do-guia).
+- **Versão do guia:** 1.4.0 — ver [Changelog do guia](#changelog-do-guia).
 - **Payload versionado:** `sdd-kit/MANIFEST.yaml` — ver §1.6 e `sdd-kit/README.md`.
 - **Não substitui** `openspec/project.md` (constituição do projecto) nem specs em `openspec/specs/`.
 
@@ -146,7 +146,7 @@ Cola este prompt na raiz do repositório alvo (substitui `REPO_ROOT` e o perfil)
 
 ```
 Instala o sistema SDD (OpenSpec + GitNexus + Graphify) neste repositório seguindo
-estritamente o guia em doc/sistema-sdd-pedro.md v1.3.0 e o install kit em sdd-kit/.
+estritamente o guia em doc/sistema-sdd-pedro.md v1.4.0 e o install kit em sdd-kit/.
 
 Perfil do repositório: [APP | DOCS_SPECS | HYBRID]
 

@@ -40,6 +40,7 @@ Para trabalho tipo D/E, **SEMPRE** consultar Graphify e GitNexus antes de escrev
 | Actualização SDD (repo já instalado) | `doc/sistema-sdd-pedro.md` §2.9 |
 | Install kit (payload versionado) | `sdd-kit/` |
 | Infra instalada (MCP, CLIs, skills) | `openspec/infra.md` |
+| Gates de CI (sdd-gates, operação) | `doc/sistema-sdd-pedro.md` §2.12 · `.github/workflows/sdd-gates.yml` |
 | TypeScript (se aplicável) | `.cursor/rules/010-typescript.mdc` |
 | Python | `.cursor/rules/020-python.mdc` |
 | Supabase | `.cursor/rules/030-supabase.mdc` |
@@ -86,6 +87,8 @@ Se ambíguo entre dois tipos, **PERGUNTAR**. **NUNCA** assumir Tipo A por defeit
 **GitNexus** — Antes de editar símbolos: `gitnexus_impact`. Antes de commit: `gitnexus_detect_changes`. Skills: `.claude/skills/gitnexus/`.
 
 **Graphify** — Ler `graphify-out/GRAPH_REPORT.md` antes de grep em perguntas de arquitectura. Após editar código: `graphify update .`.
+
+**CI Gates (sdd-gates)** — Workflow `.github/workflows/sdd-gates.yml` corre em `push`/`pull_request`, fail-closed: `openspec validate --all --strict` (bloqueante), `verify-task-patterns.sh` (bloqueante), `sdd-kit/verify.sh` (report-only). Só orquestra comandos existentes. Sem skill/rule associada (automático out-of-band — intencional). Antes de push: correr `npx --yes @fission-ai/openspec@1.3.1 validate --all --strict` localmente. Operação e troubleshooting: guia §2.12.
 
 ## Testing
 
