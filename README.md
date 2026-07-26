@@ -118,7 +118,7 @@ Settings are not in git. After merge, the operator should:
 
 **About:**
 
-> ByeByeVibe — SDD install kit from vibe coding to shippable AI engineering. Control plane (OpenSpec + graphs + gates) for Cursor & Claude Code. Not a Next.js starter.
+> ByeByeVibe — Spec-Driven Development (SDD) install kit from vibe coding to shippable AI engineering. Control plane (OpenSpec + graphs + gates) for Cursor & Claude Code. Not a Next.js starter.
 
 **Topics:** `vibe-coding` · `spec-driven-development` · `context-engineering` · `claude-code` · `cursor`
 
