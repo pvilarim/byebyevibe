@@ -77,6 +77,22 @@
 - Só README do kit muda (não é template checksumado como payload de install, excepto se `sdd-kit/README.md` estiver no MANIFEST).
 - Verificar no apply: se `README.md` do kit estiver no MANIFEST, correr `gen-manifest-checksums.sh`; senão, não bump de versão só por copy.
 
+### D9: Gaps de concorrência — escopo fechado excepto demo visual (2026-07-26)
+
+Decisão humana pós-explore de trade-offs:
+
+| Item | Decisão |
+|------|---------|
+| Landing / GitHub Pages | **Não implementar** |
+| Discord | **Não implementar** |
+| One-liner fame (`npx` viral) | **Não implementar** (manter CTA `install.sh --dry-run`) |
+| App scaffold (auth/DB/deploy) | **Não implementar** |
+| BMAD multi-persona | **Não implementar** |
+| Brand GitHub (Spec Kit) | **Não implementável / não perseguir** |
+| GIF / asciinema (P5) | **Não implementar neste change** — **MUST** passar por `/opsx:explore` de integração (formato, path do asset, script de gravação, drift) antes de propose |
+
+No apply de `add-sdd-discovery-positioning`: demo do fluxo permanece **em texto** no README (como OpenSpec); sem asset binário; na avaliação canónica registar P5 como **Adiado — pending explore**.
+
 ## Risks / Trade-offs
 
 | Risco | Mitigação |
@@ -85,7 +101,7 @@
 | Stars desactualizados | Só na avaliação com data; README usa “order of magnitude” ou omite números |
 | Drift research ↔ avaliação | Task de apply: diff ou cópia consciente; Gate grep de frases-chave |
 | Jargão C1/G4 permanece no kit | Tabela amigável (P3) no topo do kit README |
-| Expectativa de Discord/GIF após README | Non-goals + backlog P5/P8 explícitos |
+| Expectativa de Discord/GIF/landing após README | D9: non-implement explícito; P5 só após explore de integração |
 
 ## Migration Plan
 
@@ -95,8 +111,9 @@
 
 ## Open Questions
 
-| # | Questão | Default se não houver resposta até apply |
-|---|---------|------------------------------------------|
-| Q1 | Rename do repo para algo tipo `sdd-kit`? | Não neste change (P10) |
-| Q2 | Incluir badge de Discord/site no README? | Não até existirem |
+| # | Questão | Estado |
+|---|---------|--------|
+| Q1 | Rename do repo para algo tipo `sdd-kit`? | **Fechada — não** (D9 / P10) |
+| Q2 | Badge Discord/site no README? | **Fechada — não** (D9) |
 | Q3 | Quantos concorrentes no compare do README? | Spec Kit, OpenSpec, BMAD + linha “vibe templates” |
+| Q4 | Como integrar GIF/asciinema? | **Aberta — requer `/opsx:explore`** (research §6.3 E1–E6); fora deste apply |

@@ -173,20 +173,40 @@ ESTE KIT         ●●●●    ●●           ●●●●        ●●●�
 
 ### 6.2 Backlog de produto derivado da análise (fora ou parcial deste change)
 
-| ID | Melhoria | Origem do gap | Prioridade | Escopo |
-|----|----------|---------------|------------|--------|
-| P1 | README + topics + avaliação | Invisibilidade | P0 | **Este change** |
-| P2 | Quickstart “vibe coder em 5 min” no guia (§ curto) | Fricção do guia longo | P0 | **Este change** (secção curta + link) |
-| P3 | Mapa amigável C1/C2/G2 → nomes humanos no README/kit | Jargão | P1 | **Este change** |
-| P4 | Template de “compare table” actualizável (stars datados) | Concorrência muda | P1 | **Este change** (na avaliação; README resume) |
-| P5 | Demo GIF / asciinema do fluxo opsx | OpenSpec/Spec Kit polish | P2 | Follow-up |
-| P6 | `npx` / one-liner bootstrap mais famoso | Spec Kit `uv tool install` | P2 | Follow-up (cuidado supply-chain) |
-| P7 | Página docs (GitHub Pages) | Spec Kit site | P3 | Follow-up |
-| P8 | Comunidade Discord | OpenSpec/BMAD | P3 | Decisão humana |
-| P9 | Módulo “app starter” opcional | Camada B demanda | **Non-goal** | Não competir com boilerplates; manter OS |
-| P10 | Rename repo / brand público | SEO do nome | P2 | Decisão humana |
+| ID | Melhoria | Origem do gap | Prioridade | Escopo / decisão (2026-07-26) |
+|----|----------|---------------|------------|------------------------------|
+| P1 | README + topics + avaliação | Invisibilidade | P0 | **Este change** (apply) |
+| P2 | Quickstart “vibe coder em 5 min” no guia (§ curto) | Fricção do guia longo | P0 | **Este change** (apply) |
+| P3 | Mapa amigável C1/C2/G2 → nomes humanos no README/kit | Jargão | P1 | **Este change** (apply) |
+| P4 | Template de “compare table” actualizável (stars datados) | Concorrência muda | P1 | **Este change** (apply; na avaliação) |
+| P5 | Demo GIF / asciinema do fluxo opsx | OpenSpec/Spec Kit polish | — | **Explorar antes de implementar** — ver §6.3 |
+| P6 | `npx` / one-liner bootstrap “famoso” | Spec Kit `uv tool install` | — | **Não implementar** (CTA actual `install.sh --dry-run` basta; risco supply-chain) |
+| P7 | Página docs (GitHub Pages / landing) | Spec Kit site | — | **Não implementar** |
+| P8 | Comunidade Discord | OpenSpec/BMAD | — | **Não implementar** |
+| P9 | Módulo “app starter” (auth/DB/deploy) | Camada B | — | **Não implementar** (non-goal permanente) |
+| P10 | Rename repo / brand GitHub-like | SEO / Spec Kit | — | **Não implementar** (assimetría de marca; rename só se decisão humana futura) |
+| — | Multi-persona theatre (BMAD) | BMAD-METHOD | — | **Não implementar** (skills/subagentes locais bastam; evita 2º orquestrador) |
 
 **Princípio de produto:** melhorar o kit para o iniciante **sem** diluir o diferencial (control plane). Qualquer feature que nos transforme em “mais um vibe template” é rejeitada.
+
+### 6.3 Decisão de produto — gaps de concorrência (explore 2026-07-26)
+
+**Confirmação humana:** para Landing, Discord, one-liner fame, app scaffold, BMAD multi-persona e brand GitHub — **não há necessidade de implementar**. Permanecem fora do roadmap activo.
+
+**Excepção — P5 (1b GIF / asciinema):** **não implementar ainda.** Precisa de **exploração dedicada** (`/opsx:explore`) sobre *como* integrar, antes de qualquer propose/apply. Questões em aberto para essa explore:
+
+| # | Pergunta de integração |
+|---|------------------------|
+| E1 | Formato: GIF vs asciinema vs SVG terminal vs vídeo curto — trade-off tamanho git vs fidelidade |
+| E2 | Onde vive o asset: `docs/media/`, GitHub release, ou só link externo |
+| E3 | O que gravar: só `/opsx:propose→archive` ou também `install.sh --dry-run` |
+| E4 | Como evitar drift quando slash commands / skills mudarem (pipeline de regravação? texto-primeiro no README?) |
+| E5 | Relação com o README: placeholder “Demo (TBD)” vs secção só texto até a explore fechar |
+| E6 | Licença/ferramentas de gravação e se entram no `openspec/infra.md` (R10) |
+
+**Change sugerido (futuro, após explore):** ex. `explore-sdd-demo-asciinema` → só então `/opsx:propose` se a integração for clara.
+
+**Nota:** P1–P4 (README, quickstart, mapa amigável, avaliação) **continuam** no escopo de `add-sdd-discovery-positioning` — são discovery documental, não os gaps de “fame” acima.
 
 ## 7. Estrutura recomendada do README raiz
 
@@ -222,6 +242,8 @@ Idioma: **EN no README raiz** (descoberta GitHub); **pt-BR** no guia e na avalia
 | Agressividade do tom | “From vibe → agentic”, não “stop vibe” |
 | Nome público | SDD Kit / SDD Install Kit (sem rename de repo) |
 | App scaffold | Non-goal permanente deste ciclo |
+| P5 GIF/asciinema | **Não neste apply** — marcar para `/opsx:explore` de integração (§6.3) |
+| P6–P10, BMAD, Landing, Discord, brand | **Não implementar** (decisão 2026-07-26) |
 
 ## 10. Referências
 
