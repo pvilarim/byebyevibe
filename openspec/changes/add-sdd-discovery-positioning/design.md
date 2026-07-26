@@ -69,8 +69,8 @@
 
 ### D7: Backlog de produto no design + avaliação, não em tasks deste change
 
-- P5–P10 ficam documentados; tasks cobrem só P1–P4.
-- Evita scope creep e misturar explore de features futuras com apply de docs.
+- Tasks deste change cobrem só P1–P4.
+- P5 (GIF), P10 (nome), tradução EN e fame gaps: ver D9 + **D10** (roadmap §11 no research) — **não** misturar no apply.
 
 ### D8: Sem bump de MANIFEST obrigatório
 
@@ -88,10 +88,26 @@ Decisão humana pós-explore de trade-offs:
 | One-liner fame (`npx` viral) | **Não implementar** (manter CTA `install.sh --dry-run`) |
 | App scaffold (auth/DB/deploy) | **Não implementar** |
 | BMAD multi-persona | **Não implementar** |
-| Brand GitHub (Spec Kit) | **Não implementável / não perseguir** |
-| GIF / asciinema (P5) | **Não implementar neste change** — **MUST** passar por `/opsx:explore` de integração (formato, path do asset, script de gravação, drift) antes de propose |
+| Brand GitHub (Spec Kit) | **Não implementável / não perseguir** como estratégia |
+| Rename / novo nome público (P10) | **Não neste change** — **sim no roadmap** após README (research §11); explore→propose próprios |
+| Tradução completa EN | **Não neste change** — **sim no roadmap** após nome estável (research §11) |
+| GIF / asciinema (P5) | **Não neste change** — explore de integração (E1–E6) **depois** do README e, idealmente, do nome estável |
 
-No apply de `add-sdd-discovery-positioning`: demo do fluxo permanece **em texto** no README (como OpenSpec); sem asset binário; na avaliação canónica registar P5 como **Adiado — pending explore**.
+No apply de `add-sdd-discovery-positioning`: demo do fluxo permanece **em texto** no README (como OpenSpec); sem asset binário; na avaliação canónica registar P5 como **Adiado — pending explore**; P10/i18n como **Adiado — roadmap §11**.
+
+### D10: Roadmap de sequência — README → nome → EN → GIF (2026-07-26)
+
+Registo pré-apply (pedido humano). Fonte canónica detalhada: `research.md` §11.
+
+**Ordem obrigatória de administração (backlog OpenSpec, não mega-PR):**
+
+1. **Apply** `add-sdd-discovery-positioning` (P1–P4) — working title ok  
+2. **Explore→propose→apply** nome público / rebrand (P10)  
+3. **Propose** policy “artefactos novos = EN; chat = pt-BR” + **waves** de tradução  
+4. **Explore** GIF/asciinema (P5) → propose só se integração clara  
+5. Landing/Discord/one-liner/scaffold/BMAD/brand — fora (D9)
+
+**Razões condensadas:** discovery imediata sem bloquear em rename/i18n; nome antes de traduzir evita double work; GIF depois de narrativa/marca estáveis; chat pt-BR permanente para velocidade do Pedro.
 
 ## Risks / Trade-offs
 
@@ -101,7 +117,8 @@ No apply de `add-sdd-discovery-positioning`: demo do fluxo permanece **em texto*
 | Stars desactualizados | Só na avaliação com data; README usa “order of magnitude” ou omite números |
 | Drift research ↔ avaliação | Task de apply: diff ou cópia consciente; Gate grep de frases-chave |
 | Jargão C1/G4 permanece no kit | Tabela amigável (P3) no topo do kit README |
-| Expectativa de Discord/GIF/landing após README | D9: non-implement explícito; P5 só após explore de integração |
+| Expectativa de Discord/GIF/landing/rename/i18n neste apply | D9 + D10: fora de escopo; roadmap §11 |
+| Traduzir tudo antes do rename | D10: proibido — nome estável primeiro |
 
 ## Migration Plan
 
@@ -113,7 +130,8 @@ No apply de `add-sdd-discovery-positioning`: demo do fluxo permanece **em texto*
 
 | # | Questão | Estado |
 |---|---------|--------|
-| Q1 | Rename do repo para algo tipo `sdd-kit`? | **Fechada — não** (D9 / P10) |
+| Q1 | Qual o nome público final / rename do repo? | **Adiada** — explore `explore-sdd-kit-public-name` após apply README (D10 / research §11); working title “SDD Kit” neste change |
 | Q2 | Badge Discord/site no README? | **Fechada — não** (D9) |
 | Q3 | Quantos concorrentes no compare do README? | Spec Kit, OpenSpec, BMAD + linha “vibe templates” |
-| Q4 | Como integrar GIF/asciinema? | **Aberta — requer `/opsx:explore`** (research §6.3 E1–E6); fora deste apply |
+| Q4 | Como integrar GIF/asciinema? | **Aberta — `/opsx:explore`** após README (e idealmente após nome); research §6.3 E1–E6 |
+| Q5 | Inventário exacto pt-BR→EN? | **Adiada** — change `add-english-docs-policy` + waves (D10) |

@@ -184,16 +184,19 @@ ESTE KIT         ●●●●    ●●           ●●●●        ●●●�
 | P7 | Página docs (GitHub Pages / landing) | Spec Kit site | — | **Não implementar** |
 | P8 | Comunidade Discord | OpenSpec/BMAD | — | **Não implementar** |
 | P9 | Módulo “app starter” (auth/DB/deploy) | Camada B | — | **Não implementar** (non-goal permanente) |
-| P10 | Rename repo / brand GitHub-like | SEO / Spec Kit | — | **Não implementar** (assimetría de marca; rename só se decisão humana futura) |
+| P10 | Rename / nome público do projecto | SEO / identidade | — | **Depois do README** — explore→propose→apply dedicados (§11); **não** neste change |
 | — | Multi-persona theatre (BMAD) | BMAD-METHOD | — | **Não implementar** (skills/subagentes locais bastam; evita 2º orquestrador) |
+| — | Tradução completa do hub para inglês | Descoberta global + policy | — | **Depois do nome estável** — policy + waves (§11); **não** neste change |
 
 **Princípio de produto:** melhorar o kit para o iniciante **sem** diluir o diferencial (control plane). Qualquer feature que nos transforme em “mais um vibe template” é rejeitada.
 
 ### 6.3 Decisão de produto — gaps de concorrência (explore 2026-07-26)
 
-**Confirmação humana:** para Landing, Discord, one-liner fame, app scaffold, BMAD multi-persona e brand GitHub — **não há necessidade de implementar**. Permanecem fora do roadmap activo.
+**Confirmação humana:** Landing, Discord, one-liner fame, app scaffold, BMAD multi-persona e brand GitHub — **não implementar**. Permanecem fora do roadmap activo.
 
-**Excepção — P5 (1b GIF / asciinema):** **não implementar ainda.** Precisa de **exploração dedicada** (`/opsx:explore`) sobre *como* integrar, antes de qualquer propose/apply. Questões em aberto para essa explore:
+**No roadmap (fora deste apply), com ordem fixa — ver §11:** novo nome público (P10) → tradução EN completa + policy → explore GIF (P5).
+
+**P5 (1b GIF / asciinema):** **não implementar ainda.** Precisa de **exploração dedicada** (`/opsx:explore`) sobre *como* integrar, antes de qualquer propose/apply. Preferir **depois** do README e, idealmente, do nome estável (§11). Questões em aberto:
 
 | # | Pergunta de integração |
 |---|------------------------|
@@ -221,7 +224,7 @@ ESTE KIT         ●●●●    ●●           ●●●●        ●●●�
 9. Stack & companions (links OpenSpec, GitNexus, Graphify, agents.md)
 10. Docs (guia pt-BR, kit README)
 
-Idioma: **EN no README raiz** (descoberta GitHub); **pt-BR** no guia e na avaliação.
+Idioma: **EN no README raiz** (descoberta GitHub). Avaliação e guia neste apply podem permanecer **pt-BR** até à wave de i18n (research §11 passo ④).
 
 ## 8. Riscos
 
@@ -231,7 +234,7 @@ Idioma: **EN no README raiz** (descoberta GitHub); **pt-BR** no guia e na avalia
 | Tom “stop vibe coding” alienar | Preferir “from vibe coding to…” |
 | Stars desatualizados no README | Datados + “ordem de grandeza”; detalhe só em `doc/avaliacoes/` |
 | Duplicar o guia no README | README ≤ ~150–200 linhas; deep dive no guia |
-| Prometer features P5–P8 neste change | Non-goals explícitos em proposal/design |
+| Prometer rename / i18n / GIF neste change | Non-goals + roadmap §11 / D10 |
 
 ## 9. Decisões a confirmar no apply (defaults deste propose)
 
@@ -240,10 +243,11 @@ Idioma: **EN no README raiz** (descoberta GitHub); **pt-BR** no guia e na avalia
 | Audiência primária | Solo / small team em Cursor ou Claude Code, a sair do vibe caótico |
 | Idioma README raiz | EN-first |
 | Agressividade do tom | “From vibe → agentic”, não “stop vibe” |
-| Nome público | SDD Kit / SDD Install Kit (sem rename de repo) |
-| App scaffold | Non-goal permanente deste ciclo |
-| P5 GIF/asciinema | **Não neste apply** — marcar para `/opsx:explore` de integração (§6.3) |
-| P6–P10, BMAD, Landing, Discord, brand | **Não implementar** (decisão 2026-07-26) |
+| Nome público | Working title “SDD Kit” neste apply; **rename real = passo ②–③ do §11** (não neste change) |
+| App scaffold | Non-goal permanente |
+| P5 GIF/asciinema | **Não neste apply** — explore de integração após README (§6.3, §11 passo ⑤) |
+| P6–P8, BMAD, Landing, Discord, brand GitHub | **Não implementar** (decisão 2026-07-26) |
+| Tradução completa EN | **Não neste apply** — após nome estável (§11 passos ④) |
 
 ## 10. Referências
 
@@ -253,3 +257,75 @@ Idioma: **EN no README raiz** (descoberta GitHub); **pt-BR** no guia e na avalia
 - `openspec/changes/explore-oss-coverage-gaps/research.md` — gaps de tooling (complementar, não substitui)
 - GitHub: `github/spec-kit`, `Fission-AI/OpenSpec`, `bmad-code-org/BMAD-METHOD`, `gsd-build/get-shit-done`, topic `vibe-coding`
 - agents.md — https://agents.md/
+
+## 11. Roadmap de divulgação e i18n — sequência e razões (2026-07-26)
+
+Registo pré-apply (pedido humano): ordem das melhorias de discovery, rebrand, tradução e demo visual — e **porquê** nesta ordem. Administrar como **backlog OpenSpec** (um change por fatia), não como mega-PR.
+
+### 11.1 Sequência canónica
+
+```
+①  APPLY   add-sdd-discovery-positioning     ← próximo
+    README (EN) + avaliação + quickstart + mapa kit
+    Demo = texto · About/topics = checklist manual
+         │
+         ▼
+②  EXPLORE → PROPOSE   nome público (rebrand)
+    Escolher nome · impacto repo/URLs/MANIFEST/docs
+    NÃO traduzir o hub inteiro antes disto
+         │
+         ▼
+③  APPLY   rename / rebrand (quando aprovado)
+    Títulos, About, links, guia, AGENTS pointers
+    [AÇÃO MANUAL] rename no GitHub se mudar o slug do repo
+         │
+         ▼
+④  EXPLORE → PROPOSE   política EN + migração
+    “Novos artefactos = EN” · inventário do que ainda é pt-BR
+    Traduzir por waves (guia §, avaliações, skills…)
+    Chat humano Contigo: pt-BR (velocidade) — permanente
+         │
+         ▼
+⑤  EXPLORE   GIF/asciinema (P5) → propose só se integração fechar
+         │
+         ▼
+⑥  Landing / Discord / one-liner fame — fora do roadmap (D9)
+```
+
+### 11.2 Changes OpenSpec sugeridos (administração)
+
+| Ordem | Change (id sugerido) | Fase |
+|------:|----------------------|------|
+| 1 | `add-sdd-discovery-positioning` | **apply a seguir** |
+| 2 | `explore-sdd-kit-public-name` → `rename-…` | explore → propose → apply |
+| 3 | `add-english-docs-policy` | propose curto (AGENTS.md / project.md) |
+| 4 | `translate-sdd-guide-en` (+ waves) | vários applies |
+| 5 | `explore-sdd-demo-asciinema` | explore → ? propose |
+
+### 11.3 Razões (porquê esta ordem)
+
+| Passo | Razão |
+|-------|--------|
+| **① README antes de tudo** | Buraco crítico de discovery; desbloqueia GitHub sem depender de rename nem i18n. Working title (“SDD Kit”) basta; o nome real actualiza-se no ③. |
+| **②–③ Nome antes da tradução total** | Traduzir com a marca antiga = retrabalho em massa (duas traduções). Rebrand toca URLs, About, títulos, cross-refs — change próprio com blast radius explícito. |
+| **④ Tradução depois do nome** | Um (ou N) changes só de i18n, com inventário e gates. Specs em `openspec/specs/` muitas já estão em EN — não assumir rewrite total cego. |
+| **⑤ GIF depois do README (e idealmente do nome)** | Narrativa e marca estáveis; evita regravar o demo. Integração (E1–E6) ainda por explorar — **não** misturar no apply ①. |
+| **⑥ Fame gaps fora** | Landing/Discord/one-liner/scaffold/BMAD/brand GitHub não são necessidade do sistema (D9). |
+
+### 11.4 Política linguística alvo (após passo ④)
+
+| Superfície | Idioma |
+|------------|--------|
+| Chat Contigo (Pedro ↔ agente) | **pt-BR** (velocidade) — já em AGENTS.md |
+| Artefactos **novos** (proposal, design, specs, README, guia) | **inglês** |
+| Código / change-ids / paths | inglês / kebab-case (já) |
+| Legado pt-BR | waves de tradução; **não** bloquear features à espera de 100% |
+
+### 11.5 O que este apply (①) NÃO faz
+
+- Não escolhe nem aplica o nome final do projecto
+- Não traduz o guia / avaliações / skills para EN
+- Não grava GIF/asciinema
+- Não cria Landing, Discord, one-liner viral, scaffold, nem BMAD
+
+Idioma neste apply: README raiz **EN**; avaliação e quickstart no guia podem permanecer **pt-BR** até à wave ④ (consistente com o hub actual).

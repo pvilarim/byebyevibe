@@ -1,6 +1,6 @@
 # Tasks — add-sdd-discovery-positioning
 
-> Escopo apply após aprovação (R7). Perfil **DOCS_SPECS** — só docs/specs neste hub. **Non-goals (D9):** app boilerplate, Landing/Pages, Discord, one-liner fame, BMAD, brand GitHub, rename (P6–P10). **P5 GIF/asciinema:** não neste apply — pending `/opsx:explore` de integração (`research.md` §6.3). Demo no README = texto. **Issue:** —
+> Escopo apply após aprovação (R7). Perfil **DOCS_SPECS** — só docs/specs neste hub. **Non-goals (D9):** app boilerplate, Landing/Pages, Discord, one-liner fame, BMAD, brand GitHub. **Fora deste apply (D10 / research §11):** rename/nome final, tradução completa EN, P5 GIF/asciinema. Demo no README = texto. Working title ok. **Issue:** —
 
 ## 1. Avaliação canónica (documento de partida)
 

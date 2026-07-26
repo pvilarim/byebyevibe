@@ -13,7 +13,7 @@ O hub SDD (`gitnexus-graphify-openspec`) **não tem `README.md` na raiz** e o `s
 - **Cross-refs:** `AGENTS.md`, `openspec/project.md`, `doc/avaliacoes/README.md`.
 - **Checklist `[AÇÃO MANUAL NECESSÁRIA]`** para About + topics GitHub (não automatizável neste repo).
 - **Specs:** nova capability `sdd-discovery-positioning`; delta em `sdd-install-kit` se o README do kit passar a exigir framing de discovery.
-- **Backlog de produto (decisão 2026-07-26):** P6–P10 + Landing/Discord/one-liner fame/BMAD/brand GitHub — **não implementar**. **P5 (GIF/asciinema)** — **não** neste change; marcado para `/opsx:explore` de integração antes de qualquer propose (ver `research.md` §6.3, `design.md` D9).
+- **Backlog de produto (decisão 2026-07-26):** Landing/Discord/one-liner/BMAD/brand GitHub/scaffold — **não implementar**. **P5 (GIF)** — pending `/opsx:explore` após README (idealmente após nome). **P10 (nome) + tradução EN** — roadmap pós-README (`research.md` §11, `design.md` D10); **não** neste change.
 
 ## Capabilities
 
@@ -31,6 +31,7 @@ O hub SDD (`gitnexus-graphify-openspec`) **não tem `README.md` na raiz** e o `s
 - Modificados: `sdd-kit/README.md`, `doc/avaliacoes/README.md`, `doc/sistema-sdd-pedro.md` (secção quickstart + changelog), `AGENTS.md` / template se necessário, `openspec/project.md` (cross-ref)
 - Specs: `openspec/specs/sdd-discovery-positioning/` (após archive); delta `sdd-install-kit`
 - Dependências novas: nenhuma
-- **Non-goals:** app starter/boilerplate; Discord; landing/Pages; one-liner fame; GIF/asciinema neste change (pending explore); rename do repositório; adoptar BMAD multi-persona; perseguir “brand GitHub”; alterar fluxo `/opsx` ou MANIFEST de payloads (salvo menção documental)
+- **Non-goals:** app starter/boilerplate; Discord; landing/Pages; one-liner fame; GIF/asciinema neste change (pending explore pós-README); rename/rebrand neste change (roadmap §11); tradução completa EN neste change (roadmap §11); adoptar BMAD multi-persona; perseguir “brand GitHub”; alterar fluxo `/opsx` ou MANIFEST de payloads (salvo menção documental)
+- **Roadmap pós-apply (não escopo):** ver `research.md` §11 — README → nome → policy/waves EN → explore GIF; chat humano permanece pt-BR.
 - **Issue:** — (API de issues indisponível nesta sessão; sem duplicata óbvia no histórico de changes)
 - Fontes: `openspec/changes/add-sdd-discovery-positioning/research.md`
