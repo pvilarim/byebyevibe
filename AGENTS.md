@@ -1,189 +1,189 @@
-# AGENTS.md — Instruções Universais para Agentes de IA
+# AGENTS.md — Universal Instructions for AI Agents
 
-> Ficheiro canónico para Cursor, Claude Code, Codex, etc. `CLAUDE.md` e `.cursor/rules/` apenas apontam aqui.
-> Padrão: https://agents.md/
+> Canonical file for Cursor, Claude Code, Codex, etc. `CLAUDE.md` and `.cursor/rules/` only point here.
+> Standard: https://agents.md/
 
-## Contexto do projecto
+## Project context
 
-Ver `./openspec/project.md` (stack, convenções, constraints). **Não duplicar** stack aqui.
+See `./openspec/project.md` (stack, conventions, constraints). **Do not duplicate** the stack here.
 
 ## Commands
 
-| Comando | Uso |
+| Command | Use |
 |---------|-----|
-| `npx openspec list` | Changes OpenSpec activos |
-| `npx openspec new change "<id>"` | Criar change (CLI) |
-| `npx openspec validate <id>` | Validar change |
+| `npx openspec list` | Active OpenSpec changes |
+| `npx openspec new change "<id>"` | Create change (CLI) |
+| `npx openspec validate <id>` | Validate change |
 | `/opsx:propose` · `/opsx:apply` · `/opsx:archive` | Workflow Cursor/Claude |
-| `npx gitnexus status` | Estado do index de código |
-| `npx gitnexus analyze --force` | Reindexar após mudanças |
-| `graphify update .` | Actualizar grafo (AST, sem LLM) |
-| `graphify query "<pergunta>"` | Busca no knowledge graph |
-| `python doc/curso/scripts/enrich-transcripts.py` | Re-enriquecer transcrições do curso |
-| `bash scripts/sdd-session-status.sh` | Sessões SDD activas na worktree local |
-| `bash scripts/sdd-metrics.sh` | Métricas SDD sob demanda (G4, modo C) — volume, lead time, rework |
-| `bash scripts/verify-i18n-wave.sh` | Gates i18n por wave / DoD global (`doc/i18n/`) |
-| `bash sdd-kit/install-probity-module.sh --detect` | Probity G2 — detectar test runner / aplicabilidade |
-| `npx --yes @fission-ai/openspec@1.3.1 validate --all --strict` | Gate de CI local (mesmo comando do workflow `sdd-gates`) |
+| `npx gitnexus status` | Code index status |
+| `npx gitnexus analyze --force` | Reindex after changes |
+| `graphify update .` | Update graph (AST, no LLM) |
+| `graphify query "<pergunta>"` | Search the knowledge graph |
+| `python doc/curso/scripts/enrich-transcripts.py` | Re-enrich course transcripts |
+| `bash scripts/sdd-session-status.sh` | Active SDD sessions in the local worktree |
+| `bash scripts/sdd-metrics.sh` | On-demand SDD metrics (G4, mode C) — volume, lead time, rework |
+| `bash scripts/verify-i18n-wave.sh` | Per-wave i18n gates / global DoD (`doc/i18n/`) |
+| `bash sdd-kit/install-probity-module.sh --detect` | Probity G2 — detect test runner / applicability |
+| `npx --yes @fission-ai/openspec@1.3.1 validate --all --strict` | Local CI gate (same command as workflow `sdd-gates`) |
 
-Nota: não há `npm run dev` na raiz — repo de specs e documentação (perfil DOCS_SPECS).
+Note: there is no `npm run dev` at the root — specs and documentation repo (DOCS_SPECS profile).
 
-## Fontes de conhecimento (por prioridade)
+## Knowledge sources (by priority)
 
-1. `./openspec/specs/` — requisitos actuais por capability
-2. `./openspec/changes/` — propostas activas e arquivo
-3. `./graphify-out/GRAPH_REPORT.md` — resumo do knowledge graph
-4. GitNexus via MCP — estrutura de código, call chains, blast radius
-5. Graphify via MCP ou `graphify query` — conceitos e relações
-6. Docs externos (apenas se citados em `./openspec/project.md`)
-7. Web search (último recurso, com escrutínio crítico)
+1. `./openspec/specs/` — current requirements by capability
+2. `./openspec/changes/` — active proposals and archive
+3. `./graphify-out/GRAPH_REPORT.md` — knowledge graph summary
+4. GitNexus via MCP — code structure, call chains, blast radius
+5. Graphify via MCP or `graphify query` — concepts and relations
+6. External docs (only if cited in `./openspec/project.md`)
+7. Web search (last resort, with critical scrutiny)
 
-**NUNCA** afirmar um facto que não possa ser ancorado a uma das fontes 1–6.
-Para trabalho tipo D/E, **SEMPRE** consultar Graphify e GitNexus antes de escrever código.
+**NEVER** assert a fact that cannot be anchored to one of sources 1–6.
+For type D/E work, **ALWAYS** consult Graphify and GitNexus before writing code.
 
-## Contexto sob demanda
+## On-demand context
 
-| Situação | Carregar |
-|----------|----------|
-| Constituição (stack, non-goals) | `openspec/project.md` |
-| Specs por capability | `openspec/specs/` |
-| Change em curso | `openspec/changes/<id>/` |
-| Teoria / relações entre conceitos | `graphify-out/GRAPH_REPORT.md` |
-| Workshop e transcrições | `doc/curso/aula-*.md` |
-| Guia de instalação SDD (v1.6.1) | `doc/sistema-sdd-pedro.md` |
-| GitHub Issues MCP (operação humana) | `doc/sistema-sdd-pedro.md` §2.15 |
-| Módulo UI (C1-UI) | `doc/sistema-sdd-pedro.md` §2.11 · `doc/design/002-ui-module-install.md` |
-| Módulo Probity (G2) | `doc/sistema-sdd-pedro.md` §2.16 · `doc/design/004-probity-module-install.md` |
-| Métricas SDD (G4, modo C) | `doc/sistema-sdd-pedro.md` §2.17 · `bash scripts/sdd-metrics.sh` |
+| Situation | Load |
+|----------|------|
+| Constitution (stack, non-goals) | `openspec/project.md` |
+| Specs by capability | `openspec/specs/` |
+| Change in progress | `openspec/changes/<id>/` |
+| Theory / relations between concepts | `graphify-out/GRAPH_REPORT.md` |
+| Workshop and transcripts | `doc/curso/aula-*.md` |
+| SDD install guide (v1.6.1) | `doc/sistema-sdd-pedro.md` |
+| GitHub Issues MCP (human operation) | `doc/sistema-sdd-pedro.md` §2.15 |
+| UI module (C1-UI) | `doc/sistema-sdd-pedro.md` §2.11 · `doc/design/002-ui-module-install.md` |
+| Probity module (G2) | `doc/sistema-sdd-pedro.md` §2.16 · `doc/design/004-probity-module-install.md` |
+| SDD metrics (G4, mode C) | `doc/sistema-sdd-pedro.md` §2.17 · `bash scripts/sdd-metrics.sh` |
 | Docs language / i18n (EN default, waves) | `doc/i18n/GLOSSARY.md` · `doc/i18n/WAVES.md` · `bash scripts/verify-i18n-wave.sh` |
-| Install kit (payload SDD) | `sdd-kit/` |
-| Actualização SDD (repo já instalado) | `doc/sistema-sdd-pedro.md` §2.9 |
-| Scripts CDP / transcrições | `doc/curso/scripts/AGENTS.md` |
-| TypeScript (se aplicável) | `.cursor/rules/010-typescript.mdc` |
+| Install kit (SDD payload) | `sdd-kit/` |
+| SDD upgrade (repo already installed) | `doc/sistema-sdd-pedro.md` §2.9 |
+| CDP scripts / transcripts | `doc/curso/scripts/AGENTS.md` |
+| TypeScript (when applicable) | `.cursor/rules/010-typescript.mdc` |
 | Python | `.cursor/rules/020-python.mdc` |
 | Supabase | `.cursor/rules/030-supabase.mdc` |
-| Legado / AS-IS | Perguntar padrões **sem criar ficheiros**; depois documentar no `AGENTS.md` |
-| Tasks atómicas (Pattern, Gate) | `doc/sistema-sdd-pedro.md` §12.10 |
-| Infra instalada (MCP, CLIs, skills) | `openspec/infra.md` |
-| Install kit (payload versionado) | `sdd-kit/` |
-| Gates de CI (sdd-gates, operação) | `doc/sistema-sdd-pedro.md` §2.12 · `.github/workflows/sdd-gates.yml` |
+| Legacy / AS-IS | Ask for patterns **without creating files**; then document in `AGENTS.md` |
+| Atomic tasks (Pattern, Gate) | `doc/sistema-sdd-pedro.md` §12.10 |
+| Installed infra (MCP, CLIs, skills) | `openspec/infra.md` |
+| Install kit (versioned payload) | `sdd-kit/` |
+| CI gates (sdd-gates, operation) | `doc/sistema-sdd-pedro.md` §2.12 · `.github/workflows/sdd-gates.yml` |
 | Supply chain (Renovate + OSV) | `doc/sistema-sdd-pedro.md` §2.13 |
-| Avaliações de integração / ferramentas descartadas | `doc/avaliacoes/` |
-| Discovery / README raiz (EN) + posicionamento vibe→agentic | Marca pública **ByeByeVibe** · `README.md` · `doc/avaliacoes/2026-07-26-sdd-discovery-positioning.md` (payload `sdd-kit/`) |
-| Inserção de novas ferramentas SDD (metodologia + gaps) | `openspec/changes/explore-oss-coverage-gaps/` |
-| Impeccable + shadcn — guia de adoção | `doc/design/000-impeccable-design-system-guia.md` |
+| Integration evaluations / discarded tools | `doc/avaliacoes/` |
+| Discovery / root README (EN) + vibe→agentic positioning | Public brand **ByeByeVibe** · `README.md` · `doc/avaliacoes/2026-07-26-sdd-discovery-positioning.md` (payload `sdd-kit/`) |
+| Inserting new SDD tools (methodology + gaps) | `openspec/changes/explore-oss-coverage-gaps/` |
+| Impeccable + shadcn — adoption guide | `doc/design/000-impeccable-design-system-guia.md` |
 | Pipeline OD / Pencil / Figma → shadcn → Impeccable | `doc/design/001-pipeline-open-design-shadcn-impeccable.md` |
-| Instalação módulo UI (C1-UI) | `doc/design/002-ui-module-install.md` |
-| UI stack adapters (sem shadcn) | `doc/design/003-ui-stack-adapters.md` |
+| UI module install (C1-UI) | `doc/design/002-ui-module-install.md` |
+| UI stack adapters (no shadcn) | `doc/design/003-ui-stack-adapters.md` |
 
-## Documentação relacionada (design system)
+## Related documentation (design system)
 
-| Documento | Tema |
-|-----------|------|
-| [`doc/design/000-impeccable-design-system-guia.md`](./doc/design/000-impeccable-design-system-guia.md) | Impeccable + shadcn — guia de adoção |
+| Document | Topic |
+|----------|-------|
+| [`doc/design/000-impeccable-design-system-guia.md`](./doc/design/000-impeccable-design-system-guia.md) | Impeccable + shadcn — adoption guide |
 | [`doc/design/001-pipeline-open-design-shadcn-impeccable.md`](./doc/design/001-pipeline-open-design-shadcn-impeccable.md) | Pipeline OD / Pencil / Figma → shadcn → Impeccable |
-| [`doc/design/002-ui-module-install.md`](./doc/design/002-ui-module-install.md) | Instalação C1-UI (`install-ui-module.sh`) |
+| [`doc/design/002-ui-module-install.md`](./doc/design/002-ui-module-install.md) | C1-UI install (`install-ui-module.sh`) |
 | [`doc/design/003-ui-stack-adapters.md`](./doc/design/003-ui-stack-adapters.md) | Adapters tailwind-custom / other |
 
-> Integrado no guia canónico `doc/sistema-sdd-pedro.md` §2.11 (v1.4.0).
+> Integrated into the canonical guide `doc/sistema-sdd-pedro.md` §2.11 (v1.4.0).
 
-## Protocolo de Classificação de Tarefas
+## Task Classification Protocol
 
-Antes de **qualquer** trabalho, classificar (A–E):
+Before **any** work, classify (A–E):
 
-| Tipo | Sinal | Pipeline |
-|------|-------|----------|
-| A — Trivial | Uma linha, sem risco semântico | Edição directa |
-| B — Bug fix | Erro reproduzível, causa conhecida | GitNexus impact → patch → teste |
-| C — Refactor | Reestruturar sem novo comportamento | GitNexus AS-IS → `/opsx:propose` → implementar |
-| D — Feature | Novo comportamento com base no knowledge base | Graphify ∥ GitNexus → propose → implementar |
-| E — Exploração | Investigar, comparar, decidir | Graphify → `research.md` |
+| Type | Signal | Pipeline |
+|------|--------|----------|
+| A — Trivial | One line, no semantic risk | Direct edit |
+| B — Bug fix | Reproducible error, known cause | GitNexus impact → patch → test |
+| C — Refactor | Restructure without new behavior | GitNexus AS-IS → `/opsx:propose` → implement |
+| D — Feature | New behavior grounded in the knowledge base | Graphify ∥ GitNexus → propose → implement |
+| E — Exploration | Investigate, compare, decide | Graphify → `research.md` |
 
-Se ambíguo entre dois tipos, **PERGUNTAR**. **NUNCA** assumir Tipo A por defeito.
+If ambiguous between two types, **ASK**. **NEVER** assume Type A by default.
 
-## Regras Universais (R1–R11)
+## Universal rules (R1–R11)
 
-- **R1** — Classificar tarefa (A–E) antes de agir
-- **R2** — Prioridade: specs > arquivo > Graphify > GitNexus > docs > web
-- **R3** — Sem alucinações: marcar `[NEEDS VERIFICATION]` se sem fonte
-- **R4** — Menor mudança razoável; sem abstracções especulativas
-- **R5** — Refactors sem novo comportamento
-- **R6** — Bug: teste que falha primeiro, depois fix
-- **R7** — Tarefas C/D/E: proposta OpenSpec revista antes de código
-- **R8** — Citar fontes em design.md, research.md, commits
-- **R9** — Commits com scope ou change-id OpenSpec
-- **R10** — Infra conhecida: ler `openspec/infra.md` antes de instalar MCP/CLIs/skills; ✅ = usar directamente
-- **R11** — Coordenação local: antes de apply, `sdd-session-register` + `sdd-session-check`; ao fim/pause, `sdd-session-release` (§3.3 guia SDD)
+- **R1** — Classify the task (A–E) before acting
+- **R2** — Priority: specs > archive > Graphify > GitNexus > docs > web
+- **R3** — No hallucinations: mark `[NEEDS VERIFICATION]` if no source
+- **R4** — Smallest reasonable change; no speculative abstractions
+- **R5** — Refactors without new behavior
+- **R6** — Bug: failing test first, then fix
+- **R7** — Type C/D/E tasks: reviewed OpenSpec proposal before code
+- **R8** — Cite sources in design.md, research.md, commits
+- **R9** — Commits with scope or OpenSpec change-id
+- **R10** — Known infra: read `openspec/infra.md` before installing MCP/CLIs/skills; ✅ = use directly
+- **R11** — Local coordination: before apply, `sdd-session-register` + `sdd-session-check`; at end/pause, `sdd-session-release` (§3.3 SDD guide)
 
 ## Workflow
 
-- `/opsx:propose <description>` — nova mudança
-- `/opsx:apply` — implementar tasks do change actual
-- `/opsx:archive` — finalizar e arquivar
-- `/opsx:explore <topic>` — tarefas tipo E
-- `graphify update .` — actualizar grafo após mudanças em código/docs
-- `npx gitnexus analyze --force` — actualizar code graph
+- `/opsx:propose <description>` — new change
+- `/opsx:apply` — implement tasks of the current change
+- `/opsx:archive` — finalize and archive
+- `/opsx:explore <topic>` — type E tasks
+- `graphify update .` — update graph after code/docs changes
+- `npx gitnexus analyze --force` — update code graph
 
-## Integrações
+## Integrations
 
-**GitNexus** — Repo público **ByeByeVibe** (slug alvo `byebyevibe`; index legado pode permanecer `gitnexus-graphify-openspec` até reindex). Antes de editar símbolos: `gitnexus_impact`. Antes de commit: `gitnexus_detect_changes`. Detalhe: `.claude/skills/gitnexus/gitnexus-impact-analysis/SKILL.md`.
+**GitNexus** — Public repo **ByeByeVibe** (target slug `byebyevibe`; legacy index may remain `gitnexus-graphify-openspec` until reindex). Before editing symbols: `gitnexus_impact`. Before commit: `gitnexus_detect_changes`. Detail: `.claude/skills/gitnexus/gitnexus-impact-analysis/SKILL.md`.
 
-**Graphify** — Ler `graphify-out/GRAPH_REPORT.md` antes de grep em perguntas de arquitectura. Após editar código: `graphify update .`. Detalhe: `.cursor/rules/graphify.mdc`.
+**Graphify** — Read `graphify-out/GRAPH_REPORT.md` before grepping architecture questions. After editing code: `graphify update .`. Detail: `.cursor/rules/graphify.mdc`.
 
-**github-mcp-server** — MCP passivo (modo D) para contexto de GitHub Issues. Consultar em tipos **B**, **D** e **E** (opcional em **C** se há issue); nunca em tipo **A**. Em `/opsx:propose`, ler issue de origem quando `**Issue:**` está preenchido; em B/D sem issue explícita, verificar issues abertas para evitar duplicatas. Preencher `**Issue:**` em `proposal.md` (URL, `#123`, ou `—`). Cloud agents: `gh` CLI read-only cobre consultas ad-hoc — MCP local é para sessões interactivas. Operação humana: guia §2.15.
+**github-mcp-server** — Passive MCP (mode D) for GitHub Issues context. Consult on types **B**, **D**, and **E** (optional on **C** if there is an issue); never on type **A**. In `/opsx:propose`, read the source issue when `**Issue:**` is filled; on B/D without an explicit issue, check open issues to avoid duplicates. Fill `**Issue:**` in `proposal.md` (URL, `#123`, or `—`). Cloud agents: read-only `gh` CLI covers ad-hoc queries — local MCP is for interactive sessions. Human operation: guide §2.15.
 
-**Supply chain (Renovate + OSV-Scanner)** — Gates automáticos independentes da tarefa A–E em curso. PR Renovate: patch = tipo **A**; minor/major = tipo **B/C** (review humano). OSV vermelho no CI = tipo **B** — corrigir dependência antes de merge ou `/opsx:archive`. Operação: guia §2.13.
+**Supply chain (Renovate + OSV-Scanner)** — Automatic gates independent of the A–E task in progress. Renovate PR: patch = type **A**; minor/major = type **B/C** (human review). Red OSV in CI = type **B** — fix the dependency before merge or `/opsx:archive`. Operation: guide §2.13.
 
-**sdd-kit — manutenção de checksums** — Ao editar qualquer ficheiro em `sdd-kit/templates/`, correr `bash sdd-kit/gen-manifest-checksums.sh` antes de commitar para actualizar os campos `sha256:` no MANIFEST. Sem este passo, `install.sh` e `upgrade.sh --apply` abortarão com erro de integridade nos repos consumidores.
+**sdd-kit — checksum maintenance** — When editing any file under `sdd-kit/templates/`, run `bash sdd-kit/gen-manifest-checksums.sh` before committing to update the `sha256:` fields in the MANIFEST. Without this step, `install.sh` and `upgrade.sh --apply` will abort with an integrity error in consumer repos.
 
-**CI Gates (sdd-gates)** — Workflow `.github/workflows/sdd-gates.yml` corre em `push`/`pull_request`, fail-closed: `openspec validate --all --strict` (bloqueante), `verify-task-patterns.sh` (bloqueante), **OSV-Scanner** (bloqueante quando lockfile presente), `sdd-kit/verify.sh` (report-only). Antes de push: correr `npx --yes @fission-ai/openspec@1.3.1 validate --all --strict` localmente. Operação: guia §2.12.
+**CI Gates (sdd-gates)** — Workflow `.github/workflows/sdd-gates.yml` runs on `push`/`pull_request`, fail-closed: `openspec validate --all --strict` (blocking), `verify-task-patterns.sh` (blocking), **OSV-Scanner** (blocking when a lockfile is present), `sdd-kit/verify.sh` (report-only). Before push: run `npx --yes @fission-ai/openspec@1.3.1 validate --all --strict` locally. Operation: guide §2.12.
 
-**Probity (G2)** — Módulo opcional APP/HYBRID: `bash sdd-kit/install-probity-module.sh --detect` → `--apply [--yes]`; pin `@nizos/probity@1.10.0`. Matriz A–E: off em A (globs); on em B/C/D via `enforceTdd`. DOCS_SPECS sem testes: SKIP. Operação: guia §2.16.
+**Probity (G2)** — Optional APP/HYBRID module: `bash sdd-kit/install-probity-module.sh --detect` → `--apply [--yes]`; pin `@nizos/probity@1.10.0`. A–E matrix: off on A (globs); on for B/C/D via `enforceTdd`. DOCS_SPECS without tests: SKIP. Operation: guide §2.16.
 
-**SDD Metrics (G4)** — Script local sob demanda (modo C): `bash scripts/sdd-metrics.sh [--since YYYY-MM-DD] [--output PATH]`. Relatório markdown (volume, lead time propose→archive, rework `fix` pós-archive). Cadência: nudge advisory no Session Handoff de `/opsx:archive` via `--check-cadence` (N=5 / T=30); playbook Interpretar→actuar em §2.17. Proxies git+archive; **não** adoptar Apache DevLake. Sem skill/rule always-on (R3 N/A).
+**SDD Metrics (G4)** — Local on-demand script (mode C): `bash scripts/sdd-metrics.sh [--since YYYY-MM-DD] [--output PATH]`. Markdown report (volume, lead time propose→archive, rework `fix` post-archive). Cadence: advisory nudge in the Session Handoff of `/opsx:archive` via `--check-cadence` (N=5 / T=30); Interpret→act playbook in §2.17. git+archive proxies; **do not** adopt Apache DevLake. No always-on skill/rule (R3 N/A).
 
 ## Testing
 
-- Scripts Python: validar manualmente ou com testes ao alterar `doc/curso/scripts/*.py`
-- OpenSpec: `npx openspec validate <change-id>` quando aplicável
-- Não há suite `npm test` na raiz deste repo
+- Python scripts: validate manually or with tests when changing `doc/curso/scripts/*.py`
+- OpenSpec: `npx openspec validate <change-id>` when applicable
+- There is no `npm test` suite at the root of this repo
 
-## PR e commits
+## PR and commits
 
 - Conventional Commits: `feat(scope): desc`, `docs(sdd): …`, `fix(scope): …`
-- Referenciar change-id quando relevante: `docs(sdd): guia v1.1 (update-sdd-install-guide-agents-format)`
-- **Não commitar:** `graphify-out/`, `.gitnexus/`, `AGENTS.tools-generated.md`
+- Reference the change-id when relevant: `docs(sdd): guia v1.1 (update-sdd-install-guide-agents-format)`
+- **Do not commit:** `graphify-out/`, `.gitnexus/`, `AGENTS.tools-generated.md`
 
-## Reviews pós-implementação (on-demand)
+## Post-implementation reviews (on-demand)
 
-Skills invocáveis após código escrito — **nunca** always-on, **nunca** bloqueiam commit.
+Skills invocable after code is written — **never** always-on, **never** block commit.
 
-| Skill / agent | Quando invocar | Não invocar |
-|---------------|----------------|-------------|
-| `correctness-review` | Pós-apply: Tipo B (sempre); Tipo C/D (diff > ~80 linhas ou > 4 ficheiros); pedido explícito de correctness | Tipo A; Tipo E; durante `/opsx:propose` |
-| `simplify-review` | Pós-apply ou pré-PR: diff > ~80 linhas ou > 4 ficheiros; Tipo B/C/D; pedido explícito de simplicidade | Tipo A; durante `/opsx:propose`; escopo ainda em debate |
-| `security-reviewer` | Auth, API routes, pagamentos, dados sensíveis, webhooks | — |
+| Skill / agent | When to invoke | Do not invoke |
+|---------------|----------------|---------------|
+| `correctness-review` | Post-apply: Type B (always); Type C/D (diff > ~80 lines or > 4 files); explicit correctness request | Type A; Type E; during `/opsx:propose` |
+| `simplify-review` | Post-apply or pre-PR: diff > ~80 lines or > 4 files; Type B/C/D; explicit simplicity request | Type A; during `/opsx:propose`; scope still under debate |
+| `security-reviewer` | Auth, API routes, payments, sensitive data, webhooks | — |
 
-Ordem sugerida: implementação → testes (R6/Probity `enforceTdd`) → `correctness-review` (B/C/D) → `simplify-review` (opcional) → `security-reviewer` (se aplicável) → commit.
+Suggested order: implementation → tests (R6/Probity `enforceTdd`) → `correctness-review` (B/C/D) → `simplify-review` (optional) → `security-reviewer` (if applicable) → commit.
 
-Detalhe das skills: `.claude/skills/correctness-review/SKILL.md` · `.claude/skills/simplify-review/SKILL.md` (espelhos em `.cursor/skills/`).
+Skill detail: `.claude/skills/correctness-review/SKILL.md` · `.claude/skills/simplify-review/SKILL.md` (mirrors under `.cursor/skills/`).
 
-## Subagentes (Claude Code)
+## Subagents (Claude Code)
 
-- `graphify-researcher` — research teórico → `knowledge.md`
-- `codebase-researcher` — AS-IS código → `codebase.md`
-- `security-reviewer` — auditoria de segurança
+- `graphify-researcher` — theoretical research → `knowledge.md`
+- `codebase-researcher` — AS-IS code → `codebase.md`
+- `security-reviewer` — security audit
 
-Tipo D: disparar researchers **em paralelo**.
+Type D: launch researchers **in parallel**.
 
-## Segurança
+## Security
 
-**NUNCA:** segredos em ficheiros git; `rm -rf` fora do repo; `--no-verify` sem explicar; ler `.env`.
+**NEVER:** secrets in git-tracked files; `rm -rf` outside the repo; `--no-verify` without explaining; read `.env`.
 
-**SEMPRE:** validar inputs (Zod/Pydantic); queries parametrizadas; sanitizar prompts LLM.
+**ALWAYS:** validate inputs (Zod/Pydantic); parameterized queries; sanitize LLM prompts.
 
-## Comunicação
+## Communication
 
-**F7 — chat vs artefactos:** human↔agent chat **MAY** use pt-BR; versioned repository artifacts (proposals, designs, specs, tasks, skills, guide prose, evaluations, kit templates) **MUST** be English after `sdd-docs-language` policy. Chat language does **not** authorize PT commits. Glossary / waves: `doc/i18n/`.
+**F7 — chat vs artifacts:** human↔agent chat **MAY** use pt-BR; versioned repository artifacts (proposals, designs, specs, tasks, skills, guide prose, evaluations, kit templates) **MUST** be English after `sdd-docs-language` policy. Chat language does **not** authorize PT commits. Glossary / waves: `doc/i18n/`.
 
-Quando responder ao Pedro: pt-BR no chat; começar pela resposta; avaliações directas; sem preâmbulo desnecessário.
+When replying to Pedro: pt-BR in chat; lead with the answer; direct evaluations; no unnecessary preamble.
