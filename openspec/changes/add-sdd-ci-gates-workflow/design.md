@@ -69,6 +69,7 @@
 | D9 | Bump `MANIFEST.yaml` 1.3.2 → **1.4.0** | Adição de capability à distribuição (minor) |
 | D10 | Branch protection / required check = **acção manual** documentada | Fora do escopo de um ficheiro versionável; operador decide |
 | D11 | `permissions: contents: read` no workflow | Regra 050 — menor escopo de token |
+| D12 | `OPENSPEC_TELEMETRY: "0"` no env do job | `@fission-ai/openspec` envia dados anónimos via PostHog por defeito. Em CI desactivar elimina exfiltração implícita de metadados do repo (nomes de changes, paths). Operadores que adaptem o workflow DEVEM incluir esta variável. Em local: definir no shell ou `.env` (regra 050). |
 
 ## Esboço do workflow (`.github/workflows/sdd-gates.yml`)
 

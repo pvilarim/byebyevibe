@@ -8,7 +8,7 @@
 
 | Modo | Acção |
 |------|--------|
-| **Humano — instalação nova (C1)** | §2.1 → CLIs → `bash sdd-kit/install.sh --profile X` → §2.8 |
+| **Humano — instalação nova (C1)** | §2.1 → CLIs → `bash sdd-kit/install.sh --profile X` → §2.8 → §2.12 |
 | **Humano — actualização (C2)** | §2.9 + `bash sdd-kit/upgrade.sh --dry-run` → §12.8 → `--apply` |
 | **Humano — só CLIs (C2b)** | §2.9.4 — sem tocar `sdd-kit/templates/` |
 | **Propagação specs (C3)** | git/referência em `openspec/specs/` — **sem** `install.sh` |
@@ -400,6 +400,7 @@ Usar após cada instalação (humano ou IA):
 - [ ] `.sdd/runtime/` no `.gitignore`
 - [ ] `openspec/infra.md` secção Session Coordination presente
 - [ ] `bash scripts/verify-infra.sh` completa sem erro (ou documentar ❌ pendentes)
+- [ ] `.github/workflows/sdd-gates.yml` presente (ver §2.12 para configurar branch protection manual)
 
 ### 2.11 Módulo de desenvolvimento de UI (C1-UI, opcional)
 
