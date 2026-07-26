@@ -1,3 +1,16 @@
+# MANIFEST.yaml — SDD Install Kit file registry
+#
+# AVISO DE SEGURANÇA — campo `gate:`
+# O campo `gate:` em cada entrada é METADATA DOCUMENTAL apenas.
+# Indica o comando de verificação sugerido para validação manual/CI.
+# NUNCA deve ser avaliado via `eval` ou equivalente por install.sh, upgrade.sh,
+# ou qualquer outro script. Executar conteúdo arbitrário do MANIFEST seria
+# uma vulnerabilidade de injecção de código. (F-SEC-5)
+#
+# SECURITY WARNING — `gate:` field (non-executable metadata)
+# The `gate:` field is documentary metadata only — the suggested verification
+# command for manual or CI use. It MUST NOT be executed via `eval` or any
+# equivalent by install.sh, upgrade.sh, or any other script.
 version: "1.4.0"
 guide_version: "1.4.0"
 min_openspec: "1.3.1"

@@ -33,3 +33,15 @@ alwaysApply: true
 - Incluir `OPENSPEC_TELEMETRY=0` ao usar `@fission-ai/openspec` em jobs de CI
 - Declarar `permissions: contents: read` no topo do workflow; justificar explicitamente qualquer escopo mais amplo
 - Pinar actions externas por SHA: `uses: actions/checkout@<sha>` (sem tags mutáveis)
+
+## Riscos de supply chain e MANIFEST (SDD kit)
+
+**Campo `gate:` do MANIFEST — risco de eval futuro:**
+- O campo `gate:` em `sdd-kit/MANIFEST.yaml` é **metadata documental** — indica o comando de verificação sugerido.
+- `install.sh` e `upgrade.sh` **NUNCA** devem avaliar `gate:` via `eval` ou equivalente; fazê-lo seria uma vulnerabilidade de injecção de código (F-SEC-5).
+- Qualquer nova versão desses scripts que processe `gate:` deve tratar o valor como string de documentação, nunca como comando executável.
+
+**`npx --yes` sem lockfile — limitação de supply chain:**
+- `npx --yes @fission-ai/openspec@1.3.1` pina a versão top-level do pacote, mas **não pina dependências transitivas** (que usam intervalos `^`).
+- Em ambientes com requisitos de segurança elevados, preferir instalar o pacote com lockfile commitado + `npm ci` em vez de `npx --yes` (F-SEC-3).
+- Esta limitação é documentada como risco conhecido para operadores que adaptem o workflow de CI.

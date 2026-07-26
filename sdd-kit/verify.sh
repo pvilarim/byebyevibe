@@ -41,11 +41,18 @@ if [[ -x "$REPO_ROOT/scripts/verify-task-patterns.sh" ]]; then
   run_check "verify-task-patterns.sh" bash "$REPO_ROOT/scripts/verify-task-patterns.sh" || true
 fi
 
-if [[ -x "$REPO_ROOT/scripts/sdd-session-status.sh" ]]; then
-  run_check "sdd-session-status.sh" bash "$REPO_ROOT/scripts/sdd-session-status.sh" || true
+# Task 3.1 — session check is meaningless in CI runners (ephemeral, no .sdd/runtime/)
+if [[ -z "${CI:-}" ]]; then
+  if [[ -x "$REPO_ROOT/scripts/sdd-session-status.sh" ]]; then
+    run_check "sdd-session-status.sh" bash "$REPO_ROOT/scripts/sdd-session-status.sh" || true
+  else
+    echo "FAIL: scripts/sdd-session-status.sh missing" >&2
+    ((FAILURES++)) || true
+  fi
 else
-  echo "FAIL: scripts/sdd-session-status.sh missing" >&2
-  ((FAILURES++)) || true
+  echo ""
+  echo "==> sdd-session-status.sh"
+  echo "INFO: session check skipped in CI (CI=${CI})"
 fi
 
 # CI gates (G1): workflow instalado + template no hub (add-sdd-ci-gates-workflow)
