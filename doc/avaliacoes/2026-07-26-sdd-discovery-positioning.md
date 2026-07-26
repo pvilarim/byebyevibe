@@ -152,18 +152,21 @@ ESTE KIT         ●●●●    ●●           ●●●●        ●●●�
 | P7 | Landing / GitHub Pages | **Não implementar** | D9 |
 | P8 | Discord | **Não implementar** | D9 |
 | P9 | App starter (auth/DB/deploy) | **Non-goal permanente** | Camada B |
-| P10 | Rename / nome público | **Adoptado (ByeByeVibe)** | Display name + hero/Maintainer nos docs; path `sdd-kit/` intacto; slug GitHub `byebyevibe` = `[AÇÃO MANUAL]` |
+| P10 | Rename / nome público | **Adoptado (ByeByeVibe)** | Display name + hero/Maintainer nos docs; path `sdd-kit/` intacto; slug GitHub `byebyevibe` |
+| P11 | Policy EN + waves i18n (superfície pública) | **Adiado — lançamento público** | Explore `explore-public-release-surface` (F2); **não** esconder pastas via gitignore (F1/F6) |
+| P12 | `CHANGELOG.md` raiz EN (+ Releases opcional) | **Adiado — lançamento público** | Explore `explore-public-release-surface` (F3/F4); canónico continua §14 do guia até lá |
 | — | BMAD multi-persona | **Não implementar** | D9 |
 | — | Brand GitHub | **Não implementar** | D9 |
-| — | Tradução completa EN | **Adiado — roadmap §11** | Após nome estável |
+| — | Split repo ops privado | **Adiado — só se dor real** | F5 no research; depois de P11 |
 
 ### Roadmap pós-apply (research §11 / design D10)
 
 ```
 ① README + avaliação + quickstart   ← feito (`add-sdd-discovery-positioning`)
 ② Explore→propose nome público (P10) ← feito
-③ Apply rename/rebrand (ByeByeVibe) ← `rename-byebyevibe-public-name` (docs); slug GitHub = manual
-④ Policy EN + waves de tradução
+③ Apply rename/rebrand (ByeByeVibe) ← feito; slug `byebyevibe` (manual)
+④ Policy EN + waves (+ CHANGELOG.md raiz) ← Adiado até lançamento público
+   (research: openspec/changes/explore-public-release-surface/research.md · P11/P12)
 ⑤ Explore GIF/asciinema (P5)
 ⑥ Landing/Discord/one-liner — fora (D9)
 ```
@@ -192,19 +195,19 @@ Sem README/avaliação, o guia + `sdd-kit/README.md` operacional já existiam �
 
 ## Decisão e condições de reavaliação
 
-**Decisão:** **Misto** — superfícies P1–P4 **Adoptado**; **P10 (ByeByeVibe)** **Adoptado** nos docs (slug GitHub → `byebyevibe` = `[AÇÃO MANUAL]`); P5 (GIF) **Adiado** até `/opsx:explore` de integração; i18n **Adiado** (roadmap §11); P6–P9 / BMAD / brand / Landing / Discord **Não implementar** / **Non-goal**.
+**Decisão:** **Misto** — superfícies P1–P4 **Adoptado**; **P10 (ByeByeVibe)** **Adoptado**; P5 (GIF) **Adiado**; **P11/P12** (i18n + CHANGELOG raiz) **Adiado até lançamento público** (`explore-public-release-surface`); P6–P9 / BMAD / brand / Landing / Discord **Não implementar** / **Non-goal**.
 
 **Condições para reabrir:**
 
 - **P5:** explore fecha E1–E6 (formato, path do asset, script de gravação, drift)
-- **P10 (slug GitHub):** operador completa rename → `byebyevibe` + About/topics; actualizar links absolutos remanescentes se necessário
-- **i18n:** nome estável (ByeByeVibe) + policy “artefactos novos = EN”
+- **P11/P12:** gatilho = lançamento / tratar o repo como público para terceiros — `openspec/changes/explore-public-release-surface/research.md`
 - **Fame gaps (P6–P8):** só com nova proposta OpenSpec e confirmação humana explícita (hoje D9)
 
 ## Referências
 
 - Research completo: `openspec/changes/add-sdd-discovery-positioning/research.md`
 - Design (D9–D11): `openspec/changes/add-sdd-discovery-positioning/design.md`
+- Superfície pública (adiado): `openspec/changes/explore-public-release-surface/research.md`
 - README raiz: [`README.md`](../../README.md)
 - Guia: `doc/sistema-sdd-pedro.md` §2.0b
 - agents.md: https://agents.md/
