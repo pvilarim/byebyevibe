@@ -2,6 +2,22 @@
 
 Payload versionado para instalação reproduzível do stack SDD (scripts, rules, skeletons), separado do guia de procedimento `doc/sistema-sdd-pedro.md`.
 
+## What this is (first contact)
+
+**For newcomers from vibe coding / AI-assisted workflows:** this folder is the **install kit** — a versioned control plane (OpenSpec + GitNexus + Graphify, gates, optional modules), **not** an app boilerplate or Next.js starter.
+
+| Human name | Code | When to use |
+|------------|------|-------------|
+| **Greenfield install** (primeira vez) | **C1** | New repo — bootstrap CLIs, then `install.sh` |
+| **Upgrade SDD** (já tens o kit) | **C2** | New guide/kit version — `upgrade.sh --dry-run` → `--apply` |
+| **CLI-only refresh** | **C2b** | Update OpenSpec/GitNexus/Graphify without touching curated files |
+| **Propagate domain specs** | **C3** | Share `openspec/specs/` via git — **do not** run install/upgrade |
+| **UI module** (optional) | **C1-UI** | Design system / Impeccable + shadcn after C1 |
+| **Probity / TDD enforce** (optional) | **G2** | APP/HYBRID — `@nizos/probity` after C1 |
+| **SDD metrics** (on demand) | **G4** | Retrospectives: lead time, rework — calibrate as you go |
+
+Discovery / hero: hub root [`README.md`](../README.md) (EN). Full procedure (pt-BR): [`doc/sistema-sdd-pedro.md`](../doc/sistema-sdd-pedro.md) §2.0b.
+
 ## Cenários
 
 | Código | Situação | Comando de entrada |
