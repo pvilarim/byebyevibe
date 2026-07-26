@@ -2,7 +2,7 @@
 
 **GitNexus + Graphify + OpenSpec, integrados no Cursor e VS Code + Claude Code**
 
-> **Guia canónico de instalação (v1.6.0)** — usar em qualquer repositório Git, manualmente ou via agente de IA. Payloads em `sdd-kit/`; procedimento neste documento.
+> **Guia canónico de instalação (v1.6.1)** — usar em qualquer repositório Git, manualmente ou via agente de IA. Payloads em `sdd-kit/`; procedimento neste documento.
 
 ## Como usar este documento
 
@@ -18,7 +18,7 @@
 | **Métricas SDD (G4)** | `bash scripts/sdd-metrics.sh` — §2.17 (modo C; sem DevLake) |
 
 - **Padrão `AGENTS.md`:** alinhado a [agents.md](https://agents.md/) + workshop TLC (Context Engineering, on-demand loading).
-- **Versão do guia:** 1.6.0 — ver [Changelog do guia](#changelog-do-guia).
+- **Versão do guia:** 1.6.1 — ver [Changelog do guia](#changelog-do-guia).
 - **Payload versionado:** `sdd-kit/MANIFEST.yaml` — ver §1.6 e `sdd-kit/README.md`.
 - **Não substitui** `openspec/project.md` (constituição do projecto) nem specs em `openspec/specs/`.
 
@@ -749,9 +749,11 @@ Script local sob demanda (**modo C**) que gera um relatório markdown de eficác
 | Retrospectiva / calibração de overhead SDD | `bash scripts/sdd-metrics.sh` |
 | Janela temporal | `bash scripts/sdd-metrics.sh --since YYYY-MM-DD` |
 | Guardar artefacto | `bash scripts/sdd-metrics.sh --output path/relatorio.md` |
-| Durante explore/propose/apply/archive | **Não** acionar — fora da pipeline |
+| Verificar se cadência pede nudge | `bash scripts/sdd-metrics.sh --check-cadence` |
+| Durante explore/propose/apply | **Não** acionar relatório — fora da pipeline |
+| Pós-archive (Session Handoff) | Só `--check-cadence` (advisory); **nunca** auto-correr o relatório |
 
-Não é gate de CI (`sdd-gates`). Sem skill/rule dedicada (R3 N/A) — descoberta via `AGENTS.md` Commands.
+Não é gate de CI (`sdd-gates`). Sem skill/rule dedicada (R3 N/A) — descoberta via `AGENTS.md` Commands. Cadência = nudge no handoff de archive, não etapa obrigatória.
 
 #### Como ler o relatório (M1–M4)
 
@@ -761,6 +763,33 @@ Não é gate de CI (`sdd-gates`). Sem skill/rule dedicada (R3 N/A) — descobert
 | **M2 Lead time** | Dias entre o primeiro commit que menciona o change-id (proxy de propose) e a data do prefixo do dir de archive; inclui média e mediana |
 | **M3 Rework** | Commits `fix:` / `fix(...):` **após** a data de archive que ainda mencionam o change-id (R9) |
 | **M4 Actividade pós-archive** | Resumo usando M3 como proxy primário de correcções pós-archive |
+
+#### Interpretar → actuar
+
+Após ler o relatório, mapear sinais a **um** ajuste concreto no processo SDD. Ritual mínimo: **1 insight → 1 ajuste** (ou registar explicitamente “sem mudança”).
+
+| Sinal | Acção de processo sugerida |
+|-------|----------------------------|
+| **M1** — muitos activos / poucos archives | Revisar WIP: fechar ou arquivar changes parados; evitar propose sem capacidade de apply |
+| **M1** — volume estável e baixo | OK se o ritmo do time for intencional; não optimizar prematuremente |
+| **M2** — lead time alto ou a subir | Encurtar escopo do change; reforçar handoffs explore→propose→apply; cortar scope creep |
+| **M2** — lead time muito baixo + M3 alto | Archives prematuros? Endurecer gates de tasks / specs antes de `/opsx:archive` |
+| **M3** — rework `fix` recorrente pós-archive | Investigar specs fracas, R9 em falta, ou archive antes de validação; **não** adoptar Apache DevLake |
+| **M4** (via M3) — actividade correctiva pós-archive | Tratar como dívida do ciclo anterior; 1 mudança no playbook de archive (checklist, Pattern/Gate) |
+
+**Apache DevLake continua fora de escopo** — o playbook actua sobre o *processo* SDD (handoffs, escopo, R9), não sobre dashboards DORA.
+
+#### Cadência e nudge (N=5, T=30)
+
+| Limiar | Default | Efeito |
+|--------|---------|--------|
+| Archives desde last-run | **N = 5** | Nudge no Session Handoff de `/opsx:archive` |
+| Idade do stamp | **T = 30** dias | Mesmo nudge |
+| Sem stamp (nunca correu) | ≥ 1 archive nos últimos T dias | Nudge de baseline (onboarding suave) |
+
+- Stamp local: `.sdd/metrics-last-run` (gitignored) — escrito automaticamente após relatório com exit 0 (ISO `YYYY-MM-DD`).
+- Verificar: `bash scripts/sdd-metrics.sh --check-cadence` — exit **0** = silêncio; exit **1** = nudge recomendado (stdout curto); **não** gera o relatório.
+- No handoff de archive: se exit 1, sugerir `bash scripts/sdd-metrics.sh` + este playbook; **nunca** auto-executar o relatório; **nunca** falhar o archive se o script estiver ausente.
 
 #### Proxies e limites (honestidade)
 
@@ -774,6 +803,7 @@ Não é gate de CI (`sdd-gates`). Sem skill/rule dedicada (R3 N/A) — descobert
 | Sintoma | Causa | Acção |
 |---------|-------|-------|
 | Exit 2 | Flag inválida ou `--since` malformado | `bash scripts/sdd-metrics.sh --help` |
+| Exit 1 com `--check-cadence` | Cadência atingida (N archives / T dias / baseline) | Correr `bash scripts/sdd-metrics.sh` e aplicar o playbook |
 | M2 tudo `n/a` | Histórico git sem menção ao change-id | Confirmar R9; archives antigos podem não ter âncora |
 | M3 sempre 0 | Poucos `fix:` com change-id | Esperado se não houver rework; ou reforçar R9 |
 | WARN skip archive | Nome sem `YYYY-MM-DD-` | Renomear na convenção OpenSpec do hub |
@@ -782,11 +812,12 @@ Não é gate de CI (`sdd-gates`). Sem skill/rule dedicada (R3 N/A) — descobert
 
 ```bash
 rm -f scripts/sdd-metrics.sh
+rm -f .sdd/metrics-last-run
 # Em consumidores: remover entry do MANIFEST / reverter upgrade do kit
 # Reverter secção SDD Metrics em openspec/infra.md se necessário
 ```
 
-Sem estado em `.sdd/`; sem hooks; sem serviços. **Apache DevLake permanece fora de escopo** — reavaliar só se equipe/DORA justificar (ver `doc/avaliacoes/2026-07-25-oss-coverage-gaps-tooling.md`).
+Stamp local em `.sdd/metrics-last-run` (gitignored); sem hooks; sem serviços. **Apache DevLake permanece fora de escopo** — reavaliar só se equipe/DORA justificar (ver `doc/avaliacoes/2026-07-25-oss-coverage-gaps-tooling.md`).
 
 ### 2.9 Actualização de instalação existente
 
@@ -2694,6 +2725,11 @@ bash scripts/verify-task-patterns.sh   # paths Pattern: existem; DOCS_SPECS sem 
 ---
 
 ## Changelog do guia
+
+### 1.6.1 (2026-07-26)
+
+- **Cadência + playbook (G4 extensão)** — §2.17: “Interpretar → actuar” (M1–M4 → 1 insight → 1 ajuste); limiares N=5 archives / T=30 dias; stamp `.sdd/metrics-last-run`; flag `--check-cadence`; nudge advisory no Session Handoff de `/opsx:archive` (change `add-sdd-metrics-cadence-nudge`).
+- **`sdd-kit/`** — Script/template `sdd-metrics.sh` actualizado; MANIFEST **1.6.0 → 1.6.1**.
 
 ### 1.6.0 (2026-07-26)
 

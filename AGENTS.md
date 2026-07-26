@@ -49,7 +49,7 @@ Para trabalho tipo D/E, **SEMPRE** consultar Graphify e GitNexus antes de escrev
 | Change em curso | `openspec/changes/<id>/` |
 | Teoria / relações entre conceitos | `graphify-out/GRAPH_REPORT.md` |
 | Workshop e transcrições | `doc/curso/aula-*.md` |
-| Guia de instalação SDD (v1.6.0) | `doc/sistema-sdd-pedro.md` |
+| Guia de instalação SDD (v1.6.1) | `doc/sistema-sdd-pedro.md` |
 | GitHub Issues MCP (operação humana) | `doc/sistema-sdd-pedro.md` §2.15 |
 | Módulo UI (C1-UI) | `doc/sistema-sdd-pedro.md` §2.11 · `doc/design/002-ui-module-install.md` |
 | Módulo Probity (G2) | `doc/sistema-sdd-pedro.md` §2.16 · `doc/design/004-probity-module-install.md` |
@@ -137,7 +137,7 @@ Se ambíguo entre dois tipos, **PERGUNTAR**. **NUNCA** assumir Tipo A por defeit
 
 **Probity (G2)** — Módulo opcional APP/HYBRID: `bash sdd-kit/install-probity-module.sh --detect` → `--apply [--yes]`; pin `@nizos/probity@1.10.0`. Matriz A–E: off em A (globs); on em B/C/D via `enforceTdd`. DOCS_SPECS sem testes: SKIP. Operação: guia §2.16.
 
-**SDD Metrics (G4)** — Script local sob demanda (modo C): `bash scripts/sdd-metrics.sh [--since YYYY-MM-DD] [--output PATH]`. Relatório markdown (volume, lead time propose→archive, rework `fix` pós-archive). Proxies git+archive; **não** adoptar Apache DevLake. Sem skill/rule (R3 N/A). Operação: guia §2.17.
+**SDD Metrics (G4)** — Script local sob demanda (modo C): `bash scripts/sdd-metrics.sh [--since YYYY-MM-DD] [--output PATH]`. Relatório markdown (volume, lead time propose→archive, rework `fix` pós-archive). Cadência: nudge advisory no Session Handoff de `/opsx:archive` via `--check-cadence` (N=5 / T=30); playbook Interpretar→actuar em §2.17. Proxies git+archive; **não** adoptar Apache DevLake. Sem skill/rule always-on (R3 N/A).
 
 ## Testing
 

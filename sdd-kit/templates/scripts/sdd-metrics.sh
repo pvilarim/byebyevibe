@@ -9,11 +9,19 @@ cd "$REPO_ROOT"
 
 SINCE=""
 OUTPUT=""
+CHECK_CADENCE=0
 GENERATED_ON="$(date +%Y-%m-%d)"
+
+# Cadence defaults (documented in §2.17) — not env-configurable in this change
+CADENCE_N=5
+CADENCE_T=30
+STAMP_FILE="$REPO_ROOT/.sdd/metrics-last-run"
+CHANGES_DIR="$REPO_ROOT/openspec/changes"
+ARCHIVE_DIR="$CHANGES_DIR/archive"
 
 usage() {
   cat <<'EOF'
-Usage: bash scripts/sdd-metrics.sh [--since YYYY-MM-DD] [--output PATH] [--help]
+Usage: bash scripts/sdd-metrics.sh [--since YYYY-MM-DD] [--output PATH] [--check-cadence] [--help]
 
 On-demand (mode C) markdown report of SDD framework effectiveness metrics.
 Depends only on bash + git. Does NOT require Apache DevLake.
@@ -21,6 +29,9 @@ Depends only on bash + git. Does NOT require Apache DevLake.
 Flags:
   --since YYYY-MM-DD   Include archives with directory date >= this date
   --output PATH        Also write the same markdown report to PATH
+  --check-cadence      Advisory only: exit 0 if fresh, exit 1 if nudge due
+                       (defaults N=5 archives since last run, T=30 days).
+                       Does NOT generate the full report.
   --help               Show this help and exit 0
 
 Metrics (proxies — see report notes):
@@ -29,7 +40,11 @@ Metrics (proxies — see report notes):
   M3 Rework            fix: commits after archive that mention change-id (R9)
   M4 Post-archive      Summary of corrective activity (M3 as primary proxy)
 
-Exit codes: 0 = report generated; 2 = invalid usage
+Stamp: successful report (exit 0) writes .sdd/metrics-last-run (YYYY-MM-DD).
+Playbook: doc/sistema-sdd-pedro.md §2.17
+
+Exit codes: 0 = report generated / cadence fresh; 1 = cadence nudge due;
+            2 = invalid usage
 EOF
 }
 
@@ -47,6 +62,117 @@ is_iso_date() {
 
 date_to_epoch() {
   date -d "$1" +%s
+}
+
+days_between() {
+  # days from date A to date B (B - A), floored
+  local a="$1" b="$2"
+  echo $(( ( $(date_to_epoch "$b") - $(date_to_epoch "$a") ) / 86400 ))
+}
+
+write_stamp() {
+  mkdir -p "$(dirname "$STAMP_FILE")"
+  {
+    echo "$GENERATED_ON"
+    date -Iseconds 2>/dev/null || date -u +"%Y-%m-%dT%H:%M:%SZ"
+  } >"$STAMP_FILE"
+}
+
+read_stamp_date() {
+  # prints YYYY-MM-DD from first line, or empty if missing/invalid
+  if [[ ! -f "$STAMP_FILE" ]]; then
+    return 1
+  fi
+  local line
+  line="$(head -1 "$STAMP_FILE" | tr -d '[:space:]')"
+  if is_iso_date "$line"; then
+    echo "$line"
+    return 0
+  fi
+  return 1
+}
+
+# Count archive dirs whose YYYY-MM-DD prefix is strictly after $1 (exclusive)
+count_archives_after() {
+  local after="$1"
+  local count=0
+  local dirname adate
+  if [[ ! -d "$ARCHIVE_DIR" ]]; then
+    echo 0
+    return 0
+  fi
+  shopt -s nullglob
+  for d in "$ARCHIVE_DIR"/*/; do
+    dirname="$(basename "$d")"
+    if [[ "$dirname" =~ ^([0-9]{4}-[0-9]{2}-[0-9]{2})-(.+)$ ]]; then
+      adate="${BASH_REMATCH[1]}"
+      if (( $(date_to_epoch "$adate") > $(date_to_epoch "$after") )); then
+        count=$((count + 1))
+      fi
+    fi
+  done
+  shopt -u nullglob
+  echo "$count"
+}
+
+# Count archive dirs with date >= $1 (inclusive)
+count_archives_on_or_after() {
+  local since="$1"
+  local count=0
+  local dirname adate
+  if [[ ! -d "$ARCHIVE_DIR" ]]; then
+    echo 0
+    return 0
+  fi
+  shopt -s nullglob
+  for d in "$ARCHIVE_DIR"/*/; do
+    dirname="$(basename "$d")"
+    if [[ "$dirname" =~ ^([0-9]{4}-[0-9]{2}-[0-9]{2})-(.+)$ ]]; then
+      adate="${BASH_REMATCH[1]}"
+      if (( $(date_to_epoch "$adate") >= $(date_to_epoch "$since") )); then
+        count=$((count + 1))
+      fi
+    fi
+  done
+  shopt -u nullglob
+  echo "$count"
+}
+
+emit_nudge() {
+  local reason="$1"
+  cat <<EOF
+SDD metrics cadence nudge ($reason).
+Run: bash scripts/sdd-metrics.sh
+Then interpret with the playbook in doc/sistema-sdd-pedro.md §2.17 (1 insight → 1 adjustment).
+EOF
+}
+
+check_cadence() {
+  local today stamp_date archives_since age cutoff recent
+  today="$(date +%Y-%m-%d)"
+
+  if stamp_date="$(read_stamp_date)"; then
+    archives_since="$(count_archives_after "$stamp_date")"
+    age="$(days_between "$stamp_date" "$today")"
+    if (( archives_since >= CADENCE_N )); then
+      emit_nudge "≥${CADENCE_N} archives since last run (${archives_since} after ${stamp_date})"
+      return 1
+    fi
+    if (( age >= CADENCE_T )); then
+      emit_nudge "stamp age ≥${CADENCE_T} days (${age}d since ${stamp_date})"
+      return 1
+    fi
+    return 0
+  fi
+
+  # No stamp — onboarding: nudge if ≥1 archive in last T days
+  cutoff="$(date -d "${today} - ${CADENCE_T} days" +%Y-%m-%d)"
+  recent="$(count_archives_on_or_after "$cutoff")"
+  if (( recent >= 1 )); then
+    emit_nudge "no stamp yet — baseline recommended (≥1 archive in last ${CADENCE_T}d)"
+    return 1
+  fi
+  return 0
 }
 
 # Parse CLI
@@ -67,6 +193,10 @@ while [[ $# -gt 0 ]]; do
       OUTPUT="$2"
       shift 2
       ;;
+    --check-cadence)
+      CHECK_CADENCE=1
+      shift
+      ;;
     --)
       shift
       break
@@ -81,8 +211,16 @@ while [[ $# -gt 0 ]]; do
 done
 [[ $# -eq 0 ]] || die_usage "unexpected argument: $1"
 
-CHANGES_DIR="$REPO_ROOT/openspec/changes"
-ARCHIVE_DIR="$CHANGES_DIR/archive"
+if [[ "$CHECK_CADENCE" -eq 1 ]]; then
+  if [[ -n "$SINCE" || -n "$OUTPUT" ]]; then
+    die_usage "--check-cadence cannot be combined with --since or --output"
+  fi
+  if check_cadence; then
+    exit 0
+  else
+    exit 1
+  fi
+fi
 
 # --- Collect active changes (M1) ---
 ACTIVE_IDS=()
@@ -312,6 +450,7 @@ trap 'rm -f "$REPORT_TMP"' EXIT
   echo "- Active changes appear only in M1 (lead time requires a completed archive)."
   echo "- This script is mode **C** (on-demand). It is not part of \`sdd-gates\` CI."
   echo "- Apache DevLake remains out of scope; re-evaluate only if team/DORA scale justifies it."
+  echo "- After a successful run, \`.sdd/metrics-last-run\` is updated for cadence checks (\`--check-cadence\`)."
 } >"$REPORT_TMP"
 
 cat "$REPORT_TMP"
@@ -324,4 +463,5 @@ if [[ -n "$OUTPUT" ]]; then
   cp "$REPORT_TMP" "$OUTPUT"
 fi
 
+write_stamp
 exit 0

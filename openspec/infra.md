@@ -52,7 +52,7 @@ Regra always-on: `.cursor/rules/016-session-coordination.mdc`.
 
 | Artefacto | Versão | Estado | Verificar com |
 |-----------|--------|--------|---------------|
-| `sdd-kit/MANIFEST.yaml` | <!-- kit-version -->1.6.0<!-- /kit-version --> | <!-- kit-status -->✅<!-- /kit-status --> | `grep version sdd-kit/MANIFEST.yaml` |
+| `sdd-kit/MANIFEST.yaml` | <!-- kit-version -->1.6.1<!-- /kit-version --> | <!-- kit-status -->✅<!-- /kit-status --> | `grep version sdd-kit/MANIFEST.yaml` |
 | `sdd-kit/install.sh` | — | <!-- kit-install-status -->✅<!-- /kit-install-status --> | `test -x sdd-kit/install.sh` |
 | `sdd-kit/install-ui-module.sh` | — | ✅ | `test -x sdd-kit/install-ui-module.sh` |
 | `sdd-kit/install-probity-module.sh` | — | ✅ | `test -x sdd-kit/install-probity-module.sh` |

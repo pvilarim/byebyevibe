@@ -127,6 +127,18 @@ All artifacts complete. All tasks complete.
 
 Arquivo concluído. **Sugestão: novo chat** para a próxima tarefa (contexto limpo).
 
+### Metrics cadence nudge (advisory)
+
+Após archive bem-sucedido, se `scripts/sdd-metrics.sh` existir:
+
+```bash
+bash scripts/sdd-metrics.sh --check-cadence
+```
+
+- Exit **1** → incluir no handoff ≤5 linhas sugerindo `bash scripts/sdd-metrics.sh` + playbook em `doc/sistema-sdd-pedro.md` §2.17 (1 insight → 1 ajuste).
+- Exit **0** → omitir o bloco de métricas.
+- Script ausente ou falha inesperada → **SKIP** (nunca falhar o archive; nunca auto-executar o relatório completo).
+
 Cole no primeiro message do novo chat (se aplicável):
 
 ---
