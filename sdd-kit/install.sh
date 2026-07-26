@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# SDD Install Kit — greenfield install (C1)
+# ByeByeVibe (sdd-kit) — greenfield install (C1)
 # Usage: bash sdd-kit/install.sh --profile APP|DOCS_SPECS|HYBRID [--dry-run] [--repo PATH]
 set -euo pipefail
 
@@ -155,7 +155,7 @@ merge_agents_profile() {
   echo "  NEW  AGENTS.md (core + $PROFILE commands)"
 }
 
-echo "=== SDD Install Kit v$(grep -E '^version:' "$MANIFEST" | head -1 | sed 's/.*"\(.*\)".*/\1/') ==="
+echo "=== ByeByeVibe (sdd-kit) v$(grep -E '^version:' "$MANIFEST" | head -1 | sed 's/.*"\(.*\)".*/\1/') ==="
 echo "Profile: $PROFILE"
 echo "Repo:    $REPO_ROOT"
 $DRY_RUN && echo "Mode:    DRY-RUN"

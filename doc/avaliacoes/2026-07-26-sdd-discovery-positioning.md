@@ -5,14 +5,14 @@
 | **Data** | 2026-07-26 |
 | **Avaliador** | Sessão explore→propose `add-sdd-discovery-positioning` |
 | **Candidato** | Superfícies de discovery do hub SDD (README raiz, About/topics, first-contact) — análise de mercado/SEO/concorrência |
-| **Decisão** | **Misto** — P1–P4 **Adoptado** (após apply); P5–P10 / fame gaps **Adiado** ou **Não implementar**; app scaffold **Non-goal** |
+| **Decisão** | **Misto** — P1–P4 + **P10 (ByeByeVibe)** **Adoptado** (docs); rename GitHub slug = `[AÇÃO MANUAL]`; P5 / fame gaps **Adiado** ou **Não implementar**; app scaffold **Non-goal** |
 | **Escopo** | Documentação + specs de discovery (perfil DOCS_SPECS); sem código de aplicação |
 | **Change** | [`add-sdd-discovery-positioning`](../../openspec/changes/add-sdd-discovery-positioning/proposal.md) |
 | **Research fonte** | [`openspec/changes/add-sdd-discovery-positioning/research.md`](../../openspec/changes/add-sdd-discovery-positioning/research.md) |
 
 ## Resumo executivo
 
-O hub SDD era invisível em discovery GitHub (sem `README.md` na raiz; kit README só operacional). A análise 2026-07-26 mapeou posicionamento “from vibe coding to agentic engineering”, SEO (topics/About), concorrência (Spec Kit / OpenSpec / BMAD / GSD vs vibe boilerplates) e backlog de produto. **Adoptamos** superfícies P1–P4 (README EN, avaliação, quickstart, mapa amigável). **Não** implementamos Landing, Discord, one-liner fame, app scaffold, BMAD multi-persona nem brand GitHub. GIF/rename/i18n ficam no roadmap pós-README (`research.md` §11).
+O hub SDD era invisível em discovery GitHub (sem `README.md` na raiz; kit README só operacional). A análise 2026-07-26 mapeou posicionamento “from vibe coding to agentic engineering”, SEO (topics/About), concorrência (Spec Kit / OpenSpec / BMAD / GSD vs vibe boilerplates) e backlog de produto. **Adoptamos** superfícies P1–P4 (README EN, avaliação, quickstart, mapa amigável) e, em follow-up (`rename-byebyevibe-public-name`), o **nome público ByeByeVibe** (P10 docs; path `sdd-kit/` inalterado). **Não** implementamos Landing, Discord, one-liner fame, app scaffold, BMAD multi-persona nem brand GitHub. GIF/i18n ficam no roadmap (`research.md` §11). Rename do slug GitHub → `byebyevibe` permanece `[AÇÃO MANUAL]`.
 
 ## Problema que tentava resolver
 
@@ -53,20 +53,26 @@ Invisibilidade de discovery + fricção de first-contact para quem chega de *vib
 |----------|------|
 | Tagline | From vibe coding to shippable AI engineering. |
 | Frase canónica | The missing operating system between your coding agent and a maintainable repo. |
-| Anti-posicionamento | Not another Next.js / full-stack starter. The control plane your starter is missing. |
-| Working title | “SDD Install Kit” / “SDD Kit” (rename = roadmap §11, não neste change) |
+| Anti-posicionamento | Not another Next.js starter — the SDD control plane (OpenSpec + graphs + gates) your repo is missing. |
+| Nome público (P10) | **ByeByeVibe** (Adoptado — docs); path/payload continua `sdd-kit/` |
+| Working title legado | “SDD Install Kit” / “SDD Kit” (substituído no discovery; comandos `sdd-kit/` intactos) |
 
 ## Termos-chave e SEO GitHub
 
 Topics de alto tráfego: `vibe-coding`, `spec-driven-development`, `context-engineering`, `agentic-coding`, `claude-code`, `cursor`, `agent-skills`, `agents-md`, `mcp`, `prd`.
 
-### [AÇÃO MANUAL NECESSÁRIA] — About + topics no GitHub
+### [AÇÃO MANUAL NECESSÁRIA] — Rename repo + About + topics no GitHub
 
 O agente **não** altera Settings do repositório. Operador humano deve aplicar:
 
+1. **Rename do repositório:** Settings → General → Repository name: `gitnexus-graphify-openspec` → **`byebyevibe`**
+2. **Remote local:** `git remote set-url origin git@github.com:pvilarim/byebyevibe.git` (ou HTTPS equivalente)
+3. **About** e **Topics** (abaixo)
+4. **Homepage** (opcional): `https://pedrocodeart.netlify.app/`
+
 **About sugerido (≤160 chars):**
 
-> Spec-driven toolkit for Cursor & Claude Code: OpenSpec + GitNexus + Graphify, AGENTS.md, CI gates, TDD enforce. Upgrade vibe coding to agentic engineering.
+> ByeByeVibe — from vibe coding to shippable AI engineering. SDD control plane (OpenSpec + graphs + gates) for Cursor & Claude Code. Not a Next.js starter.
 
 **Topics (mínimo):**
 
@@ -78,7 +84,7 @@ O agente **não** altera Settings do repositório. Operador humano deve aplicar:
 
 Opcionais: `agentic-coding`, `agent-skills`, `openspec`, `mcp`, `agents-md`.
 
-**Onde:** GitHub → Settings do repo → General → Description / Topics.
+**Onde:** GitHub → Settings do repo → General → Description / Topics / Rename.
 
 ## Rede semântica (features ↔ projectos)
 
@@ -146,7 +152,7 @@ ESTE KIT         ●●●●    ●●           ●●●●        ●●●�
 | P7 | Landing / GitHub Pages | **Não implementar** | D9 |
 | P8 | Discord | **Não implementar** | D9 |
 | P9 | App starter (auth/DB/deploy) | **Non-goal permanente** | Camada B |
-| P10 | Rename / nome público | **Adiado — roadmap §11** | explore→propose após README |
+| P10 | Rename / nome público | **Adoptado (ByeByeVibe)** | Display name + hero/Maintainer nos docs; path `sdd-kit/` intacto; slug GitHub `byebyevibe` = `[AÇÃO MANUAL]` |
 | — | BMAD multi-persona | **Não implementar** | D9 |
 | — | Brand GitHub | **Não implementar** | D9 |
 | — | Tradução completa EN | **Adiado — roadmap §11** | Após nome estável |
@@ -154,9 +160,9 @@ ESTE KIT         ●●●●    ●●           ●●●●        ●●●�
 ### Roadmap pós-apply (research §11 / design D10)
 
 ```
-① README + avaliação + quickstart   ← este apply
-② Explore→propose nome público (P10)
-③ Apply rename/rebrand
+① README + avaliação + quickstart   ← feito (`add-sdd-discovery-positioning`)
+② Explore→propose nome público (P10) ← feito
+③ Apply rename/rebrand (ByeByeVibe) ← `rename-byebyevibe-public-name` (docs); slug GitHub = manual
 ④ Policy EN + waves de tradução
 ⑤ Explore GIF/asciinema (P5)
 ⑥ Landing/Discord/one-liner — fora (D9)
@@ -186,13 +192,13 @@ Sem README/avaliação, o guia + `sdd-kit/README.md` operacional já existiam �
 
 ## Decisão e condições de reavaliação
 
-**Decisão:** **Misto** — superfícies P1–P4 **Adoptado**; P5 (GIF) **Adiado** até `/opsx:explore` de integração; P10 + i18n **Adiado** (roadmap §11); P6–P9 / BMAD / brand / Landing / Discord **Não implementar** / **Non-goal**.
+**Decisão:** **Misto** — superfícies P1–P4 **Adoptado**; **P10 (ByeByeVibe)** **Adoptado** nos docs (slug GitHub → `byebyevibe` = `[AÇÃO MANUAL]`); P5 (GIF) **Adiado** até `/opsx:explore` de integração; i18n **Adiado** (roadmap §11); P6–P9 / BMAD / brand / Landing / Discord **Não implementar** / **Non-goal**.
 
 **Condições para reabrir:**
 
 - **P5:** explore fecha E1–E6 (formato, path do asset, script de gravação, drift)
-- **P10:** decisão humana de nome público + blast radius (URLs, MANIFEST, docs)
-- **i18n:** nome estável + policy “artefactos novos = EN”
+- **P10 (slug GitHub):** operador completa rename → `byebyevibe` + About/topics; actualizar links absolutos remanescentes se necessário
+- **i18n:** nome estável (ByeByeVibe) + policy “artefactos novos = EN”
 - **Fame gaps (P6–P8):** só com nova proposta OpenSpec e confirmação humana explícita (hoje D9)
 
 ## Referências

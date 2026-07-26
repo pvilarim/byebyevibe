@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# SDD Install Kit — upgrade diff and apply (C2)
+# ByeByeVibe (sdd-kit) — upgrade diff and apply (C2)
 # Usage: bash sdd-kit/upgrade.sh --from X.Y.Z --to X.Y.Z [--profile APP|DOCS_SPECS|HYBRID] [--dry-run] [--apply] [--repo PATH] [--force]
 set -euo pipefail
 

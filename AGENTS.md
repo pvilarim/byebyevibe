@@ -67,7 +67,7 @@ Para trabalho tipo D/E, **SEMPRE** consultar Graphify e GitNexus antes de escrev
 | Gates de CI (sdd-gates, operação) | `doc/sistema-sdd-pedro.md` §2.12 · `.github/workflows/sdd-gates.yml` |
 | Supply chain (Renovate + OSV) | `doc/sistema-sdd-pedro.md` §2.13 |
 | Avaliações de integração / ferramentas descartadas | `doc/avaliacoes/` |
-| Discovery / README raiz (EN) + posicionamento vibe→agentic | `README.md` · `doc/avaliacoes/2026-07-26-sdd-discovery-positioning.md` |
+| Discovery / README raiz (EN) + posicionamento vibe→agentic | Marca pública **ByeByeVibe** · `README.md` · `doc/avaliacoes/2026-07-26-sdd-discovery-positioning.md` (payload `sdd-kit/`) |
 | Inserção de novas ferramentas SDD (metodologia + gaps) | `openspec/changes/explore-oss-coverage-gaps/` |
 | Impeccable + shadcn — guia de adoção | `doc/design/000-impeccable-design-system-guia.md` |
 | Pipeline OD / Pencil / Figma → shadcn → Impeccable | `doc/design/001-pipeline-open-design-shadcn-impeccable.md` |
@@ -124,7 +124,7 @@ Se ambíguo entre dois tipos, **PERGUNTAR**. **NUNCA** assumir Tipo A por defeit
 
 ## Integrações
 
-**GitNexus** — Repo indexado como `gitnexus-graphify-openspec`. Antes de editar símbolos: `gitnexus_impact`. Antes de commit: `gitnexus_detect_changes`. Detalhe: `.claude/skills/gitnexus/gitnexus-impact-analysis/SKILL.md`.
+**GitNexus** — Repo público **ByeByeVibe** (slug alvo `byebyevibe`; index legado pode permanecer `gitnexus-graphify-openspec` até reindex). Antes de editar símbolos: `gitnexus_impact`. Antes de commit: `gitnexus_detect_changes`. Detalhe: `.claude/skills/gitnexus/gitnexus-impact-analysis/SKILL.md`.
 
 **Graphify** — Ler `graphify-out/GRAPH_REPORT.md` antes de grep em perguntas de arquitectura. Após editar código: `graphify update .`. Detalhe: `.cursor/rules/graphify.mdc`.
 
