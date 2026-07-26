@@ -58,16 +58,21 @@ Public discovery surfaces (root README and kit README positioning intro) MUST NO
 
 ## ADDED Requirements
 
-### Requirement: Root README may include maintainer links
+### Requirement: Root README includes maintainer links
 
-The root `README.md` MAY include a short Maintainer (or Author) section **below** the hero and primary capability sections, linking to the maintainer’s public LinkedIn and/or portfolio URLs when those URLs are provided by the operator. The section MUST NOT place social or portfolio links in the first-viewport hero block. Agents MUST NOT invent LinkedIn or portfolio URLs.
+The root `README.md` MUST include a short Maintainer (or Author) section **below** the hero and primary capability sections, linking to:
 
-#### Scenario: Maintainer section without inventing URLs
+- LinkedIn: `https://www.linkedin.com/in/pedrovilarim/`
+- Portfolio: `https://pedrocodeart.netlify.app/`
 
-- **WHEN** LinkedIn/portfolio URLs have not been supplied by the operator
-- **THEN** the README either omits the links or uses an explicit `[AÇÃO MANUAL NECESSÁRIA]` placeholder — never fabricated URLs
+The section MUST NOT place social or portfolio links in the first-viewport hero block. Agents MUST NOT invent alternate LinkedIn or portfolio URLs.
+
+#### Scenario: Maintainer links present
+
+- **WHEN** the root README is read
+- **THEN** it contains a Maintainer/Author section with the canonical LinkedIn and portfolio URLs above
 
 #### Scenario: Maintainer section not in hero
 
-- **WHEN** LinkedIn and/or portfolio URLs are present in the root README
+- **WHEN** LinkedIn and portfolio URLs are present in the root README
 - **THEN** they appear in a Maintainer/Author section after the primary discovery content, not as hero chrome

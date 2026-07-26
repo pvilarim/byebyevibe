@@ -78,7 +78,12 @@ Pedro Vilarim — [LinkedIn](URL) · [Portfolio](URL)
 
 **Porquê:** credibilidade em projecto solo / small-team sem Discord/Landing (D9).  
 **Não:** no primeiro viewport (hero budget do discovery; anti-ruído).  
-**Apply:** placeholders `<!-- TODO: LinkedIn URL -->` / `<!-- TODO: Portfolio URL -->` **ou** URLs reais se o operador as fornecer antes do apply. Sem URLs → tarefa marcada com `[AÇÃO MANUAL]` e links omitidos até fornecidos (não inventar).
+**Apply:** URLs fornecidas pelo operador (2026-07-26):
+
+- LinkedIn: https://www.linkedin.com/in/pedrovilarim/
+- Portfolio: https://pedrocodeart.netlify.app/
+
+Usar estas URLs verbatim na secção Maintainer do `README.md`. Não inventar outras.
 
 ### D5: Ações manuais (operador)
 
@@ -116,8 +121,8 @@ Ver Migration Plan + checklist na avaliação/README. Agente **não** altera Git
 ## Migration Plan
 
 1. Apply docs/specs neste hub (display name + glossário + Maintainer placeholders).
-2. Operador: fornecer URLs LinkedIn/portfólio → substituir placeholders (ou omitir links até lá).
-3. **[AÇÃO MANUAL]** GitHub: Settings → General → **Rename** para `byebyevibe`; colar About; topics; Homepage opcional (portfólio ou vazio).
+2. Apply secção Maintainer com LinkedIn + portfólio canónicos (Q1 fechada).
+3. **[AÇÃO MANUAL]** GitHub: Settings → General → **Rename** para `byebyevibe`; colar About; topics; Homepage opcional (`https://pedrocodeart.netlify.app/`).
 4. Operador: `git remote set-url origin git@github.com:pvilarim/byebyevibe.git` (ou HTTPS).
 5. Actualizar links absolutos restantes nos docs vivos num follow-up micro se o rename ocorrer depois do merge.
 6. Rollback docs: reverter PR; rollback GitHub: rename de volta (redirects).
@@ -126,7 +131,7 @@ Ver Migration Plan + checklist na avaliação/README. Agente **não** altera Git
 
 | # | Questão | Estado |
 |---|---------|--------|
-| Q1 | URLs exactas LinkedIn + portfólio? | **Aberta** — operador; placeholders até resposta |
+| Q1 | URLs exactas LinkedIn + portfólio? | **Fechada** — LinkedIn `https://www.linkedin.com/in/pedrovilarim/` · Portfolio `https://pedrocodeart.netlify.app/` |
 | Q2 | Slug final `byebyevibe` vs `bye-bye-vibe`? | **Proposta:** `byebyevibe` |
 | Q3 | Actualizar echoes/headers de scripts neste apply? | **Proposta:** sim, cosmético mínimo nos 4 scripts topo do kit (`install/upgrade/verify` + README kit) |
 | Q4 | Mencionar “TchauVibe” no guia pt-BR? | **Proposta:** não neste change (evita dual brand) |

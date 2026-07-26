@@ -19,7 +19,7 @@ O hub já tem README EN e posicionamento “from vibe coding to agentic engineer
 
 - Actualizar About sugerido, avaliação P10, `openspec/project.md`, intro de `sdd-kit/README.md`, e ponteiros de discovery no guia / AGENTS — **sem** renomear a pasta `sdd-kit/` (path técnico permanece).
 - Documentar **[AÇÃO MANUAL]** para rename do repo GitHub → `byebyevibe` (ou slug aprovado), About/topics, e URLs de autor.
-- Adicionar secção curta **Maintainer** no README raiz com LinkedIn + portfólio (links fornecidos pelo operador; placeholders até lá).
+- Adicionar secção curta **Maintainer** no README raiz com LinkedIn (`https://www.linkedin.com/in/pedrovilarim/`) + portfólio (`https://pedrocodeart.netlify.app/`).
 - **Não** traduzir o hub inteiro (continua roadmap §11 passo ④). **Não** GIF (P5). **Não** renomear path `sdd-kit/` neste change (**BREAKING** se feito — fora de escopo).
 
 ## Capabilities

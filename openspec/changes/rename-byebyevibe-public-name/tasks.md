@@ -1,4 +1,4 @@
-> Escopo apply (R7). Perfil **DOCS_SPECS**. Marca: **ByeByeVibe**. Path `sdd-kit/` **não** renomear. Hero EN canónico (design D1–D2). Maintainer LinkedIn/portfólio: placeholders ou URLs do operador (D4). **Issue:** —
+> Escopo apply (R7). Perfil **DOCS_SPECS**. Marca: **ByeByeVibe**. Path `sdd-kit/` **não** renomear. Hero EN canónico (design D1–D2). Maintainer: LinkedIn `https://www.linkedin.com/in/pedrovilarim/` · Portfolio `https://pedrocodeart.netlify.app/` (D4). **Issue:** —
 
 ## 1. Root README — marca + hero
 
@@ -10,8 +10,8 @@
   - **Gate:** `grep -qi 'sdd-kit/' README.md && grep -qi 'ByeByeVibe' README.md && grep -q 'AÇÃO MANUAL' README.md && grep -qi 'byebyevibe\|About' README.md`
   - **Pattern:** `README.md`
 
-- [ ] 1.3 Secção Maintainer no fundo: LinkedIn + portfólio (URLs reais se fornecidas; senão `[AÇÃO MANUAL]` / omitir links inventados)
-  - **Gate:** `grep -qiE 'Maintainer|Author' README.md && ! grep -qiE 'linkedin\.com/in/TODO|example\.com' README.md`
+- [ ] 1.3 Secção Maintainer no fundo com LinkedIn + portfólio canónicos (design D4 / Q1)
+  - **Gate:** `grep -qiE 'Maintainer|Author' README.md && grep -q 'linkedin.com/in/pedrovilarim' README.md && grep -q 'pedrocodeart.netlify.app' README.md`
   - **Pattern:** `README.md`
 
 ## 2. Kit README + project pointers
