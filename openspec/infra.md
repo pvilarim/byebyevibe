@@ -68,7 +68,18 @@ Fonte de payloads: `sdd-kit/templates/` (não extrair scripts do markdown §12).
 | Template no kit | ✅ | `test -f sdd-kit/templates/.github/workflows/sdd-gates.yml` |
 | Branch protection (required check) | `[AÇÃO MANUAL]` — configurar no GitHub | guia §2.12 |
 
-Fail-closed no `openspec validate --all --strict` (pinado `@fission-ai/openspec@1.3.1` = `min_openspec`). Sem skill/rule — automático out-of-band. Operação: `doc/sistema-sdd-pedro.md` §2.12.
+Fail-closed no `openspec validate --all --strict` (pinado `@fission-ai/openspec@1.3.1` = `min_openspec`), `verify-task-patterns.sh`, e **OSV-Scanner** quando lockfile presente. Sem skill/rule — automático out-of-band. Operação: `doc/sistema-sdd-pedro.md` §2.12.
+
+## Supply Chain
+
+| Componente | Estado | Verificar com |
+|------------|--------|---------------|
+| OSV-Scanner (CI) | ✅ | `grep -q 'OSV-Scanner (blocking)' .github/workflows/sdd-gates.yml` |
+| Action SHA | `8dc09193bb540e09b23da07ad7e30bd33bf87018` (# v2.3.8) | `grep 8dc09193bb540e09b23da07ad7e30bd33bf87018 .github/workflows/sdd-gates.yml` |
+| Renovate (`renovate.json`) | SKIP — hub DOCS_SPECS | `test -f renovate.json` (APP/HYBRID após install) |
+| Renovate GitHub App | `[AÇÃO MANUAL]` — instalar em APP/HYBRID | guia §2.13 |
+
+OSV corre no job `SDD Gates` quando há lockfile na raiz; SKIP explícito quando não há. Renovate: preset conservador via `sdd-kit/templates/renovate.json` (perfis APP/HYBRID). Operação: `doc/sistema-sdd-pedro.md` §2.13.
 
 ## UI Development Module
 

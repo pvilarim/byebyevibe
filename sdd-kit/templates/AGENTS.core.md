@@ -40,8 +40,9 @@ Para trabalho tipo D/E, **SEMPRE** consultar Graphify e GitNexus antes de escrev
 | Actualização SDD (repo já instalado) | `doc/sistema-sdd-pedro.md` §2.9 |
 | Install kit (payload versionado) | `sdd-kit/` |
 | Infra instalada (MCP, CLIs, skills) | `openspec/infra.md` |
-| GitHub Issues MCP (operação humana) | `doc/sistema-sdd-pedro.md` §2.14 |
 | Gates de CI (sdd-gates, operação) | `doc/sistema-sdd-pedro.md` §2.12 · `.github/workflows/sdd-gates.yml` |
+| Supply chain (Renovate + OSV) | `doc/sistema-sdd-pedro.md` §2.13 |
+| GitHub Issues MCP (operação humana) | `doc/sistema-sdd-pedro.md` §2.15 |
 | TypeScript (se aplicável) | `.cursor/rules/010-typescript.mdc` |
 | Python | `.cursor/rules/020-python.mdc` |
 | Supabase | `.cursor/rules/030-supabase.mdc` |
@@ -89,9 +90,11 @@ Se ambíguo entre dois tipos, **PERGUNTAR**. **NUNCA** assumir Tipo A por defeit
 
 **Graphify** — Ler `graphify-out/GRAPH_REPORT.md` antes de grep em perguntas de arquitectura. Após editar código: `graphify update .`.
 
-**github-mcp-server** — MCP passivo (modo D) para contexto de GitHub Issues. Consultar em tipos **B**, **D** e **E** (opcional em **C** se há issue); nunca em tipo **A**. Em `/opsx:propose`, ler issue de origem quando `**Issue:**` está preenchido; em B/D sem issue explícita, verificar issues abertas para evitar duplicatas. Preencher `**Issue:**` em `proposal.md` (URL, `#123`, ou `—`). Cloud agents: `gh` CLI read-only cobre consultas ad-hoc — MCP local é para sessões interactivas. Operação humana: guia §2.14.
+**github-mcp-server** — MCP passivo (modo D) para contexto de GitHub Issues. Consultar em tipos **B**, **D** e **E** (opcional em **C** se há issue); nunca em tipo **A**. Em `/opsx:propose`, ler issue de origem quando `**Issue:**` está preenchido; em B/D sem issue explícita, verificar issues abertas para evitar duplicatas. Preencher `**Issue:**` em `proposal.md` (URL, `#123`, ou `—`). Cloud agents: `gh` CLI read-only cobre consultas ad-hoc — MCP local é para sessões interactivas. Operação humana: guia §2.15.
 
-**CI Gates (sdd-gates)** — Workflow `.github/workflows/sdd-gates.yml` corre em `push`/`pull_request`, fail-closed: `openspec validate --all --strict` (bloqueante), `verify-task-patterns.sh` (bloqueante), `sdd-kit/verify.sh` (report-only). Só orquestra comandos existentes. Sem skill/rule associada (automático out-of-band — intencional). Antes de push: correr `npx --yes @fission-ai/openspec@1.3.1 validate --all --strict` localmente. Operação e troubleshooting: guia §2.12.
+**Supply chain (Renovate + OSV-Scanner)** — Gates automáticos independentes da tarefa A–E em curso. PR Renovate: patch = tipo **A**; minor/major = tipo **B/C** (review humano). OSV vermelho no CI = tipo **B** — corrigir dependência antes de merge ou `/opsx:archive`. Operação: guia §2.13.
+
+**CI Gates (sdd-gates)** — Workflow `.github/workflows/sdd-gates.yml` corre em `push`/`pull_request`, fail-closed: `openspec validate --all --strict` (bloqueante), `verify-task-patterns.sh` (bloqueante), **OSV-Scanner** (bloqueante quando lockfile presente), `sdd-kit/verify.sh` (report-only). Antes de push: correr `npx --yes @fission-ai/openspec@1.3.1 validate --all --strict` localmente. Operação: guia §2.12.
 
 ## Testing
 

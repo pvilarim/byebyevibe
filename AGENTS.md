@@ -48,7 +48,7 @@ Para trabalho tipo D/E, **SEMPRE** consultar Graphify e GitNexus antes de escrev
 | Teoria / relações entre conceitos | `graphify-out/GRAPH_REPORT.md` |
 | Workshop e transcrições | `doc/curso/aula-*.md` |
 | Guia de instalação SDD (v1.5.0) | `doc/sistema-sdd-pedro.md` |
-| GitHub Issues MCP (operação humana) | `doc/sistema-sdd-pedro.md` §2.14 |
+| GitHub Issues MCP (operação humana) | `doc/sistema-sdd-pedro.md` §2.15 |
 | Módulo UI (C1-UI) | `doc/sistema-sdd-pedro.md` §2.11 · `doc/design/002-ui-module-install.md` |
 | Install kit (payload SDD) | `sdd-kit/` |
 | Actualização SDD (repo já instalado) | `doc/sistema-sdd-pedro.md` §2.9 |
@@ -61,6 +61,7 @@ Para trabalho tipo D/E, **SEMPRE** consultar Graphify e GitNexus antes de escrev
 | Infra instalada (MCP, CLIs, skills) | `openspec/infra.md` |
 | Install kit (payload versionado) | `sdd-kit/` |
 | Gates de CI (sdd-gates, operação) | `doc/sistema-sdd-pedro.md` §2.12 · `.github/workflows/sdd-gates.yml` |
+| Supply chain (Renovate + OSV) | `doc/sistema-sdd-pedro.md` §2.13 |
 | Avaliações de integração / ferramentas descartadas | `doc/avaliacoes/` |
 | Inserção de novas ferramentas SDD (metodologia + gaps) | `openspec/changes/explore-oss-coverage-gaps/` |
 | Impeccable + shadcn — guia de adoção | `doc/design/000-impeccable-design-system-guia.md` |
@@ -122,11 +123,13 @@ Se ambíguo entre dois tipos, **PERGUNTAR**. **NUNCA** assumir Tipo A por defeit
 
 **Graphify** — Ler `graphify-out/GRAPH_REPORT.md` antes de grep em perguntas de arquitectura. Após editar código: `graphify update .`. Detalhe: `.cursor/rules/graphify.mdc`.
 
-**github-mcp-server** — MCP passivo (modo D) para contexto de GitHub Issues. Consultar em tipos **B**, **D** e **E** (opcional em **C** se há issue); nunca em tipo **A**. Em `/opsx:propose`, ler issue de origem quando `**Issue:**` está preenchido; em B/D sem issue explícita, verificar issues abertas para evitar duplicatas. Preencher `**Issue:**` em `proposal.md` (URL, `#123`, ou `—`). Cloud agents: `gh` CLI read-only cobre consultas ad-hoc — MCP local é para sessões interactivas. Operação humana: guia §2.14.
+**github-mcp-server** — MCP passivo (modo D) para contexto de GitHub Issues. Consultar em tipos **B**, **D** e **E** (opcional em **C** se há issue); nunca em tipo **A**. Em `/opsx:propose`, ler issue de origem quando `**Issue:**` está preenchido; em B/D sem issue explícita, verificar issues abertas para evitar duplicatas. Preencher `**Issue:**` em `proposal.md` (URL, `#123`, ou `—`). Cloud agents: `gh` CLI read-only cobre consultas ad-hoc — MCP local é para sessões interactivas. Operação humana: guia §2.15.
+
+**Supply chain (Renovate + OSV-Scanner)** — Gates automáticos independentes da tarefa A–E em curso. PR Renovate: patch = tipo **A**; minor/major = tipo **B/C** (review humano). OSV vermelho no CI = tipo **B** — corrigir dependência antes de merge ou `/opsx:archive`. Operação: guia §2.13.
 
 **sdd-kit — manutenção de checksums** — Ao editar qualquer ficheiro em `sdd-kit/templates/`, correr `bash sdd-kit/gen-manifest-checksums.sh` antes de commitar para actualizar os campos `sha256:` no MANIFEST. Sem este passo, `install.sh` e `upgrade.sh --apply` abortarão com erro de integridade nos repos consumidores.
 
-**CI Gates (sdd-gates)** — Workflow `.github/workflows/sdd-gates.yml` corre em `push`/`pull_request`, fail-closed: `openspec validate --all --strict` (bloqueante), `verify-task-patterns.sh` (bloqueante), `sdd-kit/verify.sh` (report-only). Só orquestra comandos existentes. Sem skill/rule associada (automático out-of-band — intencional). Antes de push: correr `npx --yes @fission-ai/openspec@1.3.1 validate --all --strict` localmente. Operação e troubleshooting: guia §2.12.
+**CI Gates (sdd-gates)** — Workflow `.github/workflows/sdd-gates.yml` corre em `push`/`pull_request`, fail-closed: `openspec validate --all --strict` (bloqueante), `verify-task-patterns.sh` (bloqueante), **OSV-Scanner** (bloqueante quando lockfile presente), `sdd-kit/verify.sh` (report-only). Antes de push: correr `npx --yes @fission-ai/openspec@1.3.1 validate --all --strict` localmente. Operação: guia §2.12.
 
 ## Testing
 

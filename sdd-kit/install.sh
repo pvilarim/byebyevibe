@@ -159,6 +159,9 @@ echo "=== SDD Install Kit v$(grep -E '^version:' "$MANIFEST" | head -1 | sed 's/
 echo "Profile: $PROFILE"
 echo "Repo:    $REPO_ROOT"
 $DRY_RUN && echo "Mode:    DRY-RUN"
+if [[ "$PROFILE" == "DOCS_SPECS" ]]; then
+  echo "SKIP Renovate: profile DOCS_SPECS"
+fi
 echo ""
 
 while IFS=$'\t' read -r src dest merge sha256; do
