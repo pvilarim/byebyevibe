@@ -159,14 +159,14 @@ files:
 
   - path: AGENTS.md
     source: templates/AGENTS.core.md
-    sha256: "4b6844a7d3a973d121a7f653b5897c68cb42fbc21bfb25db8935eecf8ebf2ee5"
+    sha256: "63e7b0dc45d5720174a66d018e51c0b9d3462885822ca36461d1a17b1efbb13a"
     merge: MERGE_PROFILE
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test $(wc -l < AGENTS.md) -le 150"
 
   - path: openspec/infra.md
     source: templates/openspec/infra.md
-    sha256: "6ca25e662b3c811d4940f57bb8b192fc34c9a8b11f45fce943f7fe24a1c2075a"
+    sha256: "381a2f88c625b436d7f6a1cb54a30e36993f9a26884f5d6baea07dfe8b83fd5f"
     merge: MERGE
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f openspec/infra.md"
@@ -219,3 +219,26 @@ files:
     merge: COPY
     profiles: [APP, HYBRID]
     gate: "test -f renovate.json"
+
+  # Probity module (G2) — APP/HYBRID only. Pilot on APP worktree required before
+  # enabling as default in consumer repos (see openspec/changes/add-probity-tdd-module/piloto-nota.md).
+  - path: sdd-kit/install-probity-module.sh
+    source: templates/install-probity-module.sh
+    sha256: "913568f6342a5dec8db68d1694d34fc0e710ed4ad5d32570a77a3c01fc3e10a9"
+    merge: COPY
+    profiles: [APP, DOCS_SPECS, HYBRID]
+    gate: "test -x sdd-kit/install-probity-module.sh"
+
+  - path: sdd-kit/templates/probity.config.ts
+    source: templates/probity.config.ts
+    sha256: "a348ed5f817226442bcb8a9c80bbb60f91f32f9f5c229db30a9b82a2206179d2"
+    merge: COPY
+    profiles: [APP, HYBRID]
+    gate: "test -f sdd-kit/templates/probity.config.ts && grep -q enforceTdd sdd-kit/templates/probity.config.ts"
+
+  - path: doc/design/004-probity-module-install.md
+    source: templates/doc/design/004-probity-module-install.md
+    sha256: "4e48b499f36359ae98456a72b7a1b2eb5cb2059ef36790319fe2f89520bea62a"
+    merge: COPY
+    profiles: [APP, DOCS_SPECS, HYBRID]
+    gate: "test -f doc/design/004-probity-module-install.md"

@@ -96,6 +96,8 @@ Se ambíguo entre dois tipos, **PERGUNTAR**. **NUNCA** assumir Tipo A por defeit
 
 **CI Gates (sdd-gates)** — Workflow `.github/workflows/sdd-gates.yml` corre em `push`/`pull_request`, fail-closed: `openspec validate --all --strict` (bloqueante), `verify-task-patterns.sh` (bloqueante), **OSV-Scanner** (bloqueante quando lockfile presente), `sdd-kit/verify.sh` (report-only). Antes de push: correr `npx --yes @fission-ai/openspec@1.3.1 validate --all --strict` localmente. Operação: guia §2.12.
 
+**Probity (G2)** — Módulo opcional APP/HYBRID: `bash sdd-kit/install-probity-module.sh --detect` → `--apply [--yes]`; pin `@nizos/probity@1.10.0`. Matriz A–E: off em A (globs); on em B/C/D via `enforceTdd`. DOCS_SPECS sem testes: SKIP. Operação: guia §2.16.
+
 ## Testing
 
 [PREENCHER: npm test / pytest / openspec validate / N/A para docs-only]

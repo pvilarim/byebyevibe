@@ -31,7 +31,7 @@ Registo histórico de ferramentas, padrões e ideias **avaliadas** para o stack 
 |------|-----------|---------|-----------|
 | 2026-03-26 | [Headroom](https://github.com/chopratejas/headroom) — compressão de contexto para agentes | **Descartado** | [2026-03-26-headroom-context-compression.md](./2026-03-26-headroom-context-compression.md) |
 | 2026-06-27 | Módulo UI SDD (Impeccable + Open Design + Pencil + shadcn) — `add-sdd-ui-development-module` | **Adopted** | [2026-06-27-sdd-ui-development-module.md](./2026-06-27-sdd-ui-development-module.md) |
-| 2026-07-25 | Ferramentas OSS p/ gaps SDD (TDD Guard, PR-Agent, Renovate+OSV, github-mcp, DevLake, Vibe Kanban, GlitchTip) — `explore-oss-coverage-gaps` | **Misto** — ver doc | [2026-07-25-oss-coverage-gaps-tooling.md](./2026-07-25-oss-coverage-gaps-tooling.md) |
+| 2026-07-25 | Ferramentas OSS p/ gaps SDD (Probity (G2), PR-Agent, Renovate+OSV, github-mcp, DevLake, Vibe Kanban, GlitchTip) — `explore-oss-coverage-gaps` | **Misto** — ver doc | [2026-07-25-oss-coverage-gaps-tooling.md](./2026-07-25-oss-coverage-gaps-tooling.md) |
 
 ## Relação com o stack
 

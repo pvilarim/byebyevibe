@@ -61,6 +61,26 @@ if [[ -d "$REPO_ROOT/sdd-kit/templates" ]]; then
   run_check "sdd-gates template" test -f "$REPO_ROOT/sdd-kit/templates/.github/workflows/sdd-gates.yml"
 fi
 
+# Probity module (G2) — report-only when module not installed (hub DOCS_SPECS = SKIP)
+echo ""
+echo "==> Probity module (G2)"
+if [[ -x "$REPO_ROOT/sdd-kit/install-probity-module.sh" ]]; then
+  echo "OK: install-probity-module.sh present"
+  if [[ -f "$REPO_ROOT/probity.config.ts" ]]; then
+    if grep -q 'enforceTdd' "$REPO_ROOT/probity.config.ts"; then
+      echo "OK: probity.config.ts with enforceTdd"
+    else
+      echo "WARN: probity.config.ts missing enforceTdd" >&2
+    fi
+  else
+    echo "INFO: Probity not installed in this repo (report-only — expected on DOCS_SPECS)"
+  fi
+elif [[ -f "$REPO_ROOT/sdd-kit/templates/install-probity-module.sh" ]]; then
+  echo "OK: Probity template present in kit (module script not copied to this profile)"
+else
+  echo "INFO: Probity module artifacts absent (report-only)"
+fi
+
 # Kit integrity parity check (hub only — skipped in consumer repos without templates/)
 if [[ -d "$REPO_ROOT/sdd-kit/templates" ]] && [[ -f "$REPO_ROOT/sdd-kit/MANIFEST.yaml" ]]; then
   echo ""

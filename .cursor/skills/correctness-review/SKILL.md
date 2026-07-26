@@ -39,7 +39,7 @@ Responder sempre em **pt-BR**.
 ### Posição no pipeline
 
 ```
-/opsx:apply  →  [implementação]  →  testes (R6/TDD Guard)
+/opsx:apply  →  [implementação]  →  testes (R6/Probity enforceTdd)
   →  correctness-review (B/C/D)
   →  simplify-review (opcional, C/D)
   →  security-reviewer (se auth/API/pagamentos)

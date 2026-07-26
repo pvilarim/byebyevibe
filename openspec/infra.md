@@ -9,7 +9,7 @@
 | Componente | Versão | Estado | Verificar com |
 |------------|--------|--------|---------------|
 | OpenSpec | <!-- openspec-version -->—<!-- /openspec-version --> | <!-- openspec-status -->❌<!-- /openspec-status --> | `npx openspec list` |
-| GitNexus | <!-- gitnexus-version -->1.6.9<!-- /gitnexus-version --> | <!-- gitnexus-status -->❌<!-- /gitnexus-status --> | `npx gitnexus status` |
+| GitNexus | <!-- gitnexus-version -->1.6.9<!-- /gitnexus-version --> | <!-- gitnexus-status -->✅<!-- /gitnexus-status --> | `npx gitnexus status` |
 | Graphify | <!-- graphify-version -->—<!-- /graphify-version --> | <!-- graphify-status -->❌<!-- /graphify-status --> | `test -f graphify-out/GRAPH_REPORT.md` |
 
 ## MCP Servers
@@ -55,6 +55,7 @@ Regra always-on: `.cursor/rules/016-session-coordination.mdc`.
 | `sdd-kit/MANIFEST.yaml` | <!-- kit-version -->1.5.0<!-- /kit-version --> | <!-- kit-status -->✅<!-- /kit-status --> | `grep version sdd-kit/MANIFEST.yaml` |
 | `sdd-kit/install.sh` | — | <!-- kit-install-status -->✅<!-- /kit-install-status --> | `test -x sdd-kit/install.sh` |
 | `sdd-kit/install-ui-module.sh` | — | ✅ | `test -x sdd-kit/install-ui-module.sh` |
+| `sdd-kit/install-probity-module.sh` | — | ✅ | `test -x sdd-kit/install-probity-module.sh` |
 | `sdd-kit/upgrade.sh` | — | ✅ | `test -x sdd-kit/upgrade.sh` |
 | `sdd-kit/verify.sh` | — | <!-- kit-verify-status -->✅<!-- /kit-verify-status --> | `bash sdd-kit/verify.sh` |
 
@@ -92,6 +93,17 @@ OSV corre no job `SDD Gates` quando há lockfile na raiz; SKIP explícito quando
 | Figma MCP | manual / not installed | `mcp_get_tools` na sessão |
 | `doc/design/002-ui-module-install.md` | ✅ | `test -f doc/design/002-ui-module-install.md` |
 | `doc/design/003-ui-stack-adapters.md` | ✅ | `test -f doc/design/003-ui-stack-adapters.md` |
+
+## Probity Module
+
+| Componente | Estado | Verificar com |
+|------------|--------|---------------|
+| `@nizos/probity@1.10.0` | SKIP — hub DOCS_SPECS (sem test runner) | `test -f probity.config.ts` |
+| `probity.config.ts` | SKIP | `grep -q enforceTdd probity.config.ts` |
+| Plugin / hook | SKIP | Claude Code: `/plugin install probity@probity` |
+| `sdd-kit/install-probity-module.sh` | ✅ (kit) | `test -x sdd-kit/install-probity-module.sh` |
+
+Módulo opcional G2 (APP/HYBRID com testes). Piloto APP obrigatório antes de activação default — `openspec/changes/add-probity-tdd-module/piloto-nota.md`. Operação: guia §2.16 · `doc/design/004-probity-module-install.md`.
 
 ## Env vars (nomes apenas)
 

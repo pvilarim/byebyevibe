@@ -10,7 +10,7 @@
 ## Princípios
 
 1. **Uma ferramenta = um change OpenSpec** (R7). Nada entra no kit sem propose → apply → archive próprios.
-2. **Out-of-band por defeito.** Automação nova vai para CI/PR/scheduled sempre que possível — a pipeline interactiva explore→propose→apply **não ganha etapas novas** para o utilizador. Só entra "in-band" (dentro da sessão) o que precisa de interceptar edições (caso único: TDD Guard), e sempre com toggle off.
+2. **Out-of-band por defeito.** Automação nova vai para CI/PR/scheduled sempre que possível — a pipeline interactiva explore→propose→apply **não ganha etapas novas** para o utilizador. Só entra "in-band" (dentro da sessão) o que precisa de interceptar edições (caso único: Probity (G2)), e sempre desligável via globs/uninstall.
 3. **Reutilizar mecanismos de descoberta existentes** (guia SDD §4.2): AGENTS.md declara, hooks interceptam, skill descriptions auto-invocam. Nenhum mecanismo novo de descoberta.
 4. **Reversibilidade obrigatória.** Sem plano de desinstalação documentado, a ferramenta não entra no MANIFEST.
 
@@ -44,7 +44,7 @@ Responde à questão: *o que verificar antes de implementar para evitar incompat
 
 - Config mínima funcional documentada (copiar da doc oficial, não inventar)
 - Relatos de integração com Claude Code/Cursor (hooks, MCP) — como outros resolveram
-- Custo por operação: tokens LLM (TDD Guard, reviews) e minutos de CI (scanners) — orçar antes de ligar por defeito
+- Custo por operação: tokens LLM (Probity (G2), reviews) e minutos de CI (scanners) — orçar antes de ligar por defeito
 - Modos de falha conhecidos (issues abertas recorrentes) e como o sistema se comporta se a ferramenta cair (fail-open vs fail-closed — gates de CI devem ser fail-closed; conveniências in-band, fail-open)
 
 **Output da Fase 0:** avaliação preenchida em `doc/avaliacoes/<data>-<nome>.md` (TEMPLATE.md), com decisão "Em avaliação" → "Adoptado" só após Fase 2.
@@ -62,7 +62,7 @@ Responde à questão: *o que verificar antes de implementar para evitar incompat
 > **Excepção aprovada (2026-07-25):** o piloto é **dispensável** quando a inserção não instala binário novo nem hook — i.e., apenas orquestra comandos já existentes no repo (ex.: G1 `sdd-gates.yml`) ou adiciona documentação/template de config inerte. Nesses casos, Fase 1 → Fase 3 directo. Qualquer ferramenta com hook, binário, serviço ou consumo de LLM mantém piloto obrigatório.
 
 - Apply com R11 (register/check/release) num **worktree ou repo piloto**, nunca directo em todos os repos.
-- **Critérios de sucesso quantificados ANTES do piloto.** Exemplos: TDD Guard — latência extra p95 < Xs por edit e < Y% de bloqueios falsos; correctness-review — pelo menos 1 achado válido a cada N reviews; Renovate — volume de PRs gerível com o preset conservador.
+- **Critérios de sucesso quantificados ANTES do piloto.** Exemplos: Probity (G2) — latência extra p95 < Xs por edit e < Y% de bloqueios falsos; correctness-review — pelo menos 1 achado válido a cada N reviews; Renovate — volume de PRs gerível com o preset conservador.
 - Janela de validação definida (ex.: N changes ou N PRs processados pela ferramenta).
 - Falhou os critérios → decisão volta a "Adiado" com condições de reavaliação; artefactos removidos (rollback testado de graça).
 
@@ -107,20 +107,20 @@ Matriz por ferramenta do research:
 | `sdd-gates.yml` (G1) | A | push/PR (automático) | Pós-apply, pré-merge |
 | OSV-Scanner (G8) | A | PR (automático) | Pré-merge |
 | Renovate (G8) | A | Scheduled (bot) | Fora da pipeline; PRs gerados entram como tarefas tipo A/B |
-| TDD Guard (G2) | B | Hook (automático) | Durante apply; **toggle off** em tipo A e docs |
+| Probity (G2) | B | Hook (automático) | Durante apply; **desligar** via globs/uninstall em tipo A e docs |
 | `correctness-review` (G7) | C | Utilizador (ou agente, por gatilho de diff) | Pós-apply, antes do commit — mesma posição do `simplify-review` |
 | `sdd-metrics.sh` (G4) | C | Utilizador (periódico/retrospectiva) | Fora da pipeline |
 | github-mcp-server (G5) | D | Agente consulta | Explore (ler issues) e propose (ligar change ↔ issue) |
 
-**Resposta directa:** só TDD Guard é automático dentro da sessão. CI/bots são automáticos fora dela. Reviews e métricas são comandos do utilizador. MCP é passivo. O utilizador só "aciona" manualmente duas coisas: reviews pós-apply e métricas.
+**Resposta directa:** só Probity (G2) é automático dentro da sessão. CI/bots são automáticos fora dela. Reviews e métricas são comandos do utilizador. MCP é passivo. O utilizador só "aciona" manualmente duas coisas: reviews pós-apply e métricas.
 
 ### 4.2 Impacto na pipeline e selectividade (questão 4)
 
-**A pipeline explore→propose→apply NÃO ganha etapas interactivas novas.** O que muda é o que acontece *depois do push* (gates de CI) e *em paralelo* (bots). A única fricção in-band (TDD Guard) é desligável e restrita a código.
+**A pipeline explore→propose→apply NÃO ganha etapas interactivas novas.** O que muda é o que acontece *depois do push* (gates de CI) e *em paralelo* (bots). A única fricção in-band (Probity (G2)) é desligável e restrita a código.
 
 Nem todas as ferramentas em todos os casos — a matriz segue a classificação A–E já existente:
 
-| Tipo de tarefa | TDD Guard | correctness-review | sdd-gates (CI) | OSV/Renovate | github-mcp |
+| Tipo de tarefa | Probity (G2) | correctness-review | sdd-gates (CI) | OSV/Renovate | github-mcp |
 |----------------|-----------|-------------------|----------------|--------------|------------|
 | A — Trivial | off | não | roda (passa rápido) | contínuo* | não |
 | B — Bug fix | **on** (materializa R6) | se diff > ~80 linhas | roda | contínuo* | ler issue de origem |
@@ -132,14 +132,14 @@ Nem todas as ferramentas em todos os casos — a matriz segue a classificação 
 
 **Como decidir quando usar:** não se cria heurística nova. Reutilizam-se as que já existem:
 
-- Classificação A–E (R1) decide TDD Guard on/off e profundidade de review — o mesmo gate que já decide se há proposta OpenSpec.
+- Classificação A–E (R1) decide Probity (G2) on/off (globs/desligar módulo) e profundidade de review — o mesmo gate que já decide se há proposta OpenSpec.
 - O gatilho do `simplify-review` (diff > ~80 linhas ou > 4 ficheiros) estende-se ao `correctness-review` — mesma tabela em AGENTS.md "Reviews pós-implementação".
-- Ordem de reviews actualizada: implementação → testes (R6/TDD Guard) → `correctness-review` → `simplify-review` (opcional) → `security-reviewer` (se aplicável) → commit → gates de CI.
+- Ordem de reviews actualizada: implementação → testes (R6/Probity enforceTdd) → `correctness-review` → `simplify-review` (opcional) → `security-reviewer` (se aplicável) → commit → gates de CI.
 
 **Integração com fluxos por tipo:**
 
-- **Bug (tipo B):** github-mcp lê o issue no framing; TDD Guard força o teste-que-falha (R6 deixa de ser regra de papel); OSV cobre o caso de bug ser vulnerabilidade de dependência.
-- **Feature (tipo D):** github-mcp liga issue → proposal no propose; TDD Guard + correctness-review no apply; gates de CI validam o change antes do merge.
+- **Bug (tipo B):** github-mcp lê o issue no framing; Probity (G2) força o teste-que-falha (R6 deixa de ser regra de papel); OSV cobre o caso de bug ser vulnerabilidade de dependência.
+- **Feature (tipo D):** github-mcp liga issue → proposal no propose; Probity (G2) + correctness-review no apply; gates de CI validam o change antes do merge.
 - **Exploração (tipo E):** só github-mcp (contexto de issues) — nenhuma ferramenta de código toca o fluxo.
 
 ---

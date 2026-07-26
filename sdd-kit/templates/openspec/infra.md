@@ -69,6 +69,18 @@ Operação: `doc/sistema-sdd-pedro.md` §2.13.
 | Pencil | manual / not installed | sob demanda — ver doc/design/002 |
 | Figma MCP | manual / not installed | `mcp_get_tools` na sessão |
 
+## Probity Module
+
+| Componente | Estado | Verificar com |
+|------------|--------|---------------|
+| `@nizos/probity@1.10.0` | SKIP até `--apply` em APP/HYBRID | `test -f probity.config.ts` |
+| `probity.config.ts` | SKIP até `--apply` | `grep -q enforceTdd probity.config.ts` |
+| Plugin / hook | SKIP | Claude Code: `/plugin install probity@probity` |
+| `sdd-kit/install-probity-module.sh` | [NEEDS VERIFICATION] | `test -x sdd-kit/install-probity-module.sh` |
+
+Módulo opcional G2 (APP/HYBRID com testes). DOCS_SPECS sem test runner: SKIP.
+Operação: `doc/sistema-sdd-pedro.md` §2.16 · `doc/design/004-probity-module-install.md`.
+
 ## Session Coordination
 
 | Script | Função | Estado | Verificar com |
