@@ -47,11 +47,11 @@ N/A this wave: **G-MIRROR** (no `.claude/rules/` mirror; Cursor-only `.mdc`), **
 
 ## Freeze / allowlist checklist
 
-- [ ] Shell/CI fences byte-stable (except intentional non-i18n fixes)
-- [ ] Paths, change-ids, `/opsx:*`, pins, brand names, script paths untouched
-- [ ] Glossary forms used; new terms added to `GLOSSARY.md`
-- [ ] No dual-file EN/PT siblings introduced
-- [ ] YAML frontmatter structure preserved (`alwaysApply: true` unchanged)
+- [x] Shell/CI fences byte-stable (except intentional non-i18n fixes)
+- [x] Paths, change-ids, `/opsx:*`, pins, brand names, script paths untouched
+- [x] Glossary forms used; new terms added to `GLOSSARY.md` (none needed this wave)
+- [x] No dual-file EN/PT siblings introduced
+- [x] YAML frontmatter structure preserved (`alwaysApply: true` unchanged)
 
 ## Session Handoff stub
 

@@ -1,12 +1,12 @@
 ---
-description: Uma sessão SDD = uma fase — handoff entre chats
+description: One SDD session = one phase — handoff between chats
 alwaysApply: true
 ---
 
-# Fases de sessão SDD
+# SDD session phases
 
-- **Uma sessão = uma fase:** explore | propose | apply | archive — não misturar no mesmo chat.
-- **Proibido explore→apply** no mesmo thread: recusar implementação directa; emitir Session Handoff.
-- **Transições de fase:** parar e sugerir novo chat com prompt copiável (`## Session Handoff` nas skills `/opsx:*`).
-- **Memória persistente:** artefactos em `openspec/changes/<id>/` — não depender do histórico do chat.
-- **Infra:** ler `openspec/infra.md` antes de propor instalações (R10 em `AGENTS.md`).
+- **One session = one phase:** explore | propose | apply | archive — do not mix in the same chat.
+- **Forbidden explore→apply** in the same thread: refuse direct implementation; emit Session Handoff.
+- **Phase transitions:** stop and suggest a new chat with a copyable prompt (`## Session Handoff` in `/opsx:*` skills).
+- **Persistent memory:** artifacts in `openspec/changes/<id>/` — do not rely on chat history.
+- **Infra:** read `openspec/infra.md` before proposing installations (R10 in `AGENTS.md`).
