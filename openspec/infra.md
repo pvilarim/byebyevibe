@@ -31,6 +31,7 @@
 | `.claude/skills/openspec-*/` | todas | ✅ (espelho) |
 | `.claude/skills/gitnexus/` | impact/debug | ✅ |
 | `.cursor/skills/simplify-review/` | review | ✅ |
+| `.claude/skills/correctness-review/` + `.cursor/skills/correctness-review/` | review | ✅ |
 
 ## Session Coordination
 

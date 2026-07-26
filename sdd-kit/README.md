@@ -54,6 +54,31 @@ O kit distribui `.github/workflows/sdd-gates.yml` (template em `templates/.githu
 
 > `[AÇÃO MANUAL NECESSÁRIA]` Para o gate **bloquear merge de facto**, o operador deve activar branch protection no repositório (Settings → Branches → require status check "SDD Gates"). Ver `doc/sistema-sdd-pedro.md` §2.12.
 
+## Skills de review pós-apply (instalação manual)
+
+O kit não inclui script automático para skills de review on-demand (modo C). Para instalar em repositórios consumidores, copiar manualmente os ficheiros de skill:
+
+### correctness-review
+
+```bash
+# No repo consumidor (APP ou DOCS_SPECS)
+mkdir -p .claude/skills/correctness-review .cursor/skills/correctness-review
+cp <caminho-deste-hub>/.claude/skills/correctness-review/SKILL.md .claude/skills/correctness-review/SKILL.md
+cp .claude/skills/correctness-review/SKILL.md .cursor/skills/correctness-review/SKILL.md
+```
+
+Registar em `openspec/infra.md` do repo consumidor (secção Skills):
+
+```
+| `.claude/skills/correctness-review/` + `.cursor/skills/correctness-review/` | review | ✅ |
+```
+
+> **Nota:** este padrão é idêntico ao usado para `simplify-review`. Não há script `install.sh` automático nesta fase (Fase 1 — skill local sem binário/hook). Script automático planeado para v1.5.0 se validação em repo APP confirmar adopção.
+
+### simplify-review
+
+Mesmo procedimento acima substituindo `correctness-review` por `simplify-review`.
+
 ## Hub vs consumidor
 
 - **Hub (DOCS_SPECS):** commitar `sdd-kit/` completo para distribuir upgrades C2.

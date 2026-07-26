@@ -22,7 +22,7 @@ Research tipo E identificou 8 gaps na cobertura do sistema SDD para desenvolvime
 | G4 Métricas do framework | Apache DevLake | **Adiado** | Correcção manual (`sdd-metrics.sh`) preferida; DevLake se equipe/DORA justificar |
 | G5 Rastreabilidade issues | [github-mcp-server](https://github.com/github/github-mcp-server) | **Adoptado** (pendente change) | + campo Issue no template de proposal |
 | G6 Multi-agente distribuído | Vibe Kanban / Claude Squad | **Descartado** | Projecto líder órfão (BloopAI encerrou 04/2026); overlap com `sdd-session-*` |
-| G7 Review de correctness | [PR-Agent](https://github.com/qodo-ai/pr-agent) | **Adoptado parcial** | Fase 1: skill local `correctness-review`; PR-Agent opcional com pin de versão |
+| G7 Review de correctness | [PR-Agent](https://github.com/qodo-ai/pr-agent) | **Adoptado** — skill local criada, change [`add-correctness-review-skill`](../../openspec/changes/add-correctness-review-skill/proposal.md) | Fase 1: skill local `correctness-review` (`.claude/skills/` + `.cursor/skills/`). PR-Agent opcional (Fase 2, change separado). Reavaliação: conversão para subagente autónomo (piloto obrigatório), adoção PR-Agent fase 2 (jan/2027). |
 | G8 Supply chain | [Renovate](https://github.com/renovatebot/renovate) + [OSV-Scanner](https://github.com/google/osv-scanner) | **Adoptado** (pendente change) | Templates por perfil no sdd-kit |
 
 ## Condições de reavaliação (itens descartados/adiados)
