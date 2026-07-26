@@ -1,16 +1,16 @@
 ---
-description: Regras base do projecto (alwaysApply)
+description: Base project rules (alwaysApply)
 alwaysApply: true
 ---
 
-# Regras base
+# Base rules
 
-Seguir estritamente as regras e convenções em `./AGENTS.md` na raiz do repo.
+Follow strictly the rules and conventions in `./AGENTS.md` at the repo root.
 
-Adicionalmente:
-- Constituição do projecto: `./openspec/project.md`
-- Specs activas: `./openspec/specs/`
+Additionally:
+- Project constitution: `./openspec/project.md`
+- Active specs: `./openspec/specs/`
 - Knowledge base: `./graphify-out/GRAPH_REPORT.md`
 - Code graph: via MCP GitNexus
 
-Para qualquer tarefa não-trivial (tipo C/D/E), invocar `/opsx:propose <description>` antes de escrever código.
+For any non-trivial task (type C/D/E), invoke `/opsx:propose <description>` before writing code.

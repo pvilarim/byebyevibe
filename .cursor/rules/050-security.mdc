@@ -1,47 +1,47 @@
 ---
-description: Guardrails de segurança (alwaysApply)
+description: Security guardrails (alwaysApply)
 alwaysApply: true
 ---
 
-# Regras de segurança
+# Security rules
 
-**NUNCA:**
-- Escrever segredos, API keys, tokens ou passwords em qualquer ficheiro deste repo
-- Correr `rm -rf` em paths fora do repo actual
-- Executar `git push --force` ou `git push --force-with-lease` sem aprovação explícita do utilizador
-- Desactivar hooks com `--no-verify` sem explicar porquê
-- Adicionar dependências sem verificar primeiro os advisories de segurança
+**NEVER:**
+- Write secrets, API keys, tokens, or passwords into any file in this repo
+- Run `rm -rf` on paths outside the current repo
+- Execute `git push --force` or `git push --force-with-lease` without explicit user approval
+- Disable hooks with `--no-verify` without explaining why
+- Add dependencies without first checking security advisories
 
-**SEMPRE:**
-- Ler `.env.example` para entender env vars esperadas; nunca ler `.env`
-- Sanitizar todos os inputs de utilizador em API routes (Zod, valibot ou equivalente)
-- Usar queries parametrizadas para qualquer acesso a DB; sem concatenação de strings
-- Adicionar validação de input como PRIMEIRA linha em qualquer route handler
+**ALWAYS:**
+- Read `.env.example` to understand expected env vars; never read `.env`
+- Sanitize all user inputs in API routes (Zod, valibot, or equivalent)
+- Use parameterized queries for any DB access; no string concatenation
+- Add input validation as the FIRST line in any route handler
 
-## openspec CLI — telemetria
-- `@fission-ai/openspec` envia dados via PostHog por defeito; definir `OPENSPEC_TELEMETRY=0` para desactivar
-- Em CI: a variável está configurada no workflow `sdd-gates.yml` (`OPENSPEC_TELEMETRY: "0"`)
-- Em local: definir no shell ou no `.env` do repo consumidor (nunca commitar o valor)
+## openspec CLI — telemetry
+- `@fission-ai/openspec` sends data via PostHog by default; set `OPENSPEC_TELEMETRY=0` to disable
+- In CI: the variable is configured in the `sdd-gates.yml` workflow (`OPENSPEC_TELEMETRY: "0"`)
+- Locally: set it in the shell or in the consumer repo `.env` (never commit the value)
 
 ## CI/CD
 
-**NUNCA:**
-- Usar `pull_request_target` com `secrets.*` ou permissões elevadas — abre RCE de PRs externos
-- Pinar actions por tag mutável (ex.: `uses: actions/checkout@v4`) — SEMPRE pinar por commit SHA imutável
+**NEVER:**
+- Use `pull_request_target` with `secrets.*` or elevated permissions — opens RCE from external PRs
+- Pin actions by mutable tag (e.g. `uses: actions/checkout@v4`) — ALWAYS pin by immutable commit SHA
 
-**SEMPRE:**
-- Incluir `OPENSPEC_TELEMETRY=0` ao usar `@fission-ai/openspec` em jobs de CI
-- Declarar `permissions: contents: read` no topo do workflow; justificar explicitamente qualquer escopo mais amplo
-- Pinar actions externas por SHA: `uses: actions/checkout@<sha>` (sem tags mutáveis)
+**ALWAYS:**
+- Include `OPENSPEC_TELEMETRY=0` when using `@fission-ai/openspec` in CI jobs
+- Declare `permissions: contents: read` at the top of the workflow; explicitly justify any broader scope
+- Pin external actions by SHA: `uses: actions/checkout@<sha>` (no mutable tags)
 
-## Riscos de supply chain e MANIFEST (SDD kit)
+## Supply chain risks and MANIFEST (SDD kit)
 
-**Campo `gate:` do MANIFEST — risco de eval futuro:**
-- O campo `gate:` em `sdd-kit/MANIFEST.yaml` é **metadata documental** — indica o comando de verificação sugerido.
-- `install.sh` e `upgrade.sh` **NUNCA** devem avaliar `gate:` via `eval` ou equivalente; fazê-lo seria uma vulnerabilidade de injecção de código (F-SEC-5).
-- Qualquer nova versão desses scripts que processe `gate:` deve tratar o valor como string de documentação, nunca como comando executável.
+**MANIFEST `gate:` field — future eval risk:**
+- The `gate:` field in `sdd-kit/MANIFEST.yaml` is **documentation metadata** — it indicates the suggested verification command.
+- `install.sh` and `upgrade.sh` MUST **NEVER** evaluate `gate:` via `eval` or equivalent; doing so would be a code-injection vulnerability (F-SEC-5).
+- Any new version of those scripts that processes `gate:` must treat the value as a documentation string, never as an executable command.
 
-**`npx --yes` sem lockfile — limitação de supply chain:**
-- `npx --yes @fission-ai/openspec@1.3.1` pina a versão top-level do pacote, mas **não pina dependências transitivas** (que usam intervalos `^`).
-- Em ambientes com requisitos de segurança elevados, preferir instalar o pacote com lockfile commitado + `npm ci` em vez de `npx --yes` (F-SEC-3).
-- Esta limitação é documentada como risco conhecido para operadores que adaptem o workflow de CI.
+**`npx --yes` without lockfile — supply chain limitation:**
+- `npx --yes @fission-ai/openspec@1.3.1` pins the top-level package version, but **does not pin transitive dependencies** (which use `^` ranges).
+- In environments with elevated security requirements, prefer installing the package with a committed lockfile + `npm ci` instead of `npx --yes` (F-SEC-3).
+- This limitation is documented as a known risk for operators who adapt the CI workflow.
