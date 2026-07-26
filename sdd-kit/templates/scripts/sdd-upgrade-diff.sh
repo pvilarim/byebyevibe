@@ -20,23 +20,33 @@ echo "Guia referenciado em project.md: ${GUIDE_VERSION:-[não detectado]}"
 echo ""
 
 # Build curated file list from MANIFEST.yaml when present, else fallback
-CURATED_FILES=()
+CURATED_DESTS=()
+CURATED_SOURCES=()
 MANIFEST="sdd-kit/MANIFEST.yaml"
 if [[ -f "$MANIFEST" ]]; then
-  while IFS= read -r path; do
-    [[ -n "$path" ]] && CURATED_FILES+=("$path")
+  while IFS=$'\t' read -r dest src; do
+    [[ -n "$dest" ]] && CURATED_DESTS+=("$dest") && CURATED_SOURCES+=("${src:-$dest}")
   done < <(python3 - <<'PY' "$MANIFEST"
 import sys, re
 text = open(sys.argv[1]).read()
+entries, block = [], None
 for line in text.splitlines():
-    m = re.match(r"\s+-\s+path:\s+(.+)", line) or re.match(r"\s+path:\s+(.+)", line)
-    if m:
-        print(m.group(1).strip())
+    if line.strip().startswith("- path:"):
+        if block and "path" in block: entries.append(block)
+        block = {"path": line.split(":",1)[1].strip()}
+    elif block:
+        m = re.match(r"\s+(\w+):\s*(.+)", line)
+        if m:
+            k, v = m.group(1), m.group(2).strip().strip('"')
+            if k in ("source", "path"): block[k] = v
+if block and "path" in block: entries.append(block)
+for e in entries:
+    print(f"{e['path']}\t{e.get('source','')}")
 PY
 )
-  echo "Fonte inventário: sdd-kit/MANIFEST.yaml (${#CURATED_FILES[@]} ficheiros)"
+  echo "Fonte inventário: sdd-kit/MANIFEST.yaml (${#CURATED_DESTS[@]} ficheiros)"
 else
-  CURATED_FILES=(
+  CURATED_DESTS=(
     "AGENTS.md"
     "CLAUDE.md"
     "openspec/project.md"
@@ -54,6 +64,7 @@ else
     "scripts/sdd-session-check.sh"
     "scripts/sdd-session-status.sh"
   )
+  CURATED_SOURCES=("${CURATED_DESTS[@]}")
   echo "Fonte inventário: lista built-in (MANIFEST ausente)"
 fi
 
@@ -65,7 +76,7 @@ GENERATED_OK=(
 
 echo ""
 echo "--- Inventário (ficheiros curados) ---"
-for f in "${CURATED_FILES[@]}"; do
+for f in "${CURATED_DESTS[@]}"; do
   if [[ -f "$f" ]]; then
     lines=$(wc -l < "$f" | tr -d ' ')
     sha=$(sha256sum "$f" | awk '{print $1}')
@@ -102,11 +113,17 @@ fi
 echo ""
 echo "--- Diff vs staging: $STAGING_DIR ---"
 DIFF_FOUND=0
-for f in "${CURATED_FILES[@]}"; do
-  staging="$STAGING_DIR/$f"
-  # templates/ uses templates/ prefix in manifest sources — try both paths
-  if [[ ! -f "$staging" && -f "$STAGING_DIR/templates/$f" ]]; then
-    staging="$STAGING_DIR/templates/$f"
+for i in "${!CURATED_DESTS[@]}"; do
+  f="${CURATED_DESTS[$i]}"
+  src="${CURATED_SOURCES[$i]}"
+  # Resolve staging path using source field; strip first component as fallback
+  # (handles direct templates/ use where source starts with "templates/")
+  staging="$STAGING_DIR/$src"
+  if [[ ! -f "$staging" ]]; then
+    staging="$STAGING_DIR/${src#*/}"
+  fi
+  if [[ ! -f "$staging" ]]; then
+    staging="$STAGING_DIR/$f"
   fi
   if [[ ! -f "$staging" ]]; then
     continue

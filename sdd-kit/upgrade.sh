@@ -42,6 +42,10 @@ while [[ $# -gt 0 ]]; do
 done
 
 [[ -n "$FROM_VER" && -n "$TO_VER" ]] || { echo "ERROR: --from and --to are required" >&2; usage 2; }
+if $DRY_RUN && $APPLY; then
+  echo "ERROR: --dry-run e --apply são mutuamente exclusivos" >&2
+  exit 2
+fi
 $APPLY || DRY_RUN=true
 
 REPO_ROOT="$(cd "$REPO_ROOT" && pwd)"
@@ -143,12 +147,31 @@ EOF
 fi
 
 if $APPLY; then
+  if [[ ! -f "$REPORT_FILE" ]]; then
+    echo "ERROR: UPGRADE_REPORT não encontrado: $REPORT_FILE" >&2
+    echo "       Correr primeiro: bash sdd-kit/upgrade.sh --from $FROM_VER --to $TO_VER --dry-run" >&2
+    exit 1
+  fi
+  if ! grep -q '\[x\] Actualização aprovada' "$REPORT_FILE"; then
+    echo "ERROR: UPGRADE_REPORT existe mas não foi aprovado." >&2
+    echo "       Marcar '- [x] Actualização aprovada' em $REPORT_FILE antes de --apply" >&2
+    exit 1
+  fi
   echo ""
   echo "--- Applying COPY/APPLY_TEMPLATE only ---"
   while IFS=$'\t' read -r src dest merge; do
     [[ -n "$dest" ]] || continue
     [[ "$merge" == "COPY" ]] || continue
     [[ -f "$KIT_DIR/$src" ]] || continue
+    dest_path="$(realpath --no-symlinks "$REPO_ROOT/$dest")"
+    [[ "$dest_path" == "$REPO_ROOT"/* ]] || {
+      echo "ERROR: path traversal blocked: $dest" >&2
+      exit 1
+    }
+    if [[ -f "$REPO_ROOT/$dest" ]] && ! diff -q "$KIT_DIR/$src" "$REPO_ROOT/$dest" &>/dev/null; then
+      cp "$REPO_ROOT/$dest" "$REPO_ROOT/$dest.bak.$(date +%s)"
+      echo "  BACKUP $dest"
+    fi
     mkdir -p "$(dirname "$REPO_ROOT/$dest")"
     cp "$KIT_DIR/$src" "$REPO_ROOT/$dest"
     [[ "$dest" == *.sh ]] && chmod +x "$REPO_ROOT/$dest"
