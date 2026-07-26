@@ -470,6 +470,68 @@ Enforcement fail-closed dos gates SDD no servidor (gap G1 — `add-sdd-ci-gates-
 
 **Rollback:** apagar `.github/workflows/sdd-gates.yml` desactiva o gate imediatamente (sem estado residual).
 
+### 2.13 Reviews pós-apply — correctness-review
+
+Skill on-demand que detecta bugs lógicos, edge cases não tratados, violações de contrato e erros silenciosos em código gerado por IA. Posicionada na pipeline **após testes (R6/TDD Guard)** e **antes de `simplify-review`**.
+
+#### Quando acionar
+
+| Tipo de tarefa | Acionar? | Gatilho |
+|----------------|----------|---------|
+| **B — Bug fix** | ✅ Sempre | Diff > 0 linhas de lógica |
+| **C — Refactor** | ✅ Sim | Diff > ~80 linhas ou > 4 ficheiros |
+| **D — Feature** | ✅ Sempre | Diff com lógica nova |
+| **A — Trivial** | ❌ Não | — |
+| **E — Exploração** | ❌ Não | — (sem código gerado) |
+
+**Posição no pipeline:**
+
+```
+/opsx:apply  →  [implementação]  →  testes (R6/TDD Guard)
+  →  correctness-review (B/C/D)
+  →  simplify-review (opcional, C/D)
+  →  security-reviewer (se auth/API/pagamentos)
+  →  commit (R9)  →  gates CI  →  /opsx:archive
+```
+
+#### Como ler o output
+
+A skill produz achados com 5 tags:
+
+| Tag | Significa |
+|-----|-----------|
+| `logic:` | Ramo lógico errado; resultado incorreto para input válido |
+| `edge:` | Input extremo não tratado (null, vazio, overflow, unicode) |
+| `contract:` | Violação de pré/pós-condição ou invariante de API |
+| `race:` | Condição de corrida (shared mutable state, async sem lock) |
+| `silent:` | Erro silencioso — excepção engolida, valor errado sem alerta |
+
+**Vereditos:**
+
+| Veredito | Acção |
+|----------|-------|
+| `CORRECT` | Nenhum achado — ship |
+| `RISKY` | ≥1 achado acionável — revisar antes de commit |
+| `ESCOPO INSUFICIENTE` | Diff demasiado pequeno ou sem lógica — ignorar |
+
+#### Como não acionar
+
+- **Nunca** configurar como hook ou rule `alwaysApply`.
+- **Nunca** bloquear commit automaticamente com base nesta skill.
+- Não invocar em tarefas Tipo A ou E.
+
+#### Troubleshooting
+
+| Sintoma | Causa | Acção |
+|---------|-------|-------|
+| Achados sobre complexidade/estilo | Scope errado | Usar `simplify-review` para esses; `correctness-review` só caça bugs |
+| Achados sobre segurança | Scope errado | Usar `security-reviewer` |
+| Muitos falsos positivos | Modelo especulando sem evidência | Pedir `[mostrar evidência no código]`; descartar achado sem localização concreta |
+
+**Skill files:** `.claude/skills/correctness-review/SKILL.md` (espelho em `.cursor/skills/correctness-review/SKILL.md`).
+
+**Rollback:** `rm -r .claude/skills/correctness-review/ .cursor/skills/correctness-review/` + reverter `AGENTS.md` e `openspec/infra.md`.
+
 ### 2.9 Actualização de instalação existente
 
 Usar quando o repositório **já tem** OpenSpec, GitNexus e/ou Graphify configurados e o objectivo é **actualizar** para uma nova versão do guia ou das ferramentas — **não** repetir §2 como instalação verde.

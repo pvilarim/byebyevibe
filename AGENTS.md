@@ -143,12 +143,13 @@ Skills invocáveis após código escrito — **nunca** always-on, **nunca** bloq
 
 | Skill / agent | Quando invocar | Não invocar |
 |---------------|----------------|-------------|
+| `correctness-review` | Pós-apply: Tipo B (sempre); Tipo C/D (diff > ~80 linhas ou > 4 ficheiros); pedido explícito de correctness | Tipo A; Tipo E; durante `/opsx:propose` |
 | `simplify-review` | Pós-apply ou pré-PR: diff > ~80 linhas ou > 4 ficheiros; Tipo B/C/D; pedido explícito de simplicidade | Tipo A; durante `/opsx:propose`; escopo ainda em debate |
 | `security-reviewer` | Auth, API routes, pagamentos, dados sensíveis, webhooks | — |
 
-Ordem sugerida: implementação → testes (R6) → `simplify-review` (opcional) → `security-reviewer` (se aplicável) → commit.
+Ordem sugerida: implementação → testes (R6) → `correctness-review` (B/C/D) → `simplify-review` (opcional) → `security-reviewer` (se aplicável) → commit.
 
-Detalhe da skill: `.claude/skills/simplify-review/SKILL.md` (espelho em `.cursor/skills/`).
+Detalhe das skills: `.claude/skills/correctness-review/SKILL.md` · `.claude/skills/simplify-review/SKILL.md` (espelhos em `.cursor/skills/`).
 
 ## Subagentes (Claude Code)
 
