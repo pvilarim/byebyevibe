@@ -1,5 +1,5 @@
-# SDD Gates — enforcement fail-closed dos gates SDD no servidor (gap G1).
-# Orquestra apenas comandos já existentes no repo; zero dependência nova.
+# SDD Gates — enforcement fail-closed dos gates SDD no servidor (gap G1 + G8).
+# Orquestra comandos existentes no repo; excepção G8: OSV-Scanner action pinada por SHA.
 # Origem: openspec/changes/add-sdd-ci-gates-workflow/ (design D1–D11).
 # Distribuído via sdd-kit/templates/.github/workflows/sdd-gates.yml (C1).
 name: SDD Gates
@@ -48,6 +48,25 @@ jobs:
           else
             echo "SKIP: scripts/verify-task-patterns.sh not found — install via sdd-kit if profile is DOCS_SPECS/HYBRID"
           fi
+
+      # G8 — OSV-Scanner bloqueante quando lockfile na raiz (fail-closed).
+      - name: OSV-Scanner (skip — no lockfile)
+        if: >-
+          hashFiles('package-lock.json', 'pnpm-lock.yaml', 'yarn.lock',
+                    'poetry.lock', 'Pipfile.lock', 'Cargo.lock', 'go.sum',
+                    'Gemfile.lock', 'composer.lock') == ''
+        run: echo "SKIP: no lockfile at repo root — OSV-Scanner not applicable"
+
+      - name: OSV-Scanner (blocking)
+        if: >-
+          hashFiles('package-lock.json', 'pnpm-lock.yaml', 'yarn.lock',
+                    'poetry.lock', 'Pipfile.lock', 'Cargo.lock', 'go.sum',
+                    'Gemfile.lock', 'composer.lock') != ''
+        uses: google/osv-scanner-action/osv-scanner-action@8dc09193bb540e09b23da07ad7e30bd33bf87018 # v2.3.8
+        with:
+          scan-args: |-
+            --recursive
+            ./
 
       # D4 — report-only: verify.sh orquestra verify-infra.sh, que marca FAIL
       # para CLIs de conhecimento (GitNexus/Graphify) ausentes no runner e muta

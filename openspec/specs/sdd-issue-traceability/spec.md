@@ -56,7 +56,7 @@ Documentation for github-mcp-server MUST specify minimum scope configuration: `-
 
 #### Scenario: Operator installs MCP locally
 
-- **WHEN** an operator follows `doc/sistema-sdd-pedro.md` §2.14 to install github-mcp
+- **WHEN** an operator follows `doc/sistema-sdd-pedro.md` §2.15 to install github-mcp
 - **THEN** the documented configuration limits toolsets to issues and uses OAuth or a token stored only in `~/.cursor/mcp.json`
 
 #### Scenario: Agent reads infra before reinstalling
@@ -66,7 +66,7 @@ Documentation for github-mcp-server MUST specify minimum scope configuration: `-
 
 ### Requirement: Six-point contract registration
 
-The github-mcp-server integration MUST be registered in all six contract points defined in `metodologia-insercao.md` Fase 3: `openspec/infra.md` (R1), `AGENTS.md` (R2), optional skill (R3 — prefer AGENTS.md if ≤10 lines suffice), `doc/sistema-sdd-pedro.md` §2.14 (R4), `doc/avaliacoes/` (R5), and `sdd-kit/templates/` (R6).
+The github-mcp-server integration MUST be registered in all six contract points defined in `metodologia-insercao.md` Fase 3: `openspec/infra.md` (R1), `AGENTS.md` (R2), optional skill (R3 — prefer AGENTS.md if ≤10 lines suffice), `doc/sistema-sdd-pedro.md` §2.15 (R4), `doc/avaliacoes/` (R5), and `sdd-kit/templates/` (R6).
 
 #### Scenario: Agent discovers github-mcp usage rules
 
@@ -76,4 +76,4 @@ The github-mcp-server integration MUST be registered in all six contract points 
 #### Scenario: Operator finds human operation guide
 
 - **WHEN** an operator needs to install, verify, or disable github-mcp
-- **THEN** `doc/sistema-sdd-pedro.md` §2.14 provides step-by-step instructions including troubleshooting and rollback
+- **THEN** `doc/sistema-sdd-pedro.md` §2.15 provides step-by-step instructions including troubleshooting and rollback

@@ -38,6 +38,27 @@
 | `sdd-kit/install.sh` | — | <!-- kit-install-status -->❌<!-- /kit-install-status --> | `test -x sdd-kit/install.sh` |
 | `sdd-kit/verify.sh` | — | <!-- kit-verify-status -->❌<!-- /kit-verify-status --> | `bash sdd-kit/verify.sh` |
 
+## CI Gates
+
+| Componente | Estado | Verificar com |
+|------------|--------|---------------|
+| Workflow `sdd-gates` | [NEEDS VERIFICATION] | `test -f .github/workflows/sdd-gates.yml` |
+| Template no kit | [NEEDS VERIFICATION] | `test -f sdd-kit/templates/.github/workflows/sdd-gates.yml` |
+| Branch protection (required check) | `[AÇÃO MANUAL]` | guia §2.12 |
+
+Fail-closed: `openspec validate`, `verify-task-patterns.sh`, **OSV-Scanner** (quando lockfile presente). Operação: guia §2.12.
+
+## Supply Chain
+
+| Componente | Estado | Verificar com |
+|------------|--------|---------------|
+| OSV-Scanner (CI) | [NEEDS VERIFICATION] | `grep -q 'OSV-Scanner (blocking)' .github/workflows/sdd-gates.yml` |
+| Action SHA | `8dc09193bb540e09b23da07ad7e30bd33bf87018` (# v2.3.8) | `grep 8dc09193bb540e09b23da07ad7e30bd33bf87018 .github/workflows/sdd-gates.yml` |
+| Renovate (`renovate.json`) | APP/HYBRID only | `test -f renovate.json` |
+| Renovate GitHub App | `[AÇÃO MANUAL]` | guia §2.13 |
+
+Operação: `doc/sistema-sdd-pedro.md` §2.13.
+
 ## UI Development Module
 
 | Componente | Estado | Verificar com |

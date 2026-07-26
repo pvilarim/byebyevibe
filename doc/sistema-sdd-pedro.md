@@ -8,7 +8,7 @@
 
 | Modo | Acção |
 |------|--------|
-| **Humano — instalação nova (C1)** | §2.1 → CLIs → `bash sdd-kit/install.sh --profile X` → §2.8 → §2.12 |
+| **Humano — instalação nova (C1)** | §2.1 → CLIs → `bash sdd-kit/install.sh --profile X` → §2.8 → §2.12 → §2.13 (APP/HYBRID) |
 | **Humano — actualização (C2)** | §2.9 + `bash sdd-kit/upgrade.sh --dry-run` → §12.8 → `--apply` |
 | **Humano — só CLIs (C2b)** | §2.9.4 — sem tocar `sdd-kit/templates/` |
 | **Propagação specs (C3)** | git/referência em `openspec/specs/` — **sem** `install.sh` |
@@ -34,7 +34,7 @@ Segunda fricção: o ecossistema move-se depressa. Versões neste documento são
 ## Índice
 
 1. [Pré-requisitos](#1-pré-requisitos-questão-6) — inclui §1.6 (organização e cenários C1–C3)
-2. [Passo a passo de instalação](#2-passo-a-passo-de-instalação-questão-1) — inclui §2.0 (IA), §2.5 (AGENTS.md), §2.8 (verificação), §2.9 (actualização), §2.12 (gates de CI)
+2. [Passo a passo de instalação](#2-passo-a-passo-de-instalação-questão-1) — inclui §2.0 (IA), §2.5 (AGENTS.md), §2.8 (verificação), §2.9 (actualização), §2.12 (gates de CI), §2.13 (supply chain)
 3. [Classificação de tarefas e pipelines](#3-classificação-de-tarefas-e-pipelines-questões-2-3-31)
 4. [Tabela mestre: ferramenta × responsabilidade × I/O](#4-tabela-mestre-questão-3)
 5. [Documentos e referências cruzadas](#5-documentos-e-referências-cruzadas-questão-32) — inclui §5.5 (avaliações de integração)
@@ -401,6 +401,7 @@ Usar após cada instalação (humano ou IA):
 - [ ] `openspec/infra.md` secção Session Coordination presente
 - [ ] `bash scripts/verify-infra.sh` completa sem erro (ou documentar ❌ pendentes)
 - [ ] `.github/workflows/sdd-gates.yml` presente (ver §2.12 para configurar branch protection manual)
+- [ ] `renovate.json` presente se perfil APP/HYBRID (ver §2.13 para instalar app Renovate)
 
 ### 2.11 Módulo de desenvolvimento de UI (C1-UI, opcional)
 
@@ -451,6 +452,7 @@ Enforcement fail-closed dos gates SDD no servidor (gap G1 — `add-sdd-ci-gates-
 |-------|---------|----------|
 | OpenSpec validate | `npx --yes @fission-ai/openspec@1.3.1 validate --all --strict --no-interactive` | **Bloqueante** (fail-closed) |
 | Task patterns | `bash scripts/verify-task-patterns.sh` | Bloqueante (SKIP se ausente — perfil APP) |
+| OSV-Scanner | `google/osv-scanner-action` (SHA-pinned) | Bloqueante (SKIP se sem lockfile na raiz) |
 | sdd-kit verify | `bash sdd-kit/verify.sh` | Report-only (`continue-on-error`) — inclui `verify-infra.sh`, que verifica CLIs de conhecimento ausentes no runner |
 
 **Como ler o output:** no separador Actions (ou check do PR), o passo vermelho indica o gate que falhou. `OpenSpec validate` lista `✗ change/<id>` — reproduzir localmente com `npx openspec validate <id> --strict` e corrigir o artefacto. `Task patterns` lista `FAIL missing: <path>` — corrigir o `Pattern:` no `tasks.md`. O passo `sdd-kit verify` pode aparecer com aviso sem bloquear (esperado: GitNexus/Graphify não existem no runner).
@@ -470,7 +472,73 @@ Enforcement fail-closed dos gates SDD no servidor (gap G1 — `add-sdd-ci-gates-
 
 **Rollback:** apagar `.github/workflows/sdd-gates.yml` desactiva o gate imediatamente (sem estado residual).
 
-### 2.13 Reviews pós-apply — correctness-review
+### 2.13 Supply chain (Renovate + OSV-Scanner) — operação
+
+Gates automáticos de supply chain (gap G8 — `add-supply-chain-gates`). Operam **independentemente** da tarefa A–E em curso na sessão SDD.
+
+**OSV-Scanner (CI):**
+
+- **Quando corre:** no job `SDD Gates`, após `openspec validate` e `task patterns`, antes de `sdd-kit verify` (report-only).
+- **Condição:** só executa se existir lockfile suportado na raiz (`package-lock.json`, `pnpm-lock.yaml`, `yarn.lock`, `poetry.lock`, `Pipfile.lock`, `Cargo.lock`, `go.sum`, `Gemfile.lock`, `composer.lock`).
+- **SKIP:** sem lockfile → log `SKIP: no lockfile at repo root — OSV-Scanner not applicable` (hub DOCS_SPECS sem deps).
+- **Política:** fail-closed — vulnerabilidade no lockfile bloqueia merge.
+
+**Como ler falha OSV no Actions:**
+
+1. Abrir o check `SDD Gates` no PR → passo `OSV-Scanner (blocking)` vermelho.
+2. Expandir logs — lista pacote, versão e advisory ID (OSV).
+3. Actualizar dependência ou aplicar override documentado (último recurso).
+
+**Renovate (updates automatizados):**
+
+`[AÇÃO MANUAL NECESSÁRIA]` **Instalar app GitHub Renovate** — perfis APP/HYBRID apenas:
+
+1. Ir a [github.com/apps/renovate](https://github.com/apps/renovate) → Install.
+2. Seleccionar o repositório (ou organização).
+3. Confirmar que `renovate.json` existe na raiz (copiado por `sdd-kit/install.sh` em APP/HYBRID).
+4. Aguardar PR inicial de onboarding do Renovate.
+
+**Preset conservador** (`sdd-kit/templates/renovate.json`):
+
+- Schedule: segunda-feira antes das 9h (America/Sao_Paulo).
+- Limites: 5 PRs concorrentes, 2/hora.
+- Agrupamento de minor/patch não-major.
+- Automerge **apenas** patches — requer `requiredStatusChecks: ["SDD Gates"]` + branch protection activa (opt-in).
+- Majors e minors: **sem** automerge — review humano obrigatório.
+
+**Classificação agente (AGENTS.md):**
+
+| Origem | Tipo | Acção |
+|--------|------|-------|
+| Renovate patch | A | Review rápido; merge se CI verde |
+| Renovate minor/major | B/C | Review de breaking behaviour |
+| OSV vermelho no PR | B | Corrigir deps antes de merge/archive |
+
+**Troubleshooting:**
+
+| Sintoma | Causa provável | Acção |
+|---------|----------------|-------|
+| OSV bloqueia merge legítimo | Advisory em transitiva ou falso positivo | Actualizar dep; override temporário (pin/ignore) — ver abaixo |
+| Renovate não abre PRs | App não instalada ou `renovate.json` ausente | Instalar app; `install.sh --profile APP` |
+| Automerge não funciona | Branch protection sem automerge ou check errado | Configurar "SDD Gates" como required check + automerge no GitHub |
+| Spam de PRs Renovate | Preset demasiado agressivo | Ajustar `prConcurrentLimit` / `schedule` em `renovate.json` |
+
+**Override OSV (último recurso):** preferir corrigir a dependência. Se inevitável, documentar no PR o motivo e usar mecanismo suportado pelo OSV-Scanner (ex.: `osv-scanner.toml` com ignore temporário). Não desactivar o step no workflow para contornar.
+
+**Checklist piloto APP** (volume de PRs Renovate):
+
+- [ ] Após 2 semanas de operação, confirmar ≤5 PRs/semana em média
+- [ ] Automerge de patches não quebra CI
+- [ ] Majors sempre com review humano
+
+**Rollback:**
+
+| Componente | Acção |
+|------------|-------|
+| OSV | Remover step `OSV-Scanner` de `sdd-gates.yml` (hub + template) |
+| Renovate | Remover `renovate.json` + desinstalar app GitHub |
+
+### 2.14 Reviews pós-apply — correctness-review
 
 Skill on-demand que detecta bugs lógicos, edge cases não tratados, violações de contrato e erros silenciosos em código gerado por IA. Posicionada na pipeline **após testes (R6/TDD Guard)** e **antes de `simplify-review`**.
 
@@ -532,7 +600,7 @@ A skill produz achados com 5 tags:
 
 **Rollback:** `rm -r .claude/skills/correctness-review/ .cursor/skills/correctness-review/` + reverter `AGENTS.md` e `openspec/infra.md`.
 
-### 2.14 GitHub Issues MCP (github-mcp-server) — operação
+### 2.15 GitHub Issues MCP (github-mcp-server) — operação
 
 MCP passivo (modo D — gap G5, change `add-github-mcp-issue-traceability`) para ligar changes OpenSpec a GitHub Issues. O agente consulta quando relevante em explore/propose; **não** intercepta edições nem adiciona etapa ao fluxo interactivo.
 
@@ -2504,10 +2572,17 @@ bash scripts/verify-task-patterns.sh   # paths Pattern: existem; DOCS_SPECS sem 
 
 ## Changelog do guia
 
+### 1.6.0 (2026-07-26)
+
+- **Supply chain (G8)** — OSV-Scanner bloqueante no `sdd-gates.yml` (quando lockfile presente) + template `renovate.json` conservador para perfis APP/HYBRID (change `add-supply-chain-gates`).
+- **§2.13** — Operação humana supply chain: OSV no Actions, instalar app Renovate, preset, automerge patches (opt-in), troubleshooting, rollback.
+- **Renumerado** — §2.13 correctness-review → §2.14; §2.14 github-mcp → §2.15.
+- **`sdd-kit/`** — `templates/renovate.json`; OSV em `templates/.github/workflows/sdd-gates.yml`; MANIFEST 1.5.0.
+
 ### 1.5.0 (2026-07-26)
 
 - **GitHub Issues MCP (G5)** — `github-mcp-server` como MCP passivo (modo D) + campo `**Issue:**` no template de `proposal.md` para rastreabilidade issue → change → PR (change `add-github-mcp-issue-traceability`).
-- **§2.14** — Operação humana do github-mcp: instalação (endpoint remoto OAuth + binário local), escopo mínimo `--toolsets issues`, matriz A–E, troubleshooting, rollback.
+- **§2.15** — Operação humana do github-mcp: instalação (endpoint remoto OAuth + binário local), escopo mínimo `--toolsets issues`, matriz A–E, troubleshooting, rollback.
 - **`sdd-kit/`** — Template `openspec/changes/_template/proposal.md`; MANIFEST 1.4.0 → 1.5.0.
 
 ### 1.4.0 (2026-07-25)

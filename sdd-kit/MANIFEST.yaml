@@ -89,7 +89,7 @@ files:
 
   - path: .github/workflows/sdd-gates.yml
     source: templates/.github/workflows/sdd-gates.yml
-    sha256: "50460c5b36161b0cfc120d5fdbf69b84ac57957f7d4ddbbc86f2ef3b36028e68"
+    sha256: "b93c6359fcfec221e2c31a2b8bd7dc6422e3be0771138d231b978bdc9833b9e4"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f .github/workflows/sdd-gates.yml"
@@ -159,14 +159,14 @@ files:
 
   - path: AGENTS.md
     source: templates/AGENTS.core.md
-    sha256: "415e8691151cd1886c346167a1780442ee17f0c41edf9ad160b31e6e44e78b67"
+    sha256: "4b6844a7d3a973d121a7f653b5897c68cb42fbc21bfb25db8935eecf8ebf2ee5"
     merge: MERGE_PROFILE
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test $(wc -l < AGENTS.md) -le 150"
 
   - path: openspec/infra.md
     source: templates/openspec/infra.md
-    sha256: "ffab4198650b4a61fd97a8c29116ef6d607a8a7fc69ad924014b059aab5ca574"
+    sha256: "6ca25e662b3c811d4940f57bb8b192fc34c9a8b11f45fce943f7fe24a1c2075a"
     merge: MERGE
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f openspec/infra.md"
@@ -212,3 +212,10 @@ files:
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f doc/design/003-ui-stack-adapters.md"
+
+  - path: renovate.json
+    source: templates/renovate.json
+    sha256: "1c236850249e5907f70f2182d4172701df45aa15b8ff2b840fd598f635315b28"
+    merge: COPY
+    profiles: [APP, HYBRID]
+    gate: "test -f renovate.json"
