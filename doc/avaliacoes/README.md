@@ -29,7 +29,7 @@ Registo histórico de ferramentas, padrões e ideias **avaliadas** para o stack 
 
 | Data | Candidato | Decisão | Documento |
 |------|-----------|---------|-----------|
-| 2026-07-26 | Posicionamento e descoberta — ByeByeVibe (vibe → agentic); P10 adoptado nos docs | **Misto** — P1–P4 + P10 (ByeByeVibe) Adoptado; rename slug GitHub = manual; P5 / fame Adiado ou Não implementar | [2026-07-26-sdd-discovery-positioning.md](./2026-07-26-sdd-discovery-positioning.md) |
+| 2026-07-26 | Posicionamento e descoberta — ByeByeVibe (vibe → agentic); P10 adoptado nos docs | **Misto** — P1–P4 + P10 Adoptado; P11/P12 (i18n + CHANGELOG raiz) Adiado até lançamento público; P5 / fame Adiado ou Não implementar | [2026-07-26-sdd-discovery-positioning.md](./2026-07-26-sdd-discovery-positioning.md) · [explore research](../../openspec/changes/explore-public-release-surface/research.md) |
 | 2026-03-26 | [Headroom](https://github.com/chopratejas/headroom) — compressão de contexto para agentes | **Descartado** | [2026-03-26-headroom-context-compression.md](./2026-03-26-headroom-context-compression.md) |
 | 2026-06-27 | Módulo UI SDD (Impeccable + Open Design + Pencil + shadcn) — `add-sdd-ui-development-module` | **Adopted** | [2026-06-27-sdd-ui-development-module.md](./2026-06-27-sdd-ui-development-module.md) |
 | 2026-07-25 | Ferramentas OSS p/ gaps SDD (Probity (G2), PR-Agent, Renovate+OSV, github-mcp, DevLake, Vibe Kanban, GlitchTip) — `explore-oss-coverage-gaps` | **Misto** — ver doc | [2026-07-25-oss-coverage-gaps-tooling.md](./2026-07-25-oss-coverage-gaps-tooling.md) |
