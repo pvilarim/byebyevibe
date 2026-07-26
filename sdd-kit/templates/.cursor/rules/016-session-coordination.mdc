@@ -10,3 +10,4 @@ alwaysApply: true
 - **Explore/propose** read-only: advisory — usar `bash scripts/sdd-session-status.sh` se houver dúvida.
 - **Procedimento operacional:** `doc/sistema-sdd-pedro.md` §3.3 · requisitos: `openspec/specs/sdd-session-coordination/` (após archive).
 - **R11** em `AGENTS.md` — ponteiro curto; detalhe em `openspec/infra.md` (Session Coordination).
+- **Excepção CI:** runners efêmeros (GitHub Actions, etc.) estão isentos de R11 — `.sdd/runtime/` é gitignored e não persiste; `sdd-session-register/check` aplica-se apenas a máquinas locais com estado persistente.
