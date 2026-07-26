@@ -2,7 +2,7 @@
 
 **ByeByeVibe** is the public name of this project. This folder (`sdd-kit/`) is the versioned **install payload** — commands and paths stay `sdd-kit/*`.
 
-Payload versionado para instalação reproduzível do stack SDD (scripts, rules, skeletons), separado do guia de procedimento `doc/sistema-sdd-pedro.md`.
+Versioned payload for reproducible SDD stack install (scripts, rules, skeletons), separate from the procedure guide `doc/sistema-sdd-pedro.md`.
 
 ## What this is (first contact)
 
@@ -10,8 +10,8 @@ Payload versionado para instalação reproduzível do stack SDD (scripts, rules,
 
 | Human name | Code | When to use |
 |------------|------|-------------|
-| **Greenfield install** (primeira vez) | **C1** | New repo — bootstrap CLIs, then `install.sh` |
-| **Upgrade SDD** (já tens o kit) | **C2** | New guide/kit version — `upgrade.sh --dry-run` → `--apply` |
+| **Greenfield install** (first time) | **C1** | New repo — bootstrap CLIs, then `install.sh` |
+| **Upgrade SDD** (kit already installed) | **C2** | New guide/kit version — `upgrade.sh --dry-run` → `--apply` |
 | **CLI-only refresh** | **C2b** | Update OpenSpec/GitNexus/Graphify without touching curated files |
 | **Propagate domain specs** | **C3** | Share `openspec/specs/` via git — **do not** run install/upgrade |
 | **UI module** (optional) | **C1-UI** | Design system / Impeccable + shadcn after C1 |
@@ -20,93 +20,93 @@ Payload versionado para instalação reproduzível do stack SDD (scripts, rules,
 
 Discovery / hero: hub root [`README.md`](../README.md) (EN). Full procedure (pt-BR): [`doc/sistema-sdd-pedro.md`](../doc/sistema-sdd-pedro.md) §2.0b.
 
-## Cenários
+## Scenarios
 
-| Código | Situação | Comando de entrada |
-|--------|----------|-------------------|
-| **C1** | Instalação verde (primeira vez) | `bash scripts/bootstrap-sdd.sh` → `bash sdd-kit/install.sh --profile <PERFIL>` |
-| **C2** | Actualização SDD (guia/kit nova versão) | `bash sdd-kit/upgrade.sh --from X --to Y --dry-run` → aprovação → `--apply` |
-| **C2b** | Só CLIs desactualizadas | `doc/sistema-sdd-pedro.md` §2.9.4 — **sem** tocar no kit |
-| **C3** | Propagação de specs de domínio | git/referência em `openspec/specs/` — **não** correr `install.sh` nem `upgrade.sh` |
-| **C1-UI** | Módulo UI opcional (pós-C1) | `bash sdd-kit/install-ui-module.sh --detect` → `--apply [--yes]` — ver guia §2.11 |
-| **G2** | Módulo Probity (TDD enforce, pós-C1) | `bash sdd-kit/install-probity-module.sh --detect` → `--apply [--yes]` — pin `@nizos/probity@1.10.0`; guia §2.16 |
-| **G4** | Métricas SDD sob demanda (modo C) | `bash scripts/sdd-metrics.sh` — guia §2.17; **não** Apache DevLake |
+| Code | Situation | Entry command |
+|------|-----------|---------------|
+| **C1** | Greenfield install (first time) | `bash scripts/bootstrap-sdd.sh` → `bash sdd-kit/install.sh --profile <PROFILE>` |
+| **C2** | SDD upgrade (new guide/kit version) | `bash sdd-kit/upgrade.sh --from X --to Y --dry-run` → approval → `--apply` |
+| **C2b** | Outdated CLIs only | `doc/sistema-sdd-pedro.md` §2.9.4 — **do not** touch the kit |
+| **C3** | Domain specs propagation | git/reference under `openspec/specs/` — **do not** run `install.sh` or `upgrade.sh` |
+| **C1-UI** | Optional UI module (post-C1) | `bash sdd-kit/install-ui-module.sh --detect` → `--apply [--yes]` — see guide §2.11 |
+| **G2** | Probity module (TDD enforce, post-C1) | `bash sdd-kit/install-probity-module.sh --detect` → `--apply [--yes]` — pin `@nizos/probity@1.10.0`; guide §2.16 |
+| **G4** | On-demand SDD metrics (mode C) | `bash scripts/sdd-metrics.sh` — guide §2.17; **not** Apache DevLake |
 
-## Perfis
+## Profiles
 
-| Perfil | `--profile` | O que muda |
-|--------|-------------|------------|
-| APP | `APP` | Commands 12.2a; rules TS/Supabase |
+| Profile | `--profile` | What changes |
+|---------|-------------|--------------|
+| APP | `APP` | Commands 12.2a; TS/Supabase rules |
 | DOCS_SPECS | `DOCS_SPECS` | Commands 12.2b; `verify-task-patterns.sh` |
-| HYBRID | `HYBRID` | APP commands + rules opcionais |
+| HYBRID | `HYBRID` | APP commands + optional rules |
 
-## Comandos rápidos
+## Quick commands
 
 ```bash
-# Dry-run (sem escrever ficheiros)
+# Dry-run (do not write files)
 bash sdd-kit/install.sh --profile DOCS_SPECS --dry-run
 
-# Instalar payloads após openspec init
+# Install payloads after openspec init
 bash sdd-kit/install.sh --profile DOCS_SPECS
 
-# Upgrade com relatório
+# Upgrade with report
 bash sdd-kit/upgrade.sh --from 1.2.0 --to 1.3.0 --dry-run
 
-# Verificação pós-instalação
+# Post-install verification
 bash sdd-kit/verify.sh
 ```
 
-## Estrutura
+## Structure
 
 ```
 sdd-kit/
-├── MANIFEST.yaml      # Versão, ficheiros, merge strategy, gates
-├── install.sh         # C1 — copia templates para paths canónicos
-├── install-ui-module.sh      # C1-UI — módulo UI opcional pós-C1
-├── install-probity-module.sh # G2 — Probity (enforceTdd) opcional pós-C1; APP/HYBRID
+├── MANIFEST.yaml      # Version, files, merge strategy, gates
+├── install.sh         # C1 — copy templates to canonical paths
+├── install-ui-module.sh      # C1-UI — optional UI module post-C1
+├── install-probity-module.sh # G2 — Probity (enforceTdd) optional post-C1; APP/HYBRID
 ├── upgrade.sh         # C2 — diff + UPGRADE_REPORT + --apply
-├── verify.sh          # Orquestra verify-infra + task-patterns + session-status
-└── templates/         # Espelha paths no repo alvo (scripts/, .cursor/rules/, doc/design/, …)
+├── verify.sh          # Orchestrates verify-infra + task-patterns + session-status
+└── templates/         # Mirrors paths in the target repo (scripts/, .cursor/rules/, doc/design/, …)
 ```
 
-## Gate de CI (sdd-gates)
+## CI gate (sdd-gates)
 
-O kit distribui `.github/workflows/sdd-gates.yml` (template em `templates/.github/workflows/`) — workflow GitHub Actions que corre os gates SDD em `push`/`pull_request`, fail-closed no `openspec validate` (versão pinada = `min_openspec`). Só orquestra comandos já existentes; sem dependência nova.
+The kit ships `.github/workflows/sdd-gates.yml` (template under `templates/.github/workflows/`) — a GitHub Actions workflow that runs SDD gates on `push`/`pull_request`, fail-closed on `openspec validate` (pinned version = `min_openspec`). It only orchestrates existing commands; no new dependency.
 
-> `[AÇÃO MANUAL NECESSÁRIA]` Para o gate **bloquear merge de facto**, o operador deve activar branch protection no repositório (Settings → Branches → require status check "SDD Gates"). Ver `doc/sistema-sdd-pedro.md` §2.12.
+> `[MANUAL ACTION REQUIRED]` For the gate to **block merge in practice**, the operator must enable branch protection on the repository (Settings → Branches → require status check "SDD Gates"). See `doc/sistema-sdd-pedro.md` §2.12.
 
-## Skills de review pós-apply (instalação manual)
+## Post-apply review skills (manual install)
 
-O kit não inclui script automático para skills de review on-demand (modo C). Para instalar em repositórios consumidores, copiar manualmente os ficheiros de skill:
+The kit does not ship an automatic installer for on-demand review skills (mode C). To install in consumer repos, copy the skill files manually:
 
 ### correctness-review
 
 ```bash
-# No repo consumidor (APP ou DOCS_SPECS)
+# In the consumer repo (APP or DOCS_SPECS)
 mkdir -p .claude/skills/correctness-review .cursor/skills/correctness-review
-cp <caminho-deste-hub>/.claude/skills/correctness-review/SKILL.md .claude/skills/correctness-review/SKILL.md
+cp <path-to-this-hub>/.claude/skills/correctness-review/SKILL.md .claude/skills/correctness-review/SKILL.md
 cp .claude/skills/correctness-review/SKILL.md .cursor/skills/correctness-review/SKILL.md
 ```
 
-Registar em `openspec/infra.md` do repo consumidor (secção Skills):
+Register in the consumer repo `openspec/infra.md` (Skills section):
 
 ```
 | `.claude/skills/correctness-review/` + `.cursor/skills/correctness-review/` | review | ✅ |
 ```
 
-> **Nota:** este padrão é idêntico ao usado para `simplify-review`. Não há script `install.sh` automático nesta fase (Fase 1 — skill local sem binário/hook). Script automático planeado para v1.5.0 se validação em repo APP confirmar adopção.
+> **Note:** this pattern is identical for `simplify-review`. There is no automatic `install.sh` script in this phase (Phase 1 — local skill without binary/hook). An automatic script is planned for v1.5.0 if APP-repo validation confirms adoption.
 
 ### simplify-review
 
-Mesmo procedimento acima substituindo `correctness-review` por `simplify-review`.
+Same procedure as above, replacing `correctness-review` with `simplify-review`.
 
-## Hub vs consumidor
+## Hub vs consumer
 
-- **Hub (DOCS_SPECS):** commitar `sdd-kit/` completo para distribuir upgrades C2.
-- **APP:** pode receber só ficheiros expandidos (`scripts/`, `.cursor/rules/`); manter `sdd-kit/` opcional para upgrades.
+- **Hub (DOCS_SPECS):** commit the full `sdd-kit/` to distribute C2 upgrades.
+- **APP:** may receive only expanded files (`scripts/`, `.cursor/rules/`); keep `sdd-kit/` optional for upgrades.
 
-## Versão
+## Version
 
-`MANIFEST.yaml` `version` MUST igualar o changelog §14 de `doc/sistema-sdd-pedro.md` e `openspec/project.md` Cross-references.
+`MANIFEST.yaml` `version` MUST match changelog §14 of `doc/sistema-sdd-pedro.md` and `openspec/project.md` Cross-references.
 
-Ver guia **§1.6** para o modelo de quatro camadas (procedimento / payload / specs / estado).
+See guide **§1.6** for the four-layer model (procedure / payload / specs / state).
