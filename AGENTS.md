@@ -21,7 +21,7 @@ Ver `./openspec/project.md` (stack, convenções, constraints). **Não duplicar*
 | `graphify query "<pergunta>"` | Busca no knowledge graph |
 | `python doc/curso/scripts/enrich-transcripts.py` | Re-enriquecer transcrições do curso |
 | `bash scripts/sdd-session-status.sh` | Sessões SDD activas na worktree local |
-| `npx openspec validate --all --strict` | Gate de CI local (mesmo comando do workflow `sdd-gates`) |
+| `npx --yes @fission-ai/openspec@1.3.1 validate --all --strict` | Gate de CI local (mesmo comando do workflow `sdd-gates`) |
 
 Nota: não há `npm run dev` na raiz — repo de specs e documentação (perfil DOCS_SPECS).
 
@@ -121,7 +121,7 @@ Se ambíguo entre dois tipos, **PERGUNTAR**. **NUNCA** assumir Tipo A por defeit
 
 **Graphify** — Ler `graphify-out/GRAPH_REPORT.md` antes de grep em perguntas de arquitectura. Após editar código: `graphify update .`. Detalhe: `.cursor/rules/graphify.mdc`.
 
-**CI Gates (sdd-gates)** — Workflow `.github/workflows/sdd-gates.yml` corre em `push`/`pull_request`, fail-closed: `openspec validate --all --strict` (bloqueante), `verify-task-patterns.sh` (bloqueante), `sdd-kit/verify.sh` (report-only). Só orquestra comandos existentes. Sem skill/rule associada (automático out-of-band — intencional). Antes de push: correr `npx openspec validate --all --strict` localmente. Operação e troubleshooting: guia §2.12.
+**CI Gates (sdd-gates)** — Workflow `.github/workflows/sdd-gates.yml` corre em `push`/`pull_request`, fail-closed: `openspec validate --all --strict` (bloqueante), `verify-task-patterns.sh` (bloqueante), `sdd-kit/verify.sh` (report-only). Só orquestra comandos existentes. Sem skill/rule associada (automático out-of-band — intencional). Antes de push: correr `npx --yes @fission-ai/openspec@1.3.1 validate --all --strict` localmente. Operação e troubleshooting: guia §2.12.
 
 ## Testing
 

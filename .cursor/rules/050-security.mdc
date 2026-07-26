@@ -22,3 +22,14 @@ alwaysApply: true
 - `@fission-ai/openspec` envia dados via PostHog por defeito; definir `OPENSPEC_TELEMETRY=0` para desactivar
 - Em CI: a variável está configurada no workflow `sdd-gates.yml` (`OPENSPEC_TELEMETRY: "0"`)
 - Em local: definir no shell ou no `.env` do repo consumidor (nunca commitar o valor)
+
+## CI/CD
+
+**NUNCA:**
+- Usar `pull_request_target` com `secrets.*` ou permissões elevadas — abre RCE de PRs externos
+- Pinar actions por tag mutável (ex.: `uses: actions/checkout@v4`) — SEMPRE pinar por commit SHA imutável
+
+**SEMPRE:**
+- Incluir `OPENSPEC_TELEMETRY=0` ao usar `@fission-ai/openspec` em jobs de CI
+- Declarar `permissions: contents: read` no topo do workflow; justificar explicitamente qualquer escopo mais amplo
+- Pinar actions externas por SHA: `uses: actions/checkout@<sha>` (sem tags mutáveis)
