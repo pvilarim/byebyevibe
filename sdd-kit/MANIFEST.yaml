@@ -124,7 +124,7 @@ files:
 
   - path: .cursor/rules/050-security.mdc
     source: templates/.cursor/rules/050-security.mdc
-    sha256: "d36083abc4f4c697adb0b687f637be91d8efcd36bb5ab8ce4b902f50a062e8b2"
+    sha256: "0e49d4e9325ad270d18e54f5e1298c1963b222fb28d6cbe8a6f870f45997f505"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f .cursor/rules/050-security.mdc"
@@ -138,14 +138,14 @@ files:
 
   - path: .cursor/rules/020-python.mdc
     source: templates/.cursor/rules/020-python.mdc
-    sha256: "238343e24953e48272a85d2d4292e7f1689bd251b37e6981554611a42e17b533"
+    sha256: "ab73c075198365d1e668dad43e5b748d3c4b3a795eddc1961293823e90457843"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f .cursor/rules/020-python.mdc || echo SKIP"
 
   - path: .cursor/rules/030-supabase.mdc
     source: templates/.cursor/rules/030-supabase.mdc
-    sha256: "9d47835f0b0914d205ef4de2fd983a5d1a931614487c3a9f03dda5e2f7737cc4"
+    sha256: "a49e33462861d9bae88e003e10b2c692dcbd51c498bef905b01c757c4d5d7c11"
     merge: COPY
     profiles: [APP, HYBRID]
     gate: "test -f .cursor/rules/030-supabase.mdc || echo SKIP"
@@ -180,7 +180,7 @@ files:
 
   - path: openspec/changes/_template/proposal.md
     source: templates/openspec/changes/_template/proposal.md
-    sha256: "4d1c2bacb4c2e391202a0db82b47ac739613ca7d073db3f9bc630d6fc74a502c"
+    sha256: "e577563304c0175b8a7e219827215cc63cb1406fecb948c7a730b50a51bb9511"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f openspec/changes/_template/proposal.md && grep -q '**Issue:**' openspec/changes/_template/proposal.md"

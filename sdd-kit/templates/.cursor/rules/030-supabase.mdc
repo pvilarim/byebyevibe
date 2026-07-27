@@ -1,5 +1,5 @@
 ---
-description: Convenções Supabase + Postgres
+description: Supabase + Postgres conventions
 globs:
   - "**/migrations/**"
   - "**/db/**"
@@ -7,12 +7,12 @@ globs:
 alwaysApply: false
 ---
 
-# Regras Supabase / Postgres
+# Supabase / Postgres rules
 
-- Todas as migrações são reversíveis (up + down)
-- Nomes de migração: `YYYYMMDDHHMM_<verb>_<noun>.sql`
-- RLS habilitado em todas as tabelas; deny por defeito
-- Colunas: snake_case; tabelas: plural, snake_case (users, agent_traces)
-- pgvector: index `ivfflat` com `lists = sqrt(rows)`
-- Schemas espelhados em TypeScript via `infra/supabase/schemas.ts` (Zod)
-- NUNCA: SQL em string com interpolação; usar queries parametrizadas
+- All migrations are reversible (up + down)
+- Migration names: `YYYYMMDDHHMM_<verb>_<noun>.sql`
+- RLS enabled on all tables; deny by default
+- Columns: snake_case; tables: plural, snake_case (users, agent_traces)
+- pgvector: `ivfflat` index with `lists = sqrt(rows)`
+- Schemas mirrored in TypeScript via `infra/supabase/schemas.ts` (Zod)
+- NEVER: SQL in strings with interpolation; use parameterized queries
