@@ -110,3 +110,7 @@ Curated function words and SDD vocabulary still commonly left in Portuguese. The
 ## Proposal template
 
 Use `doc/i18n/WAVE-PROPOSAL-TEMPLATE.md` when proposing `translate-*-wave-N`.
+
+## Cursor Automations / Cloud Agents
+
+Operator playbook for batching wave **propose** / **apply** with Cursor Automations (parallel disjoint proposes, merge vs apply gates, copy-paste prompts): [`CURSOR-AUTOMATIONS.md`](./CURSOR-AUTOMATIONS.md).
