@@ -1,13 +1,13 @@
 ---
-description: Coordenação local de sessões SDD — locks e worktrees
+description: Local SDD session coordination — locks and worktrees
 alwaysApply: true
 ---
 
-# Coordenação de sessões SDD (máquina local)
+# SDD session coordination (local machine)
 
-- **Apply MUST** correr `scripts/sdd-session-register.sh` e `scripts/sdd-session-check.sh` **antes** de editar ficheiros; **MUST** correr `scripts/sdd-session-release.sh` ao concluir ou pausar.
-- **Paralelismo seguro:** apply simultâneo só em **git worktrees separados** (locks por worktree root).
-- **Explore/propose** read-only: advisory — usar `bash scripts/sdd-session-status.sh` se houver dúvida.
-- **Procedimento operacional:** `doc/sistema-sdd-pedro.md` §3.3 · requisitos: `openspec/specs/sdd-session-coordination/` (após archive).
-- **R11** em `AGENTS.md` — ponteiro curto; detalhe em `openspec/infra.md` (Session Coordination).
-- **Excepção CI:** runners efêmeros (GitHub Actions, etc.) estão isentos de R11 — `.sdd/runtime/` é gitignored e não persiste; `sdd-session-register/check` aplica-se apenas a máquinas locais com estado persistente.
+- **Apply MUST** run `scripts/sdd-session-register.sh` and `scripts/sdd-session-check.sh` **before** editing files; **MUST** run `scripts/sdd-session-release.sh` when finishing or pausing.
+- **Safe parallelism:** concurrent apply only in **separate git worktrees** (locks per worktree root).
+- **Explore/propose** read-only: advisory — use `bash scripts/sdd-session-status.sh` if unsure.
+- **Operational procedure:** `doc/sistema-sdd-pedro.md` §3.3 · requirements: `openspec/specs/sdd-session-coordination/` (after archive).
+- **R11** in `AGENTS.md` — short pointer; detail in `openspec/infra.md` (Session Coordination).
+- **CI exception:** ephemeral runners (GitHub Actions, etc.) are exempt from R11 — `.sdd/runtime/` is gitignored and does not persist; `sdd-session-register/check` applies only to local machines with persistent state.
