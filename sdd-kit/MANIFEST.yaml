@@ -103,21 +103,21 @@ files:
 
   - path: .cursor/rules/000-base.mdc
     source: templates/.cursor/rules/000-base.mdc
-    sha256: "8fb9f30268a38633c295bc5ae4031dd37f18ab93ae2e4838863f2f192f4d35be"
+    sha256: "6bdeaad8066b9f6fe69dfaa7786383a3b69badf106f3af8afe35fb496cf7edcb"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f .cursor/rules/000-base.mdc"
 
   - path: .cursor/rules/015-session-phases.mdc
     source: templates/.cursor/rules/015-session-phases.mdc
-    sha256: "b466d3f81f9b2fef6c81d64fe5e3dfdf180491ab87a9e7591af9e06ebbf1b948"
+    sha256: "5e2a3a9271cb5579c4bdafe4f30b16bc1407ee69f6caf7423a341977c9a8b6a9"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f .cursor/rules/015-session-phases.mdc"
 
   - path: .cursor/rules/016-session-coordination.mdc
     source: templates/.cursor/rules/016-session-coordination.mdc
-    sha256: "25d962f99e0beff0265166efafb50f7a2797d095ced9b78e343ac9baa6bb2959"
+    sha256: "c6d2cb6fa44a369330fb7dcdc7ee274f3485a3856bca1812268114152d6f774b"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f .cursor/rules/016-session-coordination.mdc"
@@ -131,7 +131,7 @@ files:
 
   - path: .cursor/rules/010-typescript.mdc
     source: templates/.cursor/rules/010-typescript.mdc
-    sha256: "1021df6cf78476f2ce42728c4737caf54f0fbe8729afe7dd97b16dad2e123d2e"
+    sha256: "c821068c03045190eefbefc57ddda0c0549b1169d774a90687a8ccd5e6e96b4b"
     merge: COPY
     profiles: [APP, HYBRID]
     gate: "test -f .cursor/rules/010-typescript.mdc || echo SKIP"
