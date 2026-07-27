@@ -291,14 +291,14 @@ But this summary is optional. Sometimes the thinking IS the value.
 
 ## Session Handoff
 
-Esta fase terminou. **Sugestão: abrir novo chat** para a próxima fase (contexto limpo).
+This phase is complete. **Suggestion: open a new chat** for the next phase (clean context).
 
-Cole no primeiro message do novo chat:
+Paste into the first message of the new chat:
 
 ---
-/opsx:propose <change-id ou descrição>
+/opsx:propose <change-id or description>
 
-Change: openspec/changes/<change-id>/ (se existir)
-Ler: research.md, notas de exploração
-Infra: openspec/infra.md (assumir ✅ — não reinstalar)
+Change: openspec/changes/<change-id>/ (if it exists)
+Read: research.md, exploration notes
+Infra: openspec/infra.md (assume ✅ — do not reinstall)
 ---
