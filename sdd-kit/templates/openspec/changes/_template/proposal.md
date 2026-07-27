@@ -2,24 +2,24 @@
 
 ## Why
 
-[PREENCHER: motivo do change — problema ou oportunidade que este change resolve]
+[FILL IN: why this change — problem or opportunity it addresses]
 
 ## What Changes
 
-- [PREENCHER: lista de mudanças concretas]
+- [FILL IN: concrete list of changes]
 
 ## Capabilities
 
 ### New Capabilities
 
-- `[capability-id]`: [descrição breve]
+- `[capability-id]`: [FILL IN: short description]
 
 ### Modified Capabilities
 
-- `[capability-id]`: [o que muda nos requisitos existentes]
+- `[capability-id]`: [FILL IN: what changes in existing requirements]
 
 ## Impact
 
-- Ficheiros modificados: [lista]
-- Dependências novas: [nenhuma / lista]
-- Riscos ou notas: [se aplicável]
+- Files modified: [FILL IN: list]
+- New dependencies: [none / list]
+- Risks or notes: [if applicable]
