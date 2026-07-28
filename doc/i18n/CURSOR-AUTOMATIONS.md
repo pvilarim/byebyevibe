@@ -81,22 +81,45 @@ Create Automations via UI, `/automate`, or [marketplace templates](https://curso
 
 **Repo:** this repository · **Base branch:** `master` (or your default).
 
-**Instructions (paste):**
+**Hard exclusions (Propose factory):**
+
+- **`doc/curso/**`** — out of language scope (human decision). Never invent `translate-curso-*`. Treat residual PT under `doc/curso/` as **not** a pending slice.
+- Prefer **install-critical** slices first: canonical guide `doc/sistema-sdd-pedro.md` (mid-file section slices OK), then kit/hub install payloads still lacking a propose. Avoid low-value meta (Session Handoff stub chrome) while the guide still has residual PT.
+
+**Instructions (paste into Automation UI — keep in sync with this section):**
 
 ```text
-You are running a SINGLE SDD phase: /opsx:propose only. Do NOT apply or edit in-scope translation target files.
+Read and follow doc/i18n/CURSOR-AUTOMATIONS.md end-to-end.
+Then execute ONLY the "Propose factory" section (§4.1) for the next pending disjoint slice.
 
-1. Read doc/i18n/CURSOR-AUTOMATIONS.md
-2. Read doc/i18n/WAVES.md, doc/i18n/WAVE-PROPOSAL-TEMPLATE.md, doc/i18n/GLOSSARY.md
-3. Inventory residual Portuguese on in-scope surfaces (see WAVES.md). Skip openspec/changes/archive/
-4. Pick ONE disjoint slice that fits budgets (≤4 files or 1 skill×2 mirrors; ≤350–400 LOC)
-5. Skip if an active openspec/changes/translate-* already owns those paths
-6. Run /opsx:propose for change-id translate-<surface>-wave-N
-7. Fill proposal/design/tasks/specs from WAVE-PROPOSAL-TEMPLATE.md; English artifacts only (F7)
-8. Open a DRAFT PR for the propose artifacts only
-9. Stop. End with a "## Session Handoff" block for /opsx:apply (do not start apply)
+SINGLE SDD phase: /opsx:propose only. Do NOT apply. Do NOT archive.
+Do NOT edit translation target files — only openspec/changes/<new-id>/.
+Do NOT wait for previous propose PRs to be merged. Parallel disjoint proposes are allowed.
 
-If nothing remains to propose, do nothing and explain why (no PR).
+HARD EXCLUSIONS — never propose these surfaces:
+- doc/curso/** (entire tree) — OUT of scope; do NOT create translate-curso-*
+- openspec/changes/archive/**
+
+PRIORITY order when choosing a slice:
+1) doc/sistema-sdd-pedro.md (canonical install guide) — section-sized mid-file slices OK within LOC budget
+2) Remaining install-critical kit/hub paths still without an owning translate-* propose
+3) Other in-scope residual PT (avaliacoes, design, specs, …)
+Skip low-value meta (e.g. only Session Handoff stub label tweaks) while the guide still has residual PT.
+
+1. Read doc/i18n/WAVES.md, doc/i18n/WAVE-PROPOSAL-TEMPLATE.md, doc/i18n/GLOSSARY.md
+2. Inventory residual Portuguese on in-scope surfaces only (WAVES.md). Skip archive/ and doc/curso/**
+3. Owned paths = union of:
+   a) path lists in active openspec/changes/translate-*/ on current base
+   b) path lists in OPEN GitHub PRs/branches for translate-* proposes (gh pr list) — even if unmerged
+4. Pick ONE disjoint slice not in owned set (≤4 files or 1 skill×2 mirrors; ≤350–400 LOC)
+5. /opsx:propose translate-<surface>-wave-N from WAVE-PROPOSAL-TEMPLATE.md; English only (F7)
+6. Open a DRAFT PR for propose artifacts only
+7. Stop with ## Session Handoff for /opsx:apply (do not start apply)
+
+Idle / stop condition:
+- If no remaining disjoint residual-PT slice exists (after exclusions), open no PR and report:
+  "Propose factory idle: no remaining disjoint translate slices."
+- Leaving the Automation enabled is fine; future runs should keep no-op'ing until new scope appears.
 ```
 
 ### 4.2 Apply after propose merge
@@ -181,7 +204,7 @@ Operators should re-check `npx openspec list` and open PRs; typical pattern:
 | Stage | Action |
 |-------|--------|
 | Propose already merged, tasks open | Run **Apply** Automation / Cloud Agent (§4.2) |
-| Need more waves (guide sections, skills, avaliacoes, curso) | Run **Propose factory** (§4.1) in parallel for disjoint slices |
+| Need more waves (guide sections first; then kit/design/avaliacoes — **not** `doc/curso/`) | Run **Propose factory** (§4.1) in parallel for disjoint slices |
 | Dependent pair (e.g. W2c then W2d) | Apply sequentially; do not parallelize those applies |
 
 ---
