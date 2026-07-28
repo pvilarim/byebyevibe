@@ -35,7 +35,7 @@ If a surface exceeds the budget, split into multiple `translate-*-wave-N` change
 |---------|-------|-------|
 | Canonical guide, `AGENTS.md`, rules, skills, commands, kit templates/READMEs | **In** | Core |
 | `doc/avaliacoes/`, `doc/design/` | **In** | |
-| `doc/curso/` | **In by default** | Own waves; exception only via human decision in a later propose |
+| `doc/curso/` | **Out** (human decision 2026-07-28) | Workshop transcripts — do **not** propose/apply `translate-curso-*`; open curso propose PRs may be closed without apply |
 | `openspec/specs/` | **In** (residual PT only) | Do not rewrite already-EN specs |
 | Active `openspec/changes/<id>/` still in PT | **In** | Theme wave or active-changes wave |
 | `openspec/changes/archive/` | **Out** | Immutable history — do not rewrite for language |
@@ -51,7 +51,7 @@ W3+  Canonical guide by section (install → pipelines → rules → annexes)
 WSk  Skills /opsx:* and reviews — one logical skill per wave (×2 mirrors)
 WRu  Remaining rules / commands mirrors
 WAv  Evaluations + TEMPLATE (substitute PT)
-WCu  doc/curso/ — in-scope by default; own waves
+WCu  doc/curso/ — OUT (human decision); skip translate-curso-*
 WAr  openspec/changes/archive/** — OUT; active PT changes → theme or active-changes wave
 WCh  Root CHANGELOG.md (F3 — separate change `add-root-changelog`)
 WDoD Global residual-PT scan fail-closed on in-scope surfaces
@@ -97,7 +97,8 @@ When `--dod` runs, scan these surfaces (exclude `openspec/changes/archive/`):
 - `AGENTS.md`, `CLAUDE.md`, `README.md`
 - `.cursor/rules/**/*.mdc`, `.cursor/skills/**/*.md`, `.cursor/commands/**/*.md`
 - `.claude/skills/**/*.md`, `.claude/commands/**/*.md`
-- `doc/sistema-sdd-pedro.md`, `doc/avaliacoes/**/*.md`, `doc/design/**/*.md`, `doc/curso/**/*.md`
+- `doc/sistema-sdd-pedro.md`, `doc/avaliacoes/**/*.md`, `doc/design/**/*.md`
+- _(excluded from G-DoD)_ `doc/curso/**` — out of language scope per human decision
 - `doc/i18n/**/*.md` (policy docs — EN; `GLOSSARY.md` exempt from G-PT/G-DoD because it stores legacy→EN rows)
 - `sdd-kit/README.md`, `sdd-kit/templates/**/*.{md,mdc}`
 - `openspec/project.md`, `openspec/infra.md`, `openspec/specs/**/*.md`
