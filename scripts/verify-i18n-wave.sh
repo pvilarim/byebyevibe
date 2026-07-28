@@ -348,9 +348,10 @@ collect_dod_files() {
     paths+=("${p#./}")
   done < <(find .cursor/rules .cursor/skills .cursor/commands \
     .claude/skills .claude/commands \
-    doc/avaliacoes doc/design doc/curso doc/i18n \
+    doc/avaliacoes doc/design doc/i18n \
     openspec/specs \
     \( -name '*.md' -o -name '*.mdc' \) -print0 2>/dev/null || true)
+  # Note: doc/curso/ excluded from G-DoD (human decision — WCu OUT in WAVES.md)
   while IFS= read -r -d '' p; do
     paths+=("${p#./}")
   done < <(find sdd-kit -path 'sdd-kit/templates/*' \( -name '*.md' -o -name '*.mdc' \) -print0 2>/dev/null; \
