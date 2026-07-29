@@ -7,6 +7,7 @@
 #
 # Usage:
 #   bash scripts/verify-i18n-wave.sh --files path/a.md,path/b.md
+#   bash scripts/verify-i18n-wave.sh --files path/a.md --slice 1-132
 #   bash scripts/verify-i18n-wave.sh --dod
 #   bash scripts/verify-i18n-wave.sh --help
 #
@@ -19,6 +20,9 @@ cd "$REPO_ROOT"
 FAILURES=0
 MODE=""
 FILES_CSV=""
+SLICE_START=""
+SLICE_END=""
+slice_arg=""
 declare -a WAVE_FILES=()
 
 # High-signal PT prose tokens (word-ish). Avoid short ambiguous tokens (e.g. "para", "com").
@@ -35,8 +39,12 @@ verify-i18n-wave.sh — i18n / docs-language verification (sdd-docs-language)
 
 Usage:
   bash scripts/verify-i18n-wave.sh --files path1,path2,...
+  bash scripts/verify-i18n-wave.sh --files path1 --slice START-END
   bash scripts/verify-i18n-wave.sh --dod
   bash scripts/verify-i18n-wave.sh --help
+
+Optional --slice START-END (with --files): limit G-INV, G-PT, and G-LINK to a line
+range in each touched file (mid-file guide/design slices). Whole-file scan when omitted.
 
 Gates (per --files wave):
   G-INV      Freeze-list / invariant check (no translated command forms)
@@ -93,6 +101,20 @@ while [[ $# -gt 0 ]]; do
       MODE="dod"
       shift
       ;;
+    --slice)
+      slice_arg="${2:-}"
+      if [[ -z "$slice_arg" || ! "$slice_arg" =~ ^[0-9]+-[0-9]+$ ]]; then
+        echo "error: --slice requires START-END (e.g. 1-132)" >&2
+        exit 2
+      fi
+      SLICE_START="${slice_arg%-*}"
+      SLICE_END="${slice_arg#*-}"
+      if [[ "$SLICE_START" -gt "$SLICE_END" ]]; then
+        echo "error: --slice START must be <= END" >&2
+        exit 2
+      fi
+      shift 2
+      ;;
     *)
       echo "error: unknown argument: $1" >&2
       usage
@@ -123,12 +145,21 @@ is_pt_scan_exempt() {
   return 1
 }
 
+file_content() {
+  local f="$1"
+  if [[ -n "$SLICE_START" && -n "$SLICE_END" ]]; then
+    sed -n "${SLICE_START},${SLICE_END}p" "$f"
+  else
+    cat "$f"
+  fi
+}
+
 file_has_pt() {
   local f="$1"
   if is_pt_scan_exempt "$f"; then
     return 1
   fi
-  if grep -Eiq "$PT_DENY_REGEX" "$f" 2>/dev/null; then
+  if file_content "$f" | grep -Eiq "$PT_DENY_REGEX" 2>/dev/null; then
     return 0
   fi
   return 1
@@ -165,7 +196,7 @@ gate_inv() {
       bad=1
       continue
     fi
-    if grep -Eiq "$INV_BAD_REGEX" "$f" 2>/dev/null; then
+    if file_content "$f" | grep -Eiq "$INV_BAD_REGEX" 2>/dev/null; then
       fail "G-INV translated/frozen form in $f (matches denylist command forms)"
       bad=1
     fi
@@ -189,7 +220,11 @@ gate_pt() {
     if file_has_pt "$f"; then
       # Show first matching line for operator
       local hit
-      hit="$(grep -Ein "$PT_DENY_REGEX" "$f" 2>/dev/null | head -3 || true)"
+      if [[ -n "$SLICE_START" && -n "$SLICE_END" ]]; then
+        hit="$(file_content "$f" | grep -Ein "$PT_DENY_REGEX" 2>/dev/null | head -3 || true)"
+      else
+        hit="$(grep -Ein "$PT_DENY_REGEX" "$f" 2>/dev/null | head -3 || true)"
+      fi
       fail "G-PT residual Portuguese tokens in $f"
       [[ -n "$hit" ]] && echo "$hit" | sed 's/^/         /'
       bad=1
@@ -233,7 +268,7 @@ gate_link() {
           bad=1
         fi
       fi
-    done < <(grep -oE '\[[^]]*\]\([^)]+\)' "$f" 2>/dev/null | sed -E 's/.*\(([^)]+)\).*/\1/' || true)
+    done < <(file_content "$f" | grep -oE '\[[^]]*\]\([^)]+\)' 2>/dev/null | sed -E 's/.*\(([^)]+)\).*/\1/' || true)
   done
   if [[ "$bad" -eq 0 ]]; then
     ok "relative markdown links resolve for touched markdown files"
