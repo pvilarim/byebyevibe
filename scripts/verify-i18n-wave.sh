@@ -276,9 +276,18 @@ gate_link() {
 }
 
 # --- G-MIRROR ---
+is_opsx_command_mirror() {
+  local f="$1"
+  [[ "$f" =~ ^\.cursor/commands/opsx-[^.]+\.md$ ]] || [[ "$f" =~ ^\.claude/commands/opsx/[^.]+\.md$ ]]
+}
+
 mirror_peer() {
   local f="$1"
-  if [[ "$f" == .cursor/skills/* || "$f" == .cursor/commands/* ]]; then
+  if [[ "$f" =~ ^\.cursor/commands/opsx-([^.]+)\.md$ ]]; then
+    echo ".claude/commands/opsx/${BASH_REMATCH[1]}.md"
+  elif [[ "$f" =~ ^\.claude/commands/opsx/([^.]+)\.md$ ]]; then
+    echo ".cursor/commands/opsx-${BASH_REMATCH[1]}.md"
+  elif [[ "$f" == .cursor/skills/* || "$f" == .cursor/commands/* ]]; then
     echo "${f/.cursor\//.claude/}"
   elif [[ "$f" == .claude/skills/* || "$f" == .claude/commands/* ]]; then
     echo "${f/.claude\//.cursor/}"
@@ -311,7 +320,9 @@ gate_mirror() {
       continue
     fi
     if [[ -f "$f" && -f "$peer" ]]; then
-      if ! cmp -s "$f" "$peer"; then
+      if is_opsx_command_mirror "$f"; then
+        : # opsx command pairs: peers listed + exist; skip cmp (IDE frontmatter differs)
+      elif ! cmp -s "$f" "$peer"; then
         fail "G-MIRROR content differs: $f ↔ $peer"
         bad=1
       fi
