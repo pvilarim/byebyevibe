@@ -1,62 +1,62 @@
-# Avaliação: \<nome do candidato\>
+# Evaluation: \<candidate name\>
 
-| Campo | Valor |
+| Field | Value |
 |-------|--------|
-| **Data** | YYYY-MM-DD |
-| **Avaliador** | \<nome ou sessão\> |
-| **Candidato** | \<nome + URL\> |
-| **Decisão** | Adoptado \| Descartado \| Adiado \| Em avaliação |
-| **Escopo** | C1 install \| C2 upgrade \| runtime opcional \| outro |
+| **Date** | YYYY-MM-DD |
+| **Evaluator** | \<name or session\> |
+| **Candidate** | \<name + URL\> |
+| **Decision** | Adopted \| Discarded \| Deferred \| Under evaluation |
+| **Scope** | C1 install \| C2 upgrade \| optional runtime \| other |
 
-## Resumo executivo
+## Executive summary
 
-\<1–3 frases: o que é, decisão e porquê\>
+\<1–3 sentences: what it is, the decision, and why\>
 
-## Problema que tentava resolver
+## Problem it tried to solve
 
-\<gap no stack SDD actual\>
+\<gap in the current SDD stack\>
 
-## O que foi analisado
+## What was analyzed
 
-- \<fonte 1\>
-- \<fonte 2\>
+- \<source 1\>
+- \<source 2\>
 
-## Encaixe no stack SDD
+## Fit with the SDD stack
 
-| Ferramenta | Relação |
-|------------|---------|
+| Tool | Relation |
+|------|----------|
 | OpenSpec | |
 | GitNexus | |
 | Graphify | |
 | AGENTS.md / sdd-kit | |
 
-## Riscos por fase do workflow
+## Risks by workflow phase
 
-| Fase | Risco | Notas |
-|------|-------|-------|
+| Phase | Risk | Notes |
+|-------|------|-------|
 | Explore | | |
 | Propose | | |
 | Apply | | |
 | Archive | | |
 
-## Ganhos esperados vs observados
+## Expected vs observed gains
 
-| Ganho anunciado | Avaliação |
-|-----------------|-----------|
+| Advertised gain | Assessment |
+|-----------------|------------|
 | | |
 
-## Alternativas já no stack
+## Alternatives already in the stack
 
-\<o que o SDD já faz sem esta ferramenta\>
+\<what the SDD already does without this tool\>
 
-## Decisão e condições de reavaliação
+## Decision and re-evaluation conditions
 
-**Decisão:** \<Adoptado \| Descartado \| Adiado\>
+**Decision:** \<Adopted \| Discarded \| Deferred\>
 
-**Condições para reabrir** (se descartado/adiado):
+**Conditions to reopen** (if discarded/deferred):
 
-- \<condição 1\>
+- \<condition 1\>
 
-## Referências
+## References
 
 - \<links\>

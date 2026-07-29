@@ -1,41 +1,41 @@
-# Avaliação: Ferramentas OSS para gaps de cobertura do sistema SDD
+# Evaluation: OSS tools for SDD coverage gaps
 
-| Campo | Valor |
+| Field | Value |
 |-------|--------|
-| **Data** | 2026-07-25 |
-| **Avaliador** | Sessão explore `explore-oss-coverage-gaps` (Cloud Agent) |
-| **Candidato** | 8 gaps × candidatos OSS — detalhe em [`openspec/changes/explore-oss-coverage-gaps/research.md`](../../openspec/changes/explore-oss-coverage-gaps/research.md) |
-| **Decisão** | Misto — ver tabela por item |
-| **Escopo** | Extensão do sdd-kit + correcções pontuais ao stack |
+| **Date** | 2026-07-25 |
+| **Evaluator** | Explore session `explore-oss-coverage-gaps` (Cloud Agent) |
+| **Candidate** | 8 gaps × OSS candidates — detail in [`openspec/changes/explore-oss-coverage-gaps/research.md`](../../openspec/changes/explore-oss-coverage-gaps/research.md) |
+| **Decision** | Mixed — see per-item table |
+| **Scope** | sdd-kit extension + targeted stack corrections |
 
-## Resumo executivo
+## Executive summary
 
-Research tipo E identificou 8 gaps na cobertura do sistema SDD para desenvolvimento assistido por IA e avaliou candidatos OSS segundo 5 critérios (instalação, compatibilidade, overlap, adequação ao fluxo explore→propose→apply, confiabilidade/comunidade). Metodologia de inserção padronizada definida em [`metodologia-insercao.md`](../../openspec/changes/explore-oss-coverage-gaps/metodologia-insercao.md) (6 fases; piloto dispensável para inserções sem binário/hook novo — excepção aprovada 2026-07-25).
+Type E research identified 8 gaps in SDD system coverage for AI-assisted development and evaluated OSS candidates against 5 criteria (installation, compatibility, overlap, fit with explore→propose→apply flow, reliability/community). Standardized insertion methodology defined in [`metodologia-insercao.md`](../../openspec/changes/explore-oss-coverage-gaps/metodologia-insercao.md) (6 phases; pilot dispensable for insertions without new binary/hook — exception approved 2026-07-25).
 
-## Decisões por item
+## Decisions by item
 
-| Gap | Candidato | Decisão | Nota |
-|-----|-----------|---------|------|
-| G1 Enforcement CI | GitHub Actions (workflow próprio) | **Adoptado** — change [`add-sdd-ci-gates-workflow`](../../openspec/changes/add-sdd-ci-gates-workflow/proposal.md) (2026-07-25) | pre-commit/Lefthook **descartados** — overlap com hooks graphify/gitnexus. Workflow `.github/workflows/sdd-gates.yml` + template no sdd-kit v1.4.0 |
-| G2 Verificação por testes | [Probity](https://github.com/nizos/probity) (`@nizos/probity@1.10.0`) | **Adoptado — change [`add-probity-tdd-module`](../../openspec/changes/add-probity-tdd-module/proposal.md), piloto pendente** | TDD Guard **superseded** por Probity (2026-07). Piloto APP obrigatório (p95/hooks) — ver `piloto-nota.md` |
-| G3 Feedback de runtime | GlitchTip / Sentry + MCP | **Adiado** — módulo sob demanda | Infra por projecto de produção, não payload de kit |
-| G4 Métricas do framework | `sdd-metrics.sh` (correcção manual) | **Adoptado** — change [`add-sdd-metrics-script`](../../openspec/changes/add-sdd-metrics-script/proposal.md) | Script local modo C (git + archive). **Apache DevLake permanece Adiado** — não mede métricas SDD por change-id; reavaliar se equipe/DORA justificar |
-| G5 Rastreabilidade issues | [github-mcp-server](https://github.com/github/github-mcp-server) | **Adoptado** — change [`add-github-mcp-issue-traceability`](../../openspec/changes/add-github-mcp-issue-traceability/proposal.md) | MCP passivo (modo D) + campo `**Issue:**` no template de proposal. Reavaliação: se instrução em AGENTS.md ultrapassar 10 linhas → skill dedicada; se projecto migrar de GitHub Issues → avaliar Linear/Jira MCP |
-| G6 Multi-agente distribuído | Vibe Kanban / Claude Squad | **Descartado** | Projecto líder órfão (BloopAI encerrou 04/2026); overlap com `sdd-session-*` |
-| G7 Review de correctness | [PR-Agent](https://github.com/qodo-ai/pr-agent) | **Adoptado** — skill local criada, change [`add-correctness-review-skill`](../../openspec/changes/add-correctness-review-skill/proposal.md) | Fase 1: skill local `correctness-review` (`.claude/skills/` + `.cursor/skills/`). PR-Agent opcional (Fase 2, change separado). Reavaliação: conversão para subagente autónomo (piloto obrigatório), adoção PR-Agent fase 2 (jan/2027). |
-| G8 Supply chain | [Renovate](https://github.com/renovatebot/renovate) + [OSV-Scanner](https://github.com/google/osv-scanner) | **Adoptado** — change [`add-supply-chain-gates`](../../openspec/changes/add-supply-chain-gates/proposal.md) | Templates por perfil no sdd-kit; OSV no `sdd-gates.yml`; Renovate AGPL-3.0 (uso como ferramenta OK). Reavaliar composição do workflow quando PR-Agent G7 fase 2 entrar no CI. |
+| Gap | Candidate | Decision | Note |
+|-----|-----------|----------|------|
+| G1 CI enforcement | GitHub Actions (custom workflow) | **Adopted** — change [`add-sdd-ci-gates-workflow`](../../openspec/changes/archive/2026-07-26-add-sdd-ci-gates-workflow/proposal.md) (2026-07-25) | pre-commit/Lefthook **discarded** — overlap with graphify/gitnexus hooks. Workflow `.github/workflows/sdd-gates.yml` + template in sdd-kit v1.4.0 |
+| G2 Test verification | [Probity](https://github.com/nizos/probity) (`@nizos/probity@1.10.0`) | **Adopted — change [`add-probity-tdd-module`](../../openspec/changes/add-probity-tdd-module/proposal.md), pilot pending** | TDD Guard **superseded** by Probity (2026-07). APP pilot mandatory (p95/hooks) — see `piloto-nota.md` |
+| G3 Runtime feedback | GlitchTip / Sentry + MCP | **Deferred** — on-demand module | Per-project production infra, not kit payload |
+| G4 Framework metrics | `sdd-metrics.sh` (manual fix) | **Adopted** — change [`add-sdd-metrics-script`](../../openspec/changes/add-sdd-metrics-script/proposal.md) | Local mode C script (git + archive). **Apache DevLake remains Deferred** — does not measure SDD metrics by change-id; re-evaluate if team/DORA justifies |
+| G5 Issue traceability | [github-mcp-server](https://github.com/github/github-mcp-server) | **Adopted** — change [`add-github-mcp-issue-traceability`](../../openspec/changes/archive/2026-07-26-add-github-mcp-issue-traceability/proposal.md) | Passive MCP (mode D) + `**Issue:**` field in proposal template. Re-evaluation: if AGENTS.md instruction exceeds 10 lines → dedicated skill; if project migrates off GitHub Issues → evaluate Linear/Jira MCP |
+| G6 Distributed multi-agent | Vibe Kanban / Claude Squad | **Discarded** | Lead project orphaned (BloopAI closed 04/2026); overlap with `sdd-session-*` |
+| G7 Correctness review | [PR-Agent](https://github.com/qodo-ai/pr-agent) | **Adopted** — local skill created, change [`add-correctness-review-skill`](../../openspec/changes/add-correctness-review-skill/proposal.md) | Phase 1: local skill `correctness-review` (`.claude/skills/` + `.cursor/skills/`). PR-Agent optional (Phase 2, separate change). Re-evaluation: conversion to autonomous subagent (pilot mandatory), PR-Agent phase 2 adoption (Jan/2027). |
+| G8 Supply chain | [Renovate](https://github.com/renovatebot/renovate) + [OSV-Scanner](https://github.com/google/osv-scanner) | **Adopted** — change [`add-supply-chain-gates`](../../openspec/changes/add-supply-chain-gates/proposal.md) | Templates by profile in sdd-kit; OSV in `sdd-gates.yml`; Renovate AGPL-3.0 (tool use OK). Re-evaluate workflow composition when PR-Agent G7 phase 2 enters CI. |
 
-## Condições de reavaliação (itens descartados/adiados)
+## Re-evaluation conditions (discarded/deferred items)
 
-- **CI gates G1 (adoptado):** reavaliar a composição do workflow `sdd-gates` quando OSV-Scanner/Renovate (G8) ou PR-Agent (G7) entrarem no CI — novos passos entram *dentro* deste workflow ou como jobs paralelos, decisão no change respectivo.
+- **CI gates G1 (adopted):** re-evaluate `sdd-gates` workflow composition when OSV-Scanner/Renovate (G8) or PR-Agent (G7) enter CI — new steps go *inside* this workflow or as parallel jobs, decision in the respective change.
 
-- **Vibe Kanban (G6):** reavaliar em ~6 meses (2027-01) — categoria de orquestradores multi-agente em consolidação; ou se surgir necessidade real de coordenação multi-máquina.
-- **DevLake (G4):** permanece **Adiado**. A correcção manual `sdd-metrics.sh` foi **Adoptada** (`add-sdd-metrics-script`). Reavaliar DevLake só se os repos de produção ganharem CI/CD + equipe em escala que justifique DORA.
-- **GlitchTip/Sentry (G3):** activar sob demanda por projecto de produção; convenção de citar issue do tracker em proposals tipo B já adoptada via campo `**Issue:**` (change `add-github-mcp-issue-traceability`).
-- **github-mcp-server (G5):** reavaliar se instrução em AGENTS.md ultrapassar 10 linhas (promover para skill) ou se o projecto migrar de GitHub Issues para outro tracker.
+- **Vibe Kanban (G6):** re-evaluate in ~6 months (2027-01) — multi-agent orchestrator category consolidating; or if real multi-machine coordination need arises.
+- **DevLake (G4):** remains **Deferred**. Manual fix `sdd-metrics.sh` was **Adopted** (`add-sdd-metrics-script`). Re-evaluate DevLake only if production repos gain CI/CD + team scale that justifies DORA.
+- **GlitchTip/Sentry (G3):** activate on demand per production project; convention to cite tracker issue in type B proposals already adopted via `**Issue:**` field (change `add-github-mcp-issue-traceability`).
+- **github-mcp-server (G5):** re-evaluate if AGENTS.md instruction exceeds 10 lines (promote to skill) or if the project migrates off GitHub Issues to another tracker.
 
-## Referências
+## References
 
-- Research completo (fontes, métricas de comunidade, matriz de critérios): `openspec/changes/explore-oss-coverage-gaps/research.md`
-- Metodologia de inserção (fases, registro em 6 pontos, matriz de acionamento): `openspec/changes/explore-oss-coverage-gaps/metodologia-insercao.md`
+- Full research (sources, community metrics, criteria matrix): `openspec/changes/explore-oss-coverage-gaps/research.md`
+- Insertion methodology (phases, registration at 6 points, activation matrix): `openspec/changes/explore-oss-coverage-gaps/metodologia-insercao.md`
 - PR: [#21](https://github.com/pvilarim/gitnexus-graphify-openspec/pull/21)

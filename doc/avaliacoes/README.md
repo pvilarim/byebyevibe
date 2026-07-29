@@ -1,41 +1,41 @@
-# Avaliações de integração e aperfeiçoamento do SDD
+# SDD integration and improvement evaluations
 
-Registo histórico de ferramentas, padrões e ideias **avaliadas** para o stack **OpenSpec + GitNexus + Graphify** — independentemente de terem sido adoptadas ou descartadas.
+Historical record of tools, patterns, and ideas **evaluated** for the **OpenSpec + GitNexus + Graphify** stack — regardless of whether they were adopted or discarded.
 
-## Propósito
+## Purpose
 
-- Documentar **o que foi pesquisado**, **porquê** e **qual a decisão**
-- Evitar reavaliar o mesmo candidato sem contexto
-- Dar aos agentes uma fonte ancorada (prioridade 6 em `AGENTS.md` — docs do repo) para não propor reinstalação de itens descartados
+- Document **what was researched**, **why**, and **the decision**
+- Avoid re-evaluating the same candidate without context
+- Give agents an anchored source (priority 6 in `AGENTS.md` — repo docs) so they do not propose reinstalling discarded items
 
-## Como usar
+## How to use
 
-| Papel | Acção |
-|-------|--------|
-| Humano | Antes de adoptar uma ferramenta nova ao `sdd-kit`, verificar se já existe avaliação aqui |
-| Agente | Ler este índice antes de propor integração de CLIs/MCP/plugins ao stack SDD |
-| Nova avaliação | Copiar `TEMPLATE.md`, preencher, adicionar linha na tabela abaixo |
+| Role | Action |
+|------|--------|
+| Human | Before adopting a new tool into `sdd-kit`, check whether an evaluation already exists here |
+| Agent | Read this index before proposing integration of CLIs/MCP/plugins into the SDD stack |
+| New evaluation | Copy `TEMPLATE.md`, fill it in, add a row to the table below |
 
-## Estados de decisão
+## Decision states
 
-| Estado | Significado |
-|--------|-------------|
-| **Adoptado** | Integrado no kit, guia ou `openspec/specs/` |
-| **Descartado** | Avaliado; não integrar sem nova proposta OpenSpec |
-| **Adiado** | Potencial futuro; condições de reavaliação documentadas |
-| **Em avaliação** | Trabalho em curso |
+| State | Meaning |
+|-------|---------|
+| **Adopted** | Integrated into the kit, guide, or `openspec/specs/` |
+| **Discarded** | Evaluated; do not integrate without a new OpenSpec proposal |
+| **Deferred** | Future potential; re-evaluation conditions documented |
+| **Under evaluation** | Work in progress |
 
-## Índice de avaliações
+## Evaluation index
 
-| Data | Candidato | Decisão | Documento |
-|------|-----------|---------|-----------|
-| 2026-07-26 | Posicionamento e descoberta — ByeByeVibe (vibe → agentic); P10 adoptado nos docs | **Misto** — P1–P4 + P10 Adoptado; P11/P12 (i18n + CHANGELOG raiz) Adiado até lançamento público; P5 / fame Adiado ou Não implementar | [2026-07-26-sdd-discovery-positioning.md](./2026-07-26-sdd-discovery-positioning.md) · [explore research](../../openspec/changes/explore-public-release-surface/research.md) |
-| 2026-03-26 | [Headroom](https://github.com/chopratejas/headroom) — compressão de contexto para agentes | **Descartado** | [2026-03-26-headroom-context-compression.md](./2026-03-26-headroom-context-compression.md) |
-| 2026-06-27 | Módulo UI SDD (Impeccable + Open Design + Pencil + shadcn) — `add-sdd-ui-development-module` | **Adopted** | [2026-06-27-sdd-ui-development-module.md](./2026-06-27-sdd-ui-development-module.md) |
-| 2026-07-25 | Ferramentas OSS p/ gaps SDD (Probity (G2), PR-Agent, Renovate+OSV, github-mcp, DevLake, Vibe Kanban, GlitchTip) — `explore-oss-coverage-gaps` | **Misto** — ver doc | [2026-07-25-oss-coverage-gaps-tooling.md](./2026-07-25-oss-coverage-gaps-tooling.md) |
+| Date | Candidate | Decision | Document |
+|------|-----------|----------|----------|
+| 2026-07-26 | Positioning and discovery — ByeByeVibe (vibe → agentic); P10 adopted in docs | **Mixed** — P1–P4 + P10 Adopted; P11/P12 (i18n + root CHANGELOG) Deferred until public release; P5 / fame Deferred or Do not implement | [2026-07-26-sdd-discovery-positioning.md](./2026-07-26-sdd-discovery-positioning.md) · [explore research](../../openspec/changes/explore-public-release-surface/research.md) |
+| 2026-03-26 | [Headroom](https://github.com/chopratejas/headroom) — context compression for agents | **Discarded** | [2026-03-26-headroom-context-compression.md](./2026-03-26-headroom-context-compression.md) |
+| 2026-06-27 | SDD UI module (Impeccable + Open Design + Pencil + shadcn) — `add-sdd-ui-development-module` | **Adopted** | [2026-06-27-sdd-ui-development-module.md](./2026-06-27-sdd-ui-development-module.md) |
+| 2026-07-25 | OSS tools for SDD gaps (Probity (G2), PR-Agent, Renovate+OSV, github-mcp, DevLake, Vibe Kanban, GlitchTip) — `explore-oss-coverage-gaps` | **Mixed** — see doc | [2026-07-25-oss-coverage-gaps-tooling.md](./2026-07-25-oss-coverage-gaps-tooling.md) |
 
-## Relação com o stack
+## Relation to the stack
 
-Estas avaliações **não substituem** `openspec/specs/` (requisitos normativos). Adoptar um candidato exige change OpenSpec próprio; descartar fica registado aqui e em `openspec/project.md` (Non-goals), quando aplicável.
+These evaluations **do not replace** `openspec/specs/` (normative requirements). Adopting a candidate requires its own OpenSpec change; discarding is recorded here and in `openspec/project.md` (Non-goals), when applicable.
 
-Ver também: `doc/sistema-sdd-pedro.md` §5.5 · `openspec/project.md` (Cross-references / Non-goals)
+See also: `doc/sistema-sdd-pedro.md` §5.5 · `openspec/project.md` (Cross-references / Non-goals)
