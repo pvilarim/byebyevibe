@@ -1,206 +1,206 @@
-# Design — Script de métricas SDD (G4: sdd-metrics.sh)
+# Design — SDD metrics script (G4: sdd-metrics.sh)
 
 ## Context
 
-- Research tipo E `explore-oss-coverage-gaps` (2026-07-25), gap **G4**: sem dados de eficácia do framework (retrabalho, tempo propose→archive, correcções pós-archive).
-- Candidato Apache DevLake: C1 🔴, C4 🔴 — mede DORA organizacional, **não** métricas SDD por change-id. Decisão: **Adiado**; preferir correcção manual.
-- `metodologia-insercao.md` §4.1: `sdd-metrics.sh` = modo **C** (sob demanda); §Fase 5 liga métricas de adopção a este script.
-- `doc/avaliacoes/2026-07-25-oss-coverage-gaps-tooling.md`: G4 **Adiado** (DevLake); nota "correcção manual (`sdd-metrics.sh`) preferida".
-- Precedente estrutural: `add-sdd-ci-gates-workflow` (G1) — excepção de piloto, registro 6 pontos, distribuição via kit sem binário/hook externo.
-- Dados já no repo: `openspec/changes/archive/YYYY-MM-DD-<id>/`, commits Conventional Commits com change-id (R9), changes activos em `openspec/changes/<id>/`.
+- Type E research `explore-oss-coverage-gaps` (2026-07-25), gap **G4**: no framework effectiveness data (rework, propose→archive time, post-archive fixes).
+- Apache DevLake candidate: C1 🔴, C4 🔴 — measures organizational DORA, **not** SDD metrics per change-id. Decision: **Deferred**; prefer manual fix.
+- `metodologia-insercao.md` §4.1: `sdd-metrics.sh` = mode **C** (on demand); §Phase 5 links adoption metrics to this script.
+- `doc/avaliacoes/2026-07-25-oss-coverage-gaps-tooling.md`: G4 **Deferred** (DevLake); note "manual fix (`sdd-metrics.sh`) preferred".
+- Structural precedent: `add-sdd-ci-gates-workflow` (G1) — pilot exception, 6-point registration, kit distribution without external binary/hook.
+- Data already in the repo: `openspec/changes/archive/YYYY-MM-DD-<id>/`, Conventional Commits with change-id (R9), active changes in `openspec/changes/<id>/`.
 
-### Verificações Fase 0 (resumo)
+### Phase 0 checks (summary)
 
-| # | Verificação | Resultado |
-|---|-------------|-----------|
-| V1 | Já avaliado? | Sim — avaliação G4 Adiado (DevLake); este change adopta a correcção manual recomendada |
-| V2 | Superfície | Scripts (modo C) — sem hook, MCP, CI step ou PreToolUse |
-| V3 | Colisão | Nenhum `sdd-metrics.sh` existe; nome alinhado a `sdd-session-*` / `sdd-upgrade-diff.sh` |
-| V4 | Perfil | APP, DOCS_SPECS, HYBRID — útil em todos (archive + git locais) |
-| V5 | Hooks | N/A — sem PreToolUse |
-| F1 | Segurança | Só bash + `git`; sem rede, sem tokens, sem eval de MANIFEST `gate:` |
-| F2 | Licença | Script próprio do kit (mesmo licenciamento do hub) |
-| F3 | Governança | N/A — artefacto local; DevLake permanece adiado com condição de reavaliação |
-| F4 | Reversibilidade | Remover script + entry MANIFEST desactiva; sem estado residual |
-| F5 | Operabilidade | Invocação manual; `--help`; saída markdown legível (2/3) |
+| # | Check | Result |
+|---|-------|--------|
+| V1 | Already evaluated? | Yes — G4 evaluation Deferred (DevLake); this change adopts the recommended manual fix |
+| V2 | Surface | Scripts (mode C) — no hook, MCP, CI step, or PreToolUse |
+| V3 | Collision | No `sdd-metrics.sh` exists; name aligned with `sdd-session-*` / `sdd-upgrade-diff.sh` |
+| V4 | Profile | APP, DOCS_SPECS, HYBRID — useful in all (local archive + git) |
+| V5 | Hooks | N/A — no PreToolUse |
+| F1 | Security | Bash + `git` only; no network, no tokens, no eval of MANIFEST `gate:` |
+| F2 | License | Kit-owned script (same licensing as hub) |
+| F3 | Governance | N/A — local artifact; DevLake remains deferred with re-evaluation condition |
+| F4 | Reversibility | Remove script + MANIFEST entry disables; no residual state |
+| F5 | Operability | Manual invocation; `--help`; readable markdown output (2/3) |
 
 ## Goals / Non-Goals
 
 **Goals:**
 
-- Script `scripts/sdd-metrics.sh` que imprime relatório markdown com as três famílias de métricas do research G4.
-- Distribuição via `sdd-kit/templates/scripts/` + MANIFEST bump **1.5.0 → 1.6.0**.
-- Registro completo nos 6 pontos (R3 = N/A).
-- Piloto dispensável (excepção Fase 2 — sem binário/hook/serviço/LLM externo).
-- Proxies determinísticos ancorados em git + filesystem (sem LLM, sem API GitHub obrigatória).
+- Script `scripts/sdd-metrics.sh` that prints a markdown report with the three metric families from G4 research.
+- Distribution via `sdd-kit/templates/scripts/` + MANIFEST bump **1.5.0 → 1.6.0**.
+- Full registration in the 6 points (R3 = N/A).
+- Pilot dispensable (Phase 2 exception — no external binary/hook/service/LLM).
+- Deterministic proxies anchored in git + filesystem (no LLM, no mandatory GitHub API).
 
 **Non-Goals:**
 
-- Adoptar Apache DevLake, Grafana, MySQL ou qualquer stack DORA.
-- Tornar o script gate de CI (modo A) — permanece sob demanda (modo C).
-- Skill ou rule always-on (R3 N/A).
-- Contadores por ferramenta (Probity, OSV, reviews) — extensão futura quando Fase 5 da metodologia o exigir.
-- Precisão de calendário de "sessão propose" vs "primeiro commit" — aceitar proxy documentado.
-- Dashboard web ou persistência de históricos além do stdout/ficheiro opcional.
+- Adopt Apache DevLake, Grafana, MySQL, or any DORA stack.
+- Make the script a CI gate (mode A) — remains on demand (mode C).
+- Always-on skill or rule (R3 N/A).
+- Per-tool counters (Probity, OSV, reviews) — future extension when Phase 5 methodology requires it.
+- Calendar precision of "propose session" vs "first commit" — accept documented proxy.
+- Web dashboard or history persistence beyond stdout/optional file.
 
 ## Knowledge sources consulted (R8)
 
-- `openspec/changes/explore-oss-coverage-gaps/research.md` §G4 — DevLake adiado; script `sdd-metrics.sh`
-- `openspec/changes/explore-oss-coverage-gaps/metodologia-insercao.md` — Fases 0–3, modo C, contrato 6 pontos, Fase 5 métricas
-- `doc/avaliacoes/2026-07-25-oss-coverage-gaps-tooling.md` — G4 Adiado; condição reavaliação DevLake
-- `openspec/changes/archive/2026-07-26-add-sdd-ci-gates-workflow/{proposal,design,tasks}.md` — precedente G1 / excepção piloto
-- `scripts/sdd-session-status.sh`, `scripts/sdd-upgrade-diff.sh` — estilo bash do kit
-- `sdd-kit/MANIFEST.yaml` v1.5.0 — padrão de entry `scripts/*` + `gate:` documental
-- `AGENTS.md` R9 — change-id em commits (base do proxy de rework)
-- `openspec/infra.md` — R10; não reinstalar infra
+- `openspec/changes/explore-oss-coverage-gaps/research.md` §G4 — DevLake deferred; script `sdd-metrics.sh`
+- `openspec/changes/explore-oss-coverage-gaps/metodologia-insercao.md` — Phases 0–3, mode C, 6-point contract, Phase 5 metrics
+- `doc/avaliacoes/2026-07-25-oss-coverage-gaps-tooling.md` — G4 Deferred; DevLake re-evaluation condition
+- `openspec/changes/archive/2026-07-26-add-sdd-ci-gates-workflow/{proposal,design,tasks}.md` — G1 precedent / pilot exception
+- `scripts/sdd-session-status.sh`, `scripts/sdd-upgrade-diff.sh` — kit bash style
+- `sdd-kit/MANIFEST.yaml` v1.5.0 — pattern for `scripts/*` entry + documentary `gate:`
+- `AGENTS.md` R9 — change-id in commits (rework proxy basis)
+- `openspec/infra.md` — R10; do not reinstall infra
 
 ## Decisions
 
-### D1: Modo C — sob demanda (não CI)
+### D1: Mode C — on demand (not CI)
 
-| Critério | Modo C (escolhido) | Modo A (CI scheduled) |
-|----------|--------------------|------------------------|
-| Alinhamento research | ✅ matriz §4.1 | ❌ "fora da pipeline" mas CI adiciona ruído |
-| Custo CI | ✅ zero | minutos + artefacto a manter |
-| Audiência | Humano em retrospectiva | Bot |
+| Criterion | Mode C (chosen) | Mode A (CI scheduled) |
+|-----------|-----------------|------------------------|
+| Research alignment | ✅ matrix §4.1 | ❌ "outside pipeline" but CI adds noise |
+| CI cost | ✅ zero | minutes + artifact to maintain |
+| Audience | Human in retrospective | Bot |
 
-**Rationale:** metodologia e avaliação colocam métricas como comando do utilizador (periódico/retrospectiva), não etapa da pipeline.
+**Rationale:** methodology and evaluation place metrics as a user command (periodic/retrospective), not a pipeline step.
 
-### D2: Fontes de dados — só git + filesystem local
+### D2: Data sources — git + local filesystem only
 
-**Escolha:** ler `openspec/changes/` (activos), `openspec/changes/archive/` (arquivados), e `git log` / `git log --grep`.
+**Choice:** read `openspec/changes/` (active), `openspec/changes/archive/` (archived), and `git log` / `git log --grep`.
 
-**Alternativa descartada:** GitHub API / `gh` para lead time de PRs — útil mas fora do mínimo; falharia em repos sem GitHub ou cloud agents sem auth.
+**Discarded alternative:** GitHub API / `gh` for PR lead time — useful but outside the minimum; would fail in repos without GitHub or cloud agents without auth.
 
-### D3: Definição das métricas (proxies)
+### D3: Metric definitions (proxies)
 
-| Métrica | Definição operativa | Output |
-|---------|---------------------|--------|
-| **M1 — Volume** | Contagem de dirs em `openspec/changes/<id>/` (excl. `archive/`, `_template`) e em `openspec/changes/archive/YYYY-MM-DD-<id>/`; filtro opcional `--since YYYY-MM-DD` na data do archive (ou mtime/`git log` do activo) | Tabela: activos / arquivados no período |
-| **M2 — Lead time propose→archive** | Para cada archive `YYYY-MM-DD-<change-id>`: `t_end` = data do prefixo do dir; `t_start` = data do **primeiro** commit cujo subject/body contém o `change-id` (fallback: data do primeiro commit que adicionou `openspec/changes/<id>/proposal.md` se rastreável no histórico); lead = `t_end - t_start` em dias | Lista por change + mediana/p50 e média |
-| **M3 — Rework pós-archive** | Commits **após** `t_end` cujo subject casa `^fix(\|:)` **e** menciona o `change-id` arquivado (R9) | Contagem por change-id + total |
-| **M4 — Actividade pós-archive** | Subconjunto de M3 **ou** commits pós-`t_end` que tocam paths sob o dir arquivado (se ainda referenciados); reportar M3 como proxy primário de "changes corrigidos pós-archive" | Secção dedicada no relatório |
+| Metric | Operational definition | Output |
+|--------|------------------------|--------|
+| **M1 — Volume** | Count of dirs in `openspec/changes/<id>/` (excl. `archive/`, `_template`) and in `openspec/changes/archive/YYYY-MM-DD-<id>/`; optional `--since YYYY-MM-DD` filter on archive date (or mtime/`git log` for active) | Table: active / archived in period |
+| **M2 — Lead time propose→archive** | For each archive `YYYY-MM-DD-<change-id>`: `t_end` = dir prefix date; `t_start` = date of **first** commit whose subject/body contains the `change-id` (fallback: date of first commit that added `openspec/changes/<id>/proposal.md` if traceable in history); lead = `t_end - t_start` in days | List per change + median/p50 and mean |
+| **M3 — Post-archive rework** | Commits **after** `t_end` whose subject matches `^fix(\|:)` **and** mentions the archived `change-id` (R9) | Count per change-id + total |
+| **M4 — Post-archive activity** | Subset of M3 **or** post-`t_end` commits touching paths under the archived dir (if still referenced); report M3 as primary proxy for "changes fixed post-archive" | Dedicated report section |
 
-**Notas de honestidade (documentar no relatório e no guia §2.17):**
+**Honesty notes (document in report and guide §2.17):**
 
-- M2 é proxy: o "propose" real pode ser anterior ao primeiro commit (chat-only); ou o change-id só entrar no commit de archive.
-- M3 depende de disciplina R9; commits sem change-id não contam (subcontagem).
-- Archive date no nome do dir é a fonte canónica de `t_end` (convenção OpenSpec deste hub).
+- M2 is a proxy: the real "propose" may precede the first commit (chat-only); or the change-id may only appear in the archive commit.
+- M3 depends on R9 discipline; commits without change-id do not count (undercount).
+- Archive date in the dir name is the canonical source of `t_end` (OpenSpec convention of this hub).
 
-### D4: Interface CLI
+### D4: CLI interface
 
 ```bash
 bash scripts/sdd-metrics.sh [--since YYYY-MM-DD] [--output PATH] [--help]
 ```
 
-| Flag | Comportamento |
-|------|----------------|
-| (default) | Relatório markdown em stdout; considera todo o archive |
-| `--since` | Filtra archives com data de pasta ≥ data; commits de rework também limitados ao período quando aplicável |
-| `--output PATH` | Além de stdout, escreve o mesmo markdown em `PATH` |
-| `--help` | Uso e definição das métricas (1 ecrã) |
+| Flag | Behavior |
+|------|----------|
+| (default) | Markdown report on stdout; considers entire archive |
+| `--since` | Filters archives with folder date ≥ date; rework commits also limited to period when applicable |
+| `--output PATH` | Besides stdout, writes the same markdown to `PATH` |
+| `--help` | Usage and metric definitions (one screen) |
 
-Exit codes: `0` = relatório gerado (incl. archive vazio); `2` = uso inválido; sem dependência de rede.
+Exit codes: `0` = report generated (including empty archive); `2` = invalid usage; no network dependency.
 
-### D5: Implementação — bash puro + git
+### D5: Implementation — pure bash + git
 
-**Escolha:** bash (`set -euo pipefail`) + `git` apenas — paridade com `sdd-session-*` / `verify-*.sh`. Sem Python/jq obrigatório.
+**Choice:** bash (`set -euo pipefail`) + `git` only — parity with `sdd-session-*` / `verify-*.sh`. No mandatory Python/jq.
 
-**Alternativa descartada:** Python para parsing — aceitável no stack, mas aumenta superfície; bash basta para grep/awk de nomes de dirs e `git log --format`.
+**Discarded alternative:** Python for parsing — acceptable in the stack, but increases surface; bash suffices for grep/awk of dir names and `git log --format`.
 
-Esboço de estrutura (apply preenche):
+Sketch structure (apply fills in):
 
 ```bash
 #!/usr/bin/env bash
-# sdd-metrics.sh — relatório de eficácia SDD (G4), modo C
+# sdd-metrics.sh — SDD effectiveness report (G4), mode C
 set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 # parse flags → list archives → compute M1–M4 → emit markdown
 ```
 
-### D6: Distribuição kit + bump MANIFEST
+### D6: Kit distribution + MANIFEST bump
 
-| Item | Valor |
+| Item | Value |
 |------|-------|
 | Path | `scripts/sdd-metrics.sh` |
 | Source | `templates/scripts/sdd-metrics.sh` |
 | merge | `COPY` |
 | profiles | `[APP, DOCS_SPECS, HYBRID]` |
-| gate (documental) | `test -x scripts/sdd-metrics.sh` |
-| version | **1.5.0 → 1.6.0** (nova capability) |
-| guide_version | alinhar **1.6.0** se o changelog do guia subir na mesma apply |
+| gate (documentary) | `test -x scripts/sdd-metrics.sh` |
+| version | **1.5.0 → 1.6.0** (new capability) |
+| guide_version | align **1.6.0** if guide changelog rises in the same apply |
 
-Correr `bash sdd-kit/gen-manifest-checksums.sh` após criar o template.
+Run `bash sdd-kit/gen-manifest-checksums.sh` after creating the template.
 
-### D7: R3 N/A — descoberta via AGENTS.md
+### D7: R3 N/A — discovery via AGENTS.md
 
-Igual a G1/G8: ≤10 linhas em Commands + Integrações; sem skill. Anti-padrão: rule always-on para ferramenta sob demanda.
+Same as G1/G8: ≤10 lines in Commands + Integrations; no skill. Anti-pattern: always-on rule for an on-demand tool.
 
-### D8: Piloto dispensável
+### D8: Pilot dispensable
 
-Critérios da excepção Fase 2: sem binário novo, sem hook, sem serviço, sem LLM. Script bash local = mesma classe que `sdd-session-status.sh`. Validação no apply: correr o script no hub e confirmar exit 0 + markdown com secções M1–M4.
+Phase 2 exception criteria: no new binary, hook, service, or LLM. Local bash script = same class as `sdd-session-status.sh`. Apply validation: run the script in the hub and confirm exit 0 + markdown with M1–M4 sections.
 
-### D9: Avaliação G4 — split Adoptado / Adiado
+### D9: G4 evaluation — Adopted / Deferred split
 
-| Candidato | Decisão após este change |
-|-----------|---------------------------|
-| `sdd-metrics.sh` (correcção manual) | **Adoptado** — change `add-sdd-metrics-script` |
-| Apache DevLake | **Adiado** (inalterado) — reavaliar se equipe/DORA justificar |
+| Candidate | Decision after this change |
+|-----------|----------------------------|
+| `sdd-metrics.sh` (manual fix) | **Adopted** — change `add-sdd-metrics-script` |
+| Apache DevLake | **Deferred** (unchanged) — re-evaluate if team/DORA justifies |
 
-## Matriz A–E
+## A–E matrix
 
-| Tipo tarefa | sdd-metrics.sh |
-|-------------|----------------|
-| A–E (durante sessão) | Não acionar — fora da pipeline |
-| Retrospectiva / calibração | Utilizador corre periodicamente |
+| Task type | sdd-metrics.sh |
+|-----------|----------------|
+| A–E (during session) | Do not invoke — outside pipeline |
+| Retrospective / calibration | User runs periodically |
 
-Nenhuma etapa interactiva em explore/propose/apply/archive.
+No interactive step in explore/propose/apply/archive.
 
-## Registro — contrato de 6 pontos (Fase 3)
+## Registration — 6-point contract (Phase 3)
 
-| # | Onde | Conteúdo |
-|---|------|----------|
-| R1 | `openspec/infra.md` + template | Linha Metrics: script + `bash scripts/sdd-metrics.sh` |
-| R2 | `AGENTS.md` + `AGENTS.core.md` | Commands + ≤10 linhas Integrações / Contexto sob demanda |
+| # | Where | Content |
+|---|-------|---------|
+| R1 | `openspec/infra.md` + template | Metrics line: script + `bash scripts/sdd-metrics.sh` |
+| R2 | `AGENTS.md` + `AGENTS.core.md` | Commands + ≤10 lines Integrations / On-demand context (mode C, proxies, no DevLake) |
 | R3 | — | **N/A** |
-| R4 | `doc/sistema-sdd-pedro.md` **§2.17** | Quando correr, ler output, proxies, troubleshooting, rollback |
-| R5 | `doc/avaliacoes/2026-07-25-oss-coverage-gaps-tooling.md` | G4 script → Adoptado; DevLake Adiado |
-| R6 | `sdd-kit/` | Template script + MANIFEST 1.6.0 + checksums + verify se necessário |
+| R4 | `doc/sistema-sdd-pedro.md` **§2.17** | When to run, read output, proxies, troubleshooting, rollback |
+| R5 | `doc/avaliacoes/2026-07-25-oss-coverage-gaps-tooling.md` | G4 script → Adopted; DevLake Deferred |
+| R6 | `sdd-kit/` | Template script + MANIFEST 1.6.0 + checksums + verify if needed |
 
-Pós-registro: `graphify update .` + `npx gitnexus analyze --force` (best-effort; graphify pode estar ❌).
+Post-registration: `graphify update .` + `npx gitnexus analyze --force` (best-effort; graphify may be ❌).
 
 ## Rollback
 
-| Componente | Rollback |
-|------------|----------|
-| Script | Remover `scripts/sdd-metrics.sh` + template kit |
-| MANIFEST | Remover entry; reverter bump 1.6.0 → 1.5.0; regenerar checksums |
-| Docs | Reverter R1/R2/R4/R5 |
+| Component | Rollback |
+|-----------|----------|
+| Script | Remove `scripts/sdd-metrics.sh` + kit template |
+| MANIFEST | Remove entry; revert bump 1.6.0 → 1.5.0; regenerate checksums |
+| Docs | Revert R1/R2/R4/R5 |
 
-Sem estado em `.sdd/`; sem hooks; sem serviços.
+No state in `.sdd/`; no hooks; no services.
 
 ## Risks / Trade-offs
 
-| Risco | Mitigação |
-|-------|-----------|
-| Proxy M2 impreciso (propose sem commit precoce) | Documentar no relatório e §2.17; aceitar como ordem de grandeza |
-| R9 inconsistente → M3 subconta | Mencionar dependência de R9 no `--help` e no guia |
-| Nomes de archive sem prefixo data | Skip com WARN; convenção hub é `YYYY-MM-DD-<id>` |
-| Performance em monorepos enormes | `git log --grep` por change-id; aceitável para N típico de archives SDD |
-| Tentação de adoptar DevLake cedo | Avaliação mantém Adiado; condição explícita de reavaliação |
+| Risk | Mitigation |
+|------|------------|
+| Imprecise M2 proxy (propose without early commit) | Document in report and §2.17; accept as order of magnitude |
+| Inconsistent R9 → M3 undercount | Mention R9 dependency in `--help` and guide |
+| Archive names without date prefix | Skip with WARN; hub convention is `YYYY-MM-DD-<id>` |
+| Performance in huge monorepos | `git log --grep` per change-id; acceptable for typical SDD archive N |
+| Temptation to adopt DevLake early | Evaluation keeps Deferred; explicit re-evaluation condition |
 
 ## Migration Plan
 
-1. Apply cria script + template + MANIFEST + docs + specs.
-2. Consumidores C2: `upgrade.sh --dry-run` → `--apply` recebe o script.
-3. Operador: correr `bash scripts/sdd-metrics.sh` numa retrospectiva.
-4. Sem migração de dados.
+1. Apply creates script + template + MANIFEST + docs + specs.
+2. C2 consumers: `upgrade.sh --dry-run` → `--apply` receives the script.
+3. Operator: run `bash scripts/sdd-metrics.sh` in a retrospective.
+4. No data migration.
 
 ## Open Questions
 
-| Pergunta | Resolução proposta |
-|----------|-------------------|
-| Secção do guia? | **§2.17** (§2.14–2.16 ocupadas) |
-| Bump minor vs patch? | **Minor** 1.5.0 → 1.6.0 (nova capability) |
-| Incluir changes activos no lead time? | Não — M2 só arquivados (lead completo); activos só em M1 |
-| `gh` opcional para PR lead time? | Fora de escopo neste change |
+| Question | Proposed resolution |
+|----------|---------------------|
+| Guide section? | **§2.17** (§2.14–2.16 occupied) |
+| Minor vs patch bump? | **Minor** 1.5.0 → 1.6.0 (new capability) |
+| Include active changes in lead time? | No — M2 archived only (complete lead); active only in M1 |
+| Optional `gh` for PR lead time? | Out of scope in this change |
