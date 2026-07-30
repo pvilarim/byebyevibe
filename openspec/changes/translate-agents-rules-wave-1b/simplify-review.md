@@ -1,15 +1,15 @@
 # simplify-review
 
 **Change:** translate-agents-rules-wave-1b
-**Escopo:** 6 ficheiros, +69/-68 linhas
-**Veredito:** LEAN
+**Scope:** 6 files, +69/-68 lines
+**Verdict:** LEAN
 
-## Achados
+## Findings
 
-_(nenhum)_
+_(none)_
 
-Substituição PT→EN in-place nas quatro regras always-apply; estrutura, bullets e freeze-list tokens preservados. Diff ~neutro em LOC; sem abstrações, deps ou flexibilidade especulativa. Checklists em `tasks.md` / `proposal.md` são artefacto esperado do apply.
+In-place PT→EN substitution across the four always-apply rules; structure, bullets, and freeze-list tokens preserved. Diff ~neutral in LOC; no abstractions, deps, or speculative flexibility. Checklists in `tasks.md` / `proposal.md` are expected apply artifacts.
 
-**net: 0 linhas possíveis**
+**net: 0 lines possible**
 
 Lean already. Ship.
