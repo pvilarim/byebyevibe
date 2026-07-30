@@ -69,7 +69,7 @@ N/A this wave: **G-MIRROR** (no `.claude/rules/` mirror; Cursor-only `.mdc` kit 
 /opsx:apply translate-kit-wave-2d
 
 Change: openspec/changes/translate-kit-wave-2d/
-Ler: proposal.md, design.md, tasks.md, doc/i18n/GLOSSARY.md, doc/i18n/WAVES.md
+Read: proposal.md, design.md, tasks.md, doc/i18n/GLOSSARY.md, doc/i18n/WAVES.md
 Gate: bash scripts/verify-i18n-wave.sh --files sdd-kit/templates/.cursor/rules/020-python.mdc,sdd-kit/templates/.cursor/rules/030-supabase.mdc,sdd-kit/templates/.cursor/rules/050-security.mdc,sdd-kit/templates/openspec/changes/_template/proposal.md
-Infra: openspec/infra.md (assumir ✅ — não reinstalar)
+Infra: openspec/infra.md (assume ✅ — do not reinstall)
 ```
