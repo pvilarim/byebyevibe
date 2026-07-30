@@ -1,61 +1,61 @@
-# Research — Posicionamento e descoberta do SDD Kit (vibe coding → agentic engineering)
+# Research — SDD Kit positioning and discovery (vibe coding → agentic engineering)
 
-| Campo | Valor |
+| Field | Value |
 |-------|-------|
-| **Data** | 2026-07-26 |
-| **Change** | `add-sdd-discovery-positioning` (tipo D — feature; research ancorado em explore) |
-| **Objectivo** | Documentar análise de mercado/SEO/concorrência e derivar (1) superfície de divulgação e (2) backlog de melhorias de produto alinhadas ao público que busca *vibe coding kits* |
-| **Fontes** | Explore 2026-07-26; GitHub API (stars/topics); READMEs Spec Kit / OpenSpec / BMAD; `sdd-kit/README.md`; `doc/sistema-sdd-pedro.md`; `openspec/project.md`; `openspec/changes/explore-oss-coverage-gaps/research.md` |
+| **Date** | 2026-07-26 |
+| **Change** | `add-sdd-discovery-positioning` (type D — feature; research anchored in explore) |
+| **Objective** | Document market/SEO/competition analysis and derive (1) discovery surface and (2) product improvement backlog aligned with audiences searching for *vibe coding kits* |
+| **Sources** | Explore 2026-07-26; GitHub API (stars/topics); Spec Kit / OpenSpec / BMAD READMEs; `sdd-kit/README.md`; `doc/sistema-sdd-pedro.md`; `openspec/project.md`; `openspec/changes/explore-oss-coverage-gaps/research.md` |
 
-## 1. Diagnóstico AS-IS
+## 1. AS-IS diagnosis
 
-| Superfície | Estado | Efeito |
+| Surface | State | Effect |
 |------------|--------|--------|
-| `README.md` na raiz do hub | **Ausente** | Repo invisível em buscas GitHub por descrição/README |
-| `sdd-kit/README.md` | Operacional (C1/C2/G2/G4) | Serve operadores; **não** serve discovery nem iniciantes vibe coding |
-| `doc/sistema-sdd-pedro.md` | Guia profundo v1.6.1 | Excelente pós-adopção; fricção alta como primeiro contacto |
-| About / topics do repo | Não optimizados para `vibe-coding` / `spec-driven-development` | Perde tráfego do topic mais quente do ecossistema agentic |
+| Root `README.md` on the hub | **Missing** | Repo invisible in GitHub searches by description/README |
+| `sdd-kit/README.md` | Operational (C1/C2/G2/G4) | Serves operators; **does not** serve discovery or vibe-coding beginners |
+| `doc/sistema-sdd-pedro.md` | Deep guide v1.6.1 | Excellent post-adoption; high friction as first contact |
+| Repo About / topics | Not optimized for `vibe-coding` / `spec-driven-development` | Loses traffic from the hottest topic in the agentic ecosystem |
 
-**Paradoxo do público:** quem busca *vibe coding* quer `prompt → app → ship`. Este repo entrega governação de agentes (`explore → propose → apply → archive` + graphs + gates). O gancho de mercado que funciona (Spec Kit, OpenSpec, GSD, best-practice repos) é:
+**Audience paradox:** people searching for *vibe coding* want `prompt → app → ship`. This repo delivers agent governance (`explore → propose → apply → archive` + graphs + gates). The market hook that works (Spec Kit, OpenSpec, GSD, best-practice repos) is:
 
-> **“Vibe coding até o primeiro PR. Depois disto, agentic engineering.”**
+> **"Vibe coding until the first PR. After that, agentic engineering."**
 
-Atrair com a dor; vender a cura (SDD operacionalizado) — **sem** fingir ser boilerplate Next.js.
+Attract with the pain; sell the cure (operationalized SDD) — **without** pretending to be a Next.js boilerplate.
 
-## 2. Posicionamento proposto
+## 2. Proposed positioning
 
-**Frase canónica (EN, discovery):**
+**Canonical phrase (EN, discovery):**
 
 > The missing operating system between your coding agent and a maintainable repo.  
 > Specs, graphs, gates, and session discipline — packaged so vibe coders don't invent process from scratch.
 
-**Tagline curta:**
+**Short tagline:**
 
 > From vibe coding to shippable AI engineering.
 
-**Anti-posicionamento (obrigatório no hero):**
+**Anti-positioning (required in the hero):**
 
 > Not another Next.js / full-stack starter. The control plane your starter is missing.
 
-**Nome público (working):** “SDD Install Kit” / “SDD Kit” — rebrand agressivo fica fora de escopo deste change (decisão humana).
+**Public name (working):** "SDD Install Kit" / "SDD Kit" — aggressive rebrand is out of scope for this change (human decision).
 
-## 3. Termos-chave e SEO GitHub
+## 3. Keywords and GitHub SEO
 
-### 3.1 Topics de alto tráfego (API GitHub, ~2026-07-26)
+### 3.1 High-traffic topics (GitHub API, ~2026-07-26)
 
-| Termo | Por que importa |
+| Term | Why it matters |
 |-------|-----------------|
-| `vibe-coding` / `vibecoding` | Topic massivo; repos 10k–100k★ |
-| `spec-driven-development` / `sdd` | Intenção “upgrade do vibe” |
-| `context-engineering` | Linguagem TLC / agentes sérios |
-| `agentic-coding` / `agentic-engineering` | “além do chat” |
-| `claude-code` / `cursor` | Ferramenta do dia a dia |
-| `agent-skills` | Formato SKILL.md |
-| `agents-md` / menção a AGENTS.md | Standard multi-agente |
-| `mcp` | Extensibilidade |
+| `vibe-coding` / `vibecoding` | Massive topic; repos 10k–100k★ |
+| `spec-driven-development` / `sdd` | "Upgrade from vibe" intent |
+| `context-engineering` | Serious agent / TLC language |
+| `agentic-coding` / `agentic-engineering` | "beyond chat" |
+| `claude-code` / `cursor` | Day-to-day tools |
+| `agent-skills` | SKILL.md format |
+| `agents-md` / AGENTS.md mention | Multi-agent standard |
+| `mcp` | Extensibility |
 | `prd` / `specification` | Spec Kit / OpenSpec SEO |
 
-### 3.2 Queries que o público digita
+### 3.2 Queries the audience types
 
 ```
 vibe coding starter kit
@@ -70,18 +70,18 @@ AI coding agent workflow
 context engineering repo
 ```
 
-### 3.3 About sugerido (≤160 chars)
+### 3.3 Suggested About (≤160 chars)
 
 > Spec-driven toolkit for Cursor & Claude Code: OpenSpec + GitNexus + Graphify, AGENTS.md, CI gates, TDD enforce. Upgrade vibe coding to agentic engineering.
 
-## 4. Rede semântica — features ↔ projectos associados
+## 4. Semantic network — features ↔ associated projects
 
 ```
-VIBE CODING (dor/entrada)
+VIBE CODING (pain/entry)
         │ "from vibe →"
         ▼
 ┌───────────────────────────────────────┐
-│  ESTE KIT (OS / control plane)        │
+│  THIS KIT (OS / control plane)        │
 │  install + AGENTS.md + gates          │
 └───────────────┬───────────────────────┘
      ┌──────────┼──────────┬────────────┐
@@ -94,42 +94,42 @@ VIBE CODING (dor/entrada)
               CI sdd-gates · session locks · metrics G4
 ```
 
-| Cluster | Features nossas | Associar publicamente a |
+| Cluster | Our features | Publicly associate with |
 |---------|-----------------|-------------------------|
 | Spec / SDD | `/opsx:*`, `openspec/` | OpenSpec, Spec Kit, GSD |
-| Context | AGENTS.md único | agents.md, Context7 |
+| Context | Single AGENTS.md | agents.md, Context7 |
 | Code intelligence | GitNexus impact | GitNexus |
-| Knowledge | Graphify GRAPH_REPORT | graph RAG / Understand-Anything (adjacente) |
+| Knowledge | Graphify GRAPH_REPORT | graph RAG / Understand-Anything (adjacent) |
 | Quality | sdd-gates, Probity | CI fail-closed, TDD |
-| Design/UI | C1-UI | open-design, DESIGN.md (módulo opcional) |
-| Anti-caos | session coordination | diferencial raro |
+| Design/UI | C1-UI | open-design, DESIGN.md (optional module) |
+| Anti-chaos | session coordination | rare differentiator |
 
-## 5. Concorrência — como se vendem; gaps
+## 5. Competition — how they sell; gaps
 
-Stars ≈ 2026-07-26 via GitHub API (ordem de grandeza).
+Stars ≈ 2026-07-26 via GitHub API (order of magnitude).
 
-### 5.1 Camada A — frameworks SDD (vizinhos)
+### 5.1 Layer A — SDD frameworks (neighbors)
 
-| Projecto | ★ | Pitch / hack | Eles oferecem; nós não | Nós oferecemos; eles não |
+| Project | ★ | Pitch / hack | They offer; we don't | We offer; they don't |
 |----------|---|--------------|------------------------|---------------------------|
-| github/spec-kit | ~124k | “Define before build”; slash `/speckit.*`; brand GitHub | Distribuição, polish, 20+ agents, site | Triplo OpenSpec+GitNexus+Graphify; AGENTS.md anti-overwrite; perfis; kit C1/C2 versionado; Probity; métricas; session locks |
-| Fission-AI/OpenSpec | ~63k | “most loved”; fluid/brownfield; demo `/opsx` | O CLI de specs (nós **consumimos**) | Orquestração graphs+CI+install kit+guia |
-| BMAD-METHOD | ~51k | Agile AI team; 12+ personas | Multi-persona theatre | Menos cerimónia; brownfield; CI/TDD; dual-graph |
-| gsd-build/get-shit-done | ~65k | Meta-prompting Claude Code | Autonomia longa | Multi-IDE; Graphify+GitNexus; supply-chain |
-| gotalab/cc-sdd | ~3.5k | Specs → autonomous impl | Harness multi-CLI | Upgrade path; profiles; métricas |
+| github/spec-kit | ~124k | "Define before build"; slash `/speckit.*`; GitHub brand | Distribution, polish, 20+ agents, site | Triple OpenSpec+GitNexus+Graphify; AGENTS.md anti-overwrite; profiles; versioned C1/C2 kit; Probity; metrics; session locks |
+| Fission-AI/OpenSpec | ~63k | "most loved"; fluid/brownfield; demo `/opsx` | The specs CLI (we **consume** it) | Graphs+CI+install kit+guide orchestration |
+| BMAD-METHOD | ~51k | Agile AI team; 12+ personas | Multi-persona theatre | Less ceremony; brownfield; CI/TDD; dual-graph |
+| gsd-build/get-shit-done | ~65k | Meta-prompting Claude Code | Long autonomy | Multi-IDE; Graphify+GitNexus; supply-chain |
+| gotalab/cc-sdd | ~3.5k | Specs → autonomous impl | Multi-CLI harness | Upgrade path; profiles; metrics |
 
-### 5.2 Camada B — vibe templates (mesma busca, produto diferente)
+### 5.2 Layer B — vibe templates (same search, different product)
 
-| Projecto | ★ | Pitch | Nota |
+| Project | ★ | Pitch | Note |
 |----------|---|-------|------|
 | di-sukharev/vibe | ~0.5k | Bun/Hono/React template | App scaffold |
 | humanstack/vibe-coding-template | ~0.2k | Next+FastAPI+Supabase | Boilerplate |
 | kenrogers/vibe-coders-starter-kit | ~1 | TDD + Clerk/Convex | App + skills |
 | VoloBuilds/create-volo-app | ~0.1k | Full-stack 30s | Scaffolding |
 
-**Insight:** `vibe coding template` → Camada B. `spec-driven` / `from vibe coding to` → Camada A. O README ideal **aparece nas duas**, com disambiguação em 2 linhas.
+**Insight:** `vibe coding template` → Layer B. `spec-driven` / `from vibe coding to` → Layer A. The ideal README **appears in both**, with two-line disambiguation.
 
-### 5.3 Matriz compacta
+### 5.3 Compact matrix
 
 ```
                  Spec    Multi-agent  Code graph  Knowledge  Install kit  CI/TDD
@@ -138,124 +138,124 @@ OpenSpec         ●●●●    ●●           ○           ○          ●
 BMAD             ●●●     ●●●●         ○           ○          ●●●          ●●
 GSD              ●●●     ●●●          ○           ○          ●●           ●
 Vibe boilerplates ○      ○            ○           ○          ●●●● (app)   ●
-ESTE KIT         ●●●●    ●●           ●●●●        ●●●●       ●●●●         ●●●●
+THIS KIT         ●●●●    ●●           ●●●●        ●●●●       ●●●●         ●●●●
 ```
 
-### 5.4 Diferenciais defensáveis (ancoráveis)
+### 5.4 Defensible differentiators (anchorable)
 
-1. Stack composto documentado (OpenSpec + GitNexus + Graphify) + ordem de install + anti-overwrite `AGENTS.md`
-2. Payload versionado (`MANIFEST.yaml`, upgrade C2)
-3. Perfis APP / DOCS_SPECS / HYBRID
-4. Gates reais (validate + OSV + Probity) — não só prompts
+1. Documented composite stack (OpenSpec + GitNexus + Graphify) + install order + `AGENTS.md` anti-overwrite
+2. Versioned payload (`MANIFEST.yaml`, C2 upgrade)
+3. APP / DOCS_SPECS / HYBRID profiles
+4. Real gates (validate + OSV + Probity) — not just prompts
 5. Session coordination (worktree locks)
 
-### 5.5 O que falta para competir em discovery (não em método)
+### 5.5 What's missing to compete on discovery (not on method)
 
-| Gap de divulgação | Severidade | Notas |
+| Discovery gap | Severity | Notes |
 |-------------------|------------|-------|
-| README raiz ausente | Crítica | Este change |
-| Sem demo narrativa tipo OpenSpec | Alta | Copiar padrão diálogo `/opsx` |
-| Sem GIF / site / Discord | Média | Follow-up; não bloquear |
-| Topics/About não alinhados | Alta | `[AÇÃO MANUAL]` no GitHub Settings |
-| Jargão C1/G4 no first contact | Média | Mapa “nome amigável → código” |
-| Nome do repo `gitnexus-graphify-openspec` | Média | SEO fraco vs “sdd-kit”; rename = decisão humana |
+| Missing root README | Critical | This change |
+| No narrative demo like OpenSpec | High | Copy `/opsx` dialogue pattern |
+| No GIF / site / Discord | Medium | Follow-up; do not block |
+| Topics/About not aligned | High | `[MANUAL ACTION]` in GitHub Settings |
+| C1/G4 jargon on first contact | Medium | "Friendly name → code" map |
+| Repo name `gitnexus-graphify-openspec` | Medium | Weak SEO vs "sdd-kit"; rename = human decision |
 
-## 6. Viés duplo — divulgação + melhorias de produto
+## 6. Dual bias — discovery + product improvements
 
-### 6.1 Este change (descoberta + documentação canónica)
+### 6.1 This change (discovery + canonical documentation)
 
-- Documento persistente em `doc/avaliacoes/` (esta análise)
-- `README.md` raiz (EN-first, hero + demo + compare + CTA)
-- Intro de posicionamento em `sdd-kit/README.md` (sem remover ops)
-- Ponteiros no guia / AGENTS / project / índice de avaliações
-- Spec normativa de superfícies de discovery
-- Checklist `[AÇÃO MANUAL]` para About + topics no GitHub
+- Persistent document in `doc/avaliacoes/` (this analysis)
+- Root `README.md` (EN-first, hero + demo + compare + CTA)
+- Positioning intro in `sdd-kit/README.md` (without removing ops)
+- Pointers in guide / AGENTS / project / evaluations index
+- Normative spec for discovery surfaces
+- `[MANUAL ACTION]` checklist for About + topics on GitHub
 
-### 6.2 Backlog de produto derivado da análise (fora ou parcial deste change)
+### 6.2 Product backlog derived from the analysis (outside or partial in this change)
 
-| ID | Melhoria | Origem do gap | Prioridade | Escopo / decisão (2026-07-26) |
+| ID | Improvement | Gap origin | Priority | Scope / decision (2026-07-26) |
 |----|----------|---------------|------------|------------------------------|
-| P1 | README + topics + avaliação | Invisibilidade | P0 | **Este change** (apply) |
-| P2 | Quickstart “vibe coder em 5 min” no guia (§ curto) | Fricção do guia longo | P0 | **Este change** (apply) |
-| P3 | Mapa amigável C1/C2/G2 → nomes humanos no README/kit | Jargão | P1 | **Este change** (apply) |
-| P4 | Template de “compare table” actualizável (stars datados) | Concorrência muda | P1 | **Este change** (apply; na avaliação) |
-| P5 | Demo GIF / asciinema do fluxo opsx | OpenSpec/Spec Kit polish | — | **Explorar antes de implementar** — ver §6.3 |
-| P6 | `npx` / one-liner bootstrap “famoso” | Spec Kit `uv tool install` | — | **Não implementar** (CTA actual `install.sh --dry-run` basta; risco supply-chain) |
-| P7 | Página docs (GitHub Pages / landing) | Spec Kit site | — | **Não implementar** |
-| P8 | Comunidade Discord | OpenSpec/BMAD | — | **Não implementar** |
-| P9 | Módulo “app starter” (auth/DB/deploy) | Camada B | — | **Não implementar** (non-goal permanente) |
-| P10 | Rename / nome público do projecto | SEO / identidade | — | **Depois do README** — explore→propose→apply dedicados (§11); **não** neste change |
-| — | Multi-persona theatre (BMAD) | BMAD-METHOD | — | **Não implementar** (skills/subagentes locais bastam; evita 2º orquestrador) |
-| — | Tradução completa do hub para inglês | Descoberta global + policy | — | **Depois do nome estável** — policy + waves (§11); **não** neste change |
+| P1 | README + topics + evaluation | Invisibility | P0 | **This change** (apply) |
+| P2 | Quickstart "vibe coder in 5 min" in guide (short §) | Long-guide friction | P0 | **This change** (apply) |
+| P3 | Friendly C1/C2/G2 → human names map in README/kit | Jargon | P1 | **This change** (apply) |
+| P4 | Updatable "compare table" template (dated stars) | Competition shifts | P1 | **This change** (apply; in evaluation) |
+| P5 | Demo GIF / asciinema of opsx flow | OpenSpec/Spec Kit polish | — | **Explore before implementing** — see §6.3 |
+| P6 | `npx` / famous one-liner bootstrap | Spec Kit `uv tool install` | — | **Do not implement** (current `install.sh --dry-run` CTA suffices; supply-chain risk) |
+| P7 | Docs page (GitHub Pages / landing) | Spec Kit site | — | **Do not implement** |
+| P8 | Discord community | OpenSpec/BMAD | — | **Do not implement** |
+| P9 | "App starter" module (auth/DB/deploy) | Layer B | — | **Do not implement** (permanent non-goal) |
+| P10 | Rename / public project name | SEO / identity | — | **After README** — dedicated explore→propose→apply (§11); **not** in this change |
+| — | Multi-persona theatre (BMAD) | BMAD-METHOD | — | **Do not implement** (local skills/subagents suffice; avoids a second orchestrator) |
+| — | Full hub English translation | Global discovery + policy | — | **After stable name** — policy + waves (§11); **not** in this change |
 
-**Princípio de produto:** melhorar o kit para o iniciante **sem** diluir o diferencial (control plane). Qualquer feature que nos transforme em “mais um vibe template” é rejeitada.
+**Product principle:** improve the kit for beginners **without** diluting the differentiator (control plane). Any feature that turns us into "yet another vibe template" is rejected.
 
-### 6.3 Decisão de produto — gaps de concorrência (explore 2026-07-26)
+### 6.3 Product decision — competition gaps (explore 2026-07-26)
 
-**Confirmação humana:** Landing, Discord, one-liner fame, app scaffold, BMAD multi-persona e brand GitHub — **não implementar**. Permanecem fora do roadmap activo.
+**Human confirmation:** Landing, Discord, one-liner fame, app scaffold, BMAD multi-persona, and GitHub brand — **do not implement**. They remain off the active roadmap.
 
-**No roadmap (fora deste apply), com ordem fixa — ver §11:** novo nome público (P10) → tradução EN completa + policy → explore GIF (P5).
+**On the roadmap (outside this apply), fixed order — see §11:** new public name (P10) → full EN translation + policy → explore GIF (P5).
 
-**P5 (1b GIF / asciinema):** **não implementar ainda.** Precisa de **exploração dedicada** (`/opsx:explore`) sobre *como* integrar, antes de qualquer propose/apply. Preferir **depois** do README e, idealmente, do nome estável (§11). Questões em aberto:
+**P5 (1b GIF / asciinema):** **do not implement yet.** Requires **dedicated exploration** (`/opsx:explore`) on *how* to integrate, before any propose/apply. Prefer **after** README and, ideally, stable name (§11). Open questions:
 
-| # | Pergunta de integração |
+| # | Integration question |
 |---|------------------------|
-| E1 | Formato: GIF vs asciinema vs SVG terminal vs vídeo curto — trade-off tamanho git vs fidelidade |
-| E2 | Onde vive o asset: `docs/media/`, GitHub release, ou só link externo |
-| E3 | O que gravar: só `/opsx:propose→archive` ou também `install.sh --dry-run` |
-| E4 | Como evitar drift quando slash commands / skills mudarem (pipeline de regravação? texto-primeiro no README?) |
-| E5 | Relação com o README: placeholder “Demo (TBD)” vs secção só texto até a explore fechar |
-| E6 | Licença/ferramentas de gravação e se entram no `openspec/infra.md` (R10) |
+| E1 | Format: GIF vs asciinema vs SVG terminal vs short video — git size vs fidelity trade-off |
+| E2 | Where the asset lives: `docs/media/`, GitHub release, or external link only |
+| E3 | What to record: only `/opsx:propose→archive` or also `install.sh --dry-run` |
+| E4 | How to avoid drift when slash commands / skills change (re-recording pipeline? text-first in README?) |
+| E5 | README relationship: "Demo (TBD)" placeholder vs text-only section until explore closes |
+| E6 | Recording tools license and whether they enter `openspec/infra.md` (R10) |
 
-**Change sugerido (futuro, após explore):** ex. `explore-sdd-demo-asciinema` → só então `/opsx:propose` se a integração for clara.
+**Suggested change (future, after explore):** e.g. `explore-sdd-demo-asciinema` → only then `/opsx:propose` if integration is clear.
 
-**Nota:** P1–P4 (README, quickstart, mapa amigável, avaliação) **continuam** no escopo de `add-sdd-discovery-positioning` — são discovery documental, não os gaps de “fame” acima.
+**Note:** P1–P4 (README, quickstart, friendly map, evaluation) **remain** in scope for `add-sdd-discovery-positioning` — they are documentary discovery, not the "fame" gaps above.
 
-## 7. Estrutura recomendada do README raiz
+## 7. Recommended root README structure
 
 1. Hero (tagline + anti-boilerplate + CTA `install.sh --dry-run`)
-2. Problem (agente esquece / alucina / sobrescreve AGENTS.md)
-3. Demo texto (`/opsx:explore → propose → apply → archive`)
-4. What's included (tabela: specs / code graph / knowledge / gates / UI / Probity / **SDD metrics + cadence**)
+2. Problem (agent forgets / hallucinates / overwrites AGENTS.md)
+3. Text demo (`/opsx:explore → propose → apply → archive`)
+4. What's included (table: specs / code graph / knowledge / gates / UI / Probity / **SDD metrics + cadence**)
 5. Not another starter kit
-6. 30-second install + perfis
+6. 30-second install + profiles
 7. Who it's for
-8. Compare (resumo; detalhe na avaliação)
+8. Compare (summary; detail in evaluation)
 9. Stack & companions (links OpenSpec, GitNexus, Graphify, agents.md)
-10. Docs (guia pt-BR, kit README)
-11. **Calibrate as you go** (opcional secção curta ou fundido em 4) — ver §12; tom honesto, sem ML
+10. Docs (guide pt-BR, kit README)
+11. **Calibrate as you go** (optional short section or merged into 4) — see §12; honest tone, no ML
 
-Idioma: **EN no README raiz** (descoberta GitHub). Avaliação e guia neste apply podem permanecer **pt-BR** até à wave de i18n (research §11 passo ④).
+Language: **EN on root README** (GitHub discovery). Evaluation and guide in this apply may remain **pt-BR** until the i18n wave (research §11 step ④).
 
-## 8. Riscos
+## 8. Risks
 
-| Risco | Mitigação |
+| Risk | Mitigation |
 |-------|-----------|
-| Atrair utilizadores que querem só boilerplate e abandonam | Anti-posicionamento explícito no hero |
-| Tom “stop vibe coding” alienar | Preferir “from vibe coding to…” |
-| Stars desatualizados no README | Datados + “ordem de grandeza”; detalhe só em `doc/avaliacoes/` |
-| Duplicar o guia no README | README ≤ ~150–200 linhas; deep dive no guia |
-| Prometer rename / i18n / GIF neste change | Non-goals + roadmap §11 / D10 |
+| Attract users who only want boilerplate and churn | Explicit anti-positioning in the hero |
+| "Stop vibe coding" tone alienates | Prefer "from vibe coding to…" |
+| Outdated stars in README | Dated + "order of magnitude"; detail only in `doc/avaliacoes/` |
+| Duplicating the guide in README | README ≤ ~150–200 lines; deep dive in guide |
+| Promising rename / i18n / GIF in this change | Non-goals + roadmap §11 / D10 |
 
-## 9. Decisões a confirmar no apply (defaults deste propose)
+## 9. Decisions to confirm on apply (defaults from this propose)
 
-| Questão | Default adoptado neste change |
+| Question | Default adopted in this change |
 |---------|-------------------------------|
-| Audiência primária | Solo / small team em Cursor ou Claude Code, a sair do vibe caótico |
-| Idioma README raiz | EN-first |
-| Agressividade do tom | “From vibe → agentic”, não “stop vibe” |
-| Nome público | Working title “SDD Kit” neste apply; **rename real = passo ②–③ do §11** (não neste change) |
-| App scaffold | Non-goal permanente |
-| P5 GIF/asciinema | **Não neste apply** — explore de integração após README (§6.3, §11 passo ⑤) |
-| P6–P8, BMAD, Landing, Discord, brand GitHub | **Não implementar** (decisão 2026-07-26) |
-| Tradução completa EN | **Não neste apply** — após nome estável (§11 passos ④) |
+| Primary audience | Solo / small team on Cursor or Claude Code, leaving chaotic vibe |
+| Root README language | EN-first |
+| Tone aggressiveness | "From vibe → agentic", not "stop vibe" |
+| Public name | Working title "SDD Kit" in this apply; **real rename = steps ②–③ of §11** (not in this change) |
+| App scaffold | Permanent non-goal |
+| P5 GIF/asciinema | **Not in this apply** — integration explore after README (§6.3, §11 step ⑤) |
+| P6–P8, BMAD, Landing, Discord, GitHub brand | **Do not implement** (decision 2026-07-26) |
+| Full EN translation | **Not in this apply** — after stable name (§11 steps ④) |
 
-## 10. Referências
+## 10. References
 
-- Explore sessão 2026-07-26 (chat); este ficheiro é a memória persistente
-- `sdd-kit/README.md` — AS-IS operacional
-- `doc/sistema-sdd-pedro.md` — procedimento canónico
-- `openspec/changes/explore-oss-coverage-gaps/research.md` — gaps de tooling (complementar, não substitui)
+- Explore session 2026-07-26 (chat); this file is persistent memory
+- `sdd-kit/README.md` — operational AS-IS
+- `doc/sistema-sdd-pedro.md` — canonical procedure
+- `openspec/changes/explore-oss-coverage-gaps/research.md` — tooling gaps (complementary, not a substitute)
 - GitHub: `github/spec-kit`, `Fission-AI/OpenSpec`, `bmad-code-org/BMAD-METHOD`, `gsd-build/get-shit-done`, topic `vibe-coding`
 - agents.md — https://agents.md/
 
