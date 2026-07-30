@@ -1,44 +1,44 @@
-# Nota de piloto — Probity (G2)
+# Pilot note — Probity (G2)
 
-| Campo | Valor |
+| Field | Value |
 |-------|-------|
-| **Data** | 2026-07-26 |
+| **Date** | 2026-07-26 |
 | **Change** | `add-probity-tdd-module` |
-| **Ambiente apply** | Cloud Agent — hub DOCS_SPECS (`gitnexus-graphify-openspec`) |
-| **Estado** | **PILOTO PENDENTE** (não falhou — bloqueado por ausência de worktree APP) |
+| **Apply environment** | Cloud Agent — DOCS_SPECS hub (`gitnexus-graphify-openspec`) |
+| **Status** | **PILOT PENDING** (did not fail — blocked by missing APP worktree) |
 
-## Contexto
+## Context
 
-Fase 2 (`metodologia-insercao.md`) exige piloto num **worktree APP** com Vitest ou pytest, C1 + GitNexus + Graphify activos, **antes** de promover Probity como default-ready em repos consumidores.
+Phase 2 (`metodologia-insercao.md`) requires a pilot in an **APP worktree** with Vitest or pytest, C1 + GitNexus + Graphify active, **before** promoting Probity as default-ready in consumer repos.
 
-Este hub é perfil **DOCS_SPECS** (sem test runner de produção). O ambiente cloud deste apply **não** tem worktree APP disponível (`git worktree list` = só master).
+This hub is **DOCS_SPECS** profile (no production test runner). This apply's cloud environment **does not** have an APP worktree available (`git worktree list` = master only).
 
-## Critérios (design.md — inalterados)
+## Criteria (design.md — unchanged)
 
-| Critério | Threshold |
+| Criterion | Threshold |
 |----------|-----------|
-| Latência PreToolUse extra p95 | < 8s (N≥30 edits, 3 hooks) |
-| Falsos positivos tipo C | < 15% (N≥5 sessões) |
-| Tipo B R6 compliance | 100% (N≥3 sessões) |
-| Cursor IDE hooks | Write/Edit disparam **OU** documentar "só Claude Code" |
+| PreToolUse extra p95 latency | < 8s (N≥30 edits, 3 hooks) |
+| Type C false positives | < 15% (N≥5 sessions) |
+| Type B R6 compliance | 100% (N≥3 sessions) |
+| Cursor IDE hooks | Write/Edit fire **OR** document "Claude Code only" |
 
-## O que este apply faz / não faz
+## What this apply does / does not do
 
-| Faz | Não faz |
+| Does | Does not |
 |-----|---------|
-| Scaffolding sdd-kit (script, template `probity.config.ts`, doc 004) | Activar Probity neste hub |
-| Registro contrato 6 pontos + migração TDD Guard → Probity | Medir p95 / falsos positivos em sessão real |
-| Entradas MANIFEST `profiles: [APP, HYBRID]` com nota piloto pendente | Declarar piloto verde / "Adoptado" sem restrição |
+| sdd-kit scaffolding (script, `probity.config.ts` template, doc 004) | Activate Probity in this hub |
+| 6-point contract registration + TDD Guard → Probity migration | Measure p95 / false positives in a real session |
+| MANIFEST entries `profiles: [APP, HYBRID]` with pilot-pending note | Declare pilot green / "Adopted" without restriction |
 
-## Próximo passo (operador APP)
+## Next step (APP operator)
 
 ```bash
-# Num worktree APP com Vitest ou pytest:
+# In an APP worktree with Vitest or pytest:
 bash sdd-kit/install-probity-module.sh --detect
 bash sdd-kit/install-probity-module.sh --apply --yes
 /plugin marketplace add nizos/probity
 /plugin install probity@probity
-# Medir critérios acima; actualizar esta nota + avaliação G2 → Adoptado
+# Measure criteria above; update this note + G2 evaluation → Adopted
 ```
 
-Se critérios falharem → status G2 **"Adiado"**; rollback com `--uninstall`; não promover activação default em consumidores.
+If criteria fail → G2 status **"Deferred"**; rollback with `--uninstall`; do not promote default activation in consumers.
