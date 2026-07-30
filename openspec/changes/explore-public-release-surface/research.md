@@ -1,314 +1,298 @@
-# Research — Superfície pública no lançamento (visibilidade + changelog)
+# Research — Public surface at launch (visibility + changelog)
 
-| Campo | Valor |
+| Field | Value |
 |-------|-------|
-| **Data** | 2026-07-26 (actualizado 2026-07-26 — EN default + substituição total de pt-BR) |
-| **Change** | `explore-public-release-surface` (tipo E — exploração) |
-| **Estado** | **Pronto para propose** — EN = idioma canónico do repo; pt-BR nos artefactos = legado a **substituir** (não bilíngue permanente); migração só via policy+waves |
-| **Gatilho** | Operador pede propose de policy EN / waves (lançamento público ou preparação) |
-| **Objectivo** | Registar decisões de explore sobre (1) superfície pública, (2) changelog, e (3) **migração segura para inglês como default**, com substituição de todo o português versionado — sem bugs, perda de contexto, termos errados ou overflow de tokens |
-| **Não fazer nesta fase explore** | Não aplicar traduções em massa, não criar `CHANGELOG.md`, não split de repos, nem `.gitignore` de specs |
-| **Fontes** | Explore 2026-07-26; `doc/avaliacoes/2026-07-26-sdd-discovery-positioning.md` roadmap §11; `doc/sistema-sdd-pedro.md`; design discovery D1/D10; inventário LOC 2026-07-26; decisão humana: EN = default, substituir todos os termos PT |
+| **Date** | 2026-07-26 (updated 2026-07-26 — EN default + full pt-BR substitution) |
+| **Change** | `explore-public-release-surface` (type E — exploration) |
+| **Status** | **Ready for propose** — EN = canonical repo language; pt-BR in artifacts = legacy to **substitute** (not permanent bilingual); migration only via policy+waves |
+| **Trigger** | Operator requests EN policy / waves propose (public launch or preparation) |
+| **Objective** | Record explore decisions on (1) public surface, (2) changelog, and (3) **safe migration to English as default**, with substitution of all versioned Portuguese — without bugs, context loss, wrong terms, or token overflow |
+| **Do not do in this explore phase** | No bulk translations, no `CHANGELOG.md`, no repo split, no specs `.gitignore` |
+| **Sources** | Explore 2026-07-26; `doc/avaliacoes/2026-07-26-sdd-discovery-positioning.md` roadmap §11; `doc/sistema-sdd-pedro.md`; discovery design D1/D10; LOC inventory 2026-07-26; human decision: EN = default, substitute all PT terms |
 
-## Resumo executivo
+## Executive summary
 
-Num repo GitHub **público**, **não é possível** ter pastas versionadas e invisíveis a visitantes. Esconder `openspec/` / `doc/` via `.gitignore` quebra o hub SDD (agents, gates, OpenSpec).
+On a **public** GitHub repo, **it is not possible** to have versioned folders invisible to visitors. Hiding `openspec/` / `doc/` via `.gitignore` breaks the SDD hub (agents, gates, OpenSpec).
 
-**Decisão linguística (2026-07-26):**
+**Language decision (2026-07-26):**
 
-| Camada | Idioma |
-|--------|--------|
-| **Default / canónico do repositório** | **English** — todos os artefactos versionados novos e migrados |
-| **pt-BR em ficheiros do repo** | **Legado a eliminar** — substituir in-place por waves até residual ≈ 0 nas superfícies in-scope |
-| **Conversa Pedro ↔ agente** | Pode continuar em **pt-BR** (velocidade humana) — isso **não** autoriza escrever artefactos em PT |
+| Layer | Language |
+|-------|----------|
+| **Default / canonical for the repository** | **English** — all new and migrated versioned artifacts |
+| **pt-BR in repo files** | **Legacy to eliminate** — substitute in-place by waves until residual ≈ 0 on in-scope surfaces |
+| **Pedro ↔ agent conversation** | May continue in **pt-BR** (human speed) — that **does not** authorize writing artifacts in PT |
 
-**Desenvolvimento futuro:**
+**Future development:**
 
-1. Policy EN-default + waves de **substituição** (não “camada EN em cima do PT”).
-2. Opcional `CHANGELOG.md` EN na raiz (F3).
-3. Split ops privado só se dor real após migração.
-4. **Proibido:** gitignore de specs/docs para “esconder português”; dual-file `*.en.md` permanente.
+1. EN-default policy + **substitution** waves (not “EN layer on top of PT”).
+2. Optional root `CHANGELOG.md` EN (F3).
+3. Private ops split only if real pain after migration.
+4. **Forbidden:** gitignore specs/docs to “hide Portuguese”; permanent dual-file `*.en.md`.
 
-## Problema explorado
+## Problem explored
 
-| Pedido | Interpretação |
-|--------|----------------|
-| Specs/pastas no repo mas “não visíveis” | Evitar que terceiros vejam conteúdo pt-BR e o trilho de desenvolvimento |
-| Changelog das modificações principais | Superfície estável de “o que mudou” no projecto |
+| Request | Interpretation |
+|---------|----------------|
+| Specs/folders in the repo but “not visible” | Avoid third parties seeing pt-BR content and the development trail |
+| Changelog of main modifications | Stable surface for “what changed” in the project |
 
-## Decisão registada (adiada)
+## Recorded decision (deferred)
 
-| ID | Item | Decisão | Quando reabrir |
-|----|------|---------|----------------|
-| F1 | Esconder pastas no git público | **Não implementar** (impossível sem tirar do git) | — |
-| F2 | Policy **EN = default** + waves de **substituição total** de pt-BR (seguras) | **Pronto para propose** — ver § Metodologia i18n segura; `add-english-docs-policy` + waves até residual PT ≈ 0 | Operador pede propose / lançamento |
-| F7 | Conversa chat pt-BR vs artefactos EN | **Adoptado** — chat MAY pt-BR; **MUST NOT** criar/editar docs/skills/specs/templates em PT após policy | — |
-| F3 | `CHANGELOG.md` raiz (EN, fino) | **Adiado** — change futuro `add-root-changelog` | Lançamento / repo público |
-| F4 | GitHub Releases espelhando versões kit | **Adiado** — opcional junto de F3 | Lançamento / repo público |
-| F5 | Repo ops privado (guia/avaliações/archive) | **Adiado — só se dor real** após F2 | Se superfície pública ainda parecer “ruído” |
-| F6 | `.gitignore` de specs/changes/docs | **Descartado** como estratégia de privacidade | Nova proposta só com justificação forte |
+| ID | Item | Decision | When to reopen |
+|----|------|----------|----------------|
+| F1 | Hide folders in public git | **Do not implement** (impossible without removing from git) | — |
+| F2 | Policy **EN = default** + safe **full pt-BR substitution** waves | **Ready for propose** — see § Safe i18n methodology; `add-english-docs-policy` + waves until residual PT ≈ 0 | Operator requests propose / launch |
+| F7 | Chat pt-BR vs EN artifacts | **Adopted** — chat MAY pt-BR; **MUST NOT** create/edit docs/skills/specs/templates in PT after policy | — |
+| F3 | Root `CHANGELOG.md` (EN, thin) | **Deferred** — future change `add-root-changelog` | Launch / public repo |
+| F4 | GitHub Releases mirroring kit versions | **Deferred** — optional together with F3 | Launch / public repo |
+| F5 | Private ops repo (guide/evaluations/archive) | **Deferred — only if real pain** after F2 | If public surface still feels like “noise” |
+| F6 | `.gitignore` of specs/changes/docs | **Discarded** as privacy strategy | New proposal only with strong justification |
 
-## Relação com o backlog de discovery
+## Relation to discovery backlog
 
 ```
 ① README EN                    ✅
-②–③ ByeByeVibe + slug          ✅ (manual no GitHub)
-④ Policy EN + waves            ← F2 (este research; futuro)
-   + CHANGELOG.md raiz (EN)    ← F3 (este research; futuro)
-⑤ GIF                          Adiado (P5)
-⑥ Landing/Discord              Não implementar
+②–③ ByeByeVibe + slug          ✅ (manual on GitHub)
+④ EN policy + waves            ← F2 (this research; future)
+   + root CHANGELOG.md (EN)    ← F3 (this research; future)
+⑤ GIF                          Deferred (P5)
+⑥ Landing/Discord              Do not implement
 ```
 
-Inventário i18n detalhado: ver § Inventário AS-IS (abaixo). Waves de tradução: **proibidas** no change de policy — só depois dos gates existirem.
+Detailed i18n inventory: see § AS-IS inventory (below). Translation waves: **forbidden** in the policy change — only after gates exist.
 
-## Metodologia i18n segura (cristalizada 2026-07-26)
+## Safe i18n methodology (crystallized 2026-07-26)
 
-Problema reenquadrado: **English é o idioma default/canónico do repositório.** O pt-BR nos ficheiros versionados é legado a **substituir** (in-place), não a manter em paralelo. Continua migração controlada (executabilidade + glossário + budget de tokens), mas o **Definition of Done** é residual PT ≈ 0 nas superfícies in-scope.
+Reframed problem: **English is the default/canonical language of the repository.** pt-BR in versioned files is legacy to **substitute** (in-place), not to maintain in parallel. Still controlled migration (executability + glossary + token budget), but the **Definition of Done** is residual PT ≈ 0 on in-scope surfaces.
 
 ```
 ┌──────────────────────────────────────────────────────────────┐
-│  CAMADA 1 — POLICY (1 change, 0 substituição em massa)       │
-│  EN=default · glossário · inventário PT · gates · wave limits│
+│  LAYER 1 — POLICY (1 change, 0 bulk substitution)              │
+│  EN=default · glossary · PT inventory · gates · wave limits  │
 └────────────────────────────┬─────────────────────────────────┘
-                             │ gates verdes
+                             │ green gates
                              ▼
 ┌──────────────────────────────────────────────────────────────┐
-│  CAMADA 2 — WAVES (N changes; 1 wave = 1 apply = 1 PR)       │
-│  fatia · SUBSTITUIR pt→EN no mesmo path · verificar · commit │
+│  LAYER 2 — WAVES (N changes; 1 wave = 1 apply = 1 PR)        │
+│  slice · SUBSTITUTE pt→EN same path · verify · commit        │
 └────────────────────────────┬─────────────────────────────────┘
-                             │ todas as waves in-scope
+                             │ all in-scope waves
                              ▼
 ┌──────────────────────────────────────────────────────────────┐
-│  DoD GLOBAL — scanner PT residual fail-closed (in-scope)     │
+│  GLOBAL DoD — residual PT scanner fail-closed (in-scope)       │
 └──────────────────────────────────────────────────────────────┘
 ```
 
-### Princípios (MUST)
+### Principles (MUST)
 
-1. **EN = idioma default do repo.** Artefactos novos (proposal, design, specs, skills, guide, evaluations, rules prose, kit templates) **MUST** ser escritos em inglês após a policy.
-2. **Substituição, não bilinguismo.** Waves **substituem** prosa pt-BR pelo EN canónico no **mesmo path**. Dual-file `*.en.md` / `*-pt.md` permanente = **proibido**.
-3. **Meta: substituir todos os termos PT** nas superfícies in-scope. Excepções permanentes só com decisão humana explícita no spec.
-4. **Policy antes de substituir.** Sem glossário + gates + limite de wave + inventário PT, proibido apply de migração.
-5. **Uma wave = uma sessão apply.** Não empilhar o guia inteiro (~2.8k linhas) numa sessão.
-6. **Congelar invariantes.** Paths, change-ids, slash commands, fences de código/shell, nomes de ficheiros, pins, keys MANIFEST — **nunca** “traduzir”.
-7. **Glossário obrigatório.** Forma canónica EN; proibido inventar sinónimos por wave.
-8. **Traduzir significado, não palavra-a-palavra.** Ambíguo → `[NEEDS VERIFICATION]`.
-9. **Chat ≠ repo (F7).** Conversa Pedro ↔ agente **MAY** pt-BR; commits/artefactos **MUST** EN após policy.
-10. **Espelhos em sync.** `.cursor/skills/` ↔ `.claude/skills/` (e commands) na **mesma wave**.
-11. **Templates do kit = checksums.** `sdd-kit/templates/` → `gen-manifest-checksums.sh` na wave.
-12. **Fail-closed.** Wave só fecha com gates verdes; sem N+1 antecipado.
-13. **Features não esperam 100% EN** — PT legado só até à sua wave; ficheiro migrado fica EN-only.
+1. **EN = default repo language.** New artifacts (proposal, design, specs, skills, guide, evaluations, rules prose, kit templates) **MUST** be written in English after the policy.
+2. **Substitution, not bilingualism.** Waves **substitute** pt-BR prose with canonical EN on the **same path**. Permanent dual-file `*.en.md` / `*-pt.md` = **forbidden**.
+3. **Goal: substitute all PT terms** on in-scope surfaces. Permanent exceptions only with explicit human decision in the spec.
+4. **Policy before substituting.** Without glossary + gates + wave limit + PT inventory, migration apply is forbidden.
+5. **One wave = one apply session.** Do not stack the entire guide (~2.8k lines) in one session.
+6. **Freeze invariants.** Paths, change-ids, slash commands, code/shell fences, file names, pins, MANIFEST keys — **never** “translate”.
+7. **Glossary required.** Canonical EN form; inventing synonyms per wave is forbidden.
+8. **Translate meaning, not word-for-word.** Ambiguous → `[NEEDS VERIFICATION]`.
+9. **Chat ≠ repo (F7).** Pedro ↔ agent conversation **MAY** pt-BR; commits/artifacts **MUST** EN after policy.
+10. **Mirrors in sync.** `.cursor/skills/` ↔ `.claude/skills/` (and commands) in the **same wave**.
+11. **Kit templates = checksums.** `sdd-kit/templates/` → `gen-manifest-checksums.sh` in the wave.
+12. **Fail-closed.** Wave closes only with green gates; no premature N+1.
+13. **Features do not wait for 100% EN** — legacy PT only until its wave; migrated file stays EN-only.
 
-### O que NÃO traduzir (freeze list)
+### What NOT to translate (freeze list)
 
-| Categoria | Exemplos | Porque |
-|-----------|----------|--------|
-| Paths / globs | `openspec/changes/`, `sdd-kit/install.sh` | Quebra install e agentes |
-| Change-ids / branches | `add-english-docs-policy` | Links e `openspec validate` |
-| Slash / skills | `/opsx:apply`, `openspec-explore` | Descoberta de skills |
-| Shell / CI | `npx openspec validate`, `bash scripts/…` | Executabilidade |
-| Pins / versões | `@fission-ai/openspec@1.3.1` | Supply chain |
-| Identifiers de código | `enforceTdd`, `MANIFEST.yaml` keys | Runtime |
-| Anchors estáveis já EN | headings RFC em specs | Links internos |
-| Marca | ByeByeVibe, OpenSpec, GitNexus, Graphify | SEO + identidade |
+| Category | Examples | Why |
+|----------|----------|-----|
+| Paths / globs | `openspec/changes/`, `sdd-kit/install.sh` | Breaks install and agents |
+| Change-ids / branches | `add-english-docs-policy` | Links and `openspec validate` |
+| Slash / skills | `/opsx:apply`, `openspec-explore` | Skill discovery |
+| Shell / CI | `npx openspec validate`, `bash scripts/…` | Executability |
+| Pins / versions | `@fission-ai/openspec@1.3.1` | Supply chain |
+| Code identifiers | `enforceTdd`, `MANIFEST.yaml` keys | Runtime |
+| Stable EN anchors | RFC headings in specs | Internal links |
+| Brand | ByeByeVibe, OpenSpec, GitNexus, Graphify | SEO + identity |
 
-### Glossário (seed — expandir no propose/policy)
+### Glossary
 
-| pt-BR (legado) | EN canónico | Notas |
-|----------------|-------------|-------|
-| mudança / change OpenSpec | change | id kebab-case intacto |
-| propor / proposta | propose / proposal | |
-| aplicar | apply | |
-| explorar | explore | |
-| arquivar | archive | |
-| porta / gate | gate | comando de verificação |
-| habilidade | skill | path `.cursor/skills/` |
-| sessão / handoff | session / Session Handoff | |
-| worktree | worktree | não traduzir |
-| perfil APP / DOCS_SPECS | APP / DOCS_SPECS profile | |
-| kit de instalação | install kit / sdd-kit | path `sdd-kit/` intacto |
-| guia canónico | canonical guide | ficheiro pode manter path legado até wave do rename |
-| avaliação | evaluation | `doc/avaliacoes/` path até wave |
-| correcção manual | manual fix (out of kit) | do research OSS |
-| falha fechada / aberta | fail-closed / fail-open | |
+Canonical legacy pt-BR → EN term bank: `doc/i18n/GLOSSARY.md` (seed from this research; expand in the same wave that introduces new terms).
 
-### Limites de wave (anti token-overflow)
+### Wave limits (anti token-overflow)
 
-Inventário LOC (2026-07-26):
+LOC inventory (2026-07-26):
 
-| Superfície | ~LOC | Risco se 1 sessão |
-|------------|------|-------------------|
-| `doc/sistema-sdd-pedro.md` | ~2847 | **Crítico** — overflow + perda de contexto |
-| Skills (espelhos) | ~2922 total | Crítico se batch único |
-| Avaliações | ~523 | Médio |
-| `AGENTS.md` + rules | ~300 | Baixo–médio |
-| `sdd-kit/templates/*.md` | 11 ficheiros | Médio + checksums |
+| Surface | ~LOC | Risk if 1 session |
+|---------|------|-------------------|
+| `doc/sistema-sdd-pedro.md` | ~2847 | **Critical** — overflow + context loss |
+| Skills (mirrors) | ~2922 total | Critical if single batch |
+| Evaluations | ~523 | Medium |
+| `AGENTS.md` + rules | ~300 | Low–medium |
+| `sdd-kit/templates/*.md` | 11 files | Medium + checksums |
 
-**Orçamento por wave (normativo proposto):**
+**Per-wave budget (proposed normative):**
 
-| Limite | Valor sugerido | Motivo |
-|--------|----------------|--------|
-| Linhas fonte a **substituir** | **≤ 350–400** | Cabe input + glossário + diff + gates |
-| Ficheiros tocados | **≤ 4** (ou 1 skill × 2 espelhos = 2) | Review humano viável |
-| Secções do guia | **1 secção `##` grande** ou **2–3 pequenas** | “Contexto sob demanda” (~693 linhas) = **≥2 waves** |
-| Skills | **1 skill lógica** (Cursor + Claude mirror na mesma wave) | Evitar drift de espelho |
-| Critério de fecho da wave | **Zero prosa PT residual** nos ficheiros da wave (deny-list) | Substituição completa da fatia |
-| Duração | 1 apply session; se aproximar do limite → **parar, commit parcial se gates OK, Session Handoff** | |
+| Limit | Suggested value | Reason |
+|-------|-----------------|--------|
+| Source lines to **substitute** | **≤ 350–400** | Fits input + glossary + diff + gates |
+| Files touched | **≤ 4** (or 1 skill × 2 mirrors = 2) | Viable human review |
+| Guide sections | **1 large `##` section** or **2–3 small** | “On-demand context” (~693 lines) = **≥2 waves** |
+| Skills | **1 logical skill** (Cursor + Claude mirror same wave) | Avoid mirror drift |
+| Wave close criterion | **Zero residual PT prose** in wave files (deny-list) | Complete slice substitution |
+| Duration | 1 apply session; if approaching limit → **stop, partial commit if gates OK, Session Handoff** | |
 
-**Ordem de waves sugerida (após policy):**
+**Suggested wave order (after policy):**
 
 ```
-W0  Policy (EN=default, inventário, gates) — sem substituição em massa
+W0  Policy (EN=default, inventory, gates) — no bulk substitution
 W1  AGENTS.md + openspec/project.md + CLAUDE.md + rules prose (.mdc)
-W2  sdd-kit/README.md + templates AGENTS.* / infra do kit (+ checksums)
-W3+ Canonical guide por secção (install → pipelines → regras → anexos)
-WSk Skills /opsx:* e reviews — uma skill lógica por wave (×2 mirrors)
+W2  sdd-kit/README.md + kit AGENTS.* / infra templates (+ checksums)
+W3+ Canonical guide by section (install → pipelines → rules → appendices)
+WSk /opsx:* and review skills — one logical skill per wave (×2 mirrors)
 WRu Remaining rules / commands mirrors
-WAv Evaluations + TEMPLATE (substituir PT)
-WCu doc/curso/ — in-scope por defeito (meta “todos os termos PT”);
-    waves próprias; excepção só com decisão humana no propose
-WAr openspec/changes/archive/** — FORA (histórico imutável);
-    changes activos ainda PT → wave do tema ou wave active-changes
-WCh CHANGELOG.md raiz (F3 — change próprio)
-WDoD Scanner global PT residual fail-closed nas in-scope
+WAv Evaluations + TEMPLATE (substitute PT)
+WCu doc/curso/ — in-scope by default (meta “all PT terms”);
+    own waves; exception only with human decision in propose
+WAr openspec/changes/archive/** — OUT (immutable history);
+    active changes still PT → theme wave or active-changes wave
+WCh Root CHANGELOG.md (F3 — own change)
+WDoD Global residual PT scanner fail-closed in-scope
 ```
 
-### Gates de verificação (por wave)
+### Verification gates (per wave)
 
-Script proposto: `scripts/verify-i18n-wave.sh` (criado no **policy** change; usado em cada wave).
+Proposed script: `scripts/verify-i18n-wave.sh` (created in **policy** change; used in each wave).
 
-| Gate | O que verifica | Falha se |
-|------|----------------|----------|
-| G-INV | Freeze: paths/comandos/`opsx`/pins no output = AS-IS | Comando ou path “traduzido” |
-| G-GLOSS | Forma canónica do glossário; sem sinónimos inventados | Termo fora do bank |
-| G-PT | Deny-list de prosa PT nos ficheiros da wave (após migração) | Residual `não`, `ficheiro`, `também`, … (allowlist: nomes próprios, cites) |
-| G-LINK | Links markdown relativos resolvem | Link partido |
-| G-MIRROR | Pares `.cursor` ↔ `.claude` equivalentes | Só um lado mudou |
-| G-MANIFEST | Templates tocados → checksums + `verify.sh` | SHA desactualizado |
-| G-OPENSPEC | `openspec validate --all --strict` | Spec partida |
-| G-SMOKE | 3 procedimentos críticos executáveis a partir do texto EN | Pedro marca fail |
-| G-DoD | (fecho global) scanner PT residual em todas as in-scope | Qualquer prosa PT restante |
+| Gate | What it verifies | Fails if |
+|------|------------------|----------|
+| G-INV | Freeze: paths/commands/`opsx`/pins in output = AS-IS | Command or path “translated” |
+| G-GLOSS | Glossary canonical form; no invented synonyms | Term outside bank |
+| G-PT | PT prose deny-list in wave files (after migration) | Residual deny-list tokens (allowlist: proper nouns, cites) |
+| G-LINK | Relative markdown links resolve | Broken link |
+| G-MIRROR | `.cursor` ↔ `.claude` pairs equivalent | Only one side changed |
+| G-MANIFEST | Templates touched → checksums + `verify.sh` | Stale SHA |
+| G-OPENSPEC | `openspec validate --all --strict` | Broken spec |
+| G-SMOKE | 3 critical procedures executable from EN text | Pedro marks fail |
+| G-DoD | (global close) residual PT scanner on all in-scope | Any remaining PT prose |
 
-**Review humano obrigatório** em waves: install (§2), R1–R11, session coordination, MANIFEST/install docs.
+**Human review required** on waves: install (§2), R1–R11, session coordination, MANIFEST/install docs.
 
-### Estratégia de ficheiros
+### File strategy
 
-| Opção | Decisão |
-|-------|---------|
-| A — EN **substitui** PT no mesmo path | **Obrigatória** — única fonte de verdade |
-| B — dual-file `*.en.md` | **Rejeitada** |
-| C — snapshot PT em branch/tag antes da wave | Opcional só para rollback de emergência |
+| Option | Decision |
+|--------|----------|
+| A — EN **substitutes** PT on same path | **Required** — single source of truth |
+| B — dual-file `*.en.md` | **Rejected** |
+| C — PT snapshot in branch/tag before wave | Optional for emergency rollback only |
 
-Paths com nome em PT (`doc/sistema-sdd-pedro.md`, `doc/avaliacoes/`) podem **manter o path** até wave de rename separada (quebra links) — o **conteúdo** já é EN. Rename de path ≠ obrigação da policy; é change próprio se desejado.
+Paths with PT names (`doc/sistema-sdd-pedro.md`, `doc/avaliacoes/`) may **keep the path** until separate rename wave (breaks links) — **content** is already EN. Path rename ≠ policy obligation; own change if desired.
 
-### Superfícies in-scope vs excepções
+### In-scope surfaces vs exceptions
 
-| Superfície | In-scope (substituir PT) | Notas |
-|------------|--------------------------|-------|
-| Guide, AGENTS, rules, skills, commands, kit templates/READMEs | **Sim** | Core |
-| `doc/avaliacoes/`, `doc/design/` | **Sim** | |
-| `doc/curso/` | **Sim por defeito** | Volume alto — waves próprias; Pedro pode marcar excepção no propose |
-| `openspec/specs/` | Só residual PT | Maioria já EN |
-| `openspec/changes/<activo>/` | **Sim** se ainda PT | |
-| `openspec/changes/archive/` | **Não** | Histórico; não reescrever |
-| Quotes / nomes próprios / URLs | Allowlist | Não são “termos a traduzir” |
+| Surface | In-scope (substitute PT) | Notes |
+|---------|--------------------------|-------|
+| Guide, AGENTS, rules, skills, commands, kit templates/READMEs | **Yes** | Core |
+| `doc/avaliacoes/`, `doc/design/` | **Yes** | |
+| `doc/curso/` | **Yes by default** | High volume — own waves; Pedro may mark exception in propose |
+| `openspec/specs/` | Residual PT only | Mostly already EN |
+| `openspec/changes/<active>/` | **Yes** if still PT | |
+| `openspec/changes/archive/` | **No** | History; do not rewrite |
+| Quotes / proper nouns / URLs | Allowlist | Not “terms to translate” |
 
-### Riscos e mitigações
+### Risks and mitigations
 
-| Risco | Mitigação |
-|-------|-----------|
-| Overflow de tokens | ≤400 LOC; handoff mid-wave |
-| Termo inconsistente | Glossário; G-GLOSS |
-| Comando “ajudado” pelo LLM | G-INV; não reescrever fences |
-| Residual PT esquecido | G-PT por wave + G-DoD global |
-| Espelho Cursor≠Claude | G-MIRROR |
-| Checksums kit | G-MANIFEST |
-| Perda de nuance | Intenção; `[NEEDS VERIFICATION]`; review humano |
+| Risk | Mitigation |
+|------|------------|
+| Token overflow | ≤400 LOC; handoff mid-wave |
+| Inconsistent term | Glossary; G-GLOSS |
+| LLM “helped” command | G-INV; do not rewrite fences |
+| Forgotten residual PT | G-PT per wave + global G-DoD |
+| Cursor≠Claude mirror | G-MIRROR |
+| Kit checksums | G-MANIFEST |
+| Nuance loss | Intent; `[NEEDS VERIFICATION]`; human review |
 | Mega-PR | 1 wave = 1 PR; policy ≠ waves |
-| Spec já EN reescrita | Fora das waves salvo delta explícito |
-| “EN default” vs chat pt-BR | F7 explícito em AGENTS.md Comunicação |
+| Already-EN spec rewritten | Out of waves unless explicit delta |
+| “EN default” vs chat pt-BR | F7 explicit in AGENTS.md Communication |
 
-### Escopo do change `add-english-docs-policy` (Camada 1)
+### Scope of `add-english-docs-policy` change (Layer 1)
 
-**Inclui:**
+**Includes:**
 
-- Spec `sdd-docs-language` — **EN = default do repo**; novos artefactos MUST EN; chat MAY pt-BR; waves MUST substituir (não dual-file); limites + gates; DoD residual PT ≈ 0 in-scope
-- `doc/i18n/GLOSSARY.md` — bank canónico
-- `doc/i18n/WAVES.md` (ou equivalente) — inventário PT + ordem + in-scope/excepções
-- `scripts/verify-i18n-wave.sh` (+ modo DoD global) — G-INV, G-GLOSS, G-PT, G-LINK, G-MIRROR, G-MANIFEST, G-OPENSPEC
-- Ponteiros AGENTS.md / `openspec/project.md` (secção Comunicação: chat vs artefactos)
-- Template de proposal `translate-*-wave-N` (substituição, não “add English layer”)
+- Spec `sdd-docs-language` — **EN = repo default**; new artifacts MUST EN; chat MAY pt-BR; waves MUST substitute (not dual-file); limits + gates; DoD residual PT ≈ 0 in-scope
+- `doc/i18n/GLOSSARY.md` — canonical bank
+- `doc/i18n/WAVES.md` (or equivalent) — PT inventory + order + in-scope/exceptions
+- `scripts/verify-i18n-wave.sh` (+ global DoD mode) — G-INV, G-GLOSS, G-PT, G-LINK, G-MIRROR, G-MANIFEST, G-OPENSPEC
+- AGENTS.md / `openspec/project.md` pointers (Communication section: chat vs artifacts)
+- `translate-*-wave-N` proposal template (substitution, not “add English layer”)
 
-**Não inclui:**
+**Does not include:**
 
-- Substituição em massa do guia / skills / avaliações / curso
-- `CHANGELOG.md` raiz (F3)
-- Rename de paths PT (`sistema-sdd-pedro.md` → `…`)
-- Reescrever `openspec/changes/archive/`
+- Bulk substitution of guide / skills / evaluations / curso
+- Root `CHANGELOG.md` (F3)
+- Rename PT paths (`sistema-sdd-pedro.md` → `…`)
+- Rewrite `openspec/changes/archive/`
 - Dual-file `*.en.md`
 
-## Inventário AS-IS (ordem de grandeza)
+## AS-IS inventory (order of magnitude)
 
-| Path | ~LOC / N | Prioridade pública | Notas |
-|------|----------|--------------------|-------|
-| `README.md` | ~129 | — | Já EN |
-| `doc/sistema-sdd-pedro.md` | ~2847 | Alta | Waves por secção; § “Contexto sob demanda” ~693 → multi-wave |
-| Skills espelhadas | ~2922 | Alta (opsx) | 1 skill/wave |
-| `sdd-kit/templates/*.md` | 11 files | Alta (consumidores) | + checksums |
-| `AGENTS.md` / rules | ~300 | Alta | W1 |
-| `doc/avaliacoes/` | ~523 | Média | Depois do guia core |
-| `openspec/specs/` | — | Baixa | Maioria já EN — não reescrever |
-| `doc/curso/` | grande | Média (volume) | **In-scope** — waves próprias; excepção só se Pedro marcar no propose |
-| `openspec/changes/archive/` | — | — | **Fora** — histórico |
+| Path | ~LOC / N | Public priority | Notes |
+|------|----------|-----------------|-------|
+| `README.md` | ~129 | — | Already EN |
+| `doc/sistema-sdd-pedro.md` | ~2847 | High | Waves by section; § “On-demand context” ~693 → multi-wave |
+| Mirrored skills | ~2922 | High (opsx) | 1 skill/wave |
+| `sdd-kit/templates/*.md` | 11 files | High (consumers) | + checksums |
+| `AGENTS.md` / rules | ~300 | High | W1 |
+| `doc/avaliacoes/` | ~523 | Medium | After core guide |
+| `openspec/specs/` | — | Low | Mostly already EN — do not rewrite |
+| `doc/curso/` | large | Medium (volume) | **In-scope** — own waves; exception only if Pedro marks in propose |
+| `openspec/changes/archive/` | — | — | **Out** — history |
 
 ## Changelog — AS-IS (2026-07-26)
 
-| Superfície | Estado |
-|------------|--------|
-| `doc/sistema-sdd-pedro.md` § Changelog do guia | ✅ canónico (v1.6.1 …) — pt-BR |
-| `sdd-kit/MANIFEST.yaml` `version` | ✅ alinhado ao guia |
-| `CHANGELOG.md` na raiz | ❌ inexistente |
-| GitHub Releases como changelog de produto | não adoptado como processo |
+| Surface | Status |
+|---------|--------|
+| `doc/sistema-sdd-pedro.md` § Guide changelog | ✅ canonical (v1.6.1 …) — pt-BR |
+| `sdd-kit/MANIFEST.yaml` `version` | ✅ aligned with guide |
+| Root `CHANGELOG.md` | ❌ does not exist |
+| GitHub Releases as product changelog | not adopted as process |
 
-## Non-goals deste explore
+## Non-goals of this explore
 
-- Implementar substituição em massa, `CHANGELOG.md`, ou split de repos nesta sessão
-- Alterar MANIFEST / install paths
+- Implement bulk substitution, `CHANGELOG.md`, or repo split in this session
+- Change MANIFEST / install paths
 - Dual-file `*.en.md`
-- Reescrever `openspec/changes/archive/`
-- Rename de paths com nome PT (change separado se desejado)
+- Rewrite `openspec/changes/archive/`
+- Rename paths with PT names (separate change if desired)
 
-## Próximo passo
+## Next step
 
-Explore **concluído** para F2 (EN=default + substituição total segura). Abrir **novo chat** (fase propose):
+Explore **complete** for F2 (EN=default + safe full substitution). Open **new chat** (propose phase):
 
 ```
 /opsx:propose add-english-docs-policy
 
-Escopo = Camada 1 (policy), NÃO substituição em massa:
-- Spec sdd-docs-language: EN = default/canónico do repo;
-  novos artefactos MUST EN; chat MAY pt-BR (F7);
-  waves MUST substituir PT→EN in-place (proibido dual-file);
-  DoD = residual PT ≈ 0 nas superfícies in-scope
-- doc/i18n/GLOSSARY.md + doc/i18n/WAVES.md (inventário + ordem + excepções)
+Scope = Layer 1 (policy), NOT bulk substitution:
+- Spec sdd-docs-language: EN = default/canonical repo language;
+  new artifacts MUST EN; chat MAY pt-BR (F7);
+  waves MUST substitute PT→EN in-place (dual-file forbidden);
+  DoD = residual PT ≈ 0 on in-scope surfaces
+- doc/i18n/GLOSSARY.md + doc/i18n/WAVES.md (inventory + order + exceptions)
 - scripts/verify-i18n-wave.sh (G-INV, G-GLOSS, G-PT, G-LINK, G-MIRROR,
-  G-MANIFEST, G-OPENSPEC + modo G-DoD global)
-- Limite por wave: ≤350–400 LOC, ≤4 ficheiros, 1 skill×2 mirrors,
-  zero prosa PT residual na fatia
-- Template translate-*-wave-N (substituição, não “camada EN”)
-- In-scope inclui doc/curso/ por defeito; archive/ FORA
-- Non-goals deste change: migrar guia/skills/curso agora;
-  CHANGELOG raiz (F3); rename de paths
+  G-MANIFEST, G-OPENSPEC + global G-DoD mode)
+- Per-wave limit: ≤350–400 LOC, ≤4 files, 1 skill×2 mirrors,
+  zero residual PT prose in slice
+- translate-*-wave-N template (substitution, not “EN layer”)
+- In-scope includes doc/curso/ by default; archive/ OUT
+- Non-goals of this change: migrate guide/skills/curso now;
+  root CHANGELOG (F3); path rename
 
-Ler: openspec/changes/explore-public-release-surface/research.md
-     (Metodologia i18n segura — EN default + substituição)
-Avaliação: doc/avaliacoes/2026-07-26-sdd-discovery-positioning.md (P11/P12)
+Read: openspec/changes/explore-public-release-surface/research.md
+     (Safe i18n methodology — EN default + substitution)
+Evaluation: doc/avaliacoes/2026-07-26-sdd-discovery-positioning.md (P11/P12)
 Discovery: openspec/changes/add-sdd-discovery-positioning/research.md §11
-Infra: openspec/infra.md (assumir ✅)
+Infra: openspec/infra.md (assume ✅ — do not reinstall)
 ```
 
-Depois do archive da policy: waves `/opsx:propose translate-…` — uma fatia por chat até G-DoD verde.
+After policy archive: waves `/opsx:propose translate-…` — one slice per chat until G-DoD green.
 
-F3 (`add-root-changelog`) continua change próprio.
+F3 (`add-root-changelog`) remains its own change.
 
-Um change por fatia (policy vs wave vs changelog); não mega-PR.
+One change per slice (policy vs wave vs changelog); no mega-PR.
