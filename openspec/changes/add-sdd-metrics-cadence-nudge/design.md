@@ -1,119 +1,119 @@
 ## Context
 
-- `add-sdd-metrics-script` (G4) introduz `scripts/sdd-metrics.sh` modo **C**: relatório M1–M4 sob demanda; R3 N/A; DevLake fora de escopo; §2.17 cobre *quando correr* e *como ler*, mas **não** *como actuar* nem *quando lembrar*.
-- Exploração (chat explore 2026-07-26): recomendação = playbook de interpretação + cadência event-driven no `/opsx:archive` + stamp stale 30d; adiar skill always-on e CI cron.
-- Metodologia (`metodologia-insercao.md`): out-of-band por defeito; anti-padrão = rule always-on para ferramenta sob demanda; Fase 5 = operação/reavaliação contínua ligada a G4.
-- `sdd-session-handoff`: skills de fase já emitem Session Handoff; archive é o momento natural (ciclo SDD completo).
-- Runtime local já usa `.sdd/runtime/` (gitignored) — precedente para stamp em `.sdd/`. **Nota:** `.gitignore` actual cobre só `.sdd/runtime/`; este change MUST adicionar ignore para `.sdd/metrics-last-run` (ou `.sdd/` mais amplo).
+- `add-sdd-metrics-script` (G4) introduces `scripts/sdd-metrics.sh` in **mode C**: on-demand M1–M4 report; R3 N/A; DevLake out of scope; §2.17 covers *when to run* and *how to read*, but **not** *how to act* or *when to remind*.
+- Exploration (explore chat 2026-07-26): recommendation = interpretation playbook + event-driven cadence on `/opsx:archive` + 30d stale stamp; defer always-on skill and CI cron.
+- Methodology (`metodologia-insercao.md`): out-of-band by default; anti-pattern = always-on rule for an on-demand tool; Phase 5 = continuous operation/re-evaluation tied to G4.
+- `sdd-session-handoff`: phase skills already emit Session Handoff; archive is the natural moment (complete SDD cycle).
+- Local runtime already uses `.sdd/runtime/` (gitignored) — precedent for stamp in `.sdd/`. **Note:** current `.gitignore` covers only `.sdd/runtime/`; this change MUST add ignore for `.sdd/metrics-last-run` (or broader `.sdd/`).
 
-**Pré-requisito de apply:** `scripts/sdd-metrics.sh` e §2.17 base presentes no hub (apply de `add-sdd-metrics-script`).
+**Apply prerequisite:** `scripts/sdd-metrics.sh` and base §2.17 present in the hub (apply of `add-sdd-metrics-script`).
 
 ## Goals / Non-Goals
 
 **Goals:**
 
-- Playbook normativo: mapear M1–M4 → acções concretas de melhoria do processo SDD (1 insight → 1 ajuste).
-- Cadência: nudge advisory quando ≥ **5** archives desde a última corrida **ou** ≥ **30** dias sem corrida.
-- Stamp `.sdd/metrics-last-run` actualizado em cada run bem-sucedido do script (exit 0).
-- Nudge apenas no Session Handoff de **archive** (e docs); modo C preservado — sugere, não executa, não bloqueia.
+- Normative playbook: map M1–M4 → concrete SDD process improvement actions (1 insight → 1 adjustment).
+- Cadence: advisory nudge when ≥ **5** archives since the last run **or** ≥ **30** days without a run.
+- Stamp `.sdd/metrics-last-run` updated on each successful script run (exit 0).
+- Nudge only in the **archive** Session Handoff (and docs); mode C preserved — suggests, does not execute, does not block.
 
 **Non-Goals:**
 
-- Rule `.mdc` always-on ou skill dedicada que sugere métricas em todo chat.
-- Job CI/cron que auto-corre o script ou abre issues (fase futura só se nudge falhar).
-- Tornar métricas gate de `sdd-gates` ou etapa obrigatória de apply/archive.
-- Contadores por ferramenta (Probity, OSV) — ainda Fase 5 futura.
+- Always-on `.mdc` rule or dedicated skill that suggests metrics in every chat.
+- CI/cron job that auto-runs the script or opens issues (future phase only if nudge fails).
+- Making metrics a `sdd-gates` gate or mandatory apply/archive step.
+- Per-tool counters (Probity, OSV) — still future Phase 5.
 - Apache DevLake.
 
 ## Knowledge sources consulted (R8)
 
-- Explore session + recomendação: playbook + nudge archive + stale 30d
-- `openspec/changes/add-sdd-metrics-script/{proposal,design}.md` — G4 modo C, §2.17, R3 N/A
-- `openspec/changes/explore-oss-coverage-gaps/metodologia-insercao.md` §4.1 modo C, anti-padrão always-on, Fase 5
-- `openspec/specs/sdd-session-handoff/spec.md` — Session Handoff obrigatório
-- `.claude/skills/openspec-archive-change/SKILL.md` — ponto de inserção do nudge
-- `doc/sistema-sdd-pedro.md` §2.17 (base G4) · §3.3 session coordination
-- `.gitignore` / `.sdd/runtime/` — precedente stamp local
+- Explore session + recommendation: playbook + archive nudge + 30d stale
+- `openspec/changes/add-sdd-metrics-script/{proposal,design}.md` — G4 mode C, §2.17, R3 N/A
+- `openspec/changes/explore-oss-coverage-gaps/metodologia-insercao.md` §4.1 mode C, always-on anti-pattern, Phase 5
+- `openspec/specs/sdd-session-handoff/spec.md` — mandatory Session Handoff
+- `.claude/skills/openspec-archive-change/SKILL.md` — nudge insertion point
+- `doc/sistema-sdd-pedro.md` §2.17 (G4 base) · §3.3 session coordination
+- `.gitignore` / `.sdd/runtime/` — local stamp precedent
 
 ## Decisions
 
-### D1: Playbook antes de qualquer mechanismo de lembrete
+### D1: Playbook before any reminder mechanism
 
-**Escolha:** alargar §2.17 com secção “Interpretar → actuar” (tabela M* → acção).
+**Choice:** extend §2.17 with an “Interpret → act” section (M* → action table).
 
-**Rationale:** sem playbook, nudge só gera relatórios mortos. Docs-first; zero runtime risk.
+**Rationale:** without a playbook, nudge only produces dead reports. Docs-first; zero runtime risk.
 
-### D2: Cadência event-driven (archives) + stale calendário
+### D2: Event-driven cadence (archives) + calendar staleness
 
-| Sinal | Default | Comportamento |
-|-------|---------|---------------|
-| Archives desde last-run | ≥ 5 | Nudge no handoff de archive |
-| Idade do stamp | ≥ 30 dias | Mesmo nudge |
-| Sem stamp (nunca correu) | — | Nudge após ≥ 5 archives **ou** na primeira oportunidade de archive se o operador nunca correu (tratar “sem ficheiro” como stale infinito) |
+| Signal | Default | Behavior |
+|--------|---------|----------|
+| Archives since last-run | ≥ 5 | Nudge in archive handoff |
+| Stamp age | ≥ 30 days | Same nudge |
+| No stamp (never ran) | — | Nudge after ≥ 5 archives **or** on the first archive opportunity if the operator never ran (treat “no file” as infinite stale) |
 
-**Alternativa descartada:** só cron mensal — desligado dos ciclos SDD; mais fricção operacional (CI/issue).
+**Discarded alternative:** monthly cron only — disconnected from SDD cycles; more operational friction (CI/issue).
 
-### D3: Stamp `.sdd/metrics-last-run` (não git)
+### D3: Stamp `.sdd/metrics-last-run` (not git)
 
-**Formato (proposta):** ficheiro texto com ISO date `YYYY-MM-DD` na primeira linha (opcional: segunda linha = ISO datetime). Escrito pelo próprio `sdd-metrics.sh` no exit 0 path.
+**Format (proposal):** text file with ISO date `YYYY-MM-DD` on the first line (optional: second line = ISO datetime). Written by `sdd-metrics.sh` itself on the exit 0 path.
 
-**Alternativa descartada:** commit de artefacto no repo — polui git; métricas são locais/operador.
+**Discarded alternative:** commit artifact in the repo — pollutes git; metrics are local/operator-scoped.
 
-**Confirmar:** `.sdd/` já gitignored no hub/kit.
+**Confirm:** `.sdd/` already gitignored in hub/kit.
 
-### D4: Onde vive a lógica “should nudge?”
+### D4: Where “should nudge?” logic lives
 
-**Escolha:** função/helper bash pequeno — preferência:
+**Choice:** small bash function/helper — preference:
 
-1. Estender `sdd-metrics.sh` com subcomando ou flag `--check-cadence` (exit 0 = quiet; exit 1 = nudge recommended; stdout = mensagem curta), **ou**
-2. Script irmão `scripts/sdd-metrics-cadence.sh` (só check).
+1. Extend `sdd-metrics.sh` with subcommand or `--check-cadence` flag (exit 0 = quiet; exit 1 = nudge recommended; stdout = short message), **or**
+2. Sibling script `scripts/sdd-metrics-cadence.sh` (check only).
 
-**Preferência de apply:** **(1)** flag `--check-cadence` no mesmo script — menos superfície MANIFEST; R3 continua N/A.
+**Apply preference:** **(1)** `--check-cadence` flag on the same script — less MANIFEST surface; R3 remains N/A.
 
-Defaults N=5 e T=30 como constantes no topo do script (documentadas no guia).
+Defaults N=5 and T=30 as constants at the top of the script (documented in the guide).
 
-### D5: Nudge só na skill archive (não propose/apply/explore)
+### D5: Nudge only in the archive skill (not propose/apply/explore)
 
-**Escolha:** actualizar `## Session Handoff` em `openspec-archive-change` (`.claude/` + `.cursor/`): após archive bem-sucedido, correr `bash scripts/sdd-metrics.sh --check-cadence`; se exit ≠ 0, incluir bloco advisory no handoff (comando + link §2.17 playbook).
+**Choice:** update `## Session Handoff` in `openspec-archive-change` (`.claude/` + `.cursor/`): after successful archive, run `bash scripts/sdd-metrics.sh --check-cadence`; if exit ≠ 0, include advisory block in the handoff (command + §2.17 playbook link).
 
-**Não** alterar explore/propose/apply handoffs (evita ruído).
+**Do not** alter explore/propose/apply handoffs (avoids noise).
 
-### D6: R3 permanece N/A
+### D6: R3 remains N/A
 
-Sem skill nova `sdd-metrics-review`. Descoberta continua AGENTS.md + guia; cadência = extensão da skill archive existente (já always-loaded só quando se faz archive).
+No new `sdd-metrics-review` skill. Discovery continues via AGENTS.md + guide; cadence = extension of the existing archive skill (always-loaded only when doing archive).
 
-### D7: Piloto
+### D7: Pilot
 
-Mesma classe que G4 (bash local, sem binário/hook/LLM novo) → **excepção de piloto** aplicável; validação = correr `--check-cadence` + confirmar texto no handoff em dry-run mental / gate grep.
+Same class as G4 (local bash, no new binary/hook/LLM) → **pilot exception** applicable; validation = run `--check-cadence` + confirm handoff text in mental dry-run / gate grep.
 
-### D8: Dependência de apply
+### D8: Apply dependency
 
-Se `add-sdd-metrics-script` ainda não estiver merged/aplicado no hub, **pausar** apply deste change até o script e §2.17 base existirem.
+If `add-sdd-metrics-script` is not yet merged/applied in the hub, **pause** apply of this change until the script and base §2.17 exist.
 
 ## Risks / Trade-offs
 
-| Risco | Mitigação |
-|-------|-----------|
-| Nudge ignorado → métricas ainda mortas | Playbook torna o “porquê” claro; reavaliar issue mensal CI só se evidência de abandono |
-| Contar “archives desde last-run” impreciso | Contar dirs em `openspec/changes/archive/` com data de pasta > data do stamp (determinístico) |
-| Falso nudge em repos com muitos archives históricos e sem stamp | Sem stamp: só nudge se houver ≥ N archives **com data ≥ (hoje − T dias)** *ou* mensagem única “nunca correu — baseline?” no primeiro archive pós-install (documentar escolha no apply: preferir “nunca correu ⇒ nudge se archives_in_last_T_days ≥ 1” para onboarding suave) |
-| Poluir Session Handoff (>15 linhas) | Nudge ≤ 5 linhas; handoff core intacto |
-| Operador corre métricas noutro clone sem stamp partilhado | Aceitável — stamp é por worktree/máquina (como `.sdd/runtime/`) |
+| Risk | Mitigation |
+|------|------------|
+| Nudge ignored → metrics still dead | Playbook makes the “why” clear; re-evaluate monthly CI issue only if abandonment evidence |
+| Counting “archives since last-run” imprecise | Count dirs in `openspec/changes/archive/` with folder date > stamp date (deterministic) |
+| False nudge in repos with many historical archives and no stamp | No stamp: nudge only if there are ≥ N archives **with date ≥ (today − T days)** *or* single “never ran — baseline?” message on first post-install archive (document choice at apply: prefer “never ran ⇒ nudge if archives_in_last_T_days ≥ 1” for smooth onboarding) |
+| Pollute Session Handoff (>15 lines) | Nudge ≤ 5 lines; core handoff intact |
+| Operator runs metrics in another clone without shared stamp | Acceptable — stamp is per worktree/machine (like `.sdd/runtime/`) |
 
-**Decisão de onboarding (sem stamp):** se ficheiro ausente **e** existe ≥ 1 archive com prefixo de data nos últimos T dias → nudge “baseline recomendada”; caso contrário silêncio (repo fresco / inactivo).
+**Onboarding decision (no stamp):** if file absent **and** there is ≥ 1 archive with date prefix in the last T days → nudge “baseline recommended”; otherwise silence (fresh/inactive repo).
 
 ## Migration Plan
 
-1. Merge/apply `add-sdd-metrics-script` no hub (pré-requisito).
-2. Apply deste change: playbook §2.17 → flag `--check-cadence` + stamp → skill archive → AGENTS 1–3 linhas → deltas specs → checksums kit se template script mudar.
-3. Consumidores C2: `upgrade.sh` recebe script actualizado.
-4. Rollback: reverter skill archive + remover flag/stamp write; playbook docs pode ficar (inofensivo).
+1. Merge/apply `add-sdd-metrics-script` in the hub (prerequisite).
+2. Apply this change: playbook §2.17 → `--check-cadence` flag + stamp → archive skill → AGENTS 1–3 lines → spec deltas → kit checksums if template script changes.
+3. C2 consumers: `upgrade.sh` receives updated script.
+4. Rollback: revert archive skill + remove flag/stamp write; playbook docs may remain (harmless).
 
 ## Open Questions
 
-| Pergunta | Resolução proposta |
-|----------|-------------------|
-| N e T configuráveis por env? | Não neste change — constantes no script; env opcional futuro |
-| Espelhar skill só Claude ou também Cursor? | Ambos (paridade kit/skills) |
-| Bump kit 1.6.0 → 1.6.1 ou 1.7.0? | **Patch 1.6.1** se G4 já lançou 1.6.0; senão incluir no mesmo minor se apply conjunto |
-| Contar só archives no período T ou todos desde stamp? | **Desde stamp** (event-driven); T só para idade do stamp / onboarding |
+| Question | Proposed resolution |
+|----------|---------------------|
+| N and T configurable via env? | Not in this change — constants in script; optional env in future |
+| Mirror skill Claude only or Cursor too? | Both (kit/skills parity) |
+| Bump kit 1.6.0 → 1.6.1 or 1.7.0? | **Patch 1.6.1** if G4 already released 1.6.0; otherwise include in same minor if joint apply |
+| Count only archives in period T or all since stamp? | **Since stamp** (event-driven); T only for stamp age / onboarding |
