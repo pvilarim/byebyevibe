@@ -36,6 +36,6 @@ PT→EN substitution produces many small OpenSpec waves (`translate-*-wave-N`). 
 /opsx:apply add-i18n-cursor-automations-guide
 
 Change: openspec/changes/add-i18n-cursor-automations-guide/
-Ler: proposal.md, design.md, tasks.md, doc/i18n/WAVES.md
-Infra: openspec/infra.md (assumir ✅ — não reinstalar)
+Read: proposal.md, design.md, tasks.md, doc/i18n/WAVES.md
+Infra: openspec/infra.md (assume ✅ — do not reinstall)
 ```
