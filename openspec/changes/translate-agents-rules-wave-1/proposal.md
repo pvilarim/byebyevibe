@@ -60,7 +60,7 @@ N/A this wave: **G-MIRROR** (no skills/commands), **G-MANIFEST** (no kit templat
 /opsx:apply translate-agents-rules-wave-1
 
 Change: openspec/changes/translate-agents-rules-wave-1/
-Ler: proposal.md, design.md, tasks.md, doc/i18n/GLOSSARY.md, doc/i18n/WAVES.md
+Read: proposal.md, design.md, tasks.md, doc/i18n/GLOSSARY.md, doc/i18n/WAVES.md
 Gate: bash scripts/verify-i18n-wave.sh --files AGENTS.md,openspec/project.md,CLAUDE.md
-Infra: openspec/infra.md (assumir ✅ — não reinstalar)
+Infra: openspec/infra.md (assume ✅ — do not reinstall)
 ```
