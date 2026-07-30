@@ -194,7 +194,7 @@ files:
 
   - path: doc/design/000-impeccable-design-system-guia.md
     source: templates/doc/design/000-impeccable-design-system-guia.md
-    sha256: "ef9907065e1fe0751a812ec3dd91b9b97596d00c4c0df699f0f1bc5de1c2687b"
+    sha256: "3eb95ae59ffa0ce6959df25722d9f06a375e9a3437bb61bb9829cdcfd5727dd0"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f doc/design/000-impeccable-design-system-guia.md"
