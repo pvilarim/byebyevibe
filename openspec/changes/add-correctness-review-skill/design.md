@@ -1,29 +1,29 @@
 ## Context
 
-O sistema SDD tem duas skills de review pós-apply:
-- `simplify-review` — caça complexidade evitável (over-engineering, YAGNI, stdlib reinventada)
-- `security-reviewer` — auditoria de segurança em auth/pagamentos/API routes
+The SDD system has two post-apply review skills:
+- `simplify-review` — hunts avoidable complexity (over-engineering, YAGNI, reinvented stdlib)
+- `security-reviewer` — security audit on auth/payments/API routes
 
-Nenhuma das duas cobre **correctness**: bugs lógicos, edge cases não tratados, violações de invariante, condições de corrida, comportamento inesperado em inputs extremos ou erros de contrato. Código gerado por IA tem padrão característico de falha nessa dimensão: sintaxe e estrutura correctas, semântica errada em casos limite.
+Neither covers **correctness**: logical bugs, unhandled edge cases, invariant violations, race conditions, unexpected behavior on extreme inputs, or contract errors. AI-generated code has a characteristic failure pattern in this dimension: correct syntax and structure, wrong semantics at boundary cases.
 
-A inserção segue a metodologia de `metodologia-insercao.md` (Fase 1 → Fase 3 directo):
-- **Excepção de piloto aprovada:** skill sem binário, hook ou consumo LLM autónomo — apenas instrui o agente a revisar código com o modelo já activo na sessão. O utilizador confirmou explicitamente ("piloto dispensável").
-- **Precedente:** `simplify-review` (`.claude/skills/simplify-review/SKILL.md` + espelho `.cursor/skills/`), adoptado sem piloto, integrado via AGENTS.md + infra.md.
+Insertion follows the methodology in `metodologia-insercao.md` (Phase 1 → Phase 3 direct):
+- **Pilot exception approved:** skill without binary, hook, or autonomous LLM consumption — only instructs the agent to review code with the model already active in the session. The user explicitly confirmed ("pilot waived").
+- **Precedent:** `simplify-review` (`.claude/skills/simplify-review/SKILL.md` + mirror `.cursor/skills/`), adopted without pilot, integrated via AGENTS.md + infra.md.
 
-### Verificações Fase 0 concluídas
+### Phase 0 checks completed
 
-| # | Verificação | Resultado |
-|---|-------------|-----------|
-| V1 | Já instalado? | Não — `openspec/infra.md` não lista `correctness-review` |
-| V2 | Superfície de contacto | Modo C (sob demanda) — sem hook, sem PreToolUse; mesmo slot do `simplify-review` |
-| V3 | Colisão de artefactos | Nenhuma — `.claude/skills/correctness-review/` e `.cursor/skills/correctness-review/` livres |
-| V4 | Perfil de repo | Aplica-se a APP e DOCS_SPECS (qualquer código gerado) |
-| V5 | Empilhamento de hooks | N/A — modo C não usa hooks |
-| F1 | Segurança | Sem binário externo; sem token; sem dado de produção |
-| F2 | Licença | MIT (mesmo padrão do `simplify-review`) |
-| F3 | Governança viva | A skill é interna — manutenção própria |
-| F4 | Reversibilidade | Remoção = `rm` dos dois ficheiros de skill + reverter AGENTS.md/infra.md |
-| F5 | Operabilidade | Toggle on/off via invocação (modo C) |
+| # | Check | Result |
+|---|-------|--------|
+| V1 | Already installed? | No — `openspec/infra.md` does not list `correctness-review` |
+| V2 | Contact surface | Mode C (on demand) — no hook, no PreToolUse; same slot as `simplify-review` |
+| V3 | Artifact collision | None — `.claude/skills/correctness-review/` and `.cursor/skills/correctness-review/` are free |
+| V4 | Repo profile | Applies to APP and DOCS_SPECS (any generated code) |
+| V5 | Hook stacking | N/A — mode C does not use hooks |
+| F1 | Security | No external binary; no token; no production data |
+| F2 | License | MIT (same pattern as `simplify-review`) |
+| F3 | Living governance | The skill is internal — self-maintained |
+| F4 | Reversibility | Removal = `rm` the two skill files + revert AGENTS.md/infra.md |
+| F5 | Operability | Toggle on/off via invocation (mode C) |
 
 ---
 
@@ -31,178 +31,178 @@ A inserção segue a metodologia de `metodologia-insercao.md` (Fase 1 → Fase 3
 
 **Goals:**
 
-- Criar skill `correctness-review` que detecte bugs lógicos, edge cases não tratados, violações de contrato e invariantes em código gerado por IA
-- Posicioná-la na pipeline pós-apply antes do `simplify-review` (actualizar AGENTS.md)
-- Registar nos 6 pontos do contrato de inserção (metodologia-insercao.md Fase 3)
-- Fornecer spec normativa (`sdd-correctness-review`) para que implementações futuras saibam o que a skill DEVE e NÃO DEVE fazer
-- Garantir rollback documentado e testável
+- Create `correctness-review` skill that detects logical bugs, unhandled edge cases, contract and invariant violations in AI-generated code
+- Position it in the post-apply pipeline before `simplify-review` (update AGENTS.md)
+- Register at the 6 insertion-contract points (metodologia-insercao.md Phase 3)
+- Provide normative spec (`sdd-correctness-review`) so future implementations know what the skill MUST and MUST NOT do
+- Ensure documented and testable rollback
 
 **Non-Goals:**
 
-- Substituir `simplify-review` ou `security-reviewer` — são ortogonais
-- Integrar PR-Agent (G7 Fase 2 — opcional, por repo, change separado)
-- Criar hook automático ou consumo LLM autónomo (out-of-band)
-- Implementar a skill como subagente autónomo nesta iteração (análogo ao `⏳ Subagent` do simplify-review)
-- Tocar código de produção — este repo é DOCS_SPECS; a skill instrui agentes em repos APP
+- Replace `simplify-review` or `security-reviewer` — they are orthogonal
+- Integrate PR-Agent (G7 Phase 2 — optional, per repo, separate change)
+- Create automatic hook or autonomous LLM consumption (out-of-band)
+- Implement the skill as an autonomous subagent in this iteration (analogous to `⏳ Subagent` of simplify-review)
+- Touch production code — this repo is DOCS_SPECS; the skill instructs agents in APP repos
 
 ---
 
 ## Decisions
 
-### D1: Modo de acionamento — C (sob demanda), não B (hook automático)
+### D1: Trigger mode — C (on demand), not B (automatic hook)
 
-**Escolha:** modo C — utilizador ou agente invoca via skill description ("pós-apply, antes de commit/PR, tarefas B/C/D").
+**Choice:** mode C — user or agent invokes via skill description ("post-apply, before commit/PR, tasks B/C/D").
 
-**Alternativa descartada:** hook PreToolUse automático (modo B). Motivo: (a) consome LLM em cada write, latência inaceitável para edições triviais (tipo A, docs); (b) `metodologia-insercao.md` reserva modo B a TDD Guard com toggle obrigatório; (c) `simplify-review` provou que modo C é suficiente para reviews de qualidade.
+**Discarded alternative:** automatic PreToolUse hook (mode B). Reason: (a) consumes LLM on every write, unacceptable latency for trivial edits (type A, docs); (b) `metodologia-insercao.md` reserves mode B for TDD Guard with mandatory toggle; (c) `simplify-review` proved mode C is sufficient for quality reviews.
 
-**Rationale:** selectividade > cobertura automática. A matriz A–E (abaixo) define quando invocar sem criar regra nova.
-
----
-
-### D2: Estrutura da skill — espelho `.claude/` + `.cursor/`
-
-**Escolha:** `.claude/skills/correctness-review/SKILL.md` (Claude Code) com espelho idêntico em `.cursor/skills/correctness-review/SKILL.md` (Cursor IDE), seguindo precedente do `simplify-review`.
-
-**Alternativa descartada:** ficheiro único partilhado por symlink. Motivo: symlinks não são portáveis cross-platform e o precedente é cópia literal.
+**Rationale:** selectivity > automatic coverage. The A–E matrix (below) defines when to invoke without creating a new rule.
 
 ---
 
-### D3: Contrato de 6 pontos de registro (Fase 3)
+### D2: Skill structure — mirror `.claude/` + `.cursor/`
 
-Obrigatório por `metodologia-insercao.md`. Os 6 pontos:
+**Choice:** `.claude/skills/correctness-review/SKILL.md` (Claude Code) with identical mirror in `.cursor/skills/correctness-review/SKILL.md` (Cursor IDE), following the `simplify-review` precedent.
 
-| # | Artefacto | Conteúdo |
-|---|-----------|----------|
-| R1 | `openspec/infra.md` | Linha na secção Skills: `correctness-review` · fase review · ✅ |
-| R2 | `AGENTS.md` | ≤10 linhas em Integrações + linha na tabela "Reviews pós-implementação" com posição na ordem de pipeline |
-| R3 | `.claude/skills/` + `.cursor/skills/` | Skill completa com `description:` auto-invoke, formato de saída, boundaries |
-| R4 | `doc/sistema-sdd-pedro.md` | Nova subsecção: quando acionar, como ler output, como desligar, troubleshooting |
-| R5 | `doc/avaliacoes/` | Entrada "Adoptado" com condições de reavaliação |
-| R6 | `sdd-kit/` | Instrução de install manual (sem script automático nesta fase — idêntico ao `simplify-review`) |
+**Discarded alternative:** single shared file via symlink. Reason: symlinks are not cross-platform portable and the precedent is literal copy.
 
 ---
 
-### D4: Formato de saída da skill
+### D3: 6-point registration contract (Phase 3)
 
-**Escolha:** espelhar formato do `simplify-review` — cabeçalho com change/escopo/veredito, achados um por linha com tag + localização + descrição + sugestão, métrica final.
+Required by `metodologia-insercao.md`. The 6 points:
 
-**Tags específicas de correctness** (distintas das tags de simplicidade):
-
-| Tag | Significado |
-|-----|-------------|
-| `logic:` | Condição ou ramo lógico errado; resultado incorreto para input válido |
-| `edge:` | Input extremo não tratado (null, vazio, overflow, unicode, concurrent) |
-| `contract:` | Violação de pré/pós-condição ou invariante de API/função |
-| `race:` | Condição de corrida potencial (shared mutable state, async sem lock) |
-| `silent:` | Erro silencioso — excepção engolida, valor errado sem alerta |
-
-**Vereditos** (análogos ao simplify-review):
-
-| Veredito | Critério |
-|----------|----------|
-| `CORRECT` | Nenhum achado de correctness no escopo |
-| `RISKY` | ≥1 achado acionável de correctness |
-| `ESCOPO INSUFICIENTE` | Diff muito pequeno ou sem lógica para avaliar |
+| # | Artifact | Content |
+|---|----------|---------|
+| R1 | `openspec/infra.md` | Line in Skills section: `correctness-review` · review phase · ✅ |
+| R2 | `AGENTS.md` | ≤10 lines in Integrations + line in "Post-implementation reviews" table with pipeline order position |
+| R3 | `.claude/skills/` + `.cursor/skills/` | Complete skill with `description:` auto-invoke, output format, boundaries |
+| R4 | `doc/sistema-sdd-pedro.md` | New subsection: when to trigger, how to read output, how to disable, troubleshooting |
+| R5 | `doc/avaliacoes/` | "Adopted" entry with re-evaluation conditions |
+| R6 | `sdd-kit/` | Manual install instruction (no automatic script in this phase — identical to `simplify-review`) |
 
 ---
 
-### D5: Pilot dispensado — justificação documentada
+### D4: Skill output format
 
-A `metodologia-insercao.md` Fase 2 dispensa piloto quando "a inserção não instala binário novo nem hook". Esta skill:
-- Não instala binário
-- Não adiciona hook (PreToolUse, pre-commit, etc.)
-- Não cria serviço externo
-- Não consome LLM de forma autónoma (opera dentro da sessão já activa)
-- O utilizador confirmou explicitamente ("piloto dispensável")
+**Choice:** mirror `simplify-review` format — header with change/scope/verdict, findings one per line with tag + location + description + suggestion, final metric.
 
-Condição de reavaliação: se a skill vier a ser convertida em subagente autónomo ou hook, um piloto com critérios quantificados DEVE ser conduzido antes da promoção.
+**Correctness-specific tags** (distinct from simplicity tags):
+
+| Tag | Meaning |
+|-----|---------|
+| `logic:` | Wrong condition or branch; incorrect result for valid input |
+| `edge:` | Unhandled extreme input (null, empty, overflow, unicode, concurrent) |
+| `contract:` | Pre/post-condition or API/function invariant violation |
+| `race:` | Potential race condition (shared mutable state, async without lock) |
+| `silent:` | Silent error — swallowed exception, wrong value without alert |
+
+**Verdicts** (analogous to simplify-review):
+
+| Verdict | Criterion |
+|---------|-----------|
+| `CORRECT` | No correctness findings in scope |
+| `RISKY` | ≥1 actionable correctness finding |
+| `INSUFFICIENT SCOPE` | Diff too small or no logic to evaluate |
 
 ---
 
-## Matriz A–E de acionamento
+### D5: Pilot waived — documented justification
 
-Obrigatória por instrução do utilizador ("design.md MUST incluir matriz A–E").
+`metodologia-insercao.md` Phase 2 waives pilot when "insertion does not install a new binary or hook". This skill:
+- Does not install a binary
+- Does not add a hook (PreToolUse, pre-commit, etc.)
+- Does not create an external service
+- Does not consume LLM autonomously (operates within the already-active session)
+- The user explicitly confirmed ("pilot waived")
 
-| Tipo de tarefa | Usar `correctness-review`? | Gatilho | Posição na pipeline |
-|----------------|---------------------------|---------|---------------------|
-| **A — Trivial** | ❌ Não | — | — |
-| **B — Bug fix** | ✅ Sim (sempre) | Diff > 0 linhas de lógica | Antes do commit; depois de testes passarem |
-| **C — Refactor** | ✅ Sim | Diff > ~80 linhas ou > 4 ficheiros | Pós-apply, antes de `simplify-review` |
-| **D — Feature** | ✅ Sim (sempre) | Diff com lógica nova | Pós-apply, antes de `simplify-review` |
-| **E — Exploração** | ❌ Não | — | — (sem código gerado) |
+Re-evaluation condition: if the skill is converted to an autonomous subagent or hook, a pilot with quantified criteria MUST be conducted before promotion.
 
-**Regra de gatilho unificada** (reutiliza heurística existente do `simplify-review`):
-- Diff > ~80 linhas de código **ou** > 4 ficheiros **ou** qualquer tarefa tipo B/D
-- Invocação sempre on-demand (nunca bloqueante automática)
+---
 
-**Ordem actualizada de reviews pós-implementação:**
+## A–E trigger matrix
+
+Required by user instruction ("design.md MUST include A–E matrix").
+
+| Task type | Use `correctness-review`? | Trigger | Pipeline position |
+|-----------|---------------------------|---------|-------------------|
+| **A — Trivial** | ❌ No | — | — |
+| **B — Bug fix** | ✅ Yes (always) | Diff > 0 logic lines | Before commit; after tests pass |
+| **C — Refactor** | ✅ Yes | Diff > ~80 lines or > 4 files | Post-apply, before `simplify-review` |
+| **D — Feature** | ✅ Yes (always) | Diff with new logic | Post-apply, before `simplify-review` |
+| **E — Exploration** | ❌ No | — | — (no generated code) |
+
+**Unified trigger rule** (reuses existing `simplify-review` heuristic):
+- Diff > ~80 code lines **or** > 4 files **or** any type B/D task
+- Invocation always on-demand (never automatic blocking)
+
+**Updated post-implementation review order:**
 ```
-/opsx:apply → [implementação] → testes (R6/TDD Guard)
+/opsx:apply → [implementation] → tests (R6/TDD Guard)
   → correctness-review (B/C/D)
-  → simplify-review (opcional, C/D)
-  → security-reviewer (se auth/API/pagamentos)
-  → commit (R9) → gates CI → /opsx:archive
+  → simplify-review (optional, C/D)
+  → security-reviewer (if auth/API/payments)
+  → commit (R9) → CI gates → /opsx:archive
 ```
 
 ---
 
 ## Risks / Trade-offs
 
-| Risco | Mitigação |
-|-------|-----------|
-| **Falso positivo** — skill flagga código correcto, bloqueia fluxo psicologicamente | Skill é on-demand e não bloqueia commit; veredito `CORRECT` ou `ESCOPO INSUFICIENTE` encerra sem acção; utilizador pode discordar |
-| **Overlap com `security-reviewer`** | Boundaries explícitas: `correctness-review` não reporta vulnerabilidades de segurança (→ `security-reviewer`); `security-reviewer` não caça bugs lógicos gerais |
-| **Overlap com `simplify-review`** | `simplify-review` nunca caça correctness (declarado em seu SKILL.md: "Fora de scope: bugs de correctness"); `correctness-review` nunca caça complexidade desnecessária |
-| **Custo LLM por revisão** | A skill opera na sessão já activa — sem chamada adicional de modelo além do que o agente já executa. Custo marginal ≈ 0 vs uma sessão sem a skill |
-| **Qualidade depende do modelo** | Achados são sugestões, não verdades; utilizador valida. A skill instrui o modelo a ser conservador: só reportar achados com evidência no código, nunca especular |
-| **Drift do SKILL.md** | `correctness-review` e `simplify-review` devem evoluir em paralelo — spec `sdd-correctness-review` é a fonte de verdade; qualquer mudança de comportamento normativo passa por change OpenSpec |
+| Risk | Mitigation |
+|------|------------|
+| **False positive** — skill flags correct code, psychologically blocks flow | Skill is on-demand and does not block commit; verdict `CORRECT` or `INSUFFICIENT SCOPE` closes without action; user may disagree |
+| **Overlap with `security-reviewer`** | Explicit boundaries: `correctness-review` does not report security vulnerabilities (→ `security-reviewer`); `security-reviewer` does not hunt general logical bugs |
+| **Overlap with `simplify-review`** | `simplify-review` never hunts correctness (declared in its SKILL.md: "Out of scope: correctness bugs"); `correctness-review` never hunts unnecessary complexity |
+| **LLM cost per review** | The skill operates in the already-active session — no additional model call beyond what the agent already executes. Marginal cost ≈ 0 vs a session without the skill |
+| **Quality depends on model** | Findings are suggestions, not truths; user validates. The skill instructs the model to be conservative: only report findings with evidence in code, never speculate |
+| **SKILL.md drift** | `correctness-review` and `simplify-review` must evolve in parallel — spec `sdd-correctness-review` is the source of truth; any normative behavior change goes through an OpenSpec change |
 
 ---
 
-## Plano de rollback
+## Rollback plan
 
-Obrigatório por instrução do utilizador ("design.md MUST incluir plano de rollback").
+Required by user instruction ("design.md MUST include rollback plan").
 
-### Quando acionar rollback
+### When to trigger rollback
 
-- A skill produz consistentemente achados sem valor (taxa de accionabilidade < 20% em 10 reviews)
-- Conflito com outra ferramenta futura que cubra o mesmo escopo com melhor qualidade
-- Decisão de adoptar PR-Agent fase 2 em modo automático, tornando a skill redundante
+- The skill consistently produces findings without value (actionability rate < 20% in 10 reviews)
+- Conflict with a future tool that covers the same scope with better quality
+- Decision to adopt PR-Agent phase 2 in automatic mode, making the skill redundant
 
-### Procedimento de rollback (reversível em < 5 minutos)
+### Rollback procedure (reversible in < 5 minutes)
 
 ```bash
-# 1. Remover ficheiros de skill
+# 1. Remove skill files
 rm .claude/skills/correctness-review/SKILL.md
 rmdir .claude/skills/correctness-review/
 rm .cursor/skills/correctness-review/SKILL.md
 rmdir .cursor/skills/correctness-review/
 
-# 2. Reverter AGENTS.md (secção Reviews pós-implementação e tabela Commands)
-#    — remover linha de correctness-review das duas tabelas
+# 2. Revert AGENTS.md (Post-implementation reviews section and Commands table)
+#    — remove correctness-review line from both tables
 
-# 3. Reverter openspec/infra.md (secção Skills)
-#    — remover linha correctness-review
+# 3. Revert openspec/infra.md (Skills section)
+#    — remove correctness-review line
 
-# 4. Criar change OpenSpec de remoção (change tipo C) e arquivar
+# 4. Create OpenSpec removal change (type C) and archive
 
-# 5. Actualizar doc/avaliacoes/ com decisão "Descartado" + condições de reabertura
+# 5. Update doc/avaliacoes/ with "Discarded" decision + reopening conditions
 ```
 
-Rollback não requer toque em `sdd-kit/` (não há script automático para esta fase) nem em specs de outros repos.
+Rollback does not require touching `sdd-kit/` (no automatic script for this phase) or specs in other repos.
 
-### Critérios de reavaliação
+### Re-evaluation criteria
 
-- **Reavaliação semestral** automática (mesma regra de G7 da metodologia)
-- Se convertida em subagente autónomo: conduzir piloto com critérios quantificados (≥1 achado válido por 10 reviews; falso positivo < 30%)
-- Se PR-Agent fase 2 for adoptado: avaliar se a skill local continua complementar (review em tempo real de sessão) ou redundante
+- **Semiannual re-evaluation** automatic (same G7 methodology rule)
+- If converted to autonomous subagent: conduct pilot with quantified criteria (≥1 valid finding per 10 reviews; false positive < 30%)
+- If PR-Agent phase 2 is adopted: evaluate whether the local skill remains complementary (real-time session review) or redundant
 
 ---
 
 ## Open Questions
 
-| # | Questão | Impacto | Quando resolver |
-|---|---------|---------|-----------------|
-| Q1 | Incluir a skill no `sdd-kit/install.sh` como item instalável para repos APP, ou manter instrução manual apenas? | Define R6 do contrato | No próximo upgrade do kit (v1.5.0) |
-| Q2 | Subagente autónomo `.claude/agents/correctness-reviewer.md` (análogo ao `⏳ Subagent` do simplify-review)? | Requer piloto com critérios quantificados antes de promover | Após validação em repo APP real |
-| Q3 | PR-Agent fase 2 (workflow de CI) entra no sdd-kit? | Change OpenSpec separado; governança PR-Agent ainda em transição | Reavaliação semestral (jan/2027) |
+| # | Question | Impact | When to resolve |
+|---|----------|--------|-----------------|
+| Q1 | Include the skill in `sdd-kit/install.sh` as an installable item for APP repos, or keep manual instruction only? | Defines R6 of the contract | On next kit upgrade (v1.5.0) |
+| Q2 | Autonomous subagent `.claude/agents/correctness-reviewer.md` (analogous to `⏳ Subagent` of simplify-review)? | Requires pilot with quantified criteria before promotion | After validation in a real APP repo |
+| Q3 | PR-Agent phase 2 (CI workflow) enters sdd-kit? | Separate OpenSpec change; PR-Agent governance still in transition | Semiannual re-evaluation (Jan/2027) |
