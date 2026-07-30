@@ -54,10 +54,26 @@ while IFS= read -r -d '' tasks_file; do
 
     # Strip optional line suffix file:line
     local_path="${pattern%%:*}"
-  local_path="${local_path#"${local_path%%[![:space:]]*}"}"
+    local_path="${local_path#"${local_path%%[![:space:]]*}"}"
 
-    if [[ -e "$REPO_ROOT/$local_path" ]]; then
-      echo "  OK   $local_path"
+    resolved_path="$local_path"
+    if [[ ! -e "$REPO_ROOT/$local_path" ]] \
+      && [[ "$local_path" =~ ^openspec/changes/([^/]+)/(.+)$ ]] \
+      && [[ "${BASH_REMATCH[1]}" != "archive" ]]; then
+      change_id="${BASH_REMATCH[1]}"
+      rest="${BASH_REMATCH[2]}"
+      archived_dir="$(find "$REPO_ROOT/openspec/changes/archive" -maxdepth 1 -type d -name "*-${change_id}" 2>/dev/null | head -1)"
+      if [[ -n "$archived_dir" && -e "$archived_dir/$rest" ]]; then
+        resolved_path="${archived_dir#"$REPO_ROOT/"}/$rest"
+      fi
+    fi
+
+    if [[ -e "$REPO_ROOT/$resolved_path" ]]; then
+      if [[ "$resolved_path" != "$local_path" ]]; then
+        echo "  OK   $resolved_path (archived; Pattern: $local_path)"
+      else
+        echo "  OK   $local_path"
+      fi
     else
       echo "  FAIL missing: $local_path (from Pattern: $pattern)"
       ((FAILURES++)) || true
