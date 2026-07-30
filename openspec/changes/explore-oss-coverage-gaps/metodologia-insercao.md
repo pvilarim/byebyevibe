@@ -1,182 +1,182 @@
-# Metodologia de inserção de ferramentas no sistema SDD
+# Tool insertion methodology for the SDD system
 
-| Campo | Valor |
+| Field | Value |
 |-------|-------|
-| **Data** | 2026-07-25 |
-| **Change** | `explore-oss-coverage-gaps` (tipo E — artefacto de exploração) |
-| **Objectivo** | Definir critérios e etapas padronizadas para inserir cada ferramenta recomendada em `research.md` no sistema SDD, sem criar incompatibilidades, overlap ou fricção no fluxo explore→propose→apply |
-| **Base** | Estende o rito já existente: `doc/avaliacoes/TEMPLATE.md` + precedente do módulo UI (`add-sdd-ui-development-module`) + R7/R10/R11 de `AGENTS.md` |
+| **Date** | 2026-07-25 |
+| **Change** | `explore-oss-coverage-gaps` (type E — exploration artifact) |
+| **Objective** | Define standardized criteria and steps to insert each tool recommended in `research.md` into the SDD system without creating incompatibilities, overlap, or friction in the explore→propose→apply flow |
+| **Base** | Extends the existing rite: `doc/avaliacoes/TEMPLATE.md` + UI module precedent (`add-sdd-ui-development-module`) + R7/R10/R11 from `AGENTS.md` |
 
-## Princípios
+## Principles
 
-1. **Uma ferramenta = um change OpenSpec** (R7). Nada entra no kit sem propose → apply → archive próprios.
-2. **Out-of-band por defeito.** Automação nova vai para CI/PR/scheduled sempre que possível — a pipeline interactiva explore→propose→apply **não ganha etapas novas** para o utilizador. Só entra "in-band" (dentro da sessão) o que precisa de interceptar edições (caso único: Probity (G2)), e sempre desligável via globs/uninstall.
-3. **Reutilizar mecanismos de descoberta existentes** (guia SDD §4.2): AGENTS.md declara, hooks interceptam, skill descriptions auto-invocam. Nenhum mecanismo novo de descoberta.
-4. **Reversibilidade obrigatória.** Sem plano de desinstalação documentado, a ferramenta não entra no MANIFEST.
+1. **One tool = one OpenSpec change** (R7). Nothing enters the kit without its own propose → apply → archive.
+2. **Out-of-band by default.** New automation goes to CI/PR/scheduled whenever possible — the interactive explore→propose→apply pipeline **does not gain new steps** for the user. Only what must intercept edits enters "in-band" (within the session) (sole case: Probity (G2)), and always disableable via globs/uninstall.
+3. **Reuse existing discovery mechanisms** (SDD guide §4.2): AGENTS.md declares, hooks intercept, skill descriptions auto-invoke. No new discovery mechanism.
+4. **Reversibility required.** Without a documented uninstall plan, the tool does not enter the MANIFEST.
 
 ---
 
-## Fase 0 — Pré-verificação (antes do propose)
+## Phase 0 — Pre-verification (before propose)
 
-Responde à questão: *o que verificar antes de implementar para evitar incompatibilidades, bugs e overlap?*
+Answers the question: *what to verify before implementing to avoid incompatibilities, bugs, and overlap?*
 
-### 0.1 Verificações no sistema existente
+### 0.1 Checks on the existing system
 
-| # | Verificação | Como | Bloqueia se |
+| # | Verification | How | Blocks if |
 |---|-------------|------|-------------|
-| V1 | Já instalado ou avaliado? | `openspec/infra.md` (R10) + índice `doc/avaliacoes/` | Descartado sem nova condição de reavaliação |
-| V2 | Matriz de superfícies de contacto | Mapear qual superfície a ferramenta ocupa: git hooks · PreToolUse hooks · MCP servers · skills · scripts · CI workflows · templates de artefactos | Superfície já ocupada por componente equivalente (ex.: 3.º gestor de git hooks) |
-| V3 | Colisão de artefactos/nomes | Ficheiros que a ferramenta cria/lê vs existentes (precedente: `design.md` vs `DESIGN.md` no módulo UI) | Colisão sem mitigação de disambiguação |
-| V4 | Perfil de repo | Aplica-se a APP, DOCS_SPECS ou ambos? | — (define flag no install.sh) |
-| V5 | Empilhamento de hooks | Se usa PreToolUse: medir latência acumulada com GitNexus + Graphify activos | Latência tornar o apply impraticável |
+| V1 | Already installed or evaluated? | `openspec/infra.md` (R10) + index `doc/avaliacoes/` | Discarded without a new re-evaluation condition |
+| V2 | Contact-surface matrix | Map which surface the tool occupies: git hooks · PreToolUse hooks · MCP servers · skills · scripts · CI workflows · artifact templates | Surface already occupied by an equivalent component (e.g. a 3rd git-hook manager) |
+| V3 | Artifact/name collision | Files the tool creates/reads vs existing (precedent: `design.md` vs `DESIGN.md` in the UI module) | Collision without disambiguation mitigation |
+| V4 | Repo profile | Applies to APP, DOCS_SPECS, or both? | — (defines flag in install.sh) |
+| V5 | Hook stacking | If using PreToolUse: measure cumulative latency with GitNexus + Graphify active | Latency makes apply impractical |
 
-### 0.2 Verificações na ferramenta
+### 0.2 Checks on the tool
 
-| # | Verificação | Critério de aceitação |
+| # | Verification | Acceptance criterion |
 |---|-------------|----------------------|
-| F1 | Segurança | Advisories consultados (regra 050); versão **pinada** no install; tokens com menor escopo possível (ex.: github-mcp com `--toolsets issues` e read-only onde couber) |
-| F2 | Licença | Compatível com uso interno; registar se AGPL (só afecta redistribuição modificada) |
-| F3 | Governança viva | Release nos últimos 6 meses + mantenedores identificáveis (critério 5 do research) |
-| F4 | Reversibilidade | Config declarativa versionável + caminho de desinstalação limpo |
-| F5 | Operabilidade | Toggle on/off · dry-run · logs legíveis — pelo menos 2 dos 3 |
+| F1 | Security | Advisories consulted (rule 050); version **pinned** on install; tokens with least scope possible (e.g. github-mcp with `--toolsets issues` and read-only where applicable) |
+| F2 | License | Compatible with internal use; record if AGPL (affects modified redistribution only) |
+| F3 | Living governance | Release in the last 6 months + identifiable maintainers (criterion 5 of research) |
+| F4 | Reversibility | Versionable declarative config + clean uninstall path |
+| F5 | Operability | Toggle on/off · dry-run · readable logs — at least 2 of 3 |
 
-### 0.3 Pesquisa prévia para facilidade de uso
+### 0.3 Prior research for ease of use
 
-- Config mínima funcional documentada (copiar da doc oficial, não inventar)
-- Relatos de integração com Claude Code/Cursor (hooks, MCP) — como outros resolveram
-- Custo por operação: tokens LLM (Probity (G2), reviews) e minutos de CI (scanners) — orçar antes de ligar por defeito
-- Modos de falha conhecidos (issues abertas recorrentes) e como o sistema se comporta se a ferramenta cair (fail-open vs fail-closed — gates de CI devem ser fail-closed; conveniências in-band, fail-open)
+- Minimum functional config documented (copy from official docs, do not invent)
+- Integration reports with Claude Code/Cursor (hooks, MCP) — how others solved it
+- Cost per operation: LLM tokens (Probity (G2), reviews) and CI minutes (scanners) — budget before enabling by default
+- Known failure modes (recurring open issues) and how the system behaves if the tool fails (fail-open vs fail-closed — CI gates must be fail-closed; in-band conveniences, fail-open)
 
-**Output da Fase 0:** avaliação preenchida em `doc/avaliacoes/<data>-<nome>.md` (TEMPLATE.md), com decisão "Em avaliação" → "Adoptado" só após Fase 2.
+**Phase 0 output:** evaluation filled in `doc/avaliacoes/<date>-<name>.md` (TEMPLATE.md), with decision "Under evaluation" → "Adopted" only after Phase 2.
 
 ---
 
-## Fase 1 — Propose
+## Phase 1 — Propose
 
-- `/opsx:propose add-<ferramenta>` — proposal, design e tasks.
-- `design.md` obrigatoriamente contém: decisão de modo de acionamento (ver Fase 3), matriz tipo-de-tarefa (ver Fase 4), plano de rollback, e citação das fontes (R8) — incluindo `research.md` e a avaliação da Fase 0.
-- Delta spec apenas se a ferramenta cria requisito normativo novo (ex.: "todo PR MUST passar OSV-Scanner").
+- `/opsx:propose add-<tool>` — proposal, design, and tasks.
+- `design.md` must contain: activation-mode decision (see Phase 3), task-type matrix (see Phase 4), rollback plan, and source citations (R8) — including `research.md` and the Phase 0 evaluation.
+- Spec delta only if the tool creates a new normative requirement (e.g. "every PR MUST pass OSV-Scanner").
 
-## Fase 2 — Piloto (apply controlado)
+## Phase 2 — Pilot (controlled apply)
 
-> **Excepção aprovada (2026-07-25):** o piloto é **dispensável** quando a inserção não instala binário novo nem hook — i.e., apenas orquestra comandos já existentes no repo (ex.: G1 `sdd-gates.yml`) ou adiciona documentação/template de config inerte. Nesses casos, Fase 1 → Fase 3 directo. Qualquer ferramenta com hook, binário, serviço ou consumo de LLM mantém piloto obrigatório.
+> **Approved exception (2026-07-25):** the pilot is **waived** when insertion does not install a new binary or hook — i.e. only orchestrates commands already present in the repo (e.g. G1 `sdd-gates.yml`) or adds inert documentation/config template. In those cases, Phase 1 → Phase 3 direct. Any tool with hook, binary, service, or LLM consumption keeps pilot mandatory.
 
-- Apply com R11 (register/check/release) num **worktree ou repo piloto**, nunca directo em todos os repos.
-- **Critérios de sucesso quantificados ANTES do piloto.** Exemplos: Probity (G2) — latência extra p95 < Xs por edit e < Y% de bloqueios falsos; correctness-review — pelo menos 1 achado válido a cada N reviews; Renovate — volume de PRs gerível com o preset conservador.
-- Janela de validação definida (ex.: N changes ou N PRs processados pela ferramenta).
-- Falhou os critérios → decisão volta a "Adiado" com condições de reavaliação; artefactos removidos (rollback testado de graça).
+- Apply with R11 (register/check/release) in a **pilot worktree or repo**, never directly across all repos.
+- **Quantified success criteria BEFORE the pilot.** Examples: Probity (G2) — extra latency p95 < Xs per edit and < Y% false blocks; correctness-review — at least 1 valid finding every N reviews; Renovate — manageable PR volume with the conservative preset.
+- Validation window defined (e.g. N changes or N PRs processed by the tool).
+- Failed criteria → decision reverts to "Deferred" with re-evaluation conditions; artifacts removed (rollback tested for free).
 
-## Fase 3 — Registro (contrato de 6 pontos)
+## Phase 3 — Registration (6-point contract)
 
-Responde à questão: *como registrar instruções para o utilizador saber usar a ferramenta no fluxo?*
+Answers the question: *how to register instructions so the user knows how to use the tool in the flow?*
 
-Toda ferramenta aprovada regista-se em **6 pontos** — nem mais (context rot), nem menos (agente não descobre):
+Every approved tool registers at **6 points** — neither more (context rot), nor less (agent does not discover):
 
-| # | Onde | O quê | Para quem |
+| # | Where | What | For whom |
 |---|------|-------|-----------|
-| R1 | `openspec/infra.md` | Linha: versão pinada + estado + "verificar com" | Agente (R10) |
-| R2 | `AGENTS.md` | ≤10 linhas em Integrações + linha em "Contexto sob demanda" + comando na tabela Commands | Agente (sempre em contexto) |
-| R3 | Skill (`.claude/skills/` + espelho `.cursor/skills/`) ou rule `.mdc` | Detalhe operacional; description diz **quando auto-invocar**; rule só se always-on | Agente (lazy load) |
-| R4 | `doc/sistema-sdd-pedro.md` §nova | Operação humana: quando acionar, como ler o output, como desligar, troubleshooting | Humano |
-| R5 | `doc/avaliacoes/<data>-<nome>.md` | Decisão "Adoptado" + condições de reavaliação | Histórico |
-| R6 | `sdd-kit/` | Template de config + install/uninstall no script do módulo + MANIFEST bump + check no `verify.sh` | Reprodução |
+| R1 | `openspec/infra.md` | Row: pinned version + status + "verify with" | Agent (R10) |
+| R2 | `AGENTS.md` | ≤10 lines in Integrations + row in "On-demand context" + command in Commands table | Agent (always in context) |
+| R3 | Skill (`.claude/skills/` + mirror `.cursor/skills/`) or rule `.mdc` | Operational detail; description states **when to auto-invoke**; rule only if always-on | Agent (lazy load) |
+| R4 | `doc/sistema-sdd-pedro.md` §new | Human operation: when to trigger, how to read output, how to disable, troubleshooting | Human |
+| R5 | `doc/avaliacoes/<date>-<name>.md` | "Adopted" decision + re-evaluation conditions | History |
+| R6 | `sdd-kit/` | Config template + install/uninstall in module script + MANIFEST bump + check in `verify.sh` | Reproduction |
 
-Pós-registro obrigatório: `graphify update .` + `npx gitnexus analyze --force` — sem isto o knowledge graph não conhece a ferramenta e os agentes não a encontram nas fontes 3–5.
+Mandatory post-registration: `graphify update .` + `npx gitnexus analyze --force` — without this the knowledge graph does not know the tool and agents cannot find it in sources 3–5.
 
-Anti-padrões (herdados de §2.5.1 do guia): não colar blocos gerados pela ferramenta no AGENTS.md canónico; não duplicar a skill no guia; não criar rule always-on para ferramenta sob demanda.
+Anti-patterns (inherited from guide §2.5.1): do not paste tool-generated blocks into canonical AGENTS.md; do not duplicate the skill in the guide; do not create an always-on rule for an on-demand tool.
 
 ---
 
-## Fase 4 — Acionamento e integração no fluxo
+## Phase 4 — Activation and flow integration
 
-### 4.1 Modos de acionamento (questão 3)
+### 4.1 Activation modes (question 3)
 
-Três modos, todos já existentes no sistema — nenhuma ferramenta cria um quarto:
+Three modes, all already present in the system — no tool creates a fourth:
 
-| Modo | Descrição | Precedente existente |
+| Mode | Description | Existing precedent |
 |------|-----------|---------------------|
-| **A — Automático out-of-band** | CI/PR/scheduled; corre fora da sessão do agente | (novo, mas padrão da indústria) |
-| **B — Automático in-band** | Hook intercepta acções durante a sessão | PreToolUse GitNexus/Graphify |
-| **C — Sob demanda** | Utilizador ou agente invoca skill/comando | `simplify-review`, `security-reviewer`, `/opsx:*` |
-| **D — Passivo (MCP)** | Disponível; agente consulta quando relevante | GitNexus MCP, Graphify MCP |
+| **A — Automatic out-of-band** | CI/PR/scheduled; runs outside the agent session | (new, but industry pattern) |
+| **B — Automatic in-band** | Hook intercepts actions during the session | PreToolUse GitNexus/Graphify |
+| **C — On demand** | User or agent invokes skill/command | `simplify-review`, `security-reviewer`, `/opsx:*` |
+| **D — Passive (MCP)** | Available; agent consults when relevant | GitNexus MCP, Graphify MCP |
 
-Matriz por ferramenta do research:
+Matrix for research tools:
 
-| Ferramenta | Modo | Quem aciona | Em que etapa |
+| Tool | Mode | Who triggers | At which stage |
 |------------|------|-------------|--------------|
-| `sdd-gates.yml` (G1) | A | push/PR (automático) | Pós-apply, pré-merge |
-| OSV-Scanner (G8) | A | PR (automático) | Pré-merge |
-| Renovate (G8) | A | Scheduled (bot) | Fora da pipeline; PRs gerados entram como tarefas tipo A/B |
-| Probity (G2) | B | Hook (automático) | Durante apply; **desligar** via globs/uninstall em tipo A e docs |
-| `correctness-review` (G7) | C | Utilizador (ou agente, por gatilho de diff) | Pós-apply, antes do commit — mesma posição do `simplify-review` |
-| `sdd-metrics.sh` (G4) | C | Utilizador (periódico/retrospectiva) | Fora da pipeline |
-| github-mcp-server (G5) | D | Agente consulta | Explore (ler issues) e propose (ligar change ↔ issue) |
+| `sdd-gates.yml` (G1) | A | push/PR (automatic) | Post-apply, pre-merge |
+| OSV-Scanner (G8) | A | PR (automatic) | Pre-merge |
+| Renovate (G8) | A | Scheduled (bot) | Outside pipeline; generated PRs enter as type A/B tasks |
+| Probity (G2) | B | Hook (automatic) | During apply; **disable** via globs/uninstall on type A and docs |
+| `correctness-review` (G7) | C | User (or agent, by diff trigger) | Post-apply, before commit — same position as `simplify-review` |
+| `sdd-metrics.sh` (G4) | C | User (periodic/retrospective) | Outside pipeline |
+| github-mcp-server (G5) | D | Agent consults | Explore (read issues) and propose (link change ↔ issue) |
 
-**Resposta directa:** só Probity (G2) é automático dentro da sessão. CI/bots são automáticos fora dela. Reviews e métricas são comandos do utilizador. MCP é passivo. O utilizador só "aciona" manualmente duas coisas: reviews pós-apply e métricas.
+**Direct answer:** only Probity (G2) is automatic within the session. CI/bots are automatic outside it. Reviews and metrics are user commands. MCP is passive. The user only "triggers" manually two things: post-apply reviews and metrics.
 
-### 4.2 Impacto na pipeline e selectividade (questão 4)
+### 4.2 Pipeline impact and selectivity (question 4)
 
-**A pipeline explore→propose→apply NÃO ganha etapas interactivas novas.** O que muda é o que acontece *depois do push* (gates de CI) e *em paralelo* (bots). A única fricção in-band (Probity (G2)) é desligável e restrita a código.
+**The explore→propose→apply pipeline does NOT gain new interactive steps.** What changes is what happens *after push* (CI gates) and *in parallel* (bots). The only in-band friction (Probity (G2)) is disableable and restricted to code.
 
-Nem todas as ferramentas em todos os casos — a matriz segue a classificação A–E já existente:
+Not every tool in every case — the matrix follows the existing A–E classification:
 
-| Tipo de tarefa | Probity (G2) | correctness-review | sdd-gates (CI) | OSV/Renovate | github-mcp |
+| Task type | Probity (G2) | correctness-review | sdd-gates (CI) | OSV/Renovate | github-mcp |
 |----------------|-----------|-------------------|----------------|--------------|------------|
-| A — Trivial | off | não | roda (passa rápido) | contínuo* | não |
-| B — Bug fix | **on** (materializa R6) | se diff > ~80 linhas | roda | contínuo* | ler issue de origem |
-| C — Refactor | on | **sim** | roda | contínuo* | opcional |
-| D — Feature | on | **sim** | roda | contínuo* | issue → proposal |
-| E — Exploração | n/a (sem código) | n/a | valida artefactos | contínuo* | ler issues no research |
+| A — Trivial | off | no | runs (passes quickly) | continuous* | no |
+| B — Bug fix | **on** (materializes R6) | if diff > ~80 lines | runs | continuous* | read source issue |
+| C — Refactor | on | **yes** | runs | continuous* | optional |
+| D — Feature | on | **yes** | runs | continuous* | issue → proposal |
+| E — Exploration | n/a (no code) | n/a | validates artifacts | continuous* | read issues in research |
 
-\* Renovate/OSV são independentes da classificação — operam sobre o repo, não sobre a tarefa.
+\* Renovate/OSV are independent of classification — they operate on the repo, not on the task.
 
-**Como decidir quando usar:** não se cria heurística nova. Reutilizam-se as que já existem:
+**How to decide when to use:** no new heuristic is created. Reuse existing ones:
 
-- Classificação A–E (R1) decide Probity (G2) on/off (globs/desligar módulo) e profundidade de review — o mesmo gate que já decide se há proposta OpenSpec.
-- O gatilho do `simplify-review` (diff > ~80 linhas ou > 4 ficheiros) estende-se ao `correctness-review` — mesma tabela em AGENTS.md "Reviews pós-implementação".
-- Ordem de reviews actualizada: implementação → testes (R6/Probity enforceTdd) → `correctness-review` → `simplify-review` (opcional) → `security-reviewer` (se aplicável) → commit → gates de CI.
+- A–E classification (R1) decides Probity (G2) on/off (globs/disable module) and review depth — the same gate that already decides whether an OpenSpec proposal exists.
+- The `simplify-review` trigger (diff > ~80 lines or > 4 files) extends to `correctness-review` — same table in AGENTS.md "Post-implementation reviews".
+- Updated review order: implementation → tests (R6/Probity enforceTdd) → `correctness-review` → `simplify-review` (optional) → `security-reviewer` (if applicable) → commit → CI gates.
 
-**Integração com fluxos por tipo:**
+**Integration by flow type:**
 
-- **Bug (tipo B):** github-mcp lê o issue no framing; Probity (G2) força o teste-que-falha (R6 deixa de ser regra de papel); OSV cobre o caso de bug ser vulnerabilidade de dependência.
-- **Feature (tipo D):** github-mcp liga issue → proposal no propose; Probity (G2) + correctness-review no apply; gates de CI validam o change antes do merge.
-- **Exploração (tipo E):** só github-mcp (contexto de issues) — nenhuma ferramenta de código toca o fluxo.
-
----
-
-## Fase 5 — Operação e reavaliação contínua
-
-- **Métricas de adopção** (liga ao G4): a ferramenta está a ser usada? Taxa de falsos positivos? Custo real vs orçado? `sdd-metrics.sh` incorpora contadores por ferramenta quando existir.
-- **Reavaliação semestral** ou no upgrade do kit — o que ocorrer primeiro. Especial atenção a ferramentas com governança em transição (PR-Agent) ou nicho (GlitchTip MCP beta).
-- **Critérios de sunset:** 2 ciclos sem uso registado, ou custo > valor observado, ou projecto upstream órfão → change de remoção + avaliação actualizada para "Descartado" com condições de reabertura.
+- **Bug (type B):** github-mcp reads the issue in framing; Probity (G2) enforces failing-test-first (R6 ceases to be a paper rule); OSV covers the case where the bug is a dependency vulnerability.
+- **Feature (type D):** github-mcp links issue → proposal in propose; Probity (G2) + correctness-review in apply; CI gates validate the change before merge.
+- **Exploration (type E):** github-mcp only (issue context) — no code tool touches the flow.
 
 ---
 
-## Abordagens adicionais incluídas (questão 5 — o que faltava)
+## Phase 5 — Operation and continuous re-evaluation
 
-Itens não cobertos nas 4 questões originais, incorporados acima:
+- **Adoption metrics** (links to G4): is the tool being used? False-positive rate? Actual vs budgeted cost? `sdd-metrics.sh` incorporates per-tool counters when available.
+- **Semiannual re-evaluation** or on kit upgrade — whichever comes first. Special attention to tools with governance in transition (PR-Agent) or niche (GlitchTip MCP beta).
+- **Sunset criteria:** 2 cycles without registered use, or cost > observed value, or upstream project orphaned → removal change + evaluation updated to "Discarded" with reopening conditions.
 
-1. **Rollback/desinstalação** como pré-condição de entrada no MANIFEST (F4, R6 do contrato, Fase 2).
-2. **Piloto com critérios de sucesso quantificados** antes da promoção ao kit — pesquisa → kit directo é proibido (Fase 2).
-3. **Orçamento de custo** (tokens LLM + minutos CI) por ferramenta, antes de ligar por defeito (0.3).
-4. **Vetting de segurança da própria ferramenta** — pin de versão, advisories, escopo mínimo de tokens (F1).
-5. **Critérios de sunset/reavaliação** — inserção sem plano de saída é dívida (Fase 5).
-6. **Ordem e dependências de instalação** — ex.: G1 (workflow CI) antes de G8 (OSV entra nesse CI); G5 antes de G7-fase-2 (PR-Agent usa contexto de issues).
-7. **Actualização dos grafos pós-install** — `graphify update .` + `gitnexus analyze`; sem isto a ferramenta é invisível para os agentes (Fase 3).
-8. **Separação agente vs humano no registro** — AGENTS.md/skills instruem o agente; guia SDD instrui o humano; são audiências distintas com documentos distintos (contrato de 6 pontos).
-9. **Comportamento em falha** — fail-closed para gates de CI, fail-open para conveniências in-band (0.3).
-10. **Matriz de perfil de repo** (APP vs DOCS_SPECS) como flag do install.sh, não como decisão ad-hoc por instalação (V4).
+---
+
+## Additional approaches included (question 5 — what was missing)
+
+Items not covered in the original 4 questions, incorporated above:
+
+1. **Rollback/uninstall** as entry precondition in the MANIFEST (F4, contract R6, Phase 2).
+2. **Pilot with quantified success criteria** before kit promotion — research → kit direct is forbidden (Phase 2).
+3. **Cost budget** (LLM tokens + CI minutes) per tool, before enabling by default (0.3).
+4. **Security vetting of the tool itself** — version pin, advisories, minimum token scope (F1).
+5. **Sunset/re-evaluation criteria** — insertion without an exit plan is debt (Phase 5).
+6. **Install order and dependencies** — e.g. G1 (CI workflow) before G8 (OSV enters that CI); G5 before G7-phase-2 (PR-Agent uses issue context).
+7. **Graph updates post-install** — `graphify update .` + `gitnexus analyze`; without this the tool is invisible to agents (Phase 3).
+8. **Agent vs human separation in registration** — AGENTS.md/skills instruct the agent; SDD guide instructs the human; distinct audiences with distinct documents (6-point contract).
+9. **Failure behavior** — fail-closed for CI gates, fail-open for in-band conveniences (0.3).
+10. **Repo profile matrix** (APP vs DOCS_SPECS) as install.sh flag, not as ad-hoc decision per install (V4).
 
 ## Session Handoff
 
-Fase explore concluída. Para aplicar a metodologia à primeira ferramenta:
+Explore phase complete. To apply the methodology to the first tool:
 
 ---
 /opsx:propose add-sdd-ci-gates-workflow
 
-Ler: openspec/changes/explore-oss-coverage-gaps/research.md (G1)
-     openspec/changes/explore-oss-coverage-gaps/metodologia-insercao.md (Fases 0–3)
-     doc/avaliacoes/2026-07-25-oss-coverage-gaps-tooling.md (decisões registadas)
-Infra: openspec/infra.md (assumir ✅ — não reinstalar)
-Nota: G1 qualifica para a excepção de piloto (sem binário/hook novo) — Fase 1 → Fase 3 directo.
+Read: openspec/changes/explore-oss-coverage-gaps/research.md (G1)
+      openspec/changes/explore-oss-coverage-gaps/metodologia-insercao.md (Phases 0–3)
+      doc/avaliacoes/2026-07-25-oss-coverage-gaps-tooling.md (recorded decisions)
+Infra: openspec/infra.md (assume ✅ — do not reinstall)
+Note: G1 qualifies for the pilot exception (no new binary/hook) — Phase 1 → Phase 3 direct.
 ---
