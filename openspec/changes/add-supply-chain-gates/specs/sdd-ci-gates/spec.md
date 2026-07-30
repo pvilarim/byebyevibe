@@ -23,22 +23,22 @@ The repository MUST include a GitHub Actions workflow at `.github/workflows/sdd-
 
 ### Requirement: verify-infra.sh runs report-only in CI
 
-O passo que executa `sdd-kit/verify.sh` no workflow de CI MUST ser configurado com `continue-on-error: true`. O `sdd-kit/verify.sh` invoca internamente `scripts/verify-infra.sh`, que reporta FAIL para CLIs de conhecimento (GitNexus, Graphify) ausentes no runner efémero; tornar este step bloqueante produziria falso-negativo que impediria merge legítimo. A política fail-closed MUST aplicar-se aos steps de `openspec validate`, `verify-task-patterns.sh`, **e OSV-Scanner quando lockfile presente** — o step `sdd-kit verify` MUST NOT bloquear merge.
+The step that runs `sdd-kit/verify.sh` in the CI workflow MUST be configured with `continue-on-error: true`. `sdd-kit/verify.sh` internally invokes `scripts/verify-infra.sh`, which reports FAIL for missing knowledge CLIs (GitNexus, Graphify) on ephemeral runners; making this step blocking would produce false negatives that block legitimate merges. The fail-closed policy MUST apply to `openspec validate`, `verify-task-patterns.sh`, **and OSV-Scanner when a lockfile is present** — the `sdd-kit verify` step MUST NOT block merge.
 
-#### Scenario: Runner sem GitNexus/Graphify instalados
+#### Scenario: Runner without GitNexus/Graphify installed
 
-- **WHEN** o step `sdd-kit verify (report-only)` corre num runner onde GitNexus e Graphify não estão instalados
-- **THEN** o step reporta WARN/FAIL internamente mas o workflow continua e o resultado global do job não é afectado por este step isoladamente
+- **WHEN** the `sdd-kit verify (report-only)` step runs on a runner where GitNexus and Graphify are not installed
+- **THEN** the step reports WARN/FAIL internally but the workflow continues and the overall job result is not affected by this step alone
 
-#### Scenario: openspec validate falha no mesmo run
+#### Scenario: openspec validate fails in the same run
 
-- **WHEN** `openspec validate --all --strict` falha com saída não-zero
-- **THEN** o workflow termina com falha (fail-closed) independentemente do resultado do step report-only
+- **WHEN** `openspec validate --all --strict` fails with non-zero exit
+- **THEN** the workflow ends in failure (fail-closed) regardless of the report-only step result
 
-#### Scenario: OSV-Scanner falha com lockfile vulnerável
+#### Scenario: OSV-Scanner fails with vulnerable lockfile
 
-- **WHEN** OSV-Scanner corre (lockfile presente) e reporta vulnerabilidade
-- **THEN** o workflow termina com falha (fail-closed) independentemente do resultado do step `sdd-kit verify` report-only
+- **WHEN** OSV-Scanner runs (lockfile present) and reports a vulnerability
+- **THEN** the workflow ends in failure (fail-closed) regardless of the `sdd-kit verify` report-only step result
 
 ## ADDED Requirements
 
