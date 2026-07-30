@@ -2,111 +2,111 @@
 
 ## Context
 
-- Research tipo E `explore-oss-coverage-gaps` (2026-07-25), gap **G8**: regra "verificar advisories" sem tooling; sem updates automatizados nem scanning em CI.
-- `metodologia-insercao.md` Fases 0–3: contrato de 6 pontos, modo **A** (automático out-of-band) para OSV e Renovate; G1 MUST preceder G8; OSV/Renovate independentes da classificação A–E.
-- `doc/avaliacoes/2026-07-25-oss-coverage-gaps-tooling.md`: G8 **Adoptado (pendente change)**.
-- G1 implementado: `.github/workflows/sdd-gates.yml` + template espelho; decisões D1–D11 em `openspec/changes/archive/2026-07-26-add-sdd-ci-gates-workflow/design.md`.
-- Este repo (hub DOCS_SPECS): OSV só se lockfile na raiz; Renovate **SKIP**.
-- Regra 050: actions pinadas por SHA; `permissions: contents: read`; sem secrets no workflow.
+- Type E research `explore-oss-coverage-gaps` (2026-07-25), gap **G8**: rule to "check advisories" without tooling; no automated updates or CI scanning.
+- `metodologia-insercao.md` Phases 0–3: 6-point contract, mode **A** (automatic out-of-band) for OSV and Renovate; G1 MUST precede G8; OSV/Renovate independent of A–E classification.
+- `doc/avaliacoes/2026-07-25-oss-coverage-gaps-tooling.md`: G8 **Adopted (pending change)**.
+- G1 implemented: `.github/workflows/sdd-gates.yml` + mirror template; decisions D1–D11 in `openspec/changes/archive/2026-07-26-add-sdd-ci-gates-workflow/design.md`.
+- This repo (DOCS_SPECS hub): OSV only if lockfile at repo root; Renovate **SKIP**.
+- Rule 050: actions pinned by SHA; `permissions: contents: read`; no secrets in workflow.
 
-### Verificações Fase 0 (resumo)
+### Phase 0 verification summary
 
-| # | Verificação | Resultado |
-|---|-------------|-----------|
-| V1 | Já avaliado? | Sim — `doc/avaliacoes/2026-07-25-oss-coverage-gaps-tooling.md` G8 Adoptado (pendente) |
-| V2 | Superfície | Modo A — CI + scheduled bot; sem hook novo (evita overlap C3 com pre-commit/Lefthook) |
-| V3 | Colisão | Nenhuma com graphify/gitnexus hooks |
-| V4 | Perfil | Matriz APP / DOCS_SPECS / HYBRID (install.sh) |
-| F1 | Segurança | OSV action SHA-pinned; Renovate app = activação manual, sem tokens no repo |
-| F2 | Licença | OSV Apache 2.0; Renovate AGPL-3.0 — uso como ferramenta OK, sem redistribuir fork modificado |
-| F3 | Governança | OSV Google v2.3.8+; Renovate Mend, releases diários |
-| F4 | Reversibilidade | Remover step OSV / template `renovate.json` desactiva gates |
-| F5 | Operabilidade | OSV on/off via workflow; Renovate via app GitHub + `renovate.json` |
+| # | Verification | Result |
+|---|--------------|--------|
+| V1 | Already evaluated? | Yes — `doc/avaliacoes/2026-07-25-oss-coverage-gaps-tooling.md` G8 Adopted (pending) |
+| V2 | Surface | Mode A — CI + scheduled bot; no new hook (avoids C3 overlap with pre-commit/Lefthook) |
+| V3 | Collision | None with graphify/gitnexus hooks |
+| V4 | Profile | APP / DOCS_SPECS / HYBRID matrix (install.sh) |
+| F1 | Security | OSV action SHA-pinned; Renovate app = manual activation, no tokens in repo |
+| F2 | License | OSV Apache 2.0; Renovate AGPL-3.0 — use as tool OK, no modified fork redistribution |
+| F3 | Governance | OSV Google v2.3.8+; Renovate Mend, daily releases |
+| F4 | Reversibility | Remove OSV step / `renovate.json` template disables gates |
+| F5 | Operability | OSV on/off via workflow; Renovate via GitHub app + `renovate.json` |
 
 ## Goals / Non-Goals
 
 **Goals:**
 
-- Integrar **OSV-Scanner** como gate fail-closed em `sdd-gates.yml` quando lockfile presente.
-- Distribuir **Renovate** (`renovate.json` conservador) via `sdd-kit` para APP/HYBRID.
-- Matriz de perfil no `install.sh` (V4); MANIFEST bump 1.4.0 → **1.5.0**.
-- Registro completo nos 6 pontos do contrato (R1–R6); delta specs `sdd-supply-chain` + `sdd-ci-gates`.
-- Compatibilidade com D1–D11 do G1; plano de rollback documentado.
-- Piloto dispensável para OSV (excepção metodologia Fase 2 — só CI step + template).
+- Integrate **OSV-Scanner** as a fail-closed gate in `sdd-gates.yml` when a lockfile is present.
+- Distribute **Renovate** (conservative `renovate.json`) via `sdd-kit` for APP/HYBRID.
+- Profile matrix in `install.sh` (V4); MANIFEST bump 1.4.0 → **1.5.0**.
+- Full registration in the 6-point contract (R1–R6); delta specs `sdd-supply-chain` + `sdd-ci-gates`.
+- Compatibility with G1 D1–D11; documented rollback plan.
+- Pilot optional for OSV (methodology Phase 2 exception — CI step + template only).
 
 **Non-Goals:**
 
-- Substituir review humano em updates major do Renovate.
-- Automerge em majors por defeito.
-- Instalar app GitHub Renovate via script (tokens) — só documentação `[AÇÃO MANUAL NECESSÁRIA]`.
-- Renovate em perfil DOCS_SPECS (sem app, sem `renovate.json` por defeito).
-- Terceiro gestor de git hooks para scanning (pre-commit/Lefthook).
-- Workflow dedicado OSV se integração em `sdd-gates` for suficiente (ver D1).
-- Integrar PR-Agent (G7 fase 2) neste change — reavaliar composição do workflow depois.
+- Replace human review on Renovate major updates.
+- Default automerge on majors.
+- Install GitHub Renovate app via script (tokens) — documentation only `[MANUAL ACTION REQUIRED]`.
+- Renovate on DOCS_SPECS profile (no app, no default `renovate.json`).
+- Third git hook manager for scanning (pre-commit/Lefthook).
+- Dedicated OSV workflow if integration in `sdd-gates` is sufficient (see D1).
+- Integrate PR-Agent (G7 phase 2) in this change — re-evaluate workflow composition later.
 
 ## Knowledge sources consulted (R8)
 
-- `openspec/changes/explore-oss-coverage-gaps/research.md` §G8 — Renovate + OSV-Scanner, templates por perfil
-- `openspec/changes/explore-oss-coverage-gaps/metodologia-insercao.md` — Fases 0–3, contrato 6 pontos, modo A, dependência G1→G8, matriz A–E
-- `doc/avaliacoes/2026-07-25-oss-coverage-gaps-tooling.md` — G8 Adoptado (pendente)
-- `.github/workflows/sdd-gates.yml`, `sdd-kit/templates/.github/workflows/sdd-gates.yml` — workflow G1 actual
+- `openspec/changes/explore-oss-coverage-gaps/research.md` §G8 — Renovate + OSV-Scanner, templates by profile
+- `openspec/changes/explore-oss-coverage-gaps/metodologia-insercao.md` — Phases 0–3, 6-point contract, mode A, G1→G8 dependency, A–E matrix
+- `doc/avaliacoes/2026-07-25-oss-coverage-gaps-tooling.md` — G8 Adopted (pending)
+- `.github/workflows/sdd-gates.yml`, `sdd-kit/templates/.github/workflows/sdd-gates.yml` — current G1 workflow
 - `openspec/changes/archive/2026-07-26-add-sdd-ci-gates-workflow/design.md` — D1–D11
-- `openspec/specs/sdd-ci-gates/spec.md` — requisitos a estender sem quebrar D4 (report-only verify)
-- `.cursor/rules/050-security.mdc` — pin SHA, advisories, F-SEC-5 (`gate:` não eval)
-- `sdd-kit/MANIFEST.yaml`, `sdd-kit/install.sh` — perfis e distribuição
+- `openspec/specs/sdd-ci-gates/spec.md` — requirements to extend without breaking D4 (report-only verify)
+- `.cursor/rules/050-security.mdc` — pin SHA, advisories, F-SEC-5 (`gate:` never eval)
+- `sdd-kit/MANIFEST.yaml`, `sdd-kit/install.sh` — profiles and distribution
 - [google/osv-scanner-action](https://github.com/google/osv-scanner-action) — action v2.3.8, SHA `8dc09193bb540e09b23da07ad7e30bd33bf87018`
-- [renovatebot/renovate](https://github.com/renovatebot/renovate) — preset e `renovate.json` schema
+- [renovatebot/renovate](https://github.com/renovatebot/renovate) — preset and `renovate.json` schema
 
 ## Decisions
 
-### D1: OSV dentro de `sdd-gates.yml` (não workflow separado)
+### D1: OSV inside `sdd-gates.yml` (not a separate workflow)
 
-**Escolha:** adicionar step `OSV-Scanner (blocking)` no job `sdd-gates` existente, após checkout e antes ou depois dos gates OpenSpec (recomendado: **após** `openspec validate` e `task patterns`, **antes** de `sdd-kit verify` report-only).
+**Choice:** add `OSV-Scanner (blocking)` step to the existing `sdd-gates` job, after checkout and before or after OpenSpec gates (recommended: **after** `openspec validate` and `task patterns`, **before** report-only `sdd-kit verify`).
 
-**Alternativa descartada:** `.github/workflows/osv-scanner.yml` dedicado com os mesmos triggers.
+**Discarded alternative:** dedicated `.github/workflows/osv-scanner.yml` with the same triggers.
 
-| Critério | Dentro de sdd-gates | Workflow separado |
-|----------|---------------------|-------------------|
-| Um check no PR | ✅ "SDD Gates" único | ❌ dois checks |
-| Paridade hub/template | ✅ um ficheiro a manter | ❌ dois ficheiros |
-| Triggers D1 | ✅ reutiliza | duplicado |
-| Reavaliação G7 PR-Agent | um workflow a compor | mais fragmentação |
+| Criterion | Inside sdd-gates | Separate workflow |
+|-----------|------------------|-------------------|
+| Single PR check | ✅ one "SDD Gates" check | ❌ two checks |
+| Hub/template parity | ✅ one file to maintain | ❌ two files |
+| D1 triggers | ✅ reuse | duplicated |
+| G7 PR-Agent re-evaluation | one workflow to compose | more fragmentation |
 
-**Rationale:** research G8 e avaliação G1 antecipam OSV *dentro* do CI existente; menor superfície operacional; D11 (`permissions: contents: read`) mantém-se.
+**Rationale:** G8 research and G1 evaluation anticipate OSV *inside* existing CI; smaller operational surface; D11 (`permissions: contents: read`) maintained.
 
-**Compatibilidade D1–D11:**
+**D1–D11 compatibility:**
 
-| ID G1 | Impacto G8 |
-|-------|------------|
-| D1 triggers | Inalterado |
-| D2 openspec blocking | Inalterado |
-| D3 task patterns blocking | Inalterado |
-| D4 verify report-only | Inalterado — OSV é step separado bloqueante |
-| D5 Node/Python setup | Inalterado — OSV action traz binário |
-| D6 openspec pin | Inalterado |
-| D7 template COPY | Template `sdd-gates.yml` actualizado |
-| D8 R3 N/A | Mantém — OSV/Renovate out-of-band |
+| G1 ID | G8 impact |
+|-------|-----------|
+| D1 triggers | Unchanged |
+| D2 openspec blocking | Unchanged |
+| D3 task patterns blocking | Unchanged |
+| D4 verify report-only | Unchanged — OSV is a separate blocking step |
+| D5 Node/Python setup | Unchanged — OSV action bundles binary |
+| D6 openspec pin | Unchanged |
+| D7 template COPY | Template `sdd-gates.yml` updated |
+| D8 R3 N/A | Maintained — OSV/Renovate out-of-band |
 | D9 MANIFEST bump | 1.4.0 → **1.5.0** |
-| D10 branch protection manual | Documentar OSV na §2.13 |
-| D11 permissions read | Mantém — OSV não precisa write |
+| D10 branch protection manual | Document OSV in §2.13 |
+| D11 permissions read | Maintained — OSV does not need write |
 
-**Excepção à regra G1 "só comandos existentes":** OSV usa GitHub Action pinada (`google/osv-scanner-action/osv-scanner-action@<sha>`). Documentada em delta `sdd-ci-gates` como única dependência externa autorizada para supply chain.
+**Exception to G1 rule "existing commands only":** OSV uses pinned GitHub Action (`google/osv-scanner-action/osv-scanner-action@<sha>`). Documented in delta `sdd-ci-gates` as the only authorized external dependency for supply chain.
 
-### D2: Pin SHA da action OSV
+### D2: OSV action SHA pin
 
-**Escolha:**
+**Choice:**
 
 ```yaml
 uses: google/osv-scanner-action/osv-scanner-action@8dc09193bb540e09b23da07ad7e30bd33bf87018 # v2.3.8
 ```
 
-**Alternativa descartada:** reusable workflow `osv-scanner-reusable.yml@v2.3.8` — pode arrastar `actions/download-artifact@v8` por tag em releases antigas (política require-SHA transitiva). Preferir action directa com `scan-args` explícitos.
+**Discarded alternative:** reusable workflow `osv-scanner-reusable.yml@v2.3.8` — may pull `actions/download-artifact@v8` by tag on older releases (transitive require-SHA policy). Prefer direct action with explicit `scan-args`.
 
-**Apply:** confirmar SHA no tag v2.3.8 no momento do apply; actualizar comentário `# vX.Y.Z`.
+**Apply:** confirm SHA on tag v2.3.8 at apply time; update `# vX.Y.Z` comment.
 
-### D3: OSV — condição de execução e lockfiles
+### D3: OSV — execution condition and lockfiles
 
-**Escolha:** step com `if:` baseado em detecção de lockfiles na raiz:
+**Choice:** step with `if:` based on lockfile detection at repo root:
 
 ```yaml
 if: >-
@@ -115,7 +115,7 @@ if: >-
             'Gemfile.lock', 'composer.lock') != ''
 ```
 
-`scan-args` recomendados:
+Recommended `scan-args`:
 
 ```yaml
 with:
@@ -124,33 +124,33 @@ with:
     ./
 ```
 
-- **Política:** fail-closed se vulnerabilidade em lockfile (exit não-zero da action).
-- **SKIP:** emitir log `SKIP: no lockfile at repo root — OSV-Scanner not applicable` quando `if` é falso (DOCS_SPECS hub sem deps).
+- **Policy:** fail-closed if vulnerability in lockfile (action non-zero exit).
+- **SKIP:** emit log `SKIP: no lockfile at repo root — OSV-Scanner not applicable` when `if` is false (DOCS_SPECS hub without deps).
 
-### D4: Modo de acionamento — A para ambos
+### D4: Trigger mode — A for both
 
-| Ferramenta | Modo | Quem aciona | Etapa |
-|------------|------|-------------|-------|
-| OSV-Scanner | A | push/PR (automático) | Pré-merge, no job SDD Gates |
-| Renovate | A | Scheduled (bot Mend) | PRs gerados fora da sessão; entram como tipo A/B |
+| Tool | Mode | Who triggers | Stage |
+|------|------|--------------|-------|
+| OSV-Scanner | A | push/PR (automatic) | Pre-merge, in SDD Gates job |
+| Renovate | A | Scheduled (Mend bot) | PRs generated outside session; enter as type A/B |
 
-Nenhuma etapa interactiva em explore/propose/apply.
+No interactive step in explore/propose/apply.
 
-### D5: Matriz de perfil (install.sh / MANIFEST)
+### D5: Profile matrix (install.sh / MANIFEST)
 
-| Perfil | OSV-Scanner | Renovate (`renovate.json`) |
-|--------|-------------|----------------------------|
-| **APP** | Sim — step no `sdd-gates.yml` (se lockfile) | Sim — COPY `templates/renovate.json` + doc app GitHub |
-| **DOCS_SPECS** | Sim — **somente se** lockfile na raiz no install | **SKIP** — não copiar `renovate.json` |
-| **HYBRID** | Sim | Sim |
+| Profile | OSV-Scanner | Renovate (`renovate.json`) |
+|---------|-------------|----------------------------|
+| **APP** | Yes — step in `sdd-gates.yml` (if lockfile) | Yes — COPY `templates/renovate.json` + GitHub app doc |
+| **DOCS_SPECS** | Yes — **only if** lockfile at repo root on install | **SKIP** — do not copy `renovate.json` |
+| **HYBRID** | Yes | Yes |
 
-Implementação `install.sh`:
+`install.sh` implementation:
 
-- `sdd-gates.yml`: sempre COPY (todos os perfis).
-- `renovate.json`: COPY apenas APP/HYBRID; log `SKIP Renovate: profile DOCS_SPECS`.
-- Entry MANIFEST com `profiles: [APP, HYBRID]` para `renovate.json`.
+- `sdd-gates.yml`: always COPY (all profiles).
+- `renovate.json`: COPY only APP/HYBRID; log `SKIP Renovate: profile DOCS_SPECS`.
+- MANIFEST entry with `profiles: [APP, HYBRID]` for `renovate.json`.
 
-### D6: Preset Renovate conservador (campos exactos)
+### D6: Conservative Renovate preset (exact fields)
 
 Template `sdd-kit/templates/renovate.json`:
 
@@ -171,25 +171,25 @@ Template `sdd-kit/templates/renovate.json`:
   "rebaseWhen": "conflicted",
   "packageRules": [
     {
-      "description": "Agrupar minor e patch não-major",
+      "description": "Group non-major minor and patch",
       "matchUpdateTypes": ["minor", "patch"],
       "groupName": "non-major dependencies",
       "groupSlug": "non-major"
     },
     {
-      "description": "Automerge apenas patches com CI verde",
+      "description": "Automerge patches only with green CI",
       "matchUpdateTypes": ["patch"],
       "automerge": true,
       "automergeType": "pr",
       "requiredStatusChecks": ["SDD Gates"]
     },
     {
-      "description": "Nunca automerge em majors",
+      "description": "Never automerge majors",
       "matchUpdateTypes": ["major"],
       "automerge": false
     },
     {
-      "description": "Minor requer review humano",
+      "description": "Minor requires human review",
       "matchUpdateTypes": ["minor"],
       "automerge": false
     }
@@ -205,88 +205,88 @@ Template `sdd-kit/templates/renovate.json`:
 }
 ```
 
-**Notas operacionais (R4):**
+**Operational notes (R4):**
 
-- `requiredStatusChecks: ["SDD Gates"]` e `automerge: true` só funcionam com branch protection + automerge activos no GitHub — documentar como opt-in `[AÇÃO MANUAL NECESSÁRIA]`.
-- Sem tokens no repo; app em [github.com/apps/renovate](https://github.com/apps/renovate).
+- `requiredStatusChecks: ["SDD Gates"]` and `automerge: true` only work with branch protection + automerge enabled on GitHub — document as opt-in `[MANUAL ACTION REQUIRED]`.
+- No tokens in repo; app at [github.com/apps/renovate](https://github.com/apps/renovate).
 
-### D7: Integração SDD — classificação de PRs
+### D7: SDD integration — PR classification
 
-| Origem | Classificação agente | Acção |
-|--------|---------------------|-------|
-| Renovate patch | **Tipo A** | Review rápido; merge se CI verde |
-| Renovate minor | **Tipo B/C** | Review de breaking behaviour |
-| Renovate major | **Tipo B/C** | Review humano obrigatório; sem automerge |
-| OSV vermelho no PR | **Tipo B** | Corrigir/atualizar dependência antes de merge ou `/opsx:archive` |
+| Origin | Agent classification | Action |
+|--------|---------------------|--------|
+| Renovate patch | **Type A** | Quick review; merge if CI green |
+| Renovate minor | **Type B/C** | Review breaking behaviour |
+| Renovate major | **Type B/C** | Mandatory human review; no automerge |
+| Red OSV on PR | **Type B** | Fix/update dependency before merge or `/opsx:archive` |
 
-Independente da tarefa A–E em curso na sessão — supply chain opera no repo.
+Independent of the A–E task in progress in the session — supply chain operates on the repo.
 
-### D8: R3 — skill opcional
+### D8: R3 — optional skill
 
-**Escolha:** **não** criar skill dedicada; preferir ≤10 linhas em `AGENTS.md` (R2) para classificação Renovate/OSV. Skill só se apply revelar gap de descoberta.
+**Choice:** **do not** create a dedicated skill; prefer ≤10 lines in `AGENTS.md` (R2) for Renovate/OSV classification. Skill only if apply reveals a discovery gap.
 
-### D9: Piloto Renovate
+### D9: Renovate pilot
 
-OSV: piloto dispensável (só CI step). Renovate: checklist manual no guia §2.13 — validar em repo APP piloto que volume de PRs do preset é gerível (ex.: ≤5 PRs/semana após estabilização); sem piloto formal obrigatório se preset documentado.
+OSV: pilot optional (CI step only). Renovate: manual checklist in guide §2.13 — validate on pilot APP repo that preset PR volume is manageable (e.g. ≤5 PRs/week after stabilization); no mandatory formal pilot if preset is documented.
 
-## Matriz A–E (supply chain vs tarefa em curso)
+## A–E matrix (supply chain vs task in progress)
 
-| Tipo tarefa | OSV (CI) | Renovate (bot) |
-|-------------|----------|----------------|
-| A — Trivial | Contínuo* | Contínuo* |
-| B — Bug fix | Contínuo* | Contínuo* |
-| C — Refactor | Contínuo* | Contínuo* |
-| D — Feature | Contínuo* | Contínuo* |
-| E — Exploração | Contínuo* | Contínuo* |
+| Task type | OSV (CI) | Renovate (bot) |
+|-----------|----------|----------------|
+| A — Trivial | Continuous* | Continuous* |
+| B — Bug fix | Continuous* | Continuous* |
+| C — Refactor | Continuous* | Continuous* |
+| D — Feature | Continuous* | Continuous* |
+| E — Exploration | Continuous* | Continuous* |
 
-\* Independentes da classificação — operam sobre o repo (`metodologia-insercao.md` §4.2).
+\* Independent of classification — operate on the repo (`metodologia-insercao.md` §4.2).
 
-## Registro — contrato de 6 pontos (Fase 3)
+## Registration — 6-point contract (Phase 3)
 
-| # | Onde | Conteúdo |
-|---|------|----------|
-| R1 | `openspec/infra.md` + `sdd-kit/templates/openspec/infra.md` | OSV-Scanner (action SHA, estado) + Renovate (config, app manual) |
-| R2 | `AGENTS.md` + `sdd-kit/templates/AGENTS.core.md` | Classificar PRs Renovate; OSV vermelho = fix deps (tipo B) |
-| R3 | — | N/A — preferir AGENTS.md |
-| R4 | `doc/sistema-sdd-pedro.md` **§2.13** | Instalar app Renovate, ler OSV no Actions, preset, troubleshooting |
-| R5 | `doc/avaliacoes/2026-07-25-oss-coverage-gaps-tooling.md` | G8 → Adoptado + referência a este change |
-| R6 | `sdd-kit/` | `templates/renovate.json`; OSV em `templates/.../sdd-gates.yml`; `install.sh`; MANIFEST 1.5.0 + `gen-manifest-checksums.sh` |
+| # | Where | Content |
+|---|-------|---------|
+| R1 | `openspec/infra.md` + `sdd-kit/templates/openspec/infra.md` | OSV-Scanner (action SHA, status) + Renovate (config, manual app) |
+| R2 | `AGENTS.md` + `sdd-kit/templates/AGENTS.core.md` | Classify Renovate PRs; red OSV = fix deps (type B) |
+| R3 | — | N/A — prefer AGENTS.md |
+| R4 | `doc/sistema-sdd-pedro.md` **§2.13** | Install Renovate app, read OSV in Actions, preset, troubleshooting |
+| R5 | `doc/avaliacoes/2026-07-25-oss-coverage-gaps-tooling.md` | G8 → Adopted + reference to this change |
+| R6 | `sdd-kit/` | `templates/renovate.json`; OSV in `templates/.../sdd-gates.yml`; `install.sh`; MANIFEST 1.5.0 + `gen-manifest-checksums.sh` |
 
 ## Rollback
 
-| Componente | Rollback |
-|------------|----------|
-| OSV | Remover step OSV de `sdd-gates.yml` (hub + template) — gate desactivado imediatamente |
-| Renovate | Remover `renovate.json` + desinstalar app GitHub no repo |
-| MANIFEST | Reverter bump 1.5.0 → 1.4.0 e entries novas |
-| Docs | Reverter linhas R1/R2/R4/R5 |
+| Component | Rollback |
+|-----------|----------|
+| OSV | Remove OSV step from `sdd-gates.yml` (hub + template) — gate disabled immediately |
+| Renovate | Remove `renovate.json` + uninstall GitHub app on repo |
+| MANIFEST | Revert bump 1.5.0 → 1.4.0 and new entries |
+| Docs | Revert R1/R2/R4/R5 lines |
 
-Sem binário instalado localmente; sem estado residual além de ficheiros versionados.
+No locally installed binary; no residual state beyond versioned files.
 
 ## Risks / Trade-offs
 
-| Risco | Mitigação |
-|-------|-----------|
-| Falsos positivos OSV bloqueiam merge | Documentar override temporário (pin/advisory ignore) em §2.13; corrigir deps é o caminho preferido |
-| Renovate spam de PRs | Preset conservador (schedule, limits, grouping); checklist piloto APP |
-| Automerge patches quebram CI | `requiredStatusChecks: ["SDD Gates"]`; automerge opt-in manual |
-| AGPL Renovate | Uso como ferramenta OK; registar em avaliação; não redistribuir fork modificado |
-| Transitive unpinned actions no OSV upstream | Usar action directa pinada (D2), não reusable workflow |
-| Conflito futuro com PR-Agent (G7) | Reavaliar composição do workflow no change G7 fase 2 |
-| `npx --yes` transitivo (F-SEC-3) | Documentado em 050; OSV não agrava — não usa npx |
+| Risk | Mitigation |
+|------|------------|
+| OSV false positives block merge | Document temporary override (pin/advisory ignore) in §2.13; fixing deps is preferred path |
+| Renovate PR spam | Conservative preset (schedule, limits, grouping); APP pilot checklist |
+| Automerge patches break CI | `requiredStatusChecks: ["SDD Gates"]`; automerge manual opt-in |
+| AGPL Renovate | Use as tool OK; record in evaluation; do not redistribute modified fork |
+| Transitive unpinned actions in OSV upstream | Use pinned direct action (D2), not reusable workflow |
+| Future conflict with PR-Agent (G7) | Re-evaluate workflow composition in G7 phase 2 change |
+| `npx --yes` transitive (F-SEC-3) | Documented in 050; OSV does not worsen — does not use npx |
 
 ## Migration Plan
 
-1. Apply actualiza template `sdd-gates.yml` e hub (mesmo conteúdo).
-2. `install.sh` passa a copiar `renovate.json` por perfil.
-3. Consumidores C2: `upgrade.sh --dry-run` → `--apply` para receber templates.
-4. Operador: instalar app Renovate (APP/HYBRID); configurar branch protection incluindo SDD Gates.
-5. Pós-registro: `graphify update .` + `gitnexus analyze --force` (best-effort).
+1. Apply updates template `sdd-gates.yml` and hub (same content).
+2. `install.sh` starts copying `renovate.json` by profile.
+3. C2 consumers: `upgrade.sh --dry-run` → `--apply` to receive templates.
+4. Operator: install Renovate app (APP/HYBRID); configure branch protection including SDD Gates.
+5. Post-register: `graphify update .` + `gitnexus analyze --force` (best-effort).
 
 ## Open Questions
 
-| Pergunta | Resolução proposta |
-|----------|-------------------|
-| OSV antes ou depois de openspec validate? | Depois de validate + task patterns — falhas normativas SDD primeiro |
-| Nova capability vs só delta ci-gates? | **`sdd-supply-chain`** para Renovate + requisito PR; delta **`sdd-ci-gates`** para step OSV no workflow |
-| Bump MANIFEST minor ou patch? | **Minor** 1.4.0 → 1.5.0 (nova capability distribuída) |
+| Question | Proposed resolution |
+|----------|---------------------|
+| OSV before or after openspec validate? | After validate + task patterns — SDD normative failures first |
+| New capability vs ci-gates delta only? | **`sdd-supply-chain`** for Renovate + PR requirement; delta **`sdd-ci-gates`** for OSV step in workflow |
+| MANIFEST bump minor or patch? | **Minor** 1.4.0 → 1.5.0 (new distributed capability) |
