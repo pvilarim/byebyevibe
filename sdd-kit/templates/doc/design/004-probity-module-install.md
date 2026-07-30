@@ -1,39 +1,39 @@
-# Módulo SDD Probity (G2) — instalação
+# SDD Probity Module (G2) — installation
 
-> **Cenário G2** — add-on opcional **após** C1 core (`sdd-kit/install.sh`). Materializa R6 (`enforceTdd`) via PreToolUse. **Não** substitui CI (`sdd-gates`).
+> **G2 scenario** — optional add-on **after** C1 core (`sdd-kit/install.sh`). Materializes R6 (`enforceTdd`) via PreToolUse. **Does not** replace CI (`sdd-gates`).
 
-**Comando:** `bash sdd-kit/install-probity-module.sh --detect` → `--apply [--yes]`
+**Command:** `bash sdd-kit/install-probity-module.sh --detect` → `--apply [--yes]`
 
 **Pin:** `@nizos/probity@1.10.0` (MIT) — [nizos/probity](https://github.com/nizos/probity)
 
-**Nota histórica:** TDD Guard foi superseded por Probity (2026-07). Não re-propor TDD Guard.
+**Historical note:** TDD Guard was superseded by Probity (2026-07). Do not re-propose TDD Guard.
 
 ---
 
-## 1. Quando instalar
+## 1. When to install
 
-| Perfil | Acção |
+| Profile | Action |
 |--------|--------|
-| **APP** / **HYBRID** com Vitest, Jest ou pytest | Correr após C1; **piloto obrigatório** antes de activar em produção |
-| **DOCS_SPECS** sem test runner | `--detect` → `SKIP: no test runner` |
-| Hub de specs | Scaffolding no kit apenas — não activar Probity |
+| **APP** / **HYBRID** with Vitest, Jest, or pytest | Run after C1; **pilot required** before enabling in production |
+| **DOCS_SPECS** without test runner | `--detect` → `SKIP: no test runner` |
+| Specs hub | Kit scaffolding only — do not enable Probity |
 
-### Pré-requisitos
+### Prerequisites
 
-1. C1 concluído (`AGENTS.md` + `openspec/infra.md`)
-2. Test runner presente (`vitest` / `jest` / `pytest`)
-3. GitNexus + Graphify activos (piloto mede empilhamento de 3 hooks)
-4. R11 session coordination em apply local
+1. C1 complete (`AGENTS.md` + `openspec/infra.md`)
+2. Test runner present (`vitest` / `jest` / `pytest`)
+3. GitNexus + Graphify active (pilot measures stacking of 3 hooks)
+4. R11 session coordination on local apply
 
 ---
 
-## 2. Detecção (`--detect`)
+## 2. Detection (`--detect`)
 
 ```
 AGENTS.md + openspec/infra.md?
          │
     ┌────┴────┐
-   NÃO       SIM
+   NO        YES
     │         │
  WARN      detect_test_runner()
               │
@@ -45,7 +45,7 @@ AGENTS.md + openspec/infra.md?
 
 ---
 
-## 3. Comandos
+## 3. Commands
 
 ```bash
 bash sdd-kit/install-probity-module.sh --detect
@@ -54,63 +54,63 @@ bash sdd-kit/install-probity-module.sh --apply --yes
 bash sdd-kit/install-probity-module.sh --uninstall
 ```
 
-### O que `--apply` faz
+### What `--apply` does
 
-1. Copia `probity.config.ts` (raiz) com `enforceTdd()` + `forbidCommandPattern(/rm\s+-rf/)`
-2. Copia este doc para `doc/design/004-probity-module-install.md`
-3. `npm install -D @nizos/probity@1.10.0` (com `--yes`)
-4. Actualiza `openspec/infra.md` — secção Probity Module
+1. Copies `probity.config.ts` (root) with `enforceTdd()` + `forbidCommandPattern(/rm\s+-rf/)`
+2. Copies this doc to `doc/design/004-probity-module-install.md`
+3. `npm install -D @nizos/probity@1.10.0` (with `--yes`)
+4. Updates `openspec/infra.md` — Probity Module section
 
-### O que `--apply` **não** faz
+### What `--apply` **does not** do
 
-- Não altera C1 core (`install.sh`)
-- Não instala TDD Guard
-- Não modifica blocos `<!-- gitnexus:start -->` em `AGENTS.md`
-- Não activa lint-before-commit (`requireCommand` — opt-in, ver §7)
+- Does not change C1 core (`install.sh`)
+- Does not install TDD Guard
+- Does not modify `<!-- gitnexus:start -->` blocks in `AGENTS.md`
+- Does not enable lint-before-commit (`requireCommand` — opt-in, see §7)
 
-### Plugin Claude Code (obrigatório após apply)
+### Claude Code plugin (required after apply)
 
 ```text
 /plugin marketplace add nizos/probity
 /plugin install probity@probity
-# Reiniciar sessão Claude Code
+# Restart Claude Code session
 ```
 
-Ordem sugerida de hooks PreToolUse: **GitNexus → Graphify → Probity**.
+Suggested PreToolUse hook order: **GitNexus → Graphify → Probity**.
 
 ---
 
-## 4. Piloto (obrigatório antes de activação default)
+## 4. Pilot (required before default activation)
 
-Critérios em `openspec/changes/add-probity-tdd-module/design.md`:
+Criteria in `openspec/changes/add-probity-tdd-module/design.md`:
 
-| Critério | Threshold |
+| Criterion | Threshold |
 |----------|-----------|
-| Latência PreToolUse extra p95 | < 8s (N≥30 edits) |
-| Falsos positivos tipo C | < 15% (N≥5 sessões) |
-| Tipo B R6 compliance | 100% (N≥3 sessões) |
-| Cursor IDE hooks | Disparam **OU** documentar "só Claude Code" |
+| Extra PreToolUse latency p95 | < 8s (N≥30 edits) |
+| Type C false positives | < 15% (N≥5 sessions) |
+| Type B R6 compliance | 100% (N≥3 sessions) |
+| Cursor IDE hooks | Fire **OR** document "Claude Code only" |
 
-Falhou → status "Adiado" na avaliação G2; `--uninstall`; não promover em consumidores.
+Failed → "Deferred" status in G2 evaluation; `--uninstall`; do not promote to consumers.
 
 ---
 
 ## 5. Cursor IDE
 
-Probity documenta Claude Code, Codex e Copilot CLI. Cursor third-party hooks: [docs](https://cursor.com/docs/reference/third-party-hooks).
+Probity documents Claude Code, Codex, and Copilot CLI. Cursor third-party hooks: [docs](https://cursor.com/docs/reference/third-party-hooks).
 
-**Estado:** validar no piloto (`preToolUse` ↔ PreToolUse). Se falhar: Claude Code primário; documentar limitação no guia §2.16.
+**Status:** validate in pilot (`preToolUse` ↔ PreToolUse). If it fails: Claude Code primary; document limitation in guide §2.16.
 
 ---
 
-## 6. Desligar / rollback
+## 6. Disable / rollback
 
-| Método | Quando |
+| Method | When |
 |--------|--------|
-| Globs em `probity.config.ts` | Excluir paths (já exclui `doc/**`, `openspec/**`, `sdd-kit/**`) |
-| Tipo A (R1) | Não editar código de produção |
-| Desinstalar plugin | Sessão só-docs |
-| `--uninstall` | Remover módulo do repo |
+| Globs in `probity.config.ts` | Exclude paths (already excludes `doc/**`, `openspec/**`, `sdd-kit/**`) |
+| Type A (R1) | Do not edit production code |
+| Uninstall plugin | Docs-only session |
+| `--uninstall` | Remove module from repo |
 
 ```bash
 bash sdd-kit/install-probity-module.sh --uninstall
@@ -119,20 +119,20 @@ bash sdd-kit/install-probity-module.sh --uninstall
 
 ---
 
-## 7. Lint opt-in (gap — não no template default)
+## 7. Lint opt-in (gap — not in default template)
 
-Probity oferece `requireCommand({ before: git commit, command: /npm run lint/ })`. Repos SDD variam de linter — **não** incluir no template. Adicionar manualmente se o repo tiver `npm run lint` estável.
+Probity offers `requireCommand({ before: git commit, command: /npm run lint/ })`. SDD repos vary in linter — **do not** include in the template. Add manually if the repo has a stable `npm run lint`.
 
 ---
 
-## 8. Matriz A–E
+## 8. A–E matrix
 
-| Tipo | Probity `enforceTdd` |
+| Type | Probity `enforceTdd` |
 |------|---------------------|
 | A — Trivial | off (globs) |
 | B — Bug fix | **on** |
 | C — Refactor | on |
 | D — Feature | on |
-| E — Exploração | n/a |
+| E — Exploration | n/a |
 
 **Pipeline:** apply → enforceTdd (R6/Probity) → `correctness-review` → `simplify-review` → `security-reviewer` → commit → sdd-gates.

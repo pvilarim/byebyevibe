@@ -1,102 +1,102 @@
-# UI stack adapters — Fase 2 sem shadcn (Caminhos B e C)
+# UI stack adapters — Phase 2 without shadcn (Paths B and C)
 
-> **shadcn/ui é o caminho default** para projectos Next.js + Tailwind. Este documento cobre **opt-out** explícito e stacks alternativas.
+> **shadcn/ui is the default path** for Next.js + Tailwind projects. This document covers explicit **opt-out** and alternative stacks.
 >
-> Caminho A (shadcn): [`001-pipeline-open-design-shadcn-impeccable.md`](./001-pipeline-open-design-shadcn-impeccable.md) §4.
+> Path A (shadcn): [`001-pipeline-open-design-shadcn-impeccable.md`](./001-pipeline-open-design-shadcn-impeccable.md) §4.
 
-**Campo de constituição:** `UI stack: shadcn | tailwind-custom | other | none` em `openspec/project.md`.
+**Constitution field:** `UI stack: shadcn | tailwind-custom | other | none` in `openspec/project.md`.
 
 ---
 
-## 1. Visão geral dos caminhos
+## 1. Path overview
 
-| Caminho | `UI_STACK` | Fase 2 | Fase 3 (Impeccable) |
+| Path | `UI_STACK` | Phase 2 | Phase 3 (Impeccable) |
 |---------|------------|--------|---------------------|
 | **A** | `shadcn` | `001` §4 — shadcn init + tokens | Full (`polish`, `audit`, …) |
-| **B** | `tailwind-custom` | Tokens em `globals.css`; componentes manuais | `/impeccable document` para sincronizar `DESIGN.md` |
-| **C** | `other` | MUI, Chakra, Radix puro, legado | Impeccable se React + CSS UI |
-| **SKIP** | `none` | Sem frontend | N/A |
+| **B** | `tailwind-custom` | Tokens in `globals.css`; manual components | `/impeccable document` to sync `DESIGN.md` |
+| **C** | `other` | MUI, Chakra, plain Radix, legacy | Impeccable if React + CSS UI |
+| **SKIP** | `none` | No frontend | N/A |
 
 ---
 
-## 2. Caminho B — `tailwind-custom`
+## 2. Path B — `tailwind-custom`
 
-### Quando usar
+### When to use
 
-- Operador recusou shadcn no prompt C1-UI (`install-ui-module.sh`)
-- Tailwind configurado (`tailwind.config.*`, `globals.css`) sem `components/ui/`
+- Operator declined shadcn in the C1-UI prompt (`install-ui-module.sh`)
+- Tailwind configured (`tailwind.config.*`, `globals.css`) without `components/ui/`
 
-### Procedimento Fase 2
+### Phase 2 procedure
 
-1. Definir tokens CSS semânticos em `globals.css` (cores, radius, spacing)
-2. Criar componentes base em `components/ui/` **sem** shadcn CLI — ou pasta equivalente
-3. Documentar decisões em `DESIGN.md` (raiz) — contrato de marca
-4. Open Design / Pencil: exportar paleta e tipografia; commitar screenshots em `doc/design/` se útil
+1. Define semantic CSS tokens in `globals.css` (colors, radius, spacing)
+2. Create base components in `components/ui/` **without** shadcn CLI — or equivalent folder
+3. Document decisions in `DESIGN.md` (root) — brand contract
+4. Open Design / Pencil: export palette and typography; commit screenshots in `doc/design/` if useful
 
 ### Impeccable
 
 ```bash
-# Após DESIGN.md e tokens existirem
+# After DESIGN.md and tokens exist
 npx impeccable document
 npx impeccable audit
 ```
 
-Impeccable é **agnóstico** ao design system se `DESIGN.md` + tokens existem.
+Impeccable is **agnostic** to the design system if `DESIGN.md` + tokens exist.
 
 ### Pencil / Figma
 
-- Prototipar com componentes Tailwind genéricos (não assumir `Button` shadcn)
-- Mapear classes Tailwind no `DESIGN.md` em vez de variantes shadcn
+- Prototype with generic Tailwind components (do not assume shadcn `Button`)
+- Map Tailwind classes in `DESIGN.md` instead of shadcn variants
 
 ---
 
-## 3. Caminho C — `other`
+## 3. Path C — `other`
 
-### Quando usar
+### When to use
 
-- `package.json` inclui `@mui/material`, `@chakra-ui/react`, `antd`, etc.
-- Monorepo legado com UI library própria
+- `package.json` includes `@mui/material`, `@chakra-ui/react`, `antd`, etc.
+- Legacy monorepo with its own UI library
 
-### Procedimento Fase 2
+### Phase 2 procedure
 
-1. **Não** correr `npx shadcn@latest init`
-2. Registar `UI stack: other` em `openspec/project.md`
-3. Adaptar [`001`](./001-pipeline-open-design-shadcn-impeccable.md) mentalmente:
-   - Fase 1b (Pencil/Figma): usar componentes da library existente
-   - Fase 2: tokens da library + theme provider
-4. Impeccable: focar em layout, tipografia, acessibilidade — `/impeccable layout`, `/impeccable typeset`
+1. **Do not** run `npx shadcn@latest init`
+2. Record `UI stack: other` in `openspec/project.md`
+3. Adapt [`001`](./001-pipeline-open-design-shadcn-impeccable.md) mentally:
+   - Phase 1b (Pencil/Figma): use existing library components
+   - Phase 2: library tokens + theme provider
+4. Impeccable: focus on layout, typography, accessibility — `/impeccable layout`, `/impeccable typeset`
 
-### Limitações
+### Limitations
 
-- Pipeline `001` assume shadcn na Fase 2 — exemplos de código precisam tradução manual
-- GitNexus impact analysis continua válido para ficheiros React
+- Pipeline `001` assumes shadcn in Phase 2 — code examples need manual translation
+- GitNexus impact analysis remains valid for React files
 
 ---
 
-## 4. Detecção automática (`install-ui-module.sh --detect`)
+## 4. Automatic detection (`install-ui-module.sh --detect`)
 
-| Sinal no repo | `UI_STACK` reportado |
+| Signal in repo | Reported `UI_STACK` |
 |---------------|----------------------|
 | `components.json` | `shadcn` |
-| `components/ui/` + padrões shadcn | `shadcn` |
-| `tailwind.config.*` sem ui/ | `tailwind-custom` (prompt shadcn) |
+| `components/ui/` + shadcn patterns | `shadcn` |
+| `tailwind.config.*` without ui/ | `tailwind-custom` (shadcn prompt) |
 | `@mui/*`, `@chakra-ui/*`, etc. | `other` |
-| Sem `app/` nem frontend | `none` (SKIP) |
+| No `app/` or frontend | `none` (SKIP) |
 
 ---
 
-## 5. Registo de estado
+## 5. State registration
 
-Após decisão:
+After decision:
 
-1. Actualizar `openspec/project.md`: `UI stack: <valor>`
-2. Actualizar `openspec/infra.md` — secção UI Development Module
-3. Seguir checklist em [`002-ui-module-install.md`](./002-ui-module-install.md) §6
+1. Update `openspec/project.md`: `UI stack: <value>`
+2. Update `openspec/infra.md` — UI Development Module section
+3. Follow checklist in [`002-ui-module-install.md`](./002-ui-module-install.md) §6
 
 ---
 
-## 6. Referências
+## 6. References
 
-- Instalação C1-UI: [`002-ui-module-install.md`](./002-ui-module-install.md)
-- Pipeline completa (Caminho A): [`001-pipeline-open-design-shadcn-impeccable.md`](./001-pipeline-open-design-shadcn-impeccable.md)
-- Impeccable isolado: [`000-impeccable-design-system-guia.md`](./000-impeccable-design-system-guia.md)
+- C1-UI installation: [`002-ui-module-install.md`](./002-ui-module-install.md)
+- Full pipeline (Path A): [`001-pipeline-open-design-shadcn-impeccable.md`](./001-pipeline-open-design-shadcn-impeccable.md)
+- Impeccable standalone: [`000-impeccable-design-system-guia.md`](./000-impeccable-design-system-guia.md)
