@@ -64,7 +64,7 @@ Must pass: **G-INV**, **G-GLOSS**, **G-PT**, **G-LINK**, **G-MIRROR** (if skills
 # or /opsx:archive translate-<surface>-wave-N
 
 Change: openspec/changes/translate-<surface>-wave-N/
-Ler: tasks.md (progress), doc/i18n/GLOSSARY.md, doc/i18n/WAVES.md
+Read: proposal.md, design.md, tasks.md, doc/i18n/GLOSSARY.md, doc/i18n/WAVES.md, doc/i18n/CURSOR-AUTOMATIONS.md
 Gate: bash scripts/verify-i18n-wave.sh --files <paths>
-Infra: openspec/infra.md (assumir ✅ — não reinstalar)
+Infra: openspec/infra.md (assume ✅ — do not reinstall)
 ```
