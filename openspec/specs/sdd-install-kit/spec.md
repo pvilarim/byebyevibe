@@ -90,7 +90,7 @@ When `sdd-kit/verify.sh` runs in a repository where `sdd-kit/templates/` is pres
 
 ### Requirement: Deterministic SDD upgrade
 
-`sdd-kit/upgrade.sh` MUST support `--from`, `--to`, `--dry-run`, and MUST generate or update scaffold for `UPGRADE_REPORT.md` per guide §12.8. It MUST NOT apply merges to curated files without `--apply` after human approval. O MANIFEST MUST classificar ficheiros de ferramentas de upgrade (ex.: `scripts/sdd-upgrade-diff.sh`) com `merge: MERGE` para preservar customizações locais.
+`sdd-kit/upgrade.sh` MUST support `--from`, `--to`, `--dry-run`, and MUST generate or update scaffold for `UPGRADE_REPORT.md` per guide §12.8. It MUST NOT apply merges to curated files without `--apply` after human approval. The MANIFEST MUST classify upgrade tool files (e.g. `scripts/sdd-upgrade-diff.sh`) with `merge: MERGE` to preserve local customizations.
 
 #### Scenario: Dry-run produces UPGRADE_REPORT scaffold
 
@@ -166,42 +166,42 @@ Repositories with profile DOCS_SPECS that act as SDD distribution hubs MUST comm
 - **WHEN** spec-pedro archives this change
 - **THEN** `sdd-kit/` remains in git for C2 upgrades by other repos
 
-### Requirement: bootstrap-sdd.sh emite aviso em repo HYBRID ambíguo
+### Requirement: bootstrap-sdd.sh emits warning in ambiguous HYBRID repo
 
-Quando `package.json` e `openspec/` coexistem, `bootstrap-sdd.sh` MUST emitir um aviso (stderr) pedindo confirmação explícita do perfil antes de continuar com o perfil por defeito (APP). Não deve terminar com erro — o aviso é informativo.
+When `package.json` and `openspec/` coexist, `bootstrap-sdd.sh` MUST emit a warning (stderr) requesting explicit profile confirmation before continuing with the default profile (APP). It MUST NOT exit with an error — the warning is informational.
 
-#### Scenario: Repo com package.json e openspec/ coexistindo
+#### Scenario: Repo with package.json and openspec/ coexisting
 
-- **WHEN** o operador executa `bash scripts/bootstrap-sdd.sh` num repo que tem `package.json` e `openspec/`
-- **THEN** o script imprime para stderr `WARN: package.json e openspec/ coexistem — perfil pode ser HYBRID.` e continua a instalação com perfil APP
+- **WHEN** the operator runs `bash scripts/bootstrap-sdd.sh` in a repo that has both `package.json` and `openspec/`
+- **THEN** the script prints to stderr `WARN: package.json e openspec/ coexistem — perfil pode ser HYBRID.` and continues installation with APP profile
 
-#### Scenario: Repo APP sem openspec/ não recebe aviso
+#### Scenario: APP repo without openspec/ receives no warning
 
-- **WHEN** o operador executa `bash scripts/bootstrap-sdd.sh` num repo que tem `package.json` mas não tem `openspec/`
-- **THEN** o script continua com perfil APP sem nenhum aviso
+- **WHEN** the operator runs `bash scripts/bootstrap-sdd.sh` in a repo that has `package.json` but not `openspec/`
+- **THEN** the script continues with APP profile without any warning
 
-### Requirement: upgrade.sh classify label alinhado com MANIFEST merge strategy
+### Requirement: upgrade.sh classify label aligned with MANIFEST merge strategy
 
-A saída de `upgrade.sh --dry-run` para ficheiros com `merge: COPY` MUST usar o rótulo `COPY` (não `APPLY_TEMPLATE`), mantendo alinhamento visual com os valores declarados no MANIFEST.
+The output of `upgrade.sh --dry-run` for files with `merge: COPY` MUST use the label `COPY` (not `APPLY_TEMPLATE`), maintaining visual alignment with the values declared in the MANIFEST.
 
-#### Scenario: Dry-run mostra rótulo COPY para ficheiros merge COPY
+#### Scenario: Dry-run shows COPY label for merge COPY files
 
-- **WHEN** o operador corre `bash sdd-kit/upgrade.sh --from X --to Y --dry-run`
-- **THEN** ficheiros classificados com `merge: COPY` no MANIFEST aparecem no output com o prefixo `COPY` (não `APPLY_TEMPLATE`)
+- **WHEN** the operator runs `bash sdd-kit/upgrade.sh --from X --to Y --dry-run`
+- **THEN** files classified with `merge: COPY` in the MANIFEST appear in the output with the `COPY` prefix (not `APPLY_TEMPLATE`)
 
-### Requirement: upgrade.sh header distingue modo dry-run de modo apply
+### Requirement: upgrade.sh header distinguishes dry-run mode from apply mode
 
-O header impresso por `upgrade.sh` no início do output MUST reflectir o modo de execução: `dry-run` em modo `--dry-run`, `APPLY` em modo `--apply`.
+The header printed by `upgrade.sh` at the start of the output MUST reflect the execution mode: `dry-run` in `--dry-run` mode, `APPLY` in `--apply` mode.
 
 #### Scenario: Header dry-run
 
-- **WHEN** o operador corre `bash sdd-kit/upgrade.sh --from X --to Y --dry-run`
-- **THEN** o output contém `SDD UPGRADE REPORT (dry-run)`
+- **WHEN** the operator runs `bash sdd-kit/upgrade.sh --from X --to Y --dry-run`
+- **THEN** the output contains `SDD UPGRADE REPORT (dry-run)`
 
 #### Scenario: Header apply
 
-- **WHEN** o operador corre `bash sdd-kit/upgrade.sh --from X --to Y --apply --profile DOCS_SPECS` após aprovar o relatório
-- **THEN** o output contém `SDD UPGRADE APPLY` (sem `dry-run`)
+- **WHEN** the operator runs `bash sdd-kit/upgrade.sh --from X --to Y --apply --profile DOCS_SPECS` after approving the report
+- **THEN** the output contains `SDD UPGRADE APPLY` (without `dry-run`)
 
 ### Requirement: Upgrade safety — mutual exclusion of --dry-run and --apply
 
@@ -223,7 +223,7 @@ O header impresso por `upgrade.sh` no início do output MUST reflectir o modo de
 
 ### Requirement: Upgrade safety — UPGRADE_REPORT approval gate
 
-`sdd-kit/upgrade.sh --apply` MUST verify that the `UPGRADE_REPORT.md` file exists and contains `[x] Actualização aprovada` before performing any write operation. If the report is absent or unapproved, the script MUST abort with a descriptive error and exit non-zero.
+`sdd-kit/upgrade.sh --apply` MUST verify that the `UPGRADE_REPORT.md` file exists and contains the approval checkbox string that `sdd-kit/upgrade.sh` greps for in `UPGRADE_REPORT.md` before performing any write operation. If the report is absent or unapproved, the script MUST abort with a descriptive error and exit non-zero.
 
 #### Scenario: UPGRADE_REPORT absent
 
@@ -232,7 +232,7 @@ O header impresso por `upgrade.sh` no início do output MUST reflectir o modo de
 
 #### Scenario: UPGRADE_REPORT present but not approved
 
-- **WHEN** `UPGRADE_REPORT.md` exists but does not contain `[x] Actualização aprovada`
+- **WHEN** `UPGRADE_REPORT.md` exists but does not contain the approval checkbox string expected by `sdd-kit/upgrade.sh`
 - **THEN** the script prints an error directing the operator to mark the approval checkbox and exits non-zero
 
 ### Requirement: Upgrade diff — source-aware AGENTS.md lookup
