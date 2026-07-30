@@ -56,11 +56,33 @@ SDD rule: **one chat / one Cloud Agent run = one phase**. Do not propose and app
 ```
 
 **Throughput:** manual merge slows the **apply chain**, not the **propose factory**.  
-**Optional later (out of scope here):** GitHub auto-merge / merge queue for `docs(sdd): propose translate-*` only — reduces waiting; does not change SDD phases.
+Use **GitHub auto-merge** on apply/archive PRs (branch protection + green CI) to reduce waiting without combining SDD phases in one agent run.
 
 ---
 
-## 3. Cursor surfaces (when to use which)
+## 3. Automation chain (recommended layout)
+
+Run **three separate Automations** — never combine phases in one run (§5.4).
+
+| Automation | Trigger (GitHub) | Phase | Opens PR? | Merge? |
+|------------|------------------|-------|-----------|--------|
+| **A — Propose factory** | Cron / manual | `/opsx:propose` | Draft propose PR | Human or auto-merge |
+| **B — Apply on propose merge** | PR merged → title matches `propose translate-*` | `/opsx:apply` | Draft apply PR | Human or auto-merge |
+| **C — Archive on apply merge** | PR merged → title matches `apply translate-*` | `/opsx:archive` | Ready archive PR | Auto-merge or agent (§5.3) |
+
+```
+  Propose PR merged ──▶ Automation B (apply) ──▶ Apply PR merged ──▶ Automation C (archive+merge)
+        ▲                                                              │
+        │                                                              ▼
+   Automation A                                              change → archive/
+   (parallel OK)                                            master updated
+```
+
+**Before re-enabling B or C:** close stale duplicate archive PRs (§5.3.1). They do not need merge — the change is often already on `master`.
+
+---
+
+## 4. Cursor surfaces (when to use which)
 
 | Surface | Best for | Notes |
 |---------|----------|-------|
@@ -73,9 +95,9 @@ Create Automations via UI, `/automate`, or [marketplace templates](https://curso
 
 ---
 
-## 4. Recommended Automations for this repo
+## 5. Recommended Automations for this repo
 
-### 4.1 Propose factory (one wave per run)
+### 5.1 Propose factory (one wave per run)
 
 **Trigger ideas:** cron (e.g. daily), Slack keyword, webhook, or manual “run now”.
 
@@ -90,7 +112,7 @@ Create Automations via UI, `/automate`, or [marketplace templates](https://curso
 
 ```text
 Read and follow doc/i18n/CURSOR-AUTOMATIONS.md end-to-end.
-Then execute ONLY the "Propose factory" section (§4.1) for the next pending disjoint slice.
+Then execute ONLY the "Propose factory" section (§5.1) for the next pending disjoint slice.
 
 SINGLE SDD phase: /opsx:propose only. Do NOT apply. Do NOT archive.
 Do NOT edit translation target files — only openspec/changes/<new-id>/.
@@ -122,41 +144,181 @@ Idle / stop condition:
 - Leaving the Automation enabled is fine; future runs should keep no-op'ing until new scope appears.
 ```
 
-### 4.2 Apply after propose merge
+### 5.2 Apply after propose merge (Automation B)
 
-**Trigger ideas:** Pull request **merged** whose branch/title matches `translate-*-propose` / `docs(sdd): propose translate-`, or label `sdd-i18n-propose-ready`.
+**Purpose:** run `/opsx:apply` for exactly one `translate-*` wave after its propose PR landed on `master`.
 
-**Instructions (paste):**
+**Repo / base:** this repository · `master`
+
+**Trigger (pick one in Cursor Automations UI):**
+
+| Trigger type | Suggested filter |
+|--------------|------------------|
+| Pull request merged | Base: `master` · Title contains: `propose translate-` **or** branch contains: `translate-` |
+| Label (alternative) | Label added: `sdd-i18n-propose-ready` on merged PR |
+
+**Branch naming (agent):** `cursor/apply-<change-id>-<suffix>` (e.g. `cursor/apply-translate-guide-wave-2-e452`)
+
+**PR title:** `docs(sdd): apply translate-<surface>-wave-N`
+
+**Merge policy:** open as **DRAFT**; enable **GitHub auto-merge** on the apply PR if branch protection allows. The apply agent MUST NOT merge its own PR (archive automation depends on a clean merge event).
+
+**Operator checklist before enabling:**
+
+1. Propose PR for the wave is **merged** on `master`
+2. `openspec/changes/<id>/` exists on `master` with open tasks
+3. Prerequisite waves (if any in `tasks.md`) are apply-complete — prefer **archived**
+4. No other in-flight apply PR touches the same file paths
+
+**Instructions (paste into Automation B):**
 
 ```text
-You are running a SINGLE SDD phase: /opsx:apply only for one translation wave.
+Read and follow doc/i18n/CURSOR-AUTOMATIONS.md end-to-end.
+Then execute ONLY §5.2 "Apply after propose merge" for the wave that triggered this run.
 
-1. Read doc/i18n/CURSOR-AUTOMATIONS.md
-2. Identify change-id translate-<surface>-wave-N from the merged propose PR
-3. Confirm openspec/changes/<id>/ exists on the current base with tasks.md unchecked
-4. If tasks.md lists a prerequisite wave, confirm that prerequisite is apply-complete (prefer archived); else stop with Session Handoff naming the prerequisite
-5. /opsx:apply <id> — in-place PT→EN only; freeze-list intact; no dual-file *.en.md / *-pt.md
-6. If sdd-kit/templates/ touched: bash sdd-kit/gen-manifest-checksums.sh
-7. Gate: bash scripts/verify-i18n-wave.sh --files <exact paths from proposal>
-8. OPENSPEC_TELEMETRY=0 npx --yes @fission-ai/openspec@1.3.1 validate --all --strict
-9. Open DRAFT PR for the apply. Stop with Session Handoff for /opsx:archive
-Do NOT propose a new wave in this run. Do NOT merge PRs yourself.
+SINGLE SDD phase: /opsx:apply only. Do NOT propose. Do NOT archive. Do NOT merge PRs.
+
+IDENTIFY change-id:
+1. From the merged propose PR title/body (e.g. translate-guide-wave-2), or
+2. From the Automation trigger payload (merged PR metadata).
+Set CHANGE_ID=translate-<surface>-wave-N.
+
+PRE-FLIGHT (stop with Session Handoff if any check fails):
+- test -d "openspec/changes/${CHANGE_ID}" || STOP "change folder missing on master — propose not merged?"
+- test ! -d "openspec/changes/archive/"*"${CHANGE_ID}" || STOP "already archived"
+- Count incomplete tasks: grep -c '^- \[ \]' openspec/changes/${CHANGE_ID}/tasks.md
+  If prerequisite wave named in tasks.md: confirm prerequisite is archived on master
+- gh pr list --state open --search "apply ${CHANGE_ID}" --json number
+  If open apply PR exists for same change-id: STOP "duplicate apply PR — do not start second apply"
+
+APPLY:
+1. Read proposal.md, design.md, tasks.md, doc/i18n/GLOSSARY.md, doc/i18n/WAVES.md
+2. /opsx:apply ${CHANGE_ID} — in-place PT→EN only on paths listed in proposal/tasks
+3. Freeze-list / HTML marker tags / pins / SHA pins — byte-stable per tasks.md
+4. Forbidden: dual-file *.en.md / *-pt.md; editing openspec/changes/archive/**
+5. If sdd-kit/templates/ touched: bash sdd-kit/gen-manifest-checksums.sh
+
+GATES (must pass before PR):
+- bash scripts/verify-i18n-wave.sh --files <exact paths from proposal/tasks>
+- OPENSPEC_TELEMETRY=0 npx --yes @fission-ai/openspec@1.3.1 validate --all --strict
+
+PR:
+- Branch: cursor/apply-${CHANGE_ID}-<short-suffix>
+- Title: docs(sdd): apply ${CHANGE_ID}
+- Body: list translated paths + gate commands run
+- Open as DRAFT
+- Do NOT merge
+
+STOP with Session Handoff for /opsx:archive (§6).
 ```
 
-### 4.3 Archive after apply merge
+### 5.3 Archive after apply merge (Automation C)
 
-Same pattern: trigger on apply PR merged → `/opsx:archive <id>` only → small PR moving change to `openspec/changes/archive/`.
+**Purpose:** run `/opsx:archive` for exactly one `translate-*` wave after its apply PR landed on `master`, then merge the archive PR when safe.
 
-### 4.4 What NOT to put in one Automation
+**Repo / base:** this repository · `master`
+
+**Trigger (pick one):**
+
+| Trigger type | Suggested filter |
+|--------------|------------------|
+| Pull request merged | Base: `master` · Title contains: `apply translate-` |
+| Label (alternative) | Label added: `sdd-i18n-apply-ready` on merged PR |
+
+**Branch naming (agent):** `cursor/archive-<change-id>-<suffix>`
+
+**PR title:** `chore(openspec): archive translate-<surface>-wave-N`
+
+**Merge policy:** open as **ready for review** (not draft). Prefer **GitHub auto-merge** when CI is green. If auto-merge is unavailable, the agent MAY merge when: PR is mergeable, no duplicate open archive PR exists, and `openspec validate --all --strict` passed on the branch.
+
+**Operator helper (local):** `bash scripts/archive-and-merge.sh <change-id>` prepares branch + push; PR creation may still need Cursor UI or a token with `pull_request` write scope.
+
+#### 5.3.1 Stale archive PRs — close, do not merge
+
+Parallel Cloud Agent runs often open **duplicate** archive PRs for the same change-id. Before Automation C runs:
+
+```bash
+# Example: list open archive PRs for one change
+gh pr list --state open --search "archive translate-guide-wave-2"
+```
+
+| Signal | Action |
+|--------|--------|
+| Change already under `openspec/changes/archive/*-<id>/` on `master` | **Close** all open archive PRs for that id — work is done |
+| Multiple open archive PRs for same id | **Close** duplicates; keep zero or one |
+| PR is `CONFLICTING` / `DIRTY` but change archived on master | **Close** — superseded |
+
+Bulk-close stale duplicates (operator, after verifying master):
+
+```bash
+gh pr close 17 52 53 56 65 178 180 202 203 204 205 206 207 208 209 210 211 212 213 214 215 216 217 218 219 220 221 222 223
+```
+
+#### 5.3.2 Instructions (paste into Automation C)
+
+```text
+Read and follow doc/i18n/CURSOR-AUTOMATIONS.md end-to-end.
+Then execute ONLY §5.3 "Archive after apply merge" for the wave that triggered this run.
+
+SINGLE SDD phase: /opsx:archive only. Do NOT propose. Do NOT apply.
+
+IDENTIFY change-id from merged apply PR (e.g. translate-guide-wave-2).
+Set CHANGE_ID=translate-<surface>-wave-N.
+
+PRE-FLIGHT — DEDUPE (mandatory; exit 0 with message, no PR):
+1. Already archived on master?
+   If openspec/changes/${CHANGE_ID} is missing AND
+      ls openspec/changes/archive/*${CHANGE_ID}* 2>/dev/null | grep -q .
+   → Report "SKIP: ${CHANGE_ID} already archived on master" and STOP.
+
+2. Duplicate open archive PR?
+   OPEN=$(gh pr list --state open --search "archive ${CHANGE_ID}" --json number -q 'length')
+   If OPEN > 0 → Report "SKIP: archive PR already open for ${CHANGE_ID}" and STOP.
+
+3. Tasks complete?
+   INCOMPLETE=$(grep -c '^- \[ \]' openspec/changes/${CHANGE_ID}/tasks.md || echo 99)
+   If INCOMPLETE > 0 → STOP with Session Handoff "tasks incomplete — finish apply first"
+
+4. Apply landed on master?
+   test -d "openspec/changes/${CHANGE_ID}" || STOP "change folder missing"
+
+ARCHIVE:
+1. Read tasks.md, design.md; sync any remaining delta specs to openspec/specs/ per tasks.md promotion section
+2. Move openspec/changes/${CHANGE_ID} → openspec/changes/archive/$(date +%Y-%m-%d)-${CHANGE_ID}/
+   (if target exists, STOP — do not double-archive)
+3. OPENSPEC_TELEMETRY=0 npx --yes @fission-ai/openspec@1.3.1 validate --all --strict
+4. Optional: bash scripts/sdd-metrics.sh --check-cadence (advisory; never fail archive)
+
+PR:
+- Branch: cursor/archive-${CHANGE_ID}-<short-suffix>
+- Title: chore(openspec): archive ${CHANGE_ID}
+- Body: archive path + validate command + "one archive PR per change-id"
+- Mark ready for review (not draft)
+
+MERGE (only if all true):
+- No other open archive PR for this CHANGE_ID
+- PR mergeable (CLEAN) and CI green, OR GitHub auto-merge enabled
+- If gh pr merge fails (permissions): leave PR open and report URL for human merge
+- After merge: delete branch
+
+FORBIDDEN:
+- Creating a second archive PR for the same CHANGE_ID in the same run
+- Merging when master already contains archive/*-${CHANGE_ID}
+- apply or propose in this run
+```
+
+### 5.4 What NOT to put in one Automation
 
 - Propose + apply + archive in a single run  
 - “Translate the entire guide in one PR” (violates budgets)  
-- Auto-approve or auto-merge without human review (R7)  
+- Multiple archive PRs for the same `change-id` without dedupe (§5.3.1)  
 - Secrets, tokens, or Cursor API keys in repo files  
+
+**R7 note:** auto-merge on apply/archive PRs is acceptable when branch protection + CI gates enforce review; it does not replace OpenSpec propose review for type C/D work — translation waves are operational batches with pre-defined tasks.
 
 ---
 
-## 5. Parallel proposes — checklist
+## 6. Parallel proposes — checklist
 
 Before launching N Cloud Agents:
 
@@ -168,7 +330,7 @@ Before launching N Cloud Agents:
 
 ---
 
-## 6. Session Handoff stubs (copy)
+## 7. Session Handoff stubs (copy)
 
 ### Propose → Apply
 
@@ -197,19 +359,20 @@ Infra: openspec/infra.md (assume ✅ — do not reinstall)
 
 ---
 
-## 7. Current queue hint (translation)
+## 8. Current queue hint (translation)
 
 Operators should re-check `npx openspec list` and open PRs; typical pattern:
 
 | Stage | Action |
 |-------|--------|
-| Propose already merged, tasks open | Run **Apply** Automation / Cloud Agent (§4.2) |
+| Propose already merged, tasks open | Run **Apply** Automation B (§5.2) |
+| Apply PR merged, tasks all checked | Run **Archive** Automation C (§5.3) |
 | Need more waves (guide sections first; then kit/design/avaliacoes — **not** `doc/curso/`) | Run **Propose factory** (§4.1) in parallel for disjoint slices |
 | Dependent pair (e.g. W2c then W2d) | Apply sequentially; do not parallelize those applies |
 
 ---
 
-## 8. Quality bar before opening a PR
+## 9. Quality bar before opening a PR
 
 | Check | Command / rule |
 |-------|----------------|
@@ -223,10 +386,19 @@ Operators should re-check `npx openspec list` and open PRs; typical pattern:
 
 ---
 
-## 9. FAQ
+## 10. FAQ
 
 **Can I call this documentation from Automations to develop the workflow there?**  
-Yes. After this file is on the branch the Automation uses, instructions like “Read `doc/i18n/CURSOR-AUTOMATIONS.md` and execute §4.1” are enough. Iterate the Automation prompt in the Cursor UI; improve this file via a normal OpenSpec change when the playbook itself changes.
+Yes. After this file is on the branch the Automation uses, instructions like “Read `doc/i18n/CURSOR-AUTOMATIONS.md` and execute §5.1” are enough. Iterate the Automation prompt in the Cursor UI; improve this file via a normal OpenSpec change when the playbook itself changes.
+
+**Can apply and archive run in one Automation?**  
+No — keep **Automation B** (apply) and **Automation C** (archive) separate. Chain them with GitHub “PR merged” triggers. Combining phases violates `.cursor/rules/015-session-phases.mdc` and caused duplicate archive PRs in practice.
+
+**Why are there many open archive PRs for the same wave?**  
+Parallel Cloud Agents each opened an archive PR before any merged. Close stale duplicates (§5.3.1); do not merge them if `master` already has `openspec/changes/archive/*-<id>/`.
+
+**Should the archive Automation merge its own PR?**  
+Prefer **GitHub auto-merge** when CI is green. The agent may merge only after dedupe checks (§5.3.2). If the integration token lacks permission, leave the PR open for human merge.
 
 **Must every propose wait for the previous PR to merge?**  
 No — only when slices overlap or when you are in **apply**/dependent-apply. See §2.
@@ -239,11 +411,12 @@ Local apply locks apply to persistent local worktrees. Ephemeral Cloud/CI agents
 
 ---
 
-## 10. Sources
+## 11. Sources
 
 1. `doc/i18n/WAVES.md` — budgets, order, gates  
 2. `doc/i18n/WAVE-PROPOSAL-TEMPLATE.md` — propose shape  
 3. `.cursor/rules/015-session-phases.mdc` — one phase per session  
 4. `doc/sistema-sdd-pedro.md` §3.3 — parallel worktrees / coordination  
 5. `openspec/specs/sdd-docs-language/spec.md` — normative language capability  
-6. https://cursor.com/docs/cloud-agent/automations — product triggers/tools  
+6. `scripts/archive-and-merge.sh` — local helper for archive branch + push  
+7. https://cursor.com/docs/cloud-agent/automations — product triggers/tools  
