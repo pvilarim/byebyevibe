@@ -208,14 +208,14 @@ files:
 
   - path: doc/design/002-ui-module-install.md
     source: templates/doc/design/002-ui-module-install.md
-    sha256: "d311e33a0a913ae1804cc1c452a8f1225807be51e1e181900fa1615e921c593a"
+    sha256: "43de3d61ac653f6bc9733e972c0245b9d70eb529a9e6f1f5c325592b2c254591"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f doc/design/002-ui-module-install.md"
 
   - path: doc/design/003-ui-stack-adapters.md
     source: templates/doc/design/003-ui-stack-adapters.md
-    sha256: "f7a06e6b90d700d0394a90046c6647c08e52510c21129799821fad18ed4ff6d5"
+    sha256: "e6afe81fa314b4aec0c8fadad0d52b910c84d620308dbbeeb6d376cdfa8a8d17"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f doc/design/003-ui-stack-adapters.md"
@@ -245,7 +245,7 @@ files:
 
   - path: doc/design/004-probity-module-install.md
     source: templates/doc/design/004-probity-module-install.md
-    sha256: "4e48b499f36359ae98456a72b7a1b2eb5cb2059ef36790319fe2f89520bea62a"
+    sha256: "08f1f3c2d7a2f5ca2df788fdb1e9b1312186d4ed4107d04c0596ad569856c479"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f doc/design/004-probity-module-install.md"
