@@ -1,161 +1,161 @@
-# Impeccable + design system — guia de referência
+# Impeccable + design system — reference guide
 
-> **shadcn/ui = caminho default (Fase 2).** Alternativas sem shadcn: [`003-ui-stack-adapters.md`](./003-ui-stack-adapters.md). Instalação do módulo: [`002-ui-module-install.md`](./002-ui-module-install.md).
+> **shadcn/ui = default path (Phase 2).** Alternatives without shadcn: [`003-ui-stack-adapters.md`](./003-ui-stack-adapters.md). Module install: [`002-ui-module-install.md`](./002-ui-module-install.md).
 >
-> **Importação e estado de adaptação**
+> **Import and adaptation status**
 >
-> - **Origem:** repositório [pvilarim/topocnc-art](https://github.com/pvilarim/topocnc-art), branch `import/site-metal-p5`, importado em 2026-06-27 para **spec-pedro** (`gitnexus-graphify-openspec`).
-> - **Status:** `[REFERÊNCIA — REQUER ADAPTAÇÃO]` — texto técnico preservado; exemplos de caminhos e escopo 3D/CNC reflectem o projeto de origem (TerraCNC / topocnc.art).
-> - **Próximo passo:** integrar o pipeline (Open Design → Pencil/Figma → shadcn → Impeccable) no guia canónico [`doc/sistema-sdd-pedro.md`](../sistema-sdd-pedro.md) e no install kit `sdd-kit/`, para distribuição a qualquer repositório que use o stack SDD (OpenSpec + GitNexus + Graphify).
-> - Secções marcadas com **[se aplicável]** só se aplicam a projectos com app Next.js, configurador 3D ou CNC — não ao perfil **DOCS_SPECS** deste hub.
+> - **Origin:** [pvilarim/topocnc-art](https://github.com/pvilarim/topocnc-art) repository, branch `import/site-metal-p5`, imported on 2026-06-27 into **spec-pedro** (`gitnexus-graphify-openspec`).
+> - **Status:** `[REFERENCE — NEEDS ADAPTATION]` — technical text preserved; path examples and 3D/CNC scope reflect the source project (TerraCNC / topocnc.art).
+> - **Next step:** integrate the pipeline (Open Design → Pencil/Figma → shadcn → Impeccable) into the canonical guide [`doc/sistema-sdd-pedro.md`](../sistema-sdd-pedro.md) and the install kit `sdd-kit/`, for distribution to any repository using the SDD stack (OpenSpec + GitNexus + Graphify).
+> - Sections marked with **[if applicable]** apply only to projects with a Next.js app, 3D configurator, or CNC — not to this hub's **DOCS_SPECS** profile.
 
-Documento de análise e plano de adoção futura. Consolidado em jun/2026 a partir de avaliação do [Impeccable](https://github.com/pbakaus/impeccable) para um monorepo APP com shadcn/ui.
+Analysis document and future adoption plan. Consolidated in Jun/2026 from an evaluation of [Impeccable](https://github.com/pbakaus/impeccable) for an APP monorepo with shadcn/ui.
 
-**Objetivo:** usar o Impeccable como camada de orientação para agentes de IA, **mantendo shadcn/ui e tokens existentes** como base do design system — sem substituir domínios específicos do produto (ex.: configurador paramétrico, skills CNC) já versionados no repo alvo.
+**Goal:** use Impeccable as a guidance layer for AI agents, **keeping shadcn/ui and existing tokens** as the design system base — without replacing product-specific domains (e.g. parametric configurator, CNC skills) already versioned in the target repo.
 
-**Pipeline completo (POC → produção):** [`001-pipeline-open-design-shadcn-impeccable.md`](./001-pipeline-open-design-shadcn-impeccable.md) — Open Design (exploração), **Pencil ou Figma MCP** (prototipagem), shadcn (implementação), Impeccable (produção).
+**Full pipeline (POC → production):** [`001-pipeline-open-design-shadcn-impeccable.md`](./001-pipeline-open-design-shadcn-impeccable.md) — Open Design (exploration), **Pencil or Figma MCP** (prototyping), shadcn (implementation), Impeccable (production).
 
 ---
 
-## 1. O que é o Impeccable (e o que não é)
+## 1. What Impeccable is (and what it is not)
 
-| É | Não é |
-|---|-------|
-| Skill + CLI de **guia de design para agentes de IA** | Kit de componentes React (tipo Material UI) |
-| 23 comandos (`polish`, `audit`, `typeset`, `layout`, …) | Tema pronto que substitui `globals.css` |
-| Detector com **44 regras determinísticas** (anti “AI slop”) | Figma ou ferramenta de design visual |
-| Arquivos de contexto (`PRODUCT.md`, `DESIGN.md`) | Substituição do shadcn/ui |
-| Hook no Cursor que revisa edições de UI | Skill paramétrica / CNC **[se aplicável]** |
+| Is | Is not |
+|----|--------|
+| Skill + CLI **design guide for AI agents** | React component kit (like Material UI) |
+| 23 commands (`polish`, `audit`, `typeset`, `layout`, …) | Ready-made theme that replaces `globals.css` |
+| Detector with **44 deterministic rules** (anti “AI slop”) | Figma or visual design tool |
+| Context files (`PRODUCT.md`, `DESIGN.md`) | shadcn/ui replacement |
+| Cursor hook that reviews UI edits | Parametric / CNC skill **[if applicable]** |
 
-**Licença:** [Apache 2.0](https://github.com/pbakaus/impeccable/blob/main/LICENSE) — **gratuito**, uso comercial permitido, open source.
+**License:** [Apache 2.0](https://github.com/pbakaus/impeccable/blob/main/LICENSE) — **free**, commercial use allowed, open source.
 
-**Links oficiais:**
+**Official links:**
 
-- Repositório: https://github.com/pbakaus/impeccable
-- Documentação: https://impeccable.style
+- Repository: https://github.com/pbakaus/impeccable
+- Documentation: https://impeccable.style
 - npm CLI: https://www.npmjs.com/package/impeccable
 
 ---
 
-## 2. Como encaixa com shadcn/ui e o design system
+## 2. How it fits with shadcn/ui and the design system
 
-### Princípio
+### Principle
 
-**Você define o design system; o Impeccable ajuda o agente a respeitá-lo.**
+**You define the design system; Impeccable helps the agent respect it.**
 
-Num projeto **APP** (Next.js + shadcn), a base típica é:
+In an **APP** project (Next.js + shadcn), the typical base is:
 
-| Camada | Caminho típico |
-|--------|----------------|
-| Tokens CSS (HSL) | `app/globals.css` — ou `apps/web/app/globals.css` em monorepo |
-| Tema Tailwind | `tailwind.config.ts` — ou `apps/web/tailwind.config.ts` |
-| Componentes UI | `components/ui/*` (shadcn/Radix) |
-| Utilitário de classes | `lib/utils.ts` (`cn()`) |
+| Layer | Typical path |
+|-------|--------------|
+| CSS tokens (HSL) | `app/globals.css` — or `apps/web/app/globals.css` in a monorepo |
+| Tailwind theme | `tailwind.config.ts` — or `apps/web/tailwind.config.ts` |
+| UI components | `components/ui/*` (shadcn/Radix) |
+| Class utility | `lib/utils.ts` (`cn()`) |
 
-> **Nota:** este repositório (**spec-pedro**) é perfil **DOCS_SPECS** — não contém app Next.js. Os caminhos acima aplicam-se ao **projeto alvo** onde o stack SDD for instalado.
+> **Note:** this repository (**spec-pedro**) is a **DOCS_SPECS** profile — it does not contain a Next.js app. The paths above apply to the **target project** where the SDD stack is installed.
 
-O Impeccable **escaneia** tokens e componentes existentes e orienta o agente a:
+Impeccable **scans** existing tokens and components and guides the agent to:
 
-1. Usar `Button`, `Card`, `Dialog`, etc. — não reinventar HTML cru
-2. Aplicar variáveis semânticas (`bg-primary`, `text-muted-foreground`) — não hex inline
-3. Seguir regras documentadas em `DESIGN.md` (a criar na adoção)
-4. Evitar anti-padrões visuais de IA (gradientes genéricos, Inter default, cards aninhados, …)
+1. Use `Button`, `Card`, `Dialog`, etc. — not reinvent raw HTML
+2. Apply semantic variables (`bg-primary`, `text-muted-foreground`) — not inline hex
+3. Follow rules documented in `DESIGN.md` (to be created on adoption)
+4. Avoid generic AI visual anti-patterns (generic gradients, Inter default, nested cards, …)
 
-### Fluxo de trabalho recomendado
+### Recommended workflow
 
 ```mermaid
 flowchart LR
-  A[Você define tokens e variantes shadcn] --> B[Impeccable documenta em DESIGN.md]
-  B --> C[Agente implementa páginas com componentes existentes]
-  C --> D[Detector / hook valida antes do merge]
+  A[You define tokens and shadcn variants] --> B[Impeccable documents in DESIGN.md]
+  B --> C[Agent implements pages with existing components]
+  C --> D[Detector / hook validates before merge]
 ```
 
-### Estado atual dos tokens (referência)
+### Current token state (reference)
 
-Em `globals.css` o tema activo pode ser **violet** (shadcn), com Geist Sans como fonte padrão. Ao evoluir a identidade visual, alterar primeiro os tokens; depois atualizar `DESIGN.md` para o Impeccable propagar o contexto.
+In `globals.css` the active theme may be **violet** (shadcn), with Geist Sans as the default font. When evolving visual identity, change tokens first; then update `DESIGN.md` so Impeccable propagates the context.
 
 ---
 
-## 3. Vantagens de usar no projeto
+## 3. Advantages of using it in the project
 
-### Redução de “visual de IA genérico”
+### Reduction of “generic AI look”
 
-Anti-padrões explícitos + detector (`npx impeccable detect`) cortam tells comuns: Inter em tudo, gradiente roxo-azul, ícone quadrado acima de títulos, cards dentro de cards, easing bounce, texto cinza sobre fundo colorido.
+Explicit anti-patterns + detector (`npx impeccable detect`) cut common tells: Inter everywhere, purple-blue gradient, square icon above titles, cards inside cards, bounce easing, gray text on colored backgrounds.
 
-### Vocabulário compartilhado com o agente
+### Shared vocabulary with the agent
 
-Comandos precisos em vez de “deixa mais bonito”:
+Precise commands instead of “make it prettier”:
 
-| Comando | Uso |
+| Command | Use |
 |---------|-----|
-| `/impeccable init` | Setup único: `PRODUCT.md`, `DESIGN.md`, modo brand/product |
-| `/impeccable typeset` | Tipografia e hierarquia |
-| `/impeccable layout` | Espaçamento e ritmo visual |
-| `/impeccable colorize` | Uso estratégico de cor |
-| `/impeccable polish` | Passagem final antes de shippar |
-| `/impeccable audit` | A11y, responsivo, qualidade técnica |
-| `/impeccable critique` | Revisão de UX (hierarquia, clareza) |
-| `/impeccable clarify` | Copy de interface |
-| `/impeccable harden` | Edge cases, i18n, overflow de texto |
+| `/impeccable init` | One-time setup: `PRODUCT.md`, `DESIGN.md`, brand/product mode |
+| `/impeccable typeset` | Typography and hierarchy |
+| `/impeccable layout` | Spacing and visual rhythm |
+| `/impeccable colorize` | Strategic color use |
+| `/impeccable polish` | Final pass before shipping |
+| `/impeccable audit` | A11y, responsive, technical quality |
+| `/impeccable critique` | UX review (hierarchy, clarity) |
+| `/impeccable clarify` | Interface copy |
+| `/impeccable harden` | Edge cases, i18n, text overflow |
 
-### Contexto persistente entre sessões
+### Persistent context across sessions
 
-`PRODUCT.md` captura público, tom de voz e anti-referências. Cada comando lê esse contexto — o agente não “esquece” a marca a cada chat.
+`PRODUCT.md` captures audience, tone of voice, and anti-references. Each command reads that context — the agent does not “forget” the brand every chat.
 
 ### Brand vs product
 
-- **Brand:** marketing, landing, galeria, páginas institucionais
-- **Product:** dashboard, admin, ferramentas (configurador) **[se aplicável]**
+- **Brand:** marketing, landing, gallery, institutional pages
+- **Product:** dashboard, admin, tools (configurator) **[if applicable]**
 
-Regras de polish de landing **não** devem ser aplicadas igual ao canvas 3D ou painéis de parâmetros **[se aplicável]**.
+Landing polish rules **must not** be applied the same way to the 3D canvas or parameter panels **[if applicable]**.
 
-### CI e hook no Cursor
+### CI and Cursor hook
 
-- **CLI:** `npx impeccable detect src/ --json` — sem LLM, exit code para gates de PR
-- **Hook Cursor:** pode bloquear edições de UI com anti-padrões antes de entrarem no arquivo
+- **CLI:** `npx impeccable detect src/ --json` — no LLM, exit code for PR gates
+- **Cursor hook:** can block UI edits with anti-patterns before they enter the file
 
-### Complementa skills existentes (não substitui)
+### Complements existing skills (does not replace)
 
-| Domínio | Skill / recurso no repo alvo |
-|---------|------------------------------|
-| Site público, polish visual | **Impeccable** (a instalar) |
-| Componentes shadcn | Plugin `shadcn` + `components/ui/*` |
-| Configurador 3D / DXF **[se aplicável]** | skills paramétricas do projeto |
-| UI de parâmetros **[se aplicável]** | skills de configurador |
-| Fabricação CNC **[se aplicável]** | skills CNC do projeto |
+| Domain | Skill / resource in the target repo |
+|--------|-------------------------------------|
+| Public site, visual polish | **Impeccable** (to install) |
+| shadcn components | `shadcn` plugin + `components/ui/*` |
+| 3D configurator / DXF **[if applicable]** | project parametric skills |
+| Parameter UI **[if applicable]** | configurator skills |
+| CNC fabrication **[if applicable]** | project CNC skills |
 
 ---
 
-## 4. Escopo no monorepo — aplicar só no website?
+## 4. Monorepo scope — apply only to the website?
 
-**Sim.** A instalação costuma ser na raiz do projeto; o **uso** pode ser seletivo.
+**Yes.** Installation is usually at the project root; **usage** can be selective.
 
-### Superfícies candidatas (modo **brand**)
+### Candidate surfaces ( **brand** mode)
 
-| Rota / área | Caminho típico |
-|-------------|----------------|
+| Route / area | Typical path |
+|--------------|--------------|
 | Home | `app/[locale]/page.tsx` |
-| Galeria | `app/[locale]/gallery/` |
-| Produto | `app/[locale]/product/[id]/` |
+| Gallery | `app/[locale]/gallery/` |
+| Product | `app/[locale]/product/[id]/` |
 | FAQ, About, Contact | `app/[locale]/faq/`, `about/`, `contact/` |
-| Carrinho / checkout (chrome UI) | `app/[locale]/cart/` |
-| Login / auth (páginas públicas) | `app/[locale]/login/`, etc. |
+| Cart / checkout (UI chrome) | `app/[locale]/cart/` |
+| Login / auth (public pages) | `app/[locale]/login/`, etc. |
 
-> Em monorepo, prefixar com `apps/web/` nos caminhos acima.
+> In a monorepo, prefix with `apps/web/` in the paths above.
 
-### Superfícies a tratar separado (modo **product** ou excluir do detector) **[se aplicável]**
+### Surfaces to treat separately ( **product** mode or exclude from detector) **[if applicable]**
 
-| Rota / área | Motivo |
-|-------------|--------|
-| Configurador `/app` | UX de ferramenta 3D; skills paramétricas |
-| Admin | Painéis internos, densidade de dados |
-| Dashboard usuário | App UI, não marketing |
-| Demos Exclusive | Protótipos com Leaflet/Three legado |
-| Canvas WebGL | Fora do escopo de “polish de landing” |
+| Route / area | Reason |
+|--------------|--------|
+| Configurator `/app` | 3D tool UX; parametric skills |
+| Admin | Internal panels, data density |
+| User dashboard | App UI, not marketing |
+| Exclusive demos | Prototypes with legacy Leaflet/Three |
+| WebGL canvas | Outside “landing polish” scope |
 
-### Exemplo de exclusão no detector
+### Example detector exclusion
 
-Após instalar, configurar `.impeccable/config.json`:
+After install, configure `.impeccable/config.json`:
 
 ```json
 {
@@ -172,9 +172,9 @@ Após instalar, configurar `.impeccable/config.json`:
 }
 ```
 
-> Ajustar prefixo `apps/web/` se o frontend estiver num pacote de monorepo.
+> Adjust prefix `apps/web/` if the frontend lives in a monorepo package.
 
-Comandos também aceitam foco por área:
+Commands also accept area focus:
 
 ```
 /impeccable polish landing
@@ -184,54 +184,54 @@ Comandos também aceitam foco por área:
 
 ---
 
-## 5. Checklist de adoção (quando decidir implementar)
+## 5. Adoption checklist (when you decide to implement)
 
-### Pré-requisitos
+### Prerequisites
 
-- [ ] Node **24+** no ambiente de dev (requisito do instalador CLI)
-- [ ] Cursor com Agent Skills habilitado (Settings → Rules)
-- [ ] Decisão de identidade visual documentada (paleta, tipografia, tom, anti-referências)
+- [ ] Node **24+** in the dev environment (CLI installer requirement)
+- [ ] Cursor with Agent Skills enabled (Settings → Rules)
+- [ ] Documented visual identity decision (palette, typography, tone, anti-references)
 
-### Instalação
+### Installation
 
 ```bash
-# Na raiz do projeto APP alvo
+# At the target APP project root
 npx impeccable install
 ```
 
-Opções: `--providers=cursor` e `--scope=project` para script/CI.
+Options: `--providers=cursor` and `--scope=project` for script/CI.
 
-Depois, no chat do Cursor:
+Then, in the Cursor chat:
 
 ```
 /impeccable init
 ```
 
-Escolher **brand** para o site público; considerar segundo contexto **product** para admin/dashboard se quiser polish lá também.
+Choose **brand** for the public site; consider a second **product** context for admin/dashboard if you want polish there too.
 
-### Definir o design system (manual — antes ou junto com init)
+### Define the design system (manual — before or alongside init)
 
-1. **Tokens:** ajustar `app/globals.css` e `tailwind.config.ts`
-2. **Componentes:** customizar variantes em `components/ui/` (CVA + Tailwind)
-3. **Documentar:** deixar o Impeccable gerar ou refinar `DESIGN.md` via `/impeccable document`
-4. **Produto:** preencher `PRODUCT.md` com público e tom do projeto alvo
+1. **Tokens:** adjust `app/globals.css` and `tailwind.config.ts`
+2. **Components:** customize variants in `components/ui/` (CVA + Tailwind)
+3. **Document:** let Impeccable generate or refine `DESIGN.md` via `/impeccable document`
+4. **Product:** fill `PRODUCT.md` with audience and tone for the target project
 
-### Integração com fluxo de agentes do repo
+### Integration with repo agent workflow
 
-- Manter roteamento em `AGENTS.md` (e skills versionadas, se existirem)
-- Em tarefas de **site público:** mencionar Impeccable ou usar comandos `/impeccable *`
-- Em tarefas de **configurador** **[se aplicável]:** continuar com skills paramétricas do domínio
-- Não conflitar: Impeccable para chrome shadcn ao redor do canvas; skills paramétricas para geometria/export
+- Keep routing in `AGENTS.md` (and versioned skills, if any)
+- For **public site** tasks: mention Impeccable or use `/impeccable *` commands
+- For **configurator** tasks **[if applicable]:** continue with domain parametric skills
+- No conflict: Impeccable for shadcn chrome around the canvas; parametric skills for geometry/export
 
-### CI (opcional)
+### CI (optional)
 
 ```bash
 npx impeccable detect app/\[locale\]/gallery --json
 ```
 
-Adicionar step no workflow só para pastas de marketing, se desejado.
+Add a workflow step only for marketing folders, if desired.
 
-### Atualização
+### Update
 
 ```bash
 npx impeccable update
@@ -239,44 +239,44 @@ npx impeccable update
 
 ---
 
-## 6. Limitações e expectativas
+## 6. Limitations and expectations
 
-| Limitação | Implicação |
-|-----------|------------|
-| Não cria design system sozinho | Você ainda define cores, fontes, componentes |
-| Não substitui decisão de marca | `init` + `DESIGN.md` formalizam o que você decidir |
-| Live Mode (iteração no browser) | Beta; útil para hero/galeria, não para WebGL **[se aplicável]** |
-| Tema violet actual | Impeccable pode sinalizar “paleta típica de IA” — avaliar se mantém ou evolui identidade |
-| Instalação adiciona `.cursor/skills/impeccable` | Separado de skills versionadas em `doc/` ou `.claude/skills/`; não misturar em checks de skills do SDD |
-
----
-
-## 7. Anti-padrões que o Impeccable combate (resumo)
-
-Útil ao redigir `DESIGN.md` e anti-referências do projeto:
-
-- Fontes overused (Arial, Inter, system default sem intenção)
-- Texto cinza (`muted-foreground`) sobre fundos coloridos sem contraste
-- Preto/cinza puro sem tinta de marca
-- Tudo dentro de `Card`; cards aninhados
-- Gradientes roxo-azul genéricos
-- Bounce/elastic easing em animações
-- Alvos de toque pequenos; padding apertado
-- Hierarquia de headings pulada (h1 → h3)
-
-**No projeto:** preferir tokens em `globals.css`, `cn()`, componentes `@/components/ui/*`, i18n em `messages/` — alinhado a `AGENTS.md` e regras de UI do repo alvo.
+| Limitation | Implication |
+|------------|-------------|
+| Does not create a design system on its own | You still define colors, fonts, components |
+| Does not replace brand decisions | `init` + `DESIGN.md` formalize what you decide |
+| Live Mode (browser iteration) | Beta; useful for hero/gallery, not for WebGL **[if applicable]** |
+| Current violet theme | Impeccable may flag “typical AI palette” — evaluate whether to keep or evolve identity |
+| Install adds `.cursor/skills/impeccable` | Separate from versioned skills in `doc/` or `.claude/skills/`; do not mix into SDD skill checks |
 
 ---
 
-## 8. Prompts prontos para agentes (futuro)
+## 7. Anti-patterns Impeccable fights (summary)
 
-Copiar no chat quando for trabalhar no site:
+Useful when drafting `DESIGN.md` and project anti-references:
+
+- Overused fonts (Arial, Inter, system default without intent)
+- Gray text (`muted-foreground`) on colored backgrounds without contrast
+- Pure black/gray without brand tint
+- Everything inside `Card`; nested cards
+- Generic purple-blue gradients
+- Bounce/elastic easing in animations
+- Small touch targets; tight padding
+- Skipped heading hierarchy (h1 → h3)
+
+**In the project:** prefer tokens in `globals.css`, `cn()`, `@/components/ui/*` components, i18n in `messages/` — aligned with `AGENTS.md` and target repo UI rules.
+
+---
+
+## 8. Ready-made prompts for agents (future)
+
+Copy into chat when working on the site:
 
 ```
-Use o guia doc/design/000-impeccable-design-system-guia.md.
-Escopo: apenas páginas públicas (home, galeria, produto).
-Respeitar shadcn em components/ui e tokens em globals.css.
-Não alterar configurador /app nem lib/parametric [se aplicável].
+Use the guide doc/design/000-impeccable-design-system-guia.md.
+Scope: public pages only (home, gallery, product).
+Respect shadcn in components/ui and tokens in globals.css.
+Do not change configurator /app or lib/parametric [if applicable].
 ```
 
 ```
@@ -289,22 +289,22 @@ Não alterar configurador /app nem lib/parametric [se aplicável].
 
 ---
 
-## 9. Relacionados neste repositório
+## 9. Related in this repository
 
-| Documento | Tema |
-|-----------|------|
-| [AGENTS.md](../../AGENTS.md) | Roteamento global de agentes |
-| [openspec/project.md](../../openspec/project.md) | Constituição do projecto (stack, perfis) |
-| [doc/sistema-sdd-pedro.md](../sistema-sdd-pedro.md) | Guia canónico de instalação SDD — **destino futuro deste pipeline** |
+| Document | Topic |
+|----------|-------|
+| [AGENTS.md](../../AGENTS.md) | Global agent routing |
+| [openspec/project.md](../../openspec/project.md) | Project constitution (stack, profiles) |
+| [doc/sistema-sdd-pedro.md](../sistema-sdd-pedro.md) | Canonical SDD install guide — **future destination for this pipeline** |
 | [001-pipeline-open-design-shadcn-impeccable.md](./001-pipeline-open-design-shadcn-impeccable.md) | **Pipeline** OD → shadcn → Impeccable |
 
 ---
 
-## 10. Histórico
+## 10. History
 
-| Data | Nota |
+| Date | Note |
 |------|------|
-| 2026-06-26 | Documento criado no repo de origem (topocnc-art) — análise inicial |
-| 2026-06-27 | Importado para spec-pedro; adaptado para hub DOCS_SPECS; integração no guia SDD pendente |
+| 2026-06-26 | Document created in source repo (topocnc-art) — initial analysis |
+| 2026-06-27 | Imported to spec-pedro; adapted for DOCS_SPECS hub; SDD guide integration pending |
 
-**Status:** `[REFERÊNCIA — REQUER ADAPTAÇÃO]` — Impeccable **não** está instalado neste repositório (perfil DOCS_SPECS).
+**Status:** `[REFERENCE — NEEDS ADAPTATION]` — Impeccable is **not** installed in this repository (DOCS_SPECS profile).
