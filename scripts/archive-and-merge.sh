@@ -33,16 +33,11 @@ git push -u origin "$BRANCH" --force
 
 EXISTING=$(gh pr list --head "$BRANCH" --state open --json number -q '.[0].number' 2>/dev/null || true)
 if [[ -z "$EXISTING" || "$EXISTING" == "null" ]]; then
-  gh pr create \
-    --base master \
-    --head "$BRANCH" \
-    --title "chore(openspec): archive ${CHANGE}" \
-    --body "Archive completed change \`${CHANGE}\` to \`${ARCHIVE_DIR}\`.
-
-Validated with \`openspec validate --all --strict\`."
+  echo "NEEDS_PR: branch=$BRANCH change=$CHANGE"
+  exit 0
 fi
 
-PR_NUM=$(gh pr list --head "$BRANCH" --state open --json number -q '.[0].number')
+PR_NUM="$EXISTING"
 gh pr ready "$PR_NUM" 2>/dev/null || true
 gh pr merge "$PR_NUM" --merge --delete-branch
 git checkout master
