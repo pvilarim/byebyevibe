@@ -1,132 +1,132 @@
-# Sistema de Desenvolvimento Assistido por IA
+# AI-Assisted Development System
 
-**GitNexus + Graphify + OpenSpec, integrados no Cursor e VS Code + Claude Code**
+**GitNexus + Graphify + OpenSpec, integrated in Cursor and VS Code + Claude Code**
 
-> **Guia canónico de instalação (v1.6.1)** — usar em qualquer repositório Git, manualmente ou via agente de IA. Payloads em `sdd-kit/`; procedimento neste documento.
+> **Canonical install guide (v1.6.1)** — use in any Git repository, manually or via an AI agent. Payloads in `sdd-kit/`; procedure in this document.
 
-## Como usar este documento
+## How to use this document
 
-| Modo | Acção |
+| Mode | Action |
 |------|--------|
-| **First contact / vibe coder** | §2.0b → [`README.md`](../README.md) raiz (**ByeByeVibe**) + `bash sdd-kit/install.sh --profile X --dry-run` |
-| **Humano — instalação nova (C1)** | §2.1 → CLIs → `bash sdd-kit/install.sh --profile X` → §2.8 → §2.12 → §2.13 (APP/HYBRID) |
-| **Humano — actualização (C2)** | §2.9 + `bash sdd-kit/upgrade.sh --dry-run` → §12.8 → `--apply` |
-| **Humano — só CLIs (C2b)** | §2.9.4 — sem tocar `sdd-kit/templates/` |
-| **Propagação specs (C3)** | git/referência em `openspec/specs/` — **sem** `install.sh` |
-| **Agente de IA — instalação** | Prompt §2.0; usar `sdd-kit/install.sh`, **não** extrair §12 |
-| **Agente de IA — actualização** | §2.9.2 + `sdd-kit/upgrade.sh --dry-run` + §12.8 antes de editar |
-| **Piloto / teste** | `bash sdd-kit/verify.sh` + checklist §2.8 ou §2.9.7 |
-| **Métricas SDD (G4)** | `bash scripts/sdd-metrics.sh` — §2.17 (modo C; sem DevLake) |
+| **First contact / vibe coder** | §2.0b → root [`README.md`](../README.md) (**ByeByeVibe**) + `bash sdd-kit/install.sh --profile X --dry-run` |
+| **Human — new install (C1)** | §2.1 → CLIs → `bash sdd-kit/install.sh --profile X` → §2.8 → §2.12 → §2.13 (APP/HYBRID) |
+| **Human — upgrade (C2)** | §2.9 + `bash sdd-kit/upgrade.sh --dry-run` → §12.8 → `--apply` |
+| **Human — CLIs only (C2b)** | §2.9.4 — without touching `sdd-kit/templates/` |
+| **Spec propagation (C3)** | git/reference in `openspec/specs/` — **without** `install.sh` |
+| **AI agent — install** | Prompt §2.0; use `sdd-kit/install.sh`, **do not** extract §12 |
+| **AI agent — upgrade** | §2.9.2 + `sdd-kit/upgrade.sh --dry-run` + §12.8 before editing |
+| **Pilot / test** | `bash sdd-kit/verify.sh` + checklist §2.8 or §2.9.7 |
+| **SDD metrics (G4)** | `bash scripts/sdd-metrics.sh` — §2.17 (mode C; no DevLake) |
 
-- **Padrão `AGENTS.md`:** alinhado a [agents.md](https://agents.md/) + workshop TLC (Context Engineering, on-demand loading).
-- **Versão do guia:** 1.6.1 — ver [Changelog do guia](#changelog-do-guia).
-- **Payload versionado:** `sdd-kit/MANIFEST.yaml` — ver §1.6 e `sdd-kit/README.md`.
-- **Não substitui** `openspec/project.md` (constituição do projecto) nem specs em `openspec/specs/`.
-
----
-
-## Aviso prévio honesto sobre fricção real
-
-Antes de qualquer coisa: as três ferramentas geram ou modificam `AGENTS.md`/`CLAUDE.md` quando são instaladas. Sem governação explícita isto cria conflitos — uma ferramenta sobrescreve o que a outra escreveu. Este guia resolve isso com **um único `AGENTS.md` curado por ti**, com as três ferramentas a ser instaladas com flags que evitam sobrescrita. Vê secção 4 e 9 para detalhes.
-
-Segunda fricção: o ecossistema move-se depressa. Versões neste documento são as de Maio 2026. Comandos básicos são estáveis; flags exóticas podem mudar — confirma em `--help` antes de automatizar.
+- **`AGENTS.md` pattern:** aligned with [agents.md](https://agents.md/) + TLC workshop (Context Engineering, on-demand loading).
+- **Guide version:** 1.6.1 — see [Guide changelog](#changelog-do-guia).
+- **Versioned payload:** `sdd-kit/MANIFEST.yaml` — see §1.6 and `sdd-kit/README.md`.
+- **Does not replace** `openspec/project.md` (project constitution) or specs in `openspec/specs/`.
 
 ---
 
-## Índice
+## Honest upfront note on real friction
 
-1. [Pré-requisitos](#1-pré-requisitos-questão-6) — inclui §1.6 (organização e cenários C1–C3)
-2. [Passo a passo de instalação](#2-passo-a-passo-de-instalação-questão-1) — inclui §2.0 (IA), §2.0b (first contact / vibe coder), §2.5 (AGENTS.md), §2.8 (verificação), §2.9 (actualização), §2.12 (gates de CI), §2.13 (supply chain), §2.16 (Probity), §2.17 (métricas SDD)
-3. [Classificação de tarefas e pipelines](#3-classificação-de-tarefas-e-pipelines-questões-2-3-31)
-4. [Tabela mestre: ferramenta × responsabilidade × I/O](#4-tabela-mestre-questão-3)
-5. [Documentos e referências cruzadas](#5-documentos-e-referências-cruzadas-questão-32) — inclui §5.5 (avaliações de integração)
-6. [Dimensão de research e prevenção de fontes duvidosas](#6-dimensão-de-research-questão-33)
-7. [Protocolos por tarefa: tokens, alucinações, segurança, auditoria](#7-protocolos-por-tarefa-questão-34)
-8. [Regras gerais do sistema e onde vivem](#8-regras-gerais-do-sistema-questão-4)
-9. [Configuração Cursor](#9-configuração-cursor-questão-5)
-10. [Configuração VS Code + Claude Code](#10-configuração-vs-code--claude-code-questão-5)
-11. [Protocolos de código](#11-protocolos-de-código-questão-7)
-12. [Anexos: templates completos](#12-anexos-templates-completos)
-13. [Alinhamento workshop ↔ agents.md](#13-alinhamento-workshop--agentsmd)
-14. [Changelog do guia](#changelog-do-guia)
+First things first: the three tools generate or modify `AGENTS.md`/`CLAUDE.md` when installed. Without explicit governance this creates conflicts — one tool overwrites what another wrote. This guide solves that with **a single `AGENTS.md` curated by you**, with all three tools installed using flags that prevent overwrite. See sections 4 and 9 for details.
+
+Second friction: the ecosystem moves fast. Versions in this document are from May 2026. Basic commands are stable; exotic flags may change — confirm with `--help` before automating.
 
 ---
 
-## 1. Pré-requisitos (questão 6)
+## Table of contents
 
-### 1.1 Sistema operativo e runtimes
+1. [Prerequisites](#1-prerequisites-question-6) — includes §1.6 (organization and scenarios C1–C3)
+2. [Installation step by step](#2-passo-a-passo-de-instalação-questão-1) — includes §2.0 (AI), §2.0b (first contact / vibe coder), §2.5 (AGENTS.md), §2.8 (verification), §2.9 (upgrade), §2.12 (CI gates), §2.13 (supply chain), §2.16 (Probity), §2.17 (SDD metrics)
+3. [Task classification and pipelines](#3-classificação-de-tarefas-e-pipelines-questões-2-3-31)
+4. [Master table: tool × responsibility × I/O](#4-tabela-mestre-questão-3)
+5. [Documents and cross-references](#5-documentos-e-referências-cruzadas-questão-32) — includes §5.5 (integration evaluations)
+6. [Research dimension and dubious-source prevention](#6-dimensão-de-research-questão-33)
+7. [Protocols per task: tokens, hallucinations, security, audit](#7-protocolos-por-tarefa-questão-34)
+8. [General system rules and where they live](#8-regras-gerais-do-sistema-questão-4)
+9. [Cursor configuration](#9-configuração-cursor-questão-5)
+10. [VS Code + Claude Code configuration](#10-configuração-vs-code--claude-code-questão-5)
+11. [Code protocols](#11-protocolos-de-código-questão-7)
+12. [Annexes: complete templates](#12-anexos-templates-completos)
+13. [Workshop alignment ↔ agents.md](#13-alinhamento-workshop--agentsmd)
+14. [Guide changelog](#changelog-do-guia)
 
-| Componente | Versão mínima | Notas |
+---
+
+## 1. Prerequisites (question 6)
+
+### 1.1 Operating system and runtimes
+
+| Component | Minimum version | Notes |
 |---|---|---|
-| OS | macOS 13+, Ubuntu 22.04+, Windows 11 + WSL2 | Windows nativo funciona mas WSL2 evita 80% dos problemas |
-| Node.js | 20.19.0+ | Obrigatório para OpenSpec e GitNexus |
-| Python | 3.10+ | Obrigatório para Graphify |
-| Git | 2.40+ | Obrigatório para hooks de auto-rebuild |
-| Build tools | `python3 make g++` (Linux), Xcode CLT (macOS) | GitNexus precisa para tree-sitter; podes saltar com `GITNEXUS_SKIP_OPTIONAL_GRAMMARS=1` |
+| OS | macOS 13+, Ubuntu 22.04+, Windows 11 + WSL2 | Native Windows works but WSL2 avoids 80% of issues |
+| Node.js | 20.19.0+ | Required for OpenSpec and GitNexus |
+| Python | 3.10+ | Required for Graphify |
+| Git | 2.40+ | Required for auto-rebuild hooks |
+| Build tools | `python3 make g++` (Linux), Xcode CLT (macOS) | GitNexus needs these for tree-sitter; you can skip with `GITNEXUS_SKIP_OPTIONAL_GRAMMARS=1` |
 
-### 1.2 Ferramentas de instalação recomendadas
+### 1.2 Recommended install tools
 
 ```bash
-# uv para Python (mais rápido que pip, gere PATH automaticamente)
+# uv for Python (faster than pip, manages PATH automatically)
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
-# pnpm para Node (opcional mas recomendado)
+# pnpm for Node (optional but recommended)
 npm install -g pnpm
 ```
 
 ### 1.3 IDEs
 
-- **Cursor** ≥ 1.0 (a versão actual já suporta `.cursor/rules/*.mdc` com frontmatter YAML)
-- **VS Code** ≥ 1.109 (Fev 2026 — leitura nativa de `CLAUDE.md`, `.claude/rules`, `.claude/agents`, `.claude/skills`)
-- **Claude Code CLI** ≥ 2.1.140 (Maio 2026 — extensão VS Code é casca sobre o CLI)
+- **Cursor** ≥ 1.0 (the current version already supports `.cursor/rules/*.mdc` with YAML frontmatter)
+- **VS Code** ≥ 1.109 (Feb 2026 — native reading of `CLAUDE.md`, `.claude/rules`, `.claude/agents`, `.claude/skills`)
+- **Claude Code CLI** ≥ 2.1.140 (May 2026 — VS Code extension is a shell over the CLI)
 
-### 1.4 Subscrição
+### 1.4 Subscription
 
-Claude Pro/Max OU API key Anthropic. Sem isto, Claude Code não funciona. OpenSpec, GitNexus e Graphify são open source e gratuitos — só pagas o motor LLM por trás.
+Claude Pro/Max OR Anthropic API key. Without this, Claude Code does not work. OpenSpec, GitNexus, and Graphify are open source and free — you only pay for the LLM engine behind them.
 
-### 1.5 Conhecimento prévio mínimo
+### 1.5 Minimum prior knowledge
 
-- Saber editar JSON e YAML
-- Confortável em terminal (vais usar bastante `cd`, `npm`, `pip`, `git`)
-- Compreender MCP a alto nível (o protocolo que liga as ferramentas ao agente)
+- Know how to edit JSON and YAML
+- Comfortable in the terminal (you will use `cd`, `npm`, `pip`, `git` often)
+- Understand MCP at a high level (the protocol that connects tools to the agent)
 
-### 1.6 Organização do projecto e tipos de instalação
+### 1.6 Project organization and install types
 
-O stack SDD organiza-se em **quatro camadas** — não confundir procedimento com payload:
+The SDD stack is organized in **four layers** — do not confuse procedure with payload:
 
-| Camada | Artefacto | Papel |
+| Layer | Artifact | Role |
 |--------|-----------|-------|
-| **Procedimento** | `doc/sistema-sdd-pedro.md` | Como instalar/actualizar; cenários C1–C3 |
-| **Payload versionado** | `sdd-kit/templates/` + `MANIFEST.yaml` | Ficheiros copiáveis, gates shell |
-| **Requisitos normativos** | `openspec/specs/sdd-*` | O que MUST existir após instalação |
-| **Estado do workspace** | `openspec/infra.md`, `project.md` | O que está ✅ neste repo |
+| **Procedure** | `doc/sistema-sdd-pedro.md` | How to install/upgrade; scenarios C1–C3 |
+| **Versioned payload** | `sdd-kit/templates/` + `MANIFEST.yaml` | Copyable files, shell gates |
+| **Normative requirements** | `openspec/specs/sdd-*` | What MUST exist after install |
+| **Workspace state** | `openspec/infra.md`, `project.md` | What is ✅ in this repo |
 
-#### Cenários de instalação
+#### Install scenarios
 
-| Código | Situação | Comando de entrada |
+| Code | Situation | Entry command |
 |--------|----------|-------------------|
-| **C1** | Instalação verde (primeira vez SDD) | `bootstrap-sdd.sh` → `bash sdd-kit/install.sh --profile APP\|DOCS_SPECS\|HYBRID` |
-| **C2** | Actualização SDD (guia/kit nova versão) | `bash sdd-kit/upgrade.sh --from X --to Y --dry-run` → aprovação → `--apply` |
-| **C2b** | Só CLIs desactualizadas | §2.9.4 — **sem** tocar kit curado |
-| **C3** | Propagação de specs de domínio | Referência em `openspec/specs/<domínio>/` — **não** correr `install.sh` |
-| **C1-UI** | Módulo UI opcional (pós-C1) | `bash sdd-kit/install-ui-module.sh --detect` → `--apply [--yes]` — ver §2.11 |
+| **C1** | Greenfield install (first-time SDD) | `bootstrap-sdd.sh` → `bash sdd-kit/install.sh --profile APP\|DOCS_SPECS\|HYBRID` |
+| **C2** | SDD upgrade (new guide/kit version) | `bash sdd-kit/upgrade.sh --from X --to Y --dry-run` → approval → `--apply` |
+| **C2b** | Outdated CLIs only | §2.9.4 — **without** touching curated kit |
+| **C3** | Domain spec propagation | Reference in `openspec/specs/<domain>/` — **do not** run `install.sh` |
+| **C1-UI** | Optional UI module (post-C1) | `bash sdd-kit/install-ui-module.sh --detect` → `--apply [--yes]` — see §2.11 |
 
-**Regra de ouro:** C3 (conteúdo normativo de produto) ≠ C2 (infra SDD). Publicar uma spec de billing no hub **não** exige reinstall nos repos APP.
+**Golden rule:** C3 (product normative content) ≠ C2 (SDD infra). Publishing a billing spec in the hub **does not** require reinstall in APP repos.
 
-#### Perfis de repositório
+#### Repository profiles
 
-| Perfil | O que muda no `install.sh` |
+| Profile | What changes in `install.sh` |
 |--------|---------------------------|
 | **APP** | Commands §12.2a; rules TS/Supabase |
 | **DOCS_SPECS** | Commands §12.2b; `verify-task-patterns.sh` |
-| **HYBRID** | APP commands + rules opcionais |
+| **HYBRID** | APP commands + optional rules |
 
-#### Hub vs consumidor
+#### Hub vs consumer
 
-- **Hub (ex.: spec-pedro, DOCS_SPECS):** commitar `sdd-kit/` completo para distribuir upgrades C2.
-- **APP consumidor:** pode manter só ficheiros expandidos (`scripts/`, `.cursor/rules/`); copiar `sdd-kit/` pontualmente no upgrade.
+- **Hub (e.g. spec-pedro, DOCS_SPECS):** commit the full `sdd-kit/` to distribute C2 upgrades.
+- **APP consumer:** may keep only expanded files (`scripts/`, `.cursor/rules/`); copy `sdd-kit/` on upgrade as needed.
 
-Comandos exactos: `sdd-kit/README.md`.
+Exact commands: `sdd-kit/README.md`.
 
 ---
 

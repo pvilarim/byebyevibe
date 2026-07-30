@@ -1,14 +1,14 @@
 ---
 name: correctness-review
 description: >
-  Review focado exclusivamente em correctness: bugs lógicos, edge cases não tratados,
-  violações de contrato/invariante e erros silenciosos em código gerado por IA.
-  Um achado por linha: localização, tag, descrição, sugestão de fix ou vector de teste.
-  Use após /opsx:apply em tarefas Tipo B (sempre), C/D (diff > ~80 linhas ou > 4 ficheiros),
-  ou quando o utilizador pedir "correctness review", "tem bugs?", "valida os edge cases".
-  Posicionada antes de simplify-review e security-reviewer na pipeline pós-apply.
-  Complementa simplify-review (complexidade) e security-reviewer (vulnerabilidades) —
-  este caça apenas bugs de correctness, respeitando specs OpenSpec aprovadas.
+  Review focused exclusively on correctness: logical bugs, unhandled edge cases,
+  contract/invariant violations, and silent errors in AI-generated code.
+  One finding per line: location, tag, description, fix suggestion or test vector.
+  Use after /opsx:apply on Type B tasks (always), C/D (diff > ~80 lines or > 4 files),
+  or when the user asks for "correctness review", "any bugs?", "validate edge cases".
+  Positioned before simplify-review and security-reviewer in the post-apply pipeline.
+  Complements simplify-review (complexity) and security-reviewer (vulnerabilities) —
+  this skill hunts correctness bugs only, respecting approved OpenSpec specs.
 license: MIT
 metadata:
   author: sdd-pedro
@@ -17,138 +17,138 @@ metadata:
 
 # correctness-review
 
-Review de diffs ou ficheiros alterados **só para bugs de correctness** — lógica errada,
-edge cases não tratados, violações de contrato e erros silenciosos.
+Review diffs or changed files **for correctness bugs only** — wrong logic,
+unhandled edge cases, contract violations, and silent errors.
 
-**Não aplica fixes.** Lista achados; o utilizador ou `/opsx:apply` implementa.
+**Does not apply fixes.** Lists findings; the user or `/opsx:apply` implements them.
 
-Responder sempre em **pt-BR**.
+Chat responses MAY use pt-BR (F7); findings format and tags remain as specified below.
 
 ---
 
-## Quando invocar (integração SDD)
+## When to invoke (SDD integration)
 
-| Momento | Tipo de tarefa | Gatilho sugerido |
-|---------|----------------|------------------|
-| **Pós-implementação** | B | Sempre — diff > 0 linhas de lógica |
-| **Pós-implementação** | C, D | Diff > ~80 linhas ou > 4 ficheiros tocados |
-| **Pré-PR** | B, C, D | Qualquer diff com lógica nova |
-| **Não invocar** | A | Trivial — sem lógica para avaliar |
-| **Não invocar** | E | Exploração — sem código gerado |
+| Moment | Task type | Suggested trigger |
+|--------|-----------|-------------------|
+| **Post-implementation** | B | Always — diff > 0 lines of logic |
+| **Post-implementation** | C, D | Diff > ~80 lines or > 4 files touched |
+| **Pre-PR** | B, C, D | Any diff with new logic |
+| **Do not invoke** | A | Trivial — no logic to evaluate |
+| **Do not invoke** | E | Exploration — no generated code |
 
-### Posição no pipeline
+### Pipeline position
 
 ```
-/opsx:apply  →  [implementação]  →  testes (R6/Probity enforceTdd)
+/opsx:apply  →  [implementation]  →  tests (R6/Probity enforceTdd)
   →  correctness-review (B/C/D)
-  →  simplify-review (opcional, C/D)
-  →  security-reviewer (se auth/API/pagamentos)
-  →  commit (R9)  →  gates CI  →  /opsx:archive
+  →  simplify-review (optional, C/D)
+  →  security-reviewer (if auth/API/payments)
+  →  commit (R9)  →  CI gates  →  /opsx:archive
 ```
 
-Invocação **on-demand** (modo C — nível 6 na hierarquia §8.3 do guia SDD). Nunca always-on.
+**On-demand** invocation (mode C — level 6 in the SDD guide §8.3 hierarchy). Never always-on.
 
-### Inputs recomendados
+### Recommended inputs
 
-1. Diff (`git diff` ou descrição de PR)
-2. `openspec/changes/<id>/design.md` — o que foi **aprovado** (não avaliar fora do escopo aprovado)
-3. `openspec/project.md` — stack e non-goals
-4. Opcional: ficheiros de spec relevantes para contratos de API/função
+1. Diff (`git diff` or PR description)
+2. `openspec/changes/<id>/design.md` — what was **approved** (do not evaluate outside approved scope)
+3. `openspec/project.md` — stack and non-goals
+4. Optional: relevant spec files for API/function contracts
 
 ---
 
-## Formato de saída
+## Output format
 
-Ficheiro sugerido: `correctness-review.md` na raiz do change ou comentário inline no PR.
+Suggested file: `correctness-review.md` at the change root or inline PR comment.
 
-### Cabeçalho
+### Header
 
 ```markdown
 # correctness-review
 
-**Change:** <change-id ou "uncommitted">
-**Escopo:** <N ficheiros, +X/-Y linhas>
-**Veredito:** CORRECT | RISKY | ESCOPO INSUFICIENTE
+**Change:** <change-id or "uncommitted">
+**Scope:** <N files, +X/-Y lines>
+**Verdict:** CORRECT | RISKY | INSUFFICIENT SCOPE
 ```
 
-### Achados (um por linha)
+### Findings (one per line)
 
-Formato: `` `path/to/file.ts:L12-38` **tag:** descrição. Fix/teste: … ``
+Format: `` `path/to/file.ts:L12-38` **tag:** description. Fix/test: … ``
 
-| Tag | Significado |
-|-----|-------------|
-| `logic:` | Condição ou ramo lógico errado; resultado incorreto para input válido |
-| `edge:` | Input extremo não tratado (null, vazio, overflow, unicode, concurrent) |
-| `contract:` | Violação de pré/pós-condição ou invariante de API/função |
-| `race:` | Condição de corrida potencial (shared mutable state, async sem lock) |
-| `silent:` | Erro silencioso — excepção engolida, valor errado sem alerta |
+| Tag | Meaning |
+|-----|---------|
+| `logic:` | Wrong condition or branch; incorrect result for valid input |
+| `edge:` | Unhandled extreme input (null, empty, overflow, unicode, concurrent) |
+| `contract:` | Pre/post-condition or API/function invariant violation |
+| `race:` | Potential race condition (shared mutable state, async without lock) |
+| `silent:` | Silent error — swallowed exception, wrong value without alert |
 
-### Exemplos (estilo esperado)
+### Examples (expected style)
 
-❌ "Esta função parece ter um bug de edge case; considere tratar o caso null."
+❌ "This function seems to have an edge-case bug; consider handling null."
 
-✅ `src/lib/parser.ts:L45` **edge:** `parseDate(undefined)` não tratado — retorna `NaN` silenciosamente. Fix: `if (!input) return null` na linha 44.
+✅ `src/lib/parser.ts:L45` **edge:** `parseDate(undefined)` not handled — returns `NaN` silently. Fix: `if (!input) return null` on line 44.
 
-✅ `src/api/orders.ts:L78-82` **logic:** condição `status === 'pending' || status === 'paid'` nunca avalia `status === 'processing'` — pedidos em processamento caem no ramo de estado desconhecido. Fix: adicionar `'processing'` ao guard ou usar switch exhaustivo com verificação `never`.
+✅ `src/api/orders.ts:L78-82` **logic:** condition `status === 'pending' || status === 'paid'` never evaluates `status === 'processing'` — orders in processing fall into unknown-state branch. Fix: add `'processing'` to guard or use exhaustive switch with `never` check.
 
-✅ `src/workers/sync.ts:L120` **race:** `sharedCache.set(key, value)` chamado em dois coroutines sem lock. Fix: serializar com mutex ou usar estrutura thread-safe.
+✅ `src/workers/sync.ts:L120` **race:** `sharedCache.set(key, value)` called from two coroutines without lock. Fix: serialize with mutex or use thread-safe structure.
 
-✅ `src/services/email.ts:L33` **silent:** `catch (err) {}` engole erros de envio sem log nem retry. Fix: `logger.error(err)` + re-throw ou dead-letter.
+✅ `src/services/email.ts:L33` **silent:** `catch (err) {}` swallows send errors without log or retry. Fix: `logger.error(err)` + re-throw or dead-letter.
 
-✅ `src/hooks/useUser.ts:L18` **contract:** função documenta retorno `User` mas pode retornar `undefined` quando `session` é null. Fix: actualizar assinatura para `User | undefined` e tratar no caller.
+✅ `src/hooks/useUser.ts:L18` **contract:** function documents return type `User` but may return `undefined` when `session` is null. Fix: update signature to `User | undefined` and handle in caller.
 
-### Métrica final
+### Final metric
 
-Terminar com: **`achados: N (logic: X, edge: Y, contract: Z, race: W, silent: V)`**
+End with: **`findings: N (logic: X, edge: Y, contract: Z, race: W, silent: V)`**
 
-Se não houver nada: **`CORRECT — Nenhum problema de correctness encontrado. Ship.`** e parar.
+If nothing found: **`CORRECT — No correctness issues found. Ship.`** and stop.
 
-### Vereditos
+### Verdicts
 
-| Veredito | Critério |
-|----------|----------|
-| **CORRECT** | Nenhum achado de correctness no escopo |
-| **RISKY** | ≥1 achado acionável de correctness |
-| **ESCOPO INSUFICIENTE** | Diff muito pequeno, só docs/config, ou sem lógica para avaliar |
+| Verdict | Criterion |
+|---------|-----------|
+| **CORRECT** | No correctness findings in scope |
+| **RISKY** | ≥1 actionable correctness finding |
+| **INSUFFICIENT SCOPE** | Diff too small, docs/config only, or no logic to evaluate |
 
 ---
 
-## Boundaries — nunca flaggar
+## Boundaries — never flag
 
-Respeitar **precedência**: `design.md` aprovado > correctness-review.
+Respect **precedence**: approved `design.md` > correctness-review.
 
-| Protegido | Motivo |
+| Protected | Reason |
 |-----------|--------|
-| Complexidade desnecessária | → `simplify-review` |
-| Vulnerabilidades de segurança | → `security-reviewer` |
-| Performance e optimização | Fora de escopo desta review |
-| Acessibilidade e estilo | Fora de escopo desta review |
-| Código referenciado em `openspec/specs/` como requisito | Spec vigente — não sugerir remoção |
-| Schemas Zod/Pydantic em fronteiras I/O | Segurança non-negotiable |
+| Unnecessary complexity | → `simplify-review` |
+| Security vulnerabilities | → `security-reviewer` |
+| Performance and optimization | Out of scope for this review |
+| Accessibility and style | Out of scope for this review |
+| Code referenced in `openspec/specs/` as a requirement | Current spec — do not suggest removal |
+| Zod/Pydantic schemas at I/O boundaries | Security non-negotiable |
 
-**Fora de scope deste review:** complexidade, segurança, performance, acessibilidade.
-A skill caça **apenas** bugs de lógica, edge cases, violações de contrato e erros silenciosos.
-
----
-
-## Integração no SDD (activa)
-
-| Nível | Estado | Onde |
-|-------|--------|------|
-| **AGENTS.md** | ✅ | Secção "Reviews pós-implementação" — quando invocar / não invocar |
-| **openspec-apply-change** | ✅ | Skill sugere correctness-review antes de simplify-review (diff > ~80 linhas ou > 4 ficheiros) |
-| **Manual** | ✅ | Utilizador pede explicitamente |
-| **Subagent** | ⏳ | `.claude/agents/correctness-reviewer.md` — só após validação em repo APP |
-| **Pre-commit / hooks** | ❌ | Não recomendado — modo C exclusivamente |
-
-**Não recomendado:** hook always-on, rule `.mdc` alwaysApply, ou bloqueio automático de commit.
+**Out of scope for this review:** complexity, security, performance, accessibility.
+This skill hunts **only** logic bugs, edge cases, contract violations, and silent errors.
 
 ---
 
-## Comandos úteis
+## SDD integration (active)
+
+| Level | Status | Where |
+|-------|--------|-------|
+| **AGENTS.md** | ✅ | "Post-implementation reviews" section — when to invoke / not invoke |
+| **openspec-apply-change** | ✅ | Skill suggests correctness-review before simplify-review (diff > ~80 lines or > 4 files) |
+| **Manual** | ✅ | User requests explicitly |
+| **Subagent** | ⏳ | `.claude/agents/correctness-reviewer.md` — only after validation in APP repo |
+| **Pre-commit / hooks** | ❌ | Not recommended — mode C exclusively |
+
+**Not recommended:** always-on hook, `.mdc` rule with alwaysApply, or automatic commit blocking.
+
+---
+
+## Useful commands
 
 ```bash
-# Diff do change actual
+# Diff for current change
 git diff --stat
 git diff
 
@@ -158,25 +158,25 @@ git diff origin/master...HEAD --stat
 
 ---
 
-## Saída de exemplo completa
+## Complete output example
 
 ```markdown
 # correctness-review
 
 **Change:** add-payment-webhook-handler
-**Escopo:** 5 ficheiros, +187/-12 linhas
-**Veredito:** RISKY
+**Scope:** 5 files, +187/-12 lines
+**Verdict:** RISKY
 
-## Achados
+## Findings
 
-- `src/webhooks/stripe.ts:L44` **logic:** `event.type === 'payment_intent.succeeded'` não inclui `payment_intent.payment_failed` — falhas silenciosamente ignoradas. Fix: adicionar case para falha com log + notificação.
-- `src/webhooks/stripe.ts:L78-81` **silent:** `catch (err) { res.status(200) }` — erro de processamento retorna 200 para o Stripe, que não fará retry. Fix: re-throw para retornar 500 em falhas de processamento.
-- `src/lib/idempotency.ts:L23` **edge:** `idempotencyMap.get(key)` retorna `undefined` quando key não existe, mas caller trata como `false` — divergência semântica. Fix: `idempotencyMap.has(key)` ou guard explícito.
+- `src/webhooks/stripe.ts:L44` **logic:** `event.type === 'payment_intent.succeeded'` does not include `payment_intent.payment_failed` — failures silently ignored. Fix: add failure case with log + notification.
+- `src/webhooks/stripe.ts:L78-81` **silent:** `catch (err) { res.status(200) }` — processing error returns 200 to Stripe, which will not retry. Fix: re-throw to return 500 on processing failures.
+- `src/lib/idempotency.ts:L23` **edge:** `idempotencyMap.get(key)` returns `undefined` when key does not exist, but caller treats as `false` — semantic mismatch. Fix: `idempotencyMap.has(key)` or explicit guard.
 
-**achados: 3 (logic: 1, edge: 1, contract: 0, race: 0, silent: 1)**
+**findings: 3 (logic: 1, edge: 1, contract: 0, race: 0, silent: 1)**
 
-## Notas
+## Notes
 
-- Não rever: schema Zod em `src/infra/stripe/schemas.ts` (fronteira aprovada em design.md).
-- Próximo passo: aplicar fixes ou adicionar testes de regressão para os 3 achados.
+- Do not review: Zod schema in `src/infra/stripe/schemas.ts` (boundary approved in design.md).
+- Next step: apply fixes or add regression tests for the 3 findings.
 ```
