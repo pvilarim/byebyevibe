@@ -1,89 +1,89 @@
-# Avaliação: Headroom — compressão de contexto para agentes
+# Evaluation: Headroom — context compression for agents
 
-| Campo | Valor |
+| Field | Value |
 |-------|--------|
-| **Data** | 2026-03-26 |
-| **Avaliador** | Sessão de avaliação (Pedro Vilarim + agente) |
-| **Candidato** | [Headroom](https://github.com/chopratejas/headroom) (`headroom-ai`) |
-| **Decisão** | **Descartado** — não integrar no `sdd-kit` nem no pipeline normativo SDD |
-| **Escopo** | Camada opcional de compressão (proxy / MCP / library) sobre outputs de tools e histórico de conversa |
+| **Date** | 2026-03-26 |
+| **Evaluator** | Evaluation session (Pedro Vilarim + agent) |
+| **Candidate** | [Headroom](https://github.com/chopratejas/headroom) (`headroom-ai`) |
+| **Decision** | **Discarded** — do not integrate into `sdd-kit` or the normative SDD pipeline |
+| **Scope** | Optional compression layer (proxy / MCP / library) over tool outputs and conversation history |
 
-## Resumo executivo
+## Executive summary
 
-O Headroom comprime tool outputs, logs, RAG e histórico **antes** de chegarem ao LLM, com compressão reversível (CCR) e integração com Cursor/Claude via proxy ou MCP. Foi avaliado como possível “camada 4” do stack SDD para poupar tokens. **Conclusão: ganhos não compensam os riscos** face aos padrões já adoptados (subagents com síntese, `AGENTS.md` curto, Gates determinísticos, artefactos OpenSpec). **Implantação descartada.**
+Headroom compresses tool outputs, logs, RAG, and history **before** they reach the LLM, with reversible compression (CCR) and integration with Cursor/Claude via proxy or MCP. It was evaluated as a possible “layer 4” of the SDD stack to save tokens. **Conclusion: gains do not justify the risks** compared to patterns already adopted (subagents with synthesis, short `AGENTS.md`, deterministic Gates, OpenSpec artifacts). **Deployment discarded.**
 
-## Problema que tentava resolver
+## Problem it tried to solve
 
-- Reduzir custo de tokens em sessões longas com muitas tool calls (GitNexus, Graphify, grep, verify scripts)
-- Mitigar “context rot” sem depender só de handoff entre fases
-- Complementar a eficiência já descrita em `doc/sistema-sdd-pedro.md` §7.1 (subagents, rules curtas)
+- Reduce token cost in long sessions with many tool calls (GitNexus, Graphify, grep, verify scripts)
+- Mitigate “context rot” without relying only on handoff between phases
+- Complement efficiency already described in `doc/sistema-sdd-pedro.md` §7.1 (subagents, short rules)
 
-## O que foi analisado
+## What was analyzed
 
-- README e documentação oficial (arquitectura, CCR, limitações)
-- Encaixe com workflows `/opsx:explore`, `/opsx:propose`, `/opsx:apply`
-- Skills OpenSpec e regras `AGENTS.md` (fontes 1–6, classificação A–E, Gates §12.10)
-- Conflitos potenciais com governação de `AGENTS.md` (`headroom learn`, blocos auto-gerados)
+- README and official documentation (architecture, CCR, limitations)
+- Fit with `/opsx:explore`, `/opsx:propose`, `/opsx:apply` workflows
+- OpenSpec skills and `AGENTS.md` rules (sources 1–6, A–E classification, Gates §12.10)
+- Potential conflicts with `AGENTS.md` governance (`headroom learn`, auto-generated blocks)
 
-## Encaixe no stack SDD
+## Fit with the SDD stack
 
-| Ferramenta | Relação |
-|------------|---------|
-| **OpenSpec** | Artefactos normativos (`proposal`, `design`, `tasks`, `specs`) não devem ser comprimidos; risco de trade-offs incompletos em propose |
-| **GitNexus** | Outputs de `query` / `impact` são candidatos à compressão agressiva — **exactamente** onde o blast radius e callers alternativos importam |
-| **Graphify** | Queries amplas em explore perdem alternativas se amostradas antes da síntese |
-| **AGENTS.md / sdd-kit** | `headroom learn --apply` conflita com curadoria manual e anti-padrão de blocos auto-gerados (§2.5.1 guia SDD) |
+| Tool | Relation |
+|------|----------|
+| **OpenSpec** | Normative artifacts (`proposal`, `design`, `tasks`, `specs`) must not be compressed; risk of incomplete trade-offs in propose |
+| **GitNexus** | Outputs from `query` / `impact` are candidates for aggressive compression — **exactly** where blast radius and alternative callers matter |
+| **Graphify** | Broad queries in explore lose alternatives if sampled before synthesis |
+| **AGENTS.md / sdd-kit** | `headroom learn --apply` conflicts with manual curation and the anti-pattern of auto-generated blocks (§2.5.1 SDD guide) |
 
-## Riscos por fase do workflow
+## Risks by workflow phase
 
-| Fase | Risco | Gravidade | Notas |
-|------|-------|-----------|-------|
-| **Explore** | Esconder possibilidades não vistas pelo modelo | **Alta** | Amostra estatística ≠ espaço de soluções; CCR só ajuda se o modelo souber *o que* recuperar |
-| **Propose** | `design.md` com alternativas incompletas | **Alta** | Decisões prematuras; viola espírito de fontes verificáveis (R2, R3) |
-| **Apply** | Patch incorrecto, gate mal interpretado, impacto ignorado | **Média–alta** | Logs de teste/Gates e primeiro `impact` não devem ser comprimidos |
-| **Archive** | Pouco volume de contexto | **Baixa** | Ganho mínimo |
+| Phase | Risk | Severity | Notes |
+|-------|------|----------|-------|
+| **Explore** | Hiding possibilities the model never saw | **High** | Statistical sample ≠ solution space; CCR only helps if the model knows *what* to retrieve |
+| **Propose** | `design.md` with incomplete alternatives | **High** | Premature decisions; violates spirit of verifiable sources (R2, R3) |
+| **Apply** | Incorrect patch, gate misread, ignored impact | **Medium–high** | Test/Gate logs and first `impact` must not be compressed |
+| **Archive** | Low context volume | **Low** | Minimal gain |
 
-**Mecanismo comum:** o agente age como se tivesse visto tudo, quando trabalhou com uma vista parcial. O CCR mantém originais em cache local, mas **não garante** que o modelo chame `headroom_retrieve` a tempo.
+**Common mechanism:** the agent acts as if it had seen everything when it worked from a partial view. CCR keeps originals in local cache but **does not guarantee** the model calls `headroom_retrieve` in time.
 
-## Ganhos esperados vs observados
+## Expected vs observed gains
 
-| Ganho anunciado | Avaliação |
-|-----------------|-----------|
-| 60–95% menos tokens em tool outputs | Real em JSON/logs volumosos; **redundante** com subagents → `knowledge.md` / `codebase.md` em explore |
-| Mesmas respostas (benchmarks) | Válido em tarefas fechadas; **não transferível** para descoberta de alternativas ou specs normativas |
-| `headroom wrap cursor` | Opt-in local possível; **não** justifica entrada no kit partilhado |
-| Output token shaping | Risco em apply/propose; desligado por defeito — ganho marginal face ao risco |
+| Advertised gain | Assessment |
+|-----------------|------------|
+| 60–95% fewer tokens in tool outputs | Real on voluminous JSON/logs; **redundant** with subagents → `knowledge.md` / `codebase.md` in explore |
+| Same answers (benchmarks) | Valid on closed tasks; **not transferable** to alternative discovery or normative specs |
+| `headroom wrap cursor` | Possible local opt-in; **does not** justify entry in the shared kit |
+| Output token shaping | Risk in apply/propose; off by default — marginal gain vs risk |
 
-## Alternativas já no stack (preferidas)
+## Alternatives already in the stack (preferred)
 
-1. **Compressão semântica:** subagents (`graphify-researcher`, `codebase-researcher`) devolvem síntese, não ruído bruto
-2. **Contexto sob demanda:** `AGENTS.md` ≤150 linhas + tabela de ficheiros por situação
-3. **Handoff entre fases:** novo chat propose → apply com artefactos git como fonte
-4. **Gates determinísticos:** exit 0 em `tasks.md` — não delegar “pronto” ao julgamento do modelo sobre output comprimido
-5. **Passthrough nativo do Headroom** para código e user messages — overlap parcial com protecções que o SDD já exige por outras vias
+1. **Semantic compression:** subagents (`graphify-researcher`, `codebase-researcher`) return synthesis, not raw noise
+2. **On-demand context:** `AGENTS.md` ≤150 lines + file table by situation
+3. **Handoff between phases:** new chat propose → apply with git artifacts as source
+4. **Deterministic Gates:** exit 0 in `tasks.md` — do not delegate “ready” to the model’s judgment over compressed output
+5. **Headroom native passthrough** for code and user messages — partial overlap with protections the SDD already requires by other means
 
-## Decisão
+## Decision
 
-**Descartada a implantação** do Headroom como parte do sistema SDD (C1/C2, `sdd-kit`, `openspec/infra.md`, rules obrigatórias).
+**Deployment discarded** for Headroom as part of the SDD system (C1/C2, `sdd-kit`, `openspec/infra.md`, mandatory rules).
 
-**Opt-in pessoal** (proxy local só para logs CI volumosos, fora de explore/propose/Gates) não é proibido, mas **não é documentado nem suportado** pelo kit.
+**Personal opt-in** (local proxy for voluminous CI logs only, outside explore/propose/Gates) is not forbidden, but **is not documented or supported** by the kit.
 
-### Condições para reabrir avaliação
+### Conditions to reopen evaluation
 
-- Modo “SDD-safe” documentado pelo upstream: whitelist por fase (nunca comprimir Gates, impact, `contextFiles`, specs)
-- Evidência em repo piloto de que CCR + gates shell mantêm 100% pass rate em apply com compressão activa
-- Nova proposta OpenSpec (`add-headroom-optional-layer`) com spec normativa de guardrails — **não** install automático
+- Upstream-documented “SDD-safe” mode: per-phase whitelist (never compress Gates, impact, `contextFiles`, specs)
+- Evidence from a pilot repo that CCR + shell gates maintain 100% pass rate in apply with compression active
+- New OpenSpec proposal (`add-headroom-optional-layer`) with normative guardrails spec — **not** automatic install
 
-## Posicionamento final
+## Final positioning
 
 ```
-OpenSpec + GitNexus + Graphify  →  governa O QUÊ e COM QUE EVIDÊNCIA
-Headroom                        →  descartado; não camada normativa do SDD
+OpenSpec + GitNexus + Graphify  →  governs WHAT and WITH WHAT EVIDENCE
+Headroom                        →  discarded; not a normative SDD layer
 ```
 
-## Referências
+## References
 
-- Repositório: https://github.com/chopratejas/headroom
+- Repository: https://github.com/chopratejas/headroom
 - Docs: https://headroom-docs.vercel.app/
-- Discussão interna: sessão 2026-03-26 (explore / propose / apply)
-- Índice: [README.md](./README.md)
+- Internal discussion: session 2026-03-26 (explore / propose / apply)
+- Index: [README.md](./README.md)
