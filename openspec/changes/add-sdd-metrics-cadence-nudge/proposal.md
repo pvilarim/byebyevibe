@@ -1,38 +1,38 @@
 ## Why
 
-O script `sdd-metrics.sh` (G4, modo C) já materializa medição de eficácia SDD, mas **descoberta passiva ≠ hábito**: sem playbook de interpretação e sem cadência, o relatório não fecha o loop “números → melhorar o framework”. A exploração concluiu que o buraco principal é (1) como actuar sobre M1–M4 e (2) um lembrete periódico ancorado em ciclos SDD (archives), com stale de calendário só como rede de segurança — sem rule always-on nem etapa obrigatória na pipeline.
+The `sdd-metrics.sh` script (G4, mode C) already materializes SDD effectiveness measurement, but **passive discovery ≠ habit**: without an interpretation playbook and without cadence, the report does not close the loop “numbers → improve the framework”. The exploration concluded that the main gap is (1) how to act on M1–M4 and (2) a periodic reminder anchored in SDD cycles (archives), with calendar staleness only as a safety net — without an always-on rule or a mandatory pipeline step.
 
-**Objectivo:** formalizar playbook + nudge de cadência (event-driven no archive + stamp 30d), mantendo modo C opt-in.
+**Objective:** formalize playbook + cadence nudge (event-driven on archive + 30d stamp), keeping mode C opt-in.
 
-**Pré-requisito:** apply/archive de `add-sdd-metrics-script` (script + §2.17 + spec `sdd-metrics` no hub). Este change **estende** G4; não o substitui.
+**Prerequisite:** apply/archive of `add-sdd-metrics-script` (script + §2.17 + `sdd-metrics` spec in the hub). This change **extends** G4; it does not replace it.
 
 ## What Changes
 
-- **Playbook de interpretação** em `doc/sistema-sdd-pedro.md` §2.17: tabela “se M1/M2/M3/M4 então → 1 ajuste concreto no processo SDD”; ritual mínimo (1 insight → 1 mudança).
-- **Stamp local** `.sdd/metrics-last-run` (gitignored): escrito quando o operador corre `sdd-metrics.sh` (ou flag explícita); usado só para calcular stale.
-- **Nudge advisory no Session Handoff de `/opsx:archive`**: se ≥ N archives desde a última corrida **ou** ≥ 30 dias sem corrida → sugerir `bash scripts/sdd-metrics.sh` + ponteiro ao playbook; **nunca** auto-executar; **nunca** bloquear archive.
-- **Limiares documentados** (defaults: N=5 archives, T=30 dias) — ajustáveis via constantes no helper/docs, sem CI gate.
-- **Non-goals:** rule always-on; skill que sugere métricas em todo chat; cron/CI scheduled que spam; tornar métricas etapa obrigatória de apply/archive; Apache DevLake.
+- **Interpretation playbook** in `doc/sistema-sdd-pedro.md` §2.17: table “if M1/M2/M3/M4 then → 1 concrete SDD process adjustment”; minimal ritual (1 insight → 1 change).
+- **Local stamp** `.sdd/metrics-last-run` (gitignored): written when the operator runs `sdd-metrics.sh` (or an explicit flag); used only to compute staleness.
+- **Advisory nudge in the `/opsx:archive` Session Handoff**: if ≥ N archives since the last run **or** ≥ 30 days without a run → suggest `bash scripts/sdd-metrics.sh` + pointer to the playbook; **never** auto-execute; **never** block archive.
+- **Documented thresholds** (defaults: N=5 archives, T=30 days) — adjustable via constants in helper/docs, without a CI gate.
+- **Non-goals:** always-on rule; skill that suggests metrics in every chat; cron/CI scheduled spam; making metrics a mandatory apply/archive step; Apache DevLake.
 
 ## Capabilities
 
 ### New Capabilities
 
-- _(nenhuma — extensão de G4 / handoff existentes)_
+- _(none — extension of G4 / existing handoffs)_
 
 ### Modified Capabilities
 
-- `sdd-metrics`: playbook normativo de interpretação; stamp de última corrida; limiares de cadência; relatório/comando permanece modo C opt-in.
-- `sdd-session-handoff`: Session Handoff pós-archive MUST incluir nudge de métricas quando limiares de cadência forem atingidos (advisory, não bloqueante).
+- `sdd-metrics`: normative interpretation playbook; last-run stamp; cadence thresholds; report/command remains mode C opt-in.
+- `sdd-session-handoff`: post-archive Session Handoff MUST include a metrics nudge when cadence thresholds are met (advisory, non-blocking).
 
 ## Impact
 
-- Modificado: `doc/sistema-sdd-pedro.md` §2.17 (playbook + cadência)
-- Modificado: `scripts/sdd-metrics.sh` (+ template kit) — gravar stamp em `.sdd/metrics-last-run` após run bem-sucedido
-- Novo (pequeno): helper ou lógica partilhada para “deve nudgar?” (archives desde stamp / age do stamp) — preferir bash mínimo reutilizado pela skill archive
-- Modificado: skills `openspec-archive-change` (`.claude/` + `.cursor/`) — secção Session Handoff com nudge condicional
-- Modificado (leve): `AGENTS.md` / template — 1–3 linhas sobre cadência + playbook (sem skill nova always-on; R3 continua N/A para métricas como ferramenta)
-- Possível: `.gitignore` já cobre `.sdd/` — confirmar; sem secrets no stamp
-- Specs: deltas em `openspec/specs/sdd-metrics/` e `sdd-session-handoff/`
-- **Dependência de merge:** `add-sdd-metrics-script` aplicado no hub antes deste apply
+- Modified: `doc/sistema-sdd-pedro.md` §2.17 (playbook + cadence)
+- Modified: `scripts/sdd-metrics.sh` (+ kit template) — write stamp to `.sdd/metrics-last-run` after successful run
+- New (small): helper or shared logic for “should nudge?” (archives since stamp / stamp age) — prefer minimal bash reused by the archive skill
+- Modified: `openspec-archive-change` skills (`.claude/` + `.cursor/`) — Session Handoff section with conditional nudge
+- Modified (light): `AGENTS.md` / template — 1–3 lines about cadence + playbook (no new always-on skill; R3 remains N/A for metrics as a tool)
+- Possible: `.gitignore` already covers `.sdd/` — confirm; no secrets in the stamp
+- Specs: deltas in `openspec/specs/sdd-metrics/` and `sdd-session-handoff/`
+- **Merge dependency:** `add-sdd-metrics-script` applied in the hub before this apply
 - **Issue:** —
