@@ -259,146 +259,146 @@ Language: **EN on root README** (GitHub discovery). Evaluation and guide in this
 - GitHub: `github/spec-kit`, `Fission-AI/OpenSpec`, `bmad-code-org/BMAD-METHOD`, `gsd-build/get-shit-done`, topic `vibe-coding`
 - agents.md — https://agents.md/
 
-## 11. Roadmap de divulgação e i18n — sequência e razões (2026-07-26)
+## 11. Dissemination roadmap and i18n — sequence and rationale (2026-07-26)
 
-Registo pré-apply (pedido humano): ordem das melhorias de discovery, rebrand, tradução e demo visual — e **porquê** nesta ordem. Administrar como **backlog OpenSpec** (um change por fatia), não como mega-PR.
+Pre-apply record (human request): order of discovery, rebrand, translation, and visual demo improvements — and **why** in this order. Administer as an **OpenSpec backlog** (one change per slice), not as a mega-PR.
 
-### 11.1 Sequência canónica
+### 11.1 Canonical sequence
 
 ```
-①  APPLY   add-sdd-discovery-positioning     ← próximo
-    README (EN) + avaliação + quickstart + mapa kit
-    Demo = texto · About/topics = checklist manual
+①  APPLY   add-sdd-discovery-positioning     ← next
+    README (EN) + evaluation + quickstart + kit map
+    Demo = text · About/topics = manual checklist
          │
          ▼
-②  EXPLORE → PROPOSE   nome público (rebrand)
-    Escolher nome · impacto repo/URLs/MANIFEST/docs
-    NÃO traduzir o hub inteiro antes disto
+②  EXPLORE → PROPOSE   public name (rebrand)
+    Choose name · repo/URLs/MANIFEST/docs impact
+    Do NOT translate the entire hub before this
          │
          ▼
-③  APPLY   rename / rebrand (quando aprovado)
-    Títulos, About, links, guia, AGENTS pointers
-    [AÇÃO MANUAL] rename no GitHub se mudar o slug do repo
+③  APPLY   rename / rebrand (when approved)
+    Titles, About, links, guide, AGENTS pointers
+    [MANUAL ACTION] GitHub rename if the repo slug changes
          │
          ▼
-④  EXPLORE → PROPOSE   política EN + migração
-    “Novos artefactos = EN” · inventário do que ainda é pt-BR
-    Traduzir por waves (guia §, avaliações, skills…)
-    Chat humano Contigo: pt-BR (velocidade) — permanente
+④  EXPLORE → PROPOSE   EN policy + migration
+    “New artifacts = EN” · inventory of what is still pt-BR
+    Translate by waves (guide §, evaluations, skills…)
+    Human chat with you: pt-BR (speed) — permanent
          │
          ▼
-⑤  EXPLORE   GIF/asciinema (P5) → propose só se integração fechar
+⑤  EXPLORE   GIF/asciinema (P5) → propose only if integration closes
          │
          ▼
-⑥  Landing / Discord / one-liner fame — fora do roadmap (D9)
+⑥  Landing / Discord / one-liner fame — outside the roadmap (D9)
 ```
 
-### 11.2 Changes OpenSpec sugeridos (administração)
+### 11.2 Suggested OpenSpec changes (administration)
 
-| Ordem | Change (id sugerido) | Fase |
+| Order | Change (suggested id) | Phase |
 |------:|----------------------|------|
-| 1 | `add-sdd-discovery-positioning` | **apply a seguir** |
+| 1 | `add-sdd-discovery-positioning` | **apply next** |
 | 2 | `explore-sdd-kit-public-name` → `rename-…` | explore → propose → apply |
-| 3 | `add-english-docs-policy` | propose curto (AGENTS.md / project.md) |
-| 4 | `translate-sdd-guide-en` (+ waves) | vários applies |
+| 3 | `add-english-docs-policy` | short propose (AGENTS.md / project.md) |
+| 4 | `translate-sdd-guide-en` (+ waves) | multiple applies |
 | 5 | `explore-sdd-demo-asciinema` | explore → ? propose |
 
-### 11.3 Razões (porquê esta ordem)
+### 11.3 Rationale (why this order)
 
-| Passo | Razão |
+| Step | Rationale |
 |-------|--------|
-| **① README antes de tudo** | Buraco crítico de discovery; desbloqueia GitHub sem depender de rename nem i18n. Working title (“SDD Kit”) basta; o nome real actualiza-se no ③. |
-| **②–③ Nome antes da tradução total** | Traduzir com a marca antiga = retrabalho em massa (duas traduções). Rebrand toca URLs, About, títulos, cross-refs — change próprio com blast radius explícito. |
-| **④ Tradução depois do nome** | Um (ou N) changes só de i18n, com inventário e gates. Specs em `openspec/specs/` muitas já estão em EN — não assumir rewrite total cego. |
-| **⑤ GIF depois do README (e idealmente do nome)** | Narrativa e marca estáveis; evita regravar o demo. Integração (E1–E6) ainda por explorar — **não** misturar no apply ①. |
-| **⑥ Fame gaps fora** | Landing/Discord/one-liner/scaffold/BMAD/brand GitHub não são necessidade do sistema (D9). |
+| **① README first** | Critical discovery gap; unlocks GitHub without depending on rename or i18n. Working title (“SDD Kit”) is enough; the real name updates in ③. |
+| **②–③ Name before full translation** | Translating with the old brand = mass rework (two translations). Rebrand touches URLs, About, titles, cross-refs — its own change with explicit blast radius. |
+| **④ Translation after the name** | One (or N) i18n-only changes, with inventory and gates. Many specs in `openspec/specs/` are already EN — do not assume a blind total rewrite. |
+| **⑤ GIF after README (and ideally after the name)** | Stable narrative and brand; avoids re-recording the demo. Integration (E1–E6) still to explore — **do not** mix into apply ①. |
+| **⑥ Fame gaps outside** | Landing/Discord/one-liner/scaffold/BMAD/GitHub brand are not system requirements (D9). |
 
-### 11.4 Política linguística alvo (após passo ④)
+### 11.4 Target language policy (after step ④)
 
-| Superfície | Idioma |
+| Surface | Language |
 |------------|--------|
-| Chat Contigo (Pedro ↔ agente) | **pt-BR** (velocidade) — já em AGENTS.md |
-| Artefactos **novos** (proposal, design, specs, README, guia) | **inglês** |
-| Código / change-ids / paths | inglês / kebab-case (já) |
-| Legado pt-BR | waves de tradução; **não** bloquear features à espera de 100% |
+| Chat with you (Pedro ↔ agent) | **pt-BR** (speed) — already in AGENTS.md |
+| **New** artifacts (proposal, design, specs, README, guide) | **English** |
+| Code / change-ids / paths | English / kebab-case (already) |
+| Legacy pt-BR | translation waves; **do not** block features waiting for 100% |
 
-### 11.5 O que este apply (①) NÃO faz
+### 11.5 What this apply (①) does NOT do
 
-- Não escolhe nem aplica o nome final do projecto
-- Não traduz o guia / avaliações / skills para EN
-- Não grava GIF/asciinema
-- Não cria Landing, Discord, one-liner viral, scaffold, nem BMAD
+- Does not choose or apply the final project name
+- Does not translate the guide / evaluations / skills to EN
+- Does not record GIF/asciinema
+- Does not create Landing, Discord, viral one-liner, scaffold, or BMAD
 
-Idioma neste apply: README raiz **EN**; avaliação e quickstart no guia podem permanecer **pt-BR** até à wave ④ (consistente com o hub actual).
+Language in this apply: root README **EN**; evaluation and quickstart in the guide may remain **pt-BR** until wave ④ (consistent with the current hub).
 
-## 12. SDD Metrics (G4) como gancho de README — explore pré-apply (2026-07-26)
+## 12. SDD Metrics (G4) as README hook — pre-apply explore (2026-07-26)
 
-Pergunta humana: a ferramenta de análise periódica (`scripts/sdd-metrics.sh` + cadência) pode ser divulgada no README como forma de o sistema “aprender” e ficar mais adaptável quanto mais se usa?
+Human question: can the periodic analysis tool (`scripts/sdd-metrics.sh` + cadence) be promoted in the README as a way for the system to "learn" and become more adaptable the more it is used?
 
-### 12.1 O que a ferramenta é (AS-IS, ancorado)
+### 12.1 What the tool is (AS-IS, anchored)
 
-| Peça | Função |
+| Piece | Function |
 |------|--------|
-| `bash scripts/sdd-metrics.sh` | Relatório markdown **modo C** (sob demanda): M1 volume, M2 lead time propose→archive, M3 rework `fix` pós-archive, M4 resumo |
-| Fontes | Só `git` + `openspec/changes/` / `archive/` — sem rede, sem DevLake |
-| Playbook §2.17 | **Interpretar → actuar:** 1 insight → 1 ajuste de *processo* (WIP, escopo, gates, R9) |
-| `--check-cadence` | Advisory: nudge se ≥**5** archives desde last-run **ou** ≥**30** dias (stamp `.sdd/metrics-last-run`) |
-| Session Handoff `/opsx:archive` | Pode sugerir correr métricas; **nunca** auto-executa o relatório; **não** bloqueia archive |
-| Spec | `openspec/specs/sdd-metrics/` — não é gate CI; sem skill always-on |
+| `bash scripts/sdd-metrics.sh` | Markdown report **mode C** (on demand): M1 volume, M2 lead time propose→archive, M3 rework `fix` post-archive, M4 summary |
+| Sources | `git` + `openspec/changes/` / `archive/` only — no network, no DevLake |
+| Playbook §2.17 | **Interpret → act:** 1 insight → 1 *process* adjustment (WIP, scope, gates, R9) |
+| `--check-cadence` | Advisory: nudge if ≥**5** archives since last-run **or** ≥**30** days (stamp `.sdd/metrics-last-run`) |
+| Session Handoff `/opsx:archive` | May suggest running metrics; **never** auto-runs the report; **does not** block archive |
+| Spec | `openspec/specs/sdd-metrics/` — not a CI gate; no always-on skill |
 
-### 12.2 O que **não** é
+### 12.2 What it is **not**
 
-| Claim enganoso | Realidade |
+| Misleading claim | Reality |
 |----------------|-----------|
-| “O sistema aprende sozinho / ML / personaliza o agente” | Zero modelo; zero escrita automática em `AGENTS.md` ou specs a partir do relatório |
-| “Quanto mais usas, o kit adapta-se a ti automaticamente” | Quem adapta és **tu** (ou o time), com 1 ajuste consciente no processo |
-| “Dashboard vivo / telemetria contínua” | Modo C + nudge pontual; stamp local gitignored |
-| “Métricas perfeitas” | Proxies explícitos (M2/M3 dependem de R9 e de commits) |
+| "The system learns on its own / ML / personalizes the agent" | Zero model; zero automatic writes to `AGENTS.md` or specs from the report |
+| "The more you use it, the kit adapts to you automatically" | **You** (or the team) adapt, with 1 conscious process adjustment |
+| "Live dashboard / continuous telemetry" | Mode C + occasional nudge; local gitignored stamp |
+| "Perfect metrics" | Explicit proxies (M2/M3 depend on R9 and commits) |
 
-### 12.3 O ganho prático real (honestidade + valor)
+### 12.3 The practical real gain (honesty + value)
 
 ```
-usar o loop (/opsx)  →  archives acumulam  →  cadência pede retrospectiva
-        →  relatório M1–M4  →  1 insight → 1 ajuste no teu SDD
-        →  próximo ciclo com menos rework / escopo mais curto / menos WIP
+use the loop (/opsx)  →  archives accumulate  →  cadence prompts retrospective
+        →  M1–M4 report  →  1 insight → 1 adjustment to your SDD
+        →  next cycle with less rework / shorter scope / less WIP
 ```
 
-**Sim, há um efeito “quanto mais usas, melhor calibração”** — mas o objecto que melhora é o **processo humano + convenções do repo**, não um cérebro embutido no kit. O diferencial vs Spec Kit / OpenSpec / BMAD: quase nenhum vende **métricas de eficácia do próprio framework SDD** com playbook de acção e nudge pós-archive.
+**Yes, there is a "the more you use it, the better the calibration" effect** — but the object that improves is the **human process + repo conventions**, not a brain embedded in the kit. Differentiator vs Spec Kit / OpenSpec / BMAD: almost none sell **effectiveness metrics for the SDD framework itself** with an action playbook and post-archive nudge.
 
-Exemplos concretos de adaptação (playbook §2.17):
+Concrete adaptation examples (playbook §2.17):
 
-- M1 alto de activos → reduzes WIP / archives pendentes  
-- M2 a subir → changes mais pequenos, handoffs mais curtos  
-- M3 alto → endureces gates antes de archive (menos “archive e depois fix”)
+- High M1 active count → reduce WIP / pending archives  
+- M2 rising → smaller changes, shorter handoffs  
+- High M3 → tighten gates before archive (less "archive then fix")
 
-### 12.4 Como divulgar no README (copy permitida vs proibida)
+### 12.4 How to promote in the README (permitted vs forbidden copy)
 
-**Permitido (recomendado — bullet em “What's included” ou secção curta):**
+**Permitted (recommended — bullet in "What's included" or short section):**
+**Permitted (recommended — bullet in “What's included” or short section):**
 
 > **Built-in SDD retrospectives** — `sdd-metrics.sh` turns your archive history into volume, lead-time, and rework signals. After every few shipped changes, a gentle cadence nudge asks you to run the report and make **one** process adjustment. The more you ship through the loop, the more signal you have to calibrate *your* workflow — not magic, measurable.
 
-Versão curta:
+Short version:
 
 > **Calibrate as you go** — periodic SDD metrics (lead time, rework) + a playbook so the process improves with use.
 
-**Proibido / evitar:**
+**Forbidden / avoid:**
 
 - “AI that learns your style”  
 - “Self-adapting agent OS”  
 - “Automatic personalization”  
-- Qualquer implicação de que o relatório reescreve rules sozinho  
+- Any implication that the report rewrites rules by itself  
 
-### 12.5 Compatibilidade e decisão para o apply ①
+### 12.5 Compatibility and decision for apply ①
 
-| Critério | Avaliação |
+| Criterion | Assessment |
 |----------|-----------|
-| Cabe no README deste change? | **Sim** — já é capacidade do kit (G4); não é feature nova |
-| Conflito com anti-boilerplate? | Não — reforça “control plane / process OS” |
-| Precisa de change novo? | Não para mencionar; só se no futuro se quiser auto-aplicar insights (isso seria explore/propose **nova** e fora do escopo actual) |
-| Onde no README | Tabela “What's included” + 2–3 frases; link ao guia §2.17 (pt-BR até i18n) |
+| Fits in the README for this change? | **Yes** — already a kit capability (G4); not a new feature |
+| Conflict with anti-boilerplate? | No — reinforces “control plane / process OS” |
+| Needs a new change? | No to mention it; only if in the future you want to auto-apply insights (that would be a **new** explore/propose and outside current scope) |
+| Where in the README | “What's included” table + 2–3 sentences; link to guide §2.17 (pt-BR until i18n) |
 
-**Decisão para apply:** incluir o gancho **honesto** (§12.4). Não reivindicar aprendizado automático. Na avaliação canónica, listar G4 metrics como diferencial de divulgação (não como P5–P10).
+**Decision for apply:** include the **honest** hook (§12.4). Do not claim automatic learning. In the canonical evaluation, list G4 metrics as a dissemination differentiator (not as P5–P10).
 
-### 12.6 Evolução futura (fora deste apply — só se explore pedir)
+### 12.6 Future evolution (outside this apply — only if explore requests)
 
-Auto-aplicar ajustes a partir de métricas (ex. agente propõe change “reduce WIP”) seria um salto de produto — **não** existe hoje. Tratar como ideia separada, não como texto do README.
