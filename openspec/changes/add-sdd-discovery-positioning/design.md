@@ -1,147 +1,147 @@
-# Design — Discovery e posicionamento do SDD Kit
+# Design — SDD Kit discovery and positioning
 
 ## Context
 
-- Explore 2026-07-26: README raiz ausente; público *vibe coding* não encontra o kit; concorrentes (Spec Kit ~124k★, OpenSpec ~63k★, BMAD ~51k★, GSD ~65k★) dominam discovery com hero + demo + topics.
-- Perfil do hub: **DOCS_SPECS** — este change é documentação/specs/kit README; sem código de aplicação.
-- Viés duplo pedido pelo Pedro: (A) divulgar melhor; (B) usar a análise como partida para melhorar o produto — P0/P1 neste change; P2+ como backlog explícito.
-- Research persistente: `openspec/changes/add-sdd-discovery-positioning/research.md` (promover a `doc/avaliacoes/` no apply).
+- Explore 2026-07-26: root README missing; *vibe coding* audience does not find the kit; competitors (Spec Kit ~124k★, OpenSpec ~63k★, BMAD ~51k★, GSD ~65k★) dominate discovery with hero + demo + topics.
+- Hub profile: **DOCS_SPECS** — this change is documentation/specs/kit README; no application code.
+- Dual bias requested by Pedro: (A) improve outreach; (B) use the analysis as a starting point to improve the product — P0/P1 in this change; P2+ as explicit backlog.
+- Persistent research: `openspec/changes/add-sdd-discovery-positioning/research.md` (promote to `doc/avaliacoes/` on apply).
 
 ## Goals / Non-Goals
 
 **Goals:**
 
-- Tornar o hub encontrável e compreensível em ≤30s para quem chega de *vibe coding*.
-- Ancorar a narrativa “from vibe coding to agentic engineering” em artefactos versionados (avaliação + README + kit README + quickstart).
-- Expor diferenciais reais (triplo stack, kit versionado, gates, session locks) sem prometer app scaffold.
-- Registar backlog de produto P5–P10 para changes futuros.
-- Spec normativa para não regredir (README raiz MUST existir).
+- Make the hub findable and understandable in ≤30s for people arriving from *vibe coding*.
+- Anchor the “from vibe coding to agentic engineering” narrative in versioned artifacts (evaluation + README + kit README + quickstart).
+- Expose real differentiators (triple stack, versioned kit, gates, session locks) without promising app scaffold.
+- Record product backlog P5–P10 for future changes.
+- Normative spec so we do not regress (root README MUST exist).
 
 **Non-Goals:**
 
-- Boilerplate de app (Camada B) — permanente non-goal deste ciclo.
-- GIF, GitHub Pages, Discord, rename do repo — follow-up / decisão humana.
-- Alterar `install.sh` / MANIFEST payloads / fluxo `/opsx` (salvo menções documentais).
-- Traduzir o guia inteiro para EN ou o README inteiro para pt-BR.
-- Actualizar stars em CI — valores datados na avaliação bastam.
+- App boilerplate (Layer B) — permanent non-goal this cycle.
+- GIF, GitHub Pages, Discord, repo rename — follow-up / human decision.
+- Alter `install.sh` / MANIFEST payloads / `/opsx` flow (except documentary mentions).
+- Translate the entire guide to EN or the entire README to pt-BR.
+- Update stars in CI — dated values in the evaluation are enough.
 
 ## Knowledge sources consulted (R8)
 
 - `openspec/changes/add-sdd-discovery-positioning/research.md`
 - `sdd-kit/README.md`, `doc/sistema-sdd-pedro.md`, `openspec/project.md`
-- `doc/avaliacoes/README.md` + TEMPLATE de avaliações
-- READMEs públicos: Spec Kit, OpenSpec (padrão de demo `/opsx`)
-- GitHub API 2026-07-26 (stars/topics) — ver research §5
-- `openspec/changes/explore-oss-coverage-gaps/research.md` — complementar (tooling gaps)
+- `doc/avaliacoes/README.md` + evaluation TEMPLATE
+- Public READMEs: Spec Kit, OpenSpec (demo `/opsx` pattern)
+- GitHub API 2026-07-26 (stars/topics) — see research §5
+- `openspec/changes/explore-oss-coverage-gaps/research.md` — complementary (tooling gaps)
 
 ## Decisions
 
-### D1: EN no README raiz; pt-BR na avaliação e no guia
+### D1: EN on root README; pt-BR in evaluation and guide
 
-- **Escolha:** Discovery GitHub = inglês; profundidade operacional = pt-BR (já dominante no guia).
-- **Alternativa:** README bilíngue completo → rejeitada (duplicação e drift).
-- **Mitigação:** link explícito “Guia completo (pt-BR)” no README.
+- **Choice:** GitHub discovery = English; operational depth = pt-BR (already dominant in the guide).
+- **Alternative:** fully bilingual README → rejected (duplication and drift).
+- **Mitigation:** explicit “Full guide (pt-BR)” link in the README.
 
-### D2: Tom “from vibe → agentic”, não “stop vibe coding”
+### D2: Tone “from vibe → agentic”, not “stop vibe coding”
 
-- **Escolha:** upgrade path empático.
-- **Alternativa:** tom adversarial (“end of vibe coding”) → aliena o público-alvo da busca.
+- **Choice:** empathetic upgrade path.
+- **Alternative:** adversarial tone (“end of vibe coding”) → alienates the target search audience.
 
-### D3: Avaliação em `doc/avaliacoes/` como documento de partida
+### D3: Evaluation in `doc/avaliacoes/` as starting document
 
-- **Escolha:** `2026-07-26-sdd-discovery-positioning.md` espelha o `research.md` (pode ser cópia editorial + estado **Adoptado** para superfícies P0/P1 e **Adiado** para P5–P10).
-- **Alternativa:** só `research.md` no change → perde-se após archive na prática de navegação humana; avaliações já são a fonte 6.
+- **Choice:** `2026-07-26-sdd-discovery-positioning.md` mirrors `research.md` (may be editorial copy + **Adopted** status for P0/P1 surfaces and **Deferred** for P5–P10).
+- **Alternative:** only `research.md` in the change → lost after archive for human navigation; evaluations are already source 6.
 
-### D4: README curto; guia ganha só um quickstart
+### D4: Short README; guide gains only a quickstart
 
-- **Escolha:** README ≤ ~200 linhas; nova subsecção curta no guia (ex. §2.0b ou bloco sob §2.0) “First contact / vibe coder”.
-- **Alternativa:** reescrever §1–2 do guia → fora de R4.
+- **Choice:** README ≤ ~200 lines; new short subsection in the guide (e.g. §2.0b or block under §2.0) “First contact / vibe coder”.
+- **Alternative:** rewrite guide §1–2 → out of R4 scope.
 
-### D5: Kit README ganha intro, não perde ops
+### D5: Kit README gains intro, does not lose ops
 
-- **Escolha:** prepend 1 secção “What this is / who it's for” + tabela amigável de cenários; resto intacto.
-- **Alternativa:** README de marketing separado em `sdd-kit/DISCOVERY.md` → mais um ficheiro; preferir um único entry point.
+- **Choice:** prepend one section “What this is / who it's for” + friendly scenario table; rest intact.
+- **Alternative:** separate marketing README in `sdd-kit/DISCOVERY.md` → one more file; prefer a single entry point.
 
-### D6: Topics/About = acção manual
+### D6: Topics/About = manual action
 
-- **Escolha:** checklist no README ou na avaliação com `[AÇÃO MANUAL NECESSÁRIA]`; agente não altera settings GitHub.
-- **Alternativa:** GitHub CLI write → indisponível / fora de política (gh read-only).
+- **Choice:** checklist in README or evaluation with `[MANUAL ACTION REQUIRED]`; agent does not change GitHub settings.
+- **Alternative:** GitHub CLI write → unavailable / out of policy (gh read-only).
 
-### D7: Backlog de produto no design + avaliação, não em tasks deste change
+### D7: Product backlog in design + evaluation, not in this change's tasks
 
-- Tasks deste change cobrem só P1–P4.
-- P5 (GIF), P10 (nome), tradução EN e fame gaps: ver D9 + **D10** (roadmap §11 no research) — **não** misturar no apply.
+- This change's tasks cover P1–P4 only.
+- P5 (GIF), P10 (name), EN translation and fame gaps: see D9 + **D10** (roadmap §11 in research) — **do not** mix into apply.
 
-### D8: Sem bump de MANIFEST obrigatório
+### D8: No mandatory MANIFEST bump
 
-- Só README do kit muda (não é template checksumado como payload de install, excepto se `sdd-kit/README.md` estiver no MANIFEST).
-- Verificar no apply: se `README.md` do kit estiver no MANIFEST, correr `gen-manifest-checksums.sh`; senão, não bump de versão só por copy.
+- Only kit README changes (not a checksumed install payload template, unless `sdd-kit/README.md` is in MANIFEST).
+- Verify on apply: if kit `README.md` is in MANIFEST, run `gen-manifest-checksums.sh`; otherwise no version bump for copy alone.
 
-### D9: Gaps de concorrência — escopo fechado excepto demo visual (2026-07-26)
+### D9: Competition gaps — closed scope except visual demo (2026-07-26)
 
-Decisão humana pós-explore de trade-offs:
+Human decision after explore trade-offs:
 
-| Item | Decisão |
-|------|---------|
-| Landing / GitHub Pages | **Não implementar** |
-| Discord | **Não implementar** |
-| One-liner fame (`npx` viral) | **Não implementar** (manter CTA `install.sh --dry-run`) |
-| App scaffold (auth/DB/deploy) | **Não implementar** |
-| BMAD multi-persona | **Não implementar** |
-| Brand GitHub (Spec Kit) | **Não implementável / não perseguir** como estratégia |
-| Rename / novo nome público (P10) | **Não neste change** — **sim no roadmap** após README (research §11); explore→propose próprios |
-| Tradução completa EN | **Não neste change** — **sim no roadmap** após nome estável (research §11) |
-| GIF / asciinema (P5) | **Não neste change** — explore de integração (E1–E6) **depois** do README e, idealmente, do nome estável |
+| Item | Decision |
+|------|----------|
+| Landing / GitHub Pages | **Do not implement** |
+| Discord | **Do not implement** |
+| One-liner fame (`npx` viral) | **Do not implement** (keep CTA `install.sh --dry-run`) |
+| App scaffold (auth/DB/deploy) | **Do not implement** |
+| BMAD multi-persona | **Do not implement** |
+| GitHub brand (Spec Kit) | **Not implementable / do not pursue** as strategy |
+| Rename / new public name (P10) | **Not in this change** — **yes on roadmap** after README (research §11); own explore→propose |
+| Full EN translation | **Not in this change** — **yes on roadmap** after stable name (research §11) |
+| GIF / asciinema (P5) | **Not in this change** — integration explore (E1–E6) **after** README and, ideally, stable name |
 
-No apply de `add-sdd-discovery-positioning`: demo do fluxo permanece **em texto** no README (como OpenSpec); sem asset binário; na avaliação canónica registar P5 como **Adiado — pending explore**; P10/i18n como **Adiado — roadmap §11**.
+On apply of `add-sdd-discovery-positioning`: flow demo stays **text-only** in README (like OpenSpec); no binary asset; in canonical evaluation register P5 as **Deferred — pending explore**; P10/i18n as **Deferred — roadmap §11**.
 
-### D10: Roadmap de sequência — README → nome → EN → GIF (2026-07-26)
+### D10: Sequence roadmap — README → name → EN → GIF (2026-07-26)
 
-Registo pré-apply (pedido humano). Fonte canónica detalhada: `research.md` §11.
+Pre-apply record (human request). Detailed canonical source: `research.md` §11.
 
-**Ordem obrigatória de administração (backlog OpenSpec, não mega-PR):**
+**Mandatory administration order (OpenSpec backlog, not mega-PR):**
 
 1. **Apply** `add-sdd-discovery-positioning` (P1–P4) — working title ok  
-2. **Explore→propose→apply** nome público / rebrand (P10)  
-3. **Propose** policy “artefactos novos = EN; chat = pt-BR” + **waves** de tradução  
-4. **Explore** GIF/asciinema (P5) → propose só se integração clara  
-5. Landing/Discord/one-liner/scaffold/BMAD/brand — fora (D9)
+2. **Explore→propose→apply** public name / rebrand (P10)  
+3. **Propose** policy “new artifacts = EN; chat = pt-BR” + translation **waves**  
+4. **Explore** GIF/asciinema (P5) → propose only if integration is clear  
+5. Landing/Discord/one-liner/scaffold/BMAD/brand — out (D9)
 
-**Razões condensadas:** discovery imediata sem bloquear em rename/i18n; nome antes de traduzir evita double work; GIF depois de narrativa/marca estáveis; chat pt-BR permanente para velocidade do Pedro.
+**Condensed rationale:** immediate discovery without blocking on rename/i18n; name before translation avoids double work; GIF after stable narrative/brand; pt-BR chat permanent for Pedro's velocity.
 
-### D11: README menciona SDD Metrics como calibração de processo (2026-07-26)
+### D11: README mentions SDD Metrics as process calibration (2026-07-26)
 
-Explore pré-apply: `sdd-metrics.sh` + cadência + playbook §2.17.
+Pre-apply explore: `sdd-metrics.sh` + cadence + playbook §2.17.
 
-- **Incluir** no README (What's included / short blurb) o diferencial G4.
-- **Framing:** retrospectives / “calibrate as you go” / signal grows as you archive — **humano** aplica 1 insight → 1 ajuste.
-- **Não** claim de ML, self-learning agent, ou adaptação automática do kit.
-- Detalhe e copy permitida/proibida: `research.md` §12.
-- Não exige tasks novas de código — só copy no apply das tasks 1.x/2.x existentes.
+- **Include** in README (What's included / short blurb) the G4 differentiator.
+- **Framing:** retrospectives / “calibrate as you go” / signal grows as you archive — **human** applies 1 insight → 1 adjustment.
+- **Do not** claim ML, self-learning agent, or automatic kit adaptation.
+- Detail and allowed/forbidden copy: `research.md` §12.
+- Does not require new code tasks — copy only on apply of existing tasks 1.x/2.x.
 
 ## Risks / Trade-offs
 
-| Risco | Mitigação |
-|-------|-----------|
-| Atrair utilizadores errados (querem só Next.js starter) | Anti-posicionamento no hero (D2 + research §2) |
-| Stars desactualizados | Só na avaliação com data; README usa “order of magnitude” ou omite números |
-| Drift research ↔ avaliação | Task de apply: diff ou cópia consciente; Gate grep de frases-chave |
-| Jargão C1/G4 permanece no kit | Tabela amigável (P3) no topo do kit README |
-| Expectativa de Discord/GIF/landing/rename/i18n neste apply | D9 + D10: fora de escopo; roadmap §11 |
-| Traduzir tudo antes do rename | D10: proibido — nome estável primeiro |
+| Risk | Mitigation |
+|------|------------|
+| Attract wrong users (want Next.js starter only) | Anti-positioning in hero (D2 + research §2) |
+| Outdated stars | Only in evaluation with date; README uses “order of magnitude” or omits numbers |
+| Drift research ↔ evaluation | Apply task: diff or conscious copy; Gate grep of key phrases |
+| C1/G4 jargon remains in kit | Friendly table (P3) at top of kit README |
+| Expectation of Discord/GIF/landing/rename/i18n in this apply | D9 + D10: out of scope; roadmap §11 |
+| Translate everything before rename | D10: forbidden — stable name first |
 
 ## Migration Plan
 
-1. Apply cria/actualiza ficheiros docs listados no proposal.
-2. Humano aplica About + topics no GitHub (checklist).
-3. Rollback: reverter commits do change; remover `README.md` raiz se necessário (estado anterior = ausente).
+1. Apply creates/updates docs files listed in proposal.
+2. Human applies About + topics on GitHub (checklist).
+3. Rollback: revert change commits; remove root `README.md` if needed (previous state = absent).
 
 ## Open Questions
 
-| # | Questão | Estado |
-|---|---------|--------|
-| Q1 | Qual o nome público final / rename do repo? | **Adiada** — explore `explore-sdd-kit-public-name` após apply README (D10 / research §11); working title “SDD Kit” neste change |
-| Q2 | Badge Discord/site no README? | **Fechada — não** (D9) |
-| Q3 | Quantos concorrentes no compare do README? | Spec Kit, OpenSpec, BMAD + linha “vibe templates” |
-| Q4 | Como integrar GIF/asciinema? | **Aberta — `/opsx:explore`** após README (e idealmente após nome); research §6.3 E1–E6 |
-| Q5 | Inventário exacto pt-BR→EN? | **Adiada** — change `add-english-docs-policy` + waves (D10) |
+| # | Question | Status |
+|---|----------|--------|
+| Q1 | Final public name / repo rename? | **Deferred** — explore `explore-sdd-kit-public-name` after README apply (D10 / research §11); working title “SDD Kit” in this change |
+| Q2 | Discord/site badge in README? | **Closed — no** (D9) |
+| Q3 | How many competitors in README compare? | Spec Kit, OpenSpec, BMAD + “vibe templates” line |
+| Q4 | How to integrate GIF/asciinema? | **Open — `/opsx:explore`** after README (and ideally after name); research §6.3 E1–E6 |
+| Q5 | Exact pt-BR→EN inventory? | **Deferred** — change `add-english-docs-policy` + waves (D10) |
