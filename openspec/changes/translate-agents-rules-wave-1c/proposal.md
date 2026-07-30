@@ -61,7 +61,7 @@ N/A this wave: **G-MIRROR** (no `.claude/rules/` mirror; Cursor-only `.mdc`), **
 /opsx:apply translate-agents-rules-wave-1c
 
 Change: openspec/changes/translate-agents-rules-wave-1c/
-Ler: proposal.md, design.md, tasks.md, doc/i18n/GLOSSARY.md, doc/i18n/WAVES.md
+Read: proposal.md, design.md, tasks.md, doc/i18n/GLOSSARY.md, doc/i18n/WAVES.md
 Gate: bash scripts/verify-i18n-wave.sh --files .cursor/rules/010-typescript.mdc,.cursor/rules/020-python.mdc,.cursor/rules/030-supabase.mdc,.cursor/rules/graphify.mdc
-Infra: openspec/infra.md (assumir ✅ — não reinstalar)
+Infra: openspec/infra.md (assume ✅ — do not reinstall)
 ```
