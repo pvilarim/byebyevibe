@@ -55,8 +55,9 @@ SDD rule: **one chat / one Cloud Agent run = one phase**. Do not propose and app
   Propose C ──PR──▶ …
 ```
 
-**Throughput:** manual merge slows the **apply chain**, not the **propose factory**.  
-Use **GitHub auto-merge** on apply/archive PRs (branch protection + green CI) to reduce waiting without combining SDD phases in one agent run.
+**Throughput:** manual merge slows the **apply chain**, not the **propose factory**.
+
+**Merge policy (this repo):** only the **operator** merges PRs — manually on [github.com](https://github.com) (Merge pull request). **No** GitHub auto-merge. **No** agent / Cloud Automation `gh pr merge`. Automations open PRs and stop; you merge when CI is green.
 
 ---
 
@@ -64,18 +65,23 @@ Use **GitHub auto-merge** on apply/archive PRs (branch protection + green CI) to
 
 Run **three separate Automations** — never combine phases in one run (§5.4).
 
-| Automation | Trigger (GitHub) | Phase | Opens PR? | Merge? |
-|------------|------------------|-------|-----------|--------|
-| **A — Propose factory** | Cron / manual | `/opsx:propose` | Draft propose PR | Human or auto-merge |
-| **B — Apply on propose merge** | PR merged → title matches `propose translate-*` | `/opsx:apply` | Draft apply PR | Human or auto-merge |
-| **C — Archive on apply merge** | PR merged → title matches `apply translate-*` | `/opsx:archive` | Ready archive PR | Auto-merge or agent (§5.3) |
+| Automation | Trigger (GitHub) | Phase | Opens PR? | Who merges? |
+|------------|------------------|-------|-----------|-------------|
+| **A — Propose factory** | Cron / manual | `/opsx:propose` | Draft propose PR | **You** on GitHub |
+| **B — Apply on propose merge** | PR merged → title matches `propose translate-*` | `/opsx:apply` | Draft apply PR | **You** on GitHub |
+| **C — Archive on apply merge** | PR merged → title matches `apply translate-*` | `/opsx:archive` | Ready archive PR | **You** on GitHub |
 
 ```
-  Propose PR merged ──▶ Automation B (apply) ──▶ Apply PR merged ──▶ Automation C (archive+merge)
-        ▲                                                              │
-        │                                                              ▼
-   Automation A                                              change → archive/
-   (parallel OK)                                            master updated
+  Propose PR ──▶ [you merge on GitHub] ──▶ Automation B (apply) ──▶ Apply PR
+       ▲                                        │
+       │                                        ▼
+  Automation A                          [you merge on GitHub]
+  (parallel OK)                                  │
+                                                 ▼
+                                        Automation C (archive)
+                                                 │
+                                                 ▼
+                                        Archive PR ──▶ [you merge on GitHub] ──▶ master
 ```
 
 **Before re-enabling B or C:** close stale duplicate archive PRs (§5.3.1). They do not need merge — the change is often already on `master`.
@@ -161,7 +167,7 @@ Idle / stop condition:
 
 **PR title:** `docs(sdd): apply translate-<surface>-wave-N`
 
-**Merge policy:** open as **DRAFT**; enable **GitHub auto-merge** on the apply PR if branch protection allows. The apply agent MUST NOT merge its own PR (archive automation depends on a clean merge event).
+**Merge policy:** open as **DRAFT**. The agent MUST NOT merge. Report the PR URL; the **operator merges on GitHub** when CI is green. Automation C triggers only after that merge event.
 
 **Operator checklist before enabling:**
 
@@ -207,14 +213,14 @@ PR:
 - Title: docs(sdd): apply ${CHANGE_ID}
 - Body: list translated paths + gate commands run
 - Open as DRAFT
-- Do NOT merge
+- Do NOT merge — operator merges on GitHub only
 
-STOP with Session Handoff for /opsx:archive (§6).
+STOP with Session Handoff for /opsx:archive (§7). Include PR URL for operator merge.
 ```
 
 ### 5.3 Archive after apply merge (Automation C)
 
-**Purpose:** run `/opsx:archive` for exactly one `translate-*` wave after its apply PR landed on `master`, then merge the archive PR when safe.
+**Purpose:** run `/opsx:archive` for exactly one `translate-*` wave after its apply PR landed on `master`. Opens a ready archive PR; **does not merge**.
 
 **Repo / base:** this repository · `master`
 
@@ -229,9 +235,9 @@ STOP with Session Handoff for /opsx:archive (§6).
 
 **PR title:** `chore(openspec): archive translate-<surface>-wave-N`
 
-**Merge policy:** open as **ready for review** (not draft). Prefer **GitHub auto-merge** when CI is green. If auto-merge is unavailable, the agent MAY merge when: PR is mergeable, no duplicate open archive PR exists, and `openspec validate --all --strict` passed on the branch.
+**Merge policy:** open as **ready for review** (not draft). The agent MUST NOT run `gh pr merge` or enable auto-merge. Report the PR URL; the **operator merges on GitHub** when CI is green.
 
-**Operator helper (local):** `bash scripts/archive-and-merge.sh <change-id>` prepares branch + push; PR creation may still need Cursor UI or a token with `pull_request` write scope.
+**Operator helper (local):** `bash scripts/archive-and-merge.sh <change-id>` prepares branch + push only; you still merge the PR on GitHub.
 
 #### 5.3.1 Stale archive PRs — close, do not merge
 
@@ -294,14 +300,11 @@ PR:
 - Title: chore(openspec): archive ${CHANGE_ID}
 - Body: archive path + validate command + "one archive PR per change-id"
 - Mark ready for review (not draft)
-
-MERGE (only if all true):
-- No other open archive PR for this CHANGE_ID
-- PR mergeable (CLEAN) and CI green, OR GitHub auto-merge enabled
-- If gh pr merge fails (permissions): leave PR open and report URL for human merge
-- After merge: delete branch
+- Do NOT merge — operator merges on GitHub only
+- End with: PR URL + "Awaiting operator merge on GitHub"
 
 FORBIDDEN:
+- gh pr merge, auto-merge, or any agent-side merge
 - Creating a second archive PR for the same CHANGE_ID in the same run
 - Merging when master already contains archive/*-${CHANGE_ID}
 - apply or propose in this run
@@ -314,7 +317,7 @@ FORBIDDEN:
 - Multiple archive PRs for the same `change-id` without dedupe (§5.3.1)  
 - Secrets, tokens, or Cursor API keys in repo files  
 
-**R7 note:** auto-merge on apply/archive PRs is acceptable when branch protection + CI gates enforce review; it does not replace OpenSpec propose review for type C/D work — translation waves are operational batches with pre-defined tasks.
+**R7 note:** translation-wave PRs are reviewed on GitHub by the operator before merge; automations never merge on behalf of the operator.
 
 ---
 
@@ -398,7 +401,7 @@ No — keep **Automation B** (apply) and **Automation C** (archive) separate. Ch
 Parallel Cloud Agents each opened an archive PR before any merged. Close stale duplicates (§5.3.1); do not merge them if `master` already has `openspec/changes/archive/*-<id>/`.
 
 **Should the archive Automation merge its own PR?**  
-Prefer **GitHub auto-merge** when CI is green. The agent may merge only after dedupe checks (§5.3.2). If the integration token lacks permission, leave the PR open for human merge.
+**No.** Only the operator merges on GitHub (web UI). The agent opens a ready PR, runs dedupe (§5.3.1), and stops with the PR URL. Automation C does not use auto-merge or `gh pr merge`.
 
 **Must every propose wait for the previous PR to merge?**  
 No — only when slices overlap or when you are in **apply**/dependent-apply. See §2.

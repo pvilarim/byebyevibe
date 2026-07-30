@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Archive one completed OpenSpec change and merge its PR.
+# Archive one completed OpenSpec change, push branch, and print PR instructions.
+# Merge is operator-only on GitHub — see doc/i18n/CURSOR-AUTOMATIONS.md §3.
 set -euo pipefail
 
 CHANGE="${1:?usage: archive-and-merge.sh <change-id>}"
@@ -39,8 +40,7 @@ fi
 
 PR_NUM="$EXISTING"
 gh pr ready "$PR_NUM" 2>/dev/null || true
-gh pr merge "$PR_NUM" --merge --delete-branch
 git checkout master
-git pull origin master --quiet
 
-echo "DONE: archived and merged ${CHANGE} (PR #${PR_NUM})"
+echo "READY: archive PR #${PR_NUM} for ${CHANGE} — merge on GitHub when CI is green"
+echo "URL: $(gh pr view "$PR_NUM" --json url -q .url 2>/dev/null || echo "https://github.com/pvilarim/byebyevibe/pull/${PR_NUM}")"
