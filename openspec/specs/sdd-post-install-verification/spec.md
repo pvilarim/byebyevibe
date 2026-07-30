@@ -1,135 +1,136 @@
 # sdd-post-install-verification Specification
 
 ## Purpose
-TBD - created by archiving change fechar-checklist-instalacao-sdd. Update Purpose after archive.
+
+Post-install verification requirements for SDD bootstrap. Ensures constitution, entry points, tooling, and coordination artifacts are present and operational after installation.
 ## Requirements
 ### Requirement: Project constitution exists
 
-O repositório MUST ter `openspec/project.md` editado com Purpose, Stack e Cross-references ao guia de instalação SDD **e** referência ao kit SDD (`sdd-kit/` ou versão instalada conforme §1.6 do guia).
+The repository MUST have `openspec/project.md` edited with Purpose, Stack, and Cross-references to the SDD installation guide **and** a reference to the SDD kit (`sdd-kit/` or the installed version per guide §1.6).
 
 #### Scenario: Agent reads project context
 
-- **WHEN** um agente inicia trabalho no repositório
-- **THEN** `openspec/project.md` descreve o perfil do repo (APP, DOCS_SPECS ou HYBRID), aponta para `doc/sistema-sdd-pedro.md` com versão, e indica cenário de instalação aplicável (C1/C2)
+- **WHEN** an agent starts work in the repository
+- **THEN** `openspec/project.md` describes the repo profile (APP, DOCS_SPECS, or HYBRID), points to `doc/sistema-sdd-pedro.md` with version, and indicates the applicable installation scenario (C1/C2)
 
 ### Requirement: AGENTS entry point is lean
 
-O repositório MUST ter `AGENTS.md` na raiz com ≤150 linhas e MUST NOT conter o bloco auto-gerado `<!-- gitnexus:start -->` … `<!-- gitnexus:end -->`.
+The repository MUST have `AGENTS.md` at the root with ≤150 lines and MUST NOT contain the auto-generated block `<!-- gitnexus:start -->` … `<!-- gitnexus:end -->`.
 
 #### Scenario: AGENTS size check
 
-- **WHEN** a verificação pós-instalação é executada
-- **THEN** `AGENTS.md` tem no máximo 150 linhas e não inclui `gitnexus:start`
+- **WHEN** post-install verification runs
+- **THEN** `AGENTS.md` has at most 150 lines and does not include `gitnexus:start`
 
 ### Requirement: Tool-generated files are gitignored
 
-`AGENTS.tools-generated.md` e `CLAUDE.tools-generated.md` MUST estar listados em `.gitignore`.
+`AGENTS.tools-generated.md` and `CLAUDE.tools-generated.md` MUST be listed in `.gitignore`.
 
 #### Scenario: Ignore generated agent files
 
-- **WHEN** GitNexus ou ferramentas geram ficheiros auxiliares
-- **THEN** esses ficheiros não são commitados acidentalmente
+- **WHEN** GitNexus or other tools generate auxiliary files
+- **THEN** those files are not committed accidentally
 
 ### Requirement: CLAUDE entry delegates to AGENTS
 
-`CLAUDE.md` MUST apontar para `./AGENTS.md` e MUST ter no máximo ~25 linhas úteis sem duplicar regras longas.
+`CLAUDE.md` MUST point to `./AGENTS.md` and MUST have at most ~25 useful lines without duplicating long rules.
 
 #### Scenario: Claude Code lookup
 
-- **WHEN** Claude Code carrega o repositório
-- **THEN** `CLAUDE.md` redireciona comportamento para `AGENTS.md` sem bloco GitNexus duplicado
+- **WHEN** Claude Code loads the repository
+- **THEN** `CLAUDE.md` redirects behavior to `AGENTS.md` without a duplicated GitNexus block
 
 ### Requirement: Cursor base rules exist
 
-`.cursor/rules/000-base.mdc` e `050-security.mdc` MUST existir após instalação.
+`.cursor/rules/000-base.mdc` and `050-security.mdc` MUST exist after installation.
 
 #### Scenario: Cursor always-on rules
 
-- **WHEN** o Cursor abre o workspace
-- **THEN** regras base e segurança estão activas via `.mdc`
+- **WHEN** Cursor opens the workspace
+- **THEN** base and security rules are active via `.mdc`
 
 ### Requirement: OpenSpec CLI is operational
 
-`npx openspec list` MUST executar sem erro e listar changes em `openspec/changes/`.
+`npx openspec list` MUST run without error and list changes under `openspec/changes/`.
 
 #### Scenario: List changes
 
-- **WHEN** o operador corre `npx openspec list`
-- **THEN** o comando termina com exit code 0
+- **WHEN** the operator runs `npx openspec list`
+- **THEN** the command exits with code 0
 
 ### Requirement: GitNexus index is current
 
-`npx gitnexus status` MUST reportar index up-to-date em relação ao HEAD actual.
+`npx gitnexus status` MUST report the index up-to-date relative to the current HEAD.
 
 #### Scenario: Index freshness
 
-- **WHEN** o operador corre `npx gitnexus status`
-- **THEN** o status indica que o índice está actualizado
+- **WHEN** the operator runs `npx gitnexus status`
+- **THEN** the status indicates the index is up to date
 
 ### Requirement: Graphify report exists
 
-Após `graphify update .`, o ficheiro `graphify-out/GRAPH_REPORT.md` MUST existir (directório `graphify-out/` pode estar gitignored).
+After `graphify update .`, the file `graphify-out/GRAPH_REPORT.md` MUST exist (the `graphify-out/` directory may be gitignored).
 
 #### Scenario: Knowledge graph built
 
-- **WHEN** a instalação corre `graphify update .`
-- **THEN** `graphify-out/GRAPH_REPORT.md` está presente no filesystem local
+- **WHEN** installation runs `graphify update .`
+- **THEN** `graphify-out/GRAPH_REPORT.md` is present on the local filesystem
 
 ### Requirement: OpenSpec propose workflow works
 
-O operador MUST conseguir criar um change via `/opsx:propose` ou `npx openspec new change <name>`.
+The operator MUST be able to create a change via `/opsx:propose` or `npx openspec new change <name>`.
 
 #### Scenario: Propose new change
 
-- **WHEN** o utilizador executa `/opsx:propose <descrição>` após reiniciar a IDE
-- **THEN** um directorio `openspec/changes/<name>/` é criado com `.openspec.yaml`
+- **WHEN** the user runs `/opsx:propose <description>` after restarting the IDE
+- **THEN** a directory `openspec/changes/<name>/` is created with `.openspec.yaml`
 
 ### Requirement: Profile reflected in AGENTS commands
 
-A tabela Commands em `AGENTS.md` MUST reflectir o perfil instalado (APP, DOCS_SPECS ou HYBRID).
+The Commands table in `AGENTS.md` MUST reflect the installed profile (APP, DOCS_SPECS, or HYBRID).
 
 #### Scenario: DOCS_SPECS pilot
 
-- **WHEN** o repositório é perfil DOCS_SPECS sem app na raiz
-- **THEN** `AGENTS.md` documenta workflows `/opsx:*` e prioridade Graphify/OpenSpec sobre stack de app
+- **WHEN** the repository is DOCS_SPECS profile without an app at the root
+- **THEN** `AGENTS.md` documents `/opsx:*` workflows and Graphify/OpenSpec priority over app stack
 
 ### Requirement: Infrastructure manifest present after install
 
-Após instalação SDD, `openspec/infra.md` MUST existir e estar actualizado com estado ✅ para componentes core (OpenSpec, GitNexus, Graphify).
+After SDD installation, `openspec/infra.md` MUST exist and be up to date with ✅ status for core components (OpenSpec, GitNexus, Graphify).
 
 #### Scenario: Post-install checklist item
 
-- **WHEN** o operador executa o checklist §2.8
-- **THEN** `openspec/infra.md` existe, contém secções SDD Stack e MCP Servers, e timestamp de verificação recente
+- **WHEN** the operator runs checklist §2.8
+- **THEN** `openspec/infra.md` exists, contains SDD Stack and MCP Servers sections, and a recent verification timestamp
 
 #### Scenario: Verify infra script available
 
-- **WHEN** o operador corre `bash scripts/verify-infra.sh` após instalação
-- **THEN** o script completa sem erro e confirma estado dos componentes listados em `openspec/infra.md`
+- **WHEN** the operator runs `bash scripts/verify-infra.sh` after installation
+- **THEN** the script completes without error and confirms the status of components listed in `openspec/infra.md`
 
 ### Requirement: Session coordination present after install
 
-Após instalação SDD, os scripts `scripts/sdd-session-check.sh` e `scripts/sdd-session-status.sh` MUST existir e ser executáveis; `.cursor/rules/016-session-coordination.mdc` MUST existir (alwaysApply); `.sdd/runtime/` MUST estar no `.gitignore`.
+After SDD installation, the scripts `scripts/sdd-session-check.sh` and `scripts/sdd-session-status.sh` MUST exist and be executable; `.cursor/rules/016-session-coordination.mdc` MUST exist (alwaysApply); `.sdd/runtime/` MUST be in `.gitignore`.
 
 #### Scenario: Session scripts on checklist
 
-- **WHEN** o operador executa o checklist §2.8
-- **THEN** `bash scripts/sdd-session-status.sh` completa sem erro
-- **AND** `016-session-coordination.mdc` está presente
+- **WHEN** the operator runs checklist §2.8
+- **THEN** `bash scripts/sdd-session-status.sh` completes without error
+- **AND** `016-session-coordination.mdc` is present
 
 #### Scenario: Infra manifest lists session coordination
 
-- **WHEN** o operador lê `openspec/infra.md` após instalação
-- **THEN** existe secção Session Coordination com os scripts listados
+- **WHEN** the operator reads `openspec/infra.md` after installation
+- **THEN** a Session Coordination section lists the scripts
 
 ### Requirement: Session handoff rules present after install
 
-Após instalação SDD, `.cursor/rules/015-session-phases.mdc` MUST existir e as skills `/opsx:*` MUST conter secção Session Handoff. Additionally, the apply skill MUST reference session coordination scripts (`sdd-session-check`, `sdd-session-release`). **Installation MUST obtain these artifacts from `sdd-kit/templates/` rather than markdown extraction.**
+After SDD installation, `.cursor/rules/015-session-phases.mdc` MUST exist and the `/opsx:*` skills MUST contain a Session Handoff section. Additionally, the apply skill MUST reference session coordination scripts (`sdd-session-check`, `sdd-session-release`). **Installation MUST obtain these artifacts from `sdd-kit/templates/` rather than markdown extraction.**
 
 #### Scenario: Handoff and coordination rules active
 
-- **WHEN** o Cursor abre o workspace após instalação SDD via kit
-- **THEN** as regras `015-session-phases.mdc` e `016-session-coordination.mdc` estão activas (alwaysApply: true)
+- **WHEN** Cursor opens the workspace after SDD installation via kit
+- **THEN** rules `015-session-phases.mdc` and `016-session-coordination.mdc` are active (alwaysApply: true)
 
 ### Requirement: Install kit present after SDD bootstrap
 

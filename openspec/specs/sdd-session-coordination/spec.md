@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Coordenação operacional de múltiplas sessões de agente na **mesma máquina**, evitando apply concorrente na mesma working tree. Complementa `sdd-session-handoff` (transição de fase) com exclusão mútua local e presença legível.
+Operational coordination of multiple agent sessions on the **same machine**, preventing concurrent apply on the same working tree. Complements `sdd-session-handoff` (phase transition) with local mutual exclusion and readable presence.
 
 ## Requirements
 
