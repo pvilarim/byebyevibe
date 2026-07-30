@@ -75,7 +75,7 @@ files:
 
   - path: scripts/sdd-upgrade-diff.sh
     source: templates/scripts/sdd-upgrade-diff.sh
-    sha256: "e8cd3070564a47e11417e8ea1c561f5c13574cb75c78ffc81ddf50d55784b3b7"
+    sha256: "b4f0d627a8ca0a824bf2d850512aa6d33cf629e3ad8382785724aa2cf196a674"
     merge: MERGE
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -x scripts/sdd-upgrade-diff.sh"

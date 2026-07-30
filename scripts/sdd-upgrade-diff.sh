@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# Compara ficheiros curados SDD no repo com cópias de staging ou sdd-kit/templates/.
-# Uso: ./scripts/sdd-upgrade-diff.sh [STAGING_DIR] [REPO_ROOT]
-# Ver doc/sistema-sdd-pedro.md §2.9.5 e §12.9
+# Compare curated SDD files in the repo with staging copies or sdd-kit/templates/.
+# Usage: ./scripts/sdd-upgrade-diff.sh [STAGING_DIR] [REPO_ROOT]
+# See doc/sistema-sdd-pedro.md §2.9.5 and §12.9
 
 set -euo pipefail
 
@@ -16,7 +16,7 @@ fi
 
 echo "=== SDD upgrade diff ==="
 echo "Repo: $(pwd)"
-echo "Guia referenciado em project.md: ${GUIDE_VERSION:-[não detectado]}"
+echo "Guide referenced in project.md: ${GUIDE_VERSION:-[not detected]}"
 echo ""
 
 # Build curated file list from MANIFEST.yaml when present, else fallback
@@ -34,7 +34,7 @@ for line in text.splitlines():
         print(m.group(1).strip())
 PY
 )
-  echo "Fonte inventário: sdd-kit/MANIFEST.yaml (${#CURATED_FILES[@]} ficheiros)"
+  echo "Inventory source: sdd-kit/MANIFEST.yaml (${#CURATED_FILES[@]} files)"
 else
   CURATED_FILES=(
     "AGENTS.md"
@@ -54,7 +54,7 @@ else
     "scripts/sdd-session-check.sh"
     "scripts/sdd-session-status.sh"
   )
-  echo "Fonte inventário: lista built-in (MANIFEST ausente)"
+  echo "Inventory source: built-in list (MANIFEST missing)"
 fi
 
 GENERATED_OK=(
@@ -64,38 +64,38 @@ GENERATED_OK=(
 )
 
 echo ""
-echo "--- Inventário (ficheiros curados) ---"
+echo "--- Inventory (curated files) ---"
 for f in "${CURATED_FILES[@]}"; do
   if [[ -f "$f" ]]; then
     lines=$(wc -l < "$f" | tr -d ' ')
     sha=$(sha256sum "$f" | awk '{print $1}')
-    printf "  OK  %-40s %4s linhas  %s\n" "$f" "$lines" "${sha:0:12}…"
+    printf "  OK  %-40s %4s lines  %s\n" "$f" "$lines" "${sha:0:12}…"
   else
-    printf "  --  %-40s (ausente)\n" "$f"
+    printf "  --  %-40s (missing)\n" "$f"
   fi
 done
 
 echo ""
-echo "--- Harness gerado (pode sobrescrever com openspec update) ---"
+echo "--- Generated harness (may be overwritten by openspec update) ---"
 for f in "${GENERATED_OK[@]}"; do
   if [[ -e "$f" ]]; then
     echo "  OK  $f"
   else
-    echo "  --  $f (ausente)"
+    echo "  --  $f (missing)"
   fi
 done
 
 if [[ -z "$STAGING_DIR" ]]; then
   echo ""
-  echo "Sem STAGING_DIR: inventário apenas."
-  echo "Para diff unificado, usar sdd-kit/templates/ ou staging local:"
+  echo "No STAGING_DIR: inventory only."
+  echo "For unified diff, use sdd-kit/templates/ or local staging:"
   echo "  $0 sdd-kit/templates"
   echo "  $0 openspec/changes/upgrade-sdd-vX.Y.Z/sdd-staging"
   exit 0
 fi
 
 if [[ ! -d "$STAGING_DIR" ]]; then
-  echo "ERRO: STAGING_DIR não existe: $STAGING_DIR" >&2
+  echo "ERROR: STAGING_DIR does not exist: $STAGING_DIR" >&2
   exit 1
 fi
 
@@ -113,7 +113,7 @@ for f in "${CURATED_FILES[@]}"; do
   fi
   if [[ ! -f "$f" ]]; then
     echo ""
-    echo ">>> NOVO (só em staging): $f"
+    echo ">>> NEW (staging only): $f"
     head -20 "$staging"
     DIFF_FOUND=1
     continue
@@ -122,14 +122,14 @@ for f in "${CURATED_FILES[@]}"; do
     echo ""
     echo ">>> DIFF: $f"
     diff -u "$f" "$staging" | head -80 || true
-    echo "    (diff completo: /tmp/sdd-diff-${f//\//_}.patch)"
+    echo "    (full diff: /tmp/sdd-diff-${f//\//_}.patch)"
     DIFF_FOUND=1
   else
-    echo "  =   $f (igual ao staging)"
+    echo "  =   $f (same as staging)"
   fi
 done
 
 if [[ "$DIFF_FOUND" -eq 0 ]]; then
   echo ""
-  echo "Nenhuma diferença nos ficheiros curados comparados."
+  echo "No differences in the curated files compared."
 fi
