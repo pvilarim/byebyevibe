@@ -2,24 +2,24 @@
 
 ## Why
 
-[FILL IN: reason for the change — problem or opportunity this change resolves]
+[FILL IN: why this change — problem or opportunity it addresses]
 
 ## What Changes
 
-- [FILL IN: list of concrete changes]
+- [FILL IN: concrete list of changes]
 
 ## Capabilities
 
 ### New Capabilities
 
-- `[capability-id]`: [brief description]
+- `[capability-id]`: [FILL IN: short description]
 
 ### Modified Capabilities
 
-- `[capability-id]`: [what changes in existing requirements]
+- `[capability-id]`: [FILL IN: what changes in existing requirements]
 
 ## Impact
 
-- Files modified: [list]
+- Files modified: [FILL IN: list]
 - New dependencies: [none / list]
 - Risks or notes: [if applicable]

@@ -180,7 +180,7 @@ files:
 
   - path: openspec/changes/_template/proposal.md
     source: templates/openspec/changes/_template/proposal.md
-    sha256: "e577563304c0175b8a7e219827215cc63cb1406fecb948c7a730b50a51bb9511"
+    sha256: "cdffd38c7f7befacfc9e1573ee1516195f6d4c3e78f4c6185a5fa84d0055f276"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f openspec/changes/_template/proposal.md && grep -q '**Issue:**' openspec/changes/_template/proposal.md"
