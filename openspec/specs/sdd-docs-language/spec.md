@@ -280,6 +280,25 @@ The following active-change artifact paths under `openspec/changes/add-sdd-disco
 - **WHEN** an agent reads the translated proposal, design, and tasks for `add-sdd-discovery-positioning`
 - **THEN** the D9 permanent non-goals, D10 roadmap sequence, D11 metrics framing without ML claims, evaluation promotion intent, root README / kit README / guide quickstart intents, manual About/topics checklist meaning, and historical `[x]` completion markers remain equivalent to the pre-wave Portuguese artifacts while surrounding prose and headings are English
 
+### Requirement: Explore-oss research wave-1 surface is English
+
+The path `openspec/changes/explore-oss-coverage-gaps/research.md` MUST be written in English after the explore-oss substitution wave. Residual Portuguese prose in this file is FORBIDDEN after apply. Dual-file siblings such as `*.en.md` or `*-pt.md` MUST NOT be introduced for this path. Freeze-list tokens (paths, change-ids, slash commands such as `/opsx:*`, package pins, URLs, fenced shell commands, and brand/tool names) MUST remain unaltered aside from intentional non-i18n fixes. Gap recommendation outcomes (add to kit / manual fix / do not add / hybrid / do not adopt now for G1–G8) MUST keep the same meaning after label language is normalized to glossary-canonical English.
+
+#### Scenario: Explore-oss research passes per-wave verification
+
+- **WHEN** an operator runs `bash scripts/verify-i18n-wave.sh --files openspec/changes/explore-oss-coverage-gaps/research.md` after the explore-oss substitution is applied
+- **THEN** the script exits 0 (including G-PT and G-LINK on that file)
+
+#### Scenario: No dual-file migration for explore-oss research
+
+- **WHEN** the explore-oss substitution wave apply completes
+- **THEN** English content is at `openspec/changes/explore-oss-coverage-gaps/research.md` and no permanent `*.en.md` / `*-pt.md` sibling exists for that path
+
+#### Scenario: Gap recommendation outcomes remain stable
+
+- **WHEN** an agent reads the explore-oss decision matrix after substitution
+- **THEN** G2 Probity remains an add-to-kit recommendation (linked to `add-probity-tdd-module`), G3 error-tracking remains do-not-add to kit core, and G6 multi-agent orchestration remains do-not-adopt-now, while prose and labels are English
+
 ### Requirement: Design wave-1 module-install surfaces are English
 
 The following design documentation paths MUST be written in English after the design substitution wave: `doc/design/002-ui-module-install.md`, `doc/design/003-ui-stack-adapters.md`, and `doc/design/004-probity-module-install.md`. Residual Portuguese prose in any of these files is FORBIDDEN after apply. Dual-file siblings such as `*.en.md` or `*-pt.md` MUST NOT be introduced for these paths. Freeze-list tokens (paths, change-ids, slash commands such as `/opsx:*`, script names including `install-ui-module.sh` and `install-probity-module.sh`, package pins, URLs, fenced shell commands, scenario labels `C1-UI` and `G2`, and brand/tool names) MUST remain unaltered aside from intentional non-i18n fixes. Install / detect / apply procedure semantics (including “what `--apply` does not do” lists and adapter opt-out steps) MUST keep the same meaning after prose is normalized to glossary-canonical English.
