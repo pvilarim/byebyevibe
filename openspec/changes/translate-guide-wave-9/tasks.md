@@ -12,7 +12,7 @@
 
 - [ ] 2.1 Rewrite lines **1458–1619** (§7–§8 task protocols + system rules overview) Portuguese prose → glossary-canonical English; do not edit lines outside the slice
   - **Pattern:** `doc/sistema-sdd-pedro.md`
-  - **Gate:** `bash scripts/verify-i18n-wave.sh --files doc/sistema-sdd-pedro.md`
+  - **Gate:** `bash scripts/verify-i18n-wave.sh --files doc/sistema-sdd-pedro.md --slice 1458-1619`
   - **Forbidden:** dual-file siblings; edits outside lines 1458–1619
 
 ## 3. Validate

@@ -12,7 +12,7 @@
 
 - [ ] 2.1 Rewrite lines **1620–1973** (§9–§10 Cursor + VS Code / Claude Code setup) Portuguese prose → glossary-canonical English; do not edit lines outside the slice
   - **Pattern:** `doc/sistema-sdd-pedro.md`
-  - **Gate:** `bash scripts/verify-i18n-wave.sh --files doc/sistema-sdd-pedro.md`
+  - **Gate:** `bash scripts/verify-i18n-wave.sh --files doc/sistema-sdd-pedro.md --slice 1620-1973`
   - **Forbidden:** dual-file siblings; edits outside lines 1620–1973
 
 ## 3. Validate

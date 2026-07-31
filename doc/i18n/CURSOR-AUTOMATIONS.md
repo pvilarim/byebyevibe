@@ -68,6 +68,7 @@ Run **three separate Automations** — never combine phases in one run (§5.4).
 |------------|------------------|-------|-----------|--------|
 | **A — Propose factory** | Cron / manual | `/opsx:propose` | Draft propose PR | Human or auto-merge |
 | **B — Apply on propose merge** | PR merged → title matches `propose translate-*` | `/opsx:apply` | Draft apply PR | Human or auto-merge |
+| **B-guide — Guide apply chain** | PR merged → title matches `apply translate-guide-wave-` | `/opsx:apply` next wave (§5.2.1) | Ready apply PR | Agent merges (chain) |
 | **C — Archive on apply merge** | PR merged → title matches `apply translate-*` | `/opsx:archive` | Ready archive PR | Auto-merge or agent (§5.3) |
 
 ```
@@ -163,14 +164,14 @@ Idle / stop condition:
 
 **Merge policy:** open as **DRAFT**; enable **GitHub auto-merge** on the apply PR if branch protection allows. The apply agent MUST NOT merge its own PR (archive automation depends on a clean merge event).
 
-**Operator checklist before enabling:**
+**Operator checklist before enabling (generic §5.2 only — guide uses §5.2.1):**
 
 1. Propose PR for the wave is **merged** on `master`
 2. `openspec/changes/<id>/` exists on `master` with open tasks
 3. Prerequisite waves (if any in `tasks.md`) are apply-complete — prefer **archived**
 4. No other in-flight apply PR touches the same file paths
 
-**Instructions (paste into Automation B):**
+**Instructions (paste into Automation B — generic):**
 
 ```text
 Read and follow doc/i18n/CURSOR-AUTOMATIONS.md end-to-end.
@@ -210,6 +211,93 @@ PR:
 - Do NOT merge
 
 STOP with Session Handoff for /opsx:archive (§6).
+```
+
+### 5.2.1 Guide apply chain (Automation B-guide) — sequential `translate-guide-wave-*`
+
+**Purpose:** after each **guide** apply PR merges on `master`, automatically run `/opsx:apply` for the **next** pending `translate-guide-wave-N` (waves share `doc/sistema-sdd-pedro.md` — **never** parallelize guide applies).
+
+**When to use:** guide waves **5–14** (and any future `translate-guide-wave-*` with open tasks). Propose factory (§5.1) already created the changes; this chain only runs **apply**.
+
+**Repo / base:** this repository · `master`
+
+**Trigger (Cursor Automations UI):**
+
+| Trigger type | Filter |
+|--------------|--------|
+| **Pull request merged** | Base: `master` · Title contains: `apply translate-guide-wave-` |
+| Manual / cron (fallback) | Daily or “Run now” if the chain stalled after a merge |
+
+**Do not** use the generic §5.2 trigger (`propose translate-`) for this chain — guide proposes are already merged.
+
+**Queue helper (repo):**
+
+```bash
+bash scripts/translate-guide-next-wave.sh          # human-readable
+bash scripts/translate-guide-next-wave.sh --json   # machine-readable
+```
+
+Exit `0` → next wave to apply. Exit `1` → idle (no open guide apply waves).
+
+**Branch naming:** `cursor/apply-<change-id>-ee2e` (e.g. `cursor/apply-translate-guide-wave-5-ee2e`)
+
+**PR title:** `docs(sdd): apply translate-guide-wave-N`
+
+**Merge policy (this chain):** open PR **ready for review** (not draft). After gates pass locally, **merge the apply PR in the same run** (`gh pr merge`) so the next automation trigger fires. Operator may enable GitHub auto-merge instead.
+
+**Instructions (paste into Automation B-guide):**
+
+```text
+Read and follow doc/i18n/CURSOR-AUTOMATIONS.md end-to-end.
+Then execute ONLY §5.2.1 "Guide apply chain" — ONE guide apply per run.
+
+SINGLE SDD phase: /opsx:apply only. Do NOT propose. Do NOT archive in this run.
+
+QUEUE (mandatory first step):
+  eval "$(bash scripts/translate-guide-next-wave.sh)"
+  # Sets CHANGE_ID, WAVE, SLICE, GATE, INCOMPLETE_TASKS
+  # If script exits 1: report "Guide apply chain idle" and STOP (no PR).
+
+PRE-FLIGHT (stop with message if any fails):
+- test -d "openspec/changes/${CHANGE_ID}"
+- test "${INCOMPLETE_TASKS}" -gt 0
+- gh pr list --state open --search "apply ${CHANGE_ID}" --json number -q 'length' | grep -q '^0$' || STOP "duplicate apply PR"
+- Confirm prior guide waves on lower N are apply-complete (tasks all [x]) or archived
+
+APPLY:
+1. git checkout master && git pull origin master
+2. git checkout -b "cursor/apply-${CHANGE_ID}-ee2e"
+3. Read proposal.md, design.md, tasks.md, doc/i18n/GLOSSARY.md
+4. /opsx:apply ${CHANGE_ID} — PT→EN in-place ONLY on doc/sistema-sdd-pedro.md lines in SLICE
+5. Forbidden: dual-file *.en.md / *-pt.md; edits outside SLICE; openspec/changes/archive/**
+
+GATES (must pass; use SLICE from script):
+- ${GATE}
+- bash scripts/verify-task-patterns.sh
+- OPENSPEC_TELEMETRY=0 npx --yes @fission-ai/openspec@1.3.1 validate ${CHANGE_ID} --strict
+
+PR + MERGE:
+- git commit -m "docs(sdd): apply ${CHANGE_ID}"
+- git push -u origin "cursor/apply-${CHANGE_ID}-ee2e"
+- gh pr create --base master --title "docs(sdd): apply ${CHANGE_ID}" --body "Slice ${SLICE} of doc/sistema-sdd-pedro.md. Gate: ${GATE}"
+- gh pr ready <number>
+- gh pr merge <number> --merge --delete-branch
+
+STOP with one line:
+  "Guide apply chain: merged ${CHANGE_ID}. Next run should pick translate-guide-wave-$((WAVE+1)) via translate-guide-next-wave.sh"
+```
+
+**Operator setup checklist:**
+
+1. Create Automation **B-guide** at [cursor.com/automations](https://cursor.com/automations) with trigger **PR merged** → title `apply translate-guide-wave-`.
+2. Paste §5.2.1 instructions above into the Automation prompt.
+3. Ensure `master` includes `scripts/translate-guide-next-wave.sh` (merge this doc/script PR first).
+4. Optional: enable **Automation C** (§5.3) on the same trigger pattern to archive each wave after apply merge.
+5. Close stale duplicate archive PRs (§5.3.1) before enabling C.
+
+```
+  apply guide-wave-N merged ──▶ Automation B-guide ──▶ apply wave-N+1 ──merge──▶ (re-triggers)
+                         └──▶ Automation C (optional) ──▶ archive wave-N
 ```
 
 ### 5.3 Archive after apply merge (Automation C)
@@ -365,7 +453,8 @@ Operators should re-check `npx openspec list` and open PRs; typical pattern:
 
 | Stage | Action |
 |-------|--------|
-| Propose already merged, tasks open | Run **Apply** Automation B (§5.2) |
+| Guide apply chain (waves 5–14) | **Automation B-guide** (§5.2.1) on each `apply translate-guide-wave-*` merge; kickstart with manual Run if wave-4 already merged |
+| Propose already merged, tasks open (non-guide) | Run **Apply** Automation B (§5.2) |
 | Apply PR merged, tasks all checked | Run **Archive** Automation C (§5.3) |
 | Need more waves (guide sections first; then kit/design/avaliacoes — **not** `doc/curso/`) | Run **Propose factory** (§4.1) in parallel for disjoint slices |
 | Dependent pair (e.g. W2c then W2d) | Apply sequentially; do not parallelize those applies |
