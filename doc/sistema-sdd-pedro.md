@@ -619,223 +619,223 @@ The skill produces findings with 5 tags:
 
 **Rollback:** `rm -r .claude/skills/correctness-review/ .cursor/skills/correctness-review/` + revert `AGENTS.md` and `openspec/infra.md`.
 
-### 2.15 GitHub Issues MCP (github-mcp-server) — operação
+### 2.15 GitHub Issues MCP (github-mcp-server) — operation
 
-MCP passivo (modo D — gap G5, change `add-github-mcp-issue-traceability`) para ligar changes OpenSpec a GitHub Issues. O agente consulta quando relevante em explore/propose; **não** intercepta edições nem adiciona etapa ao fluxo interactivo.
+Passive MCP (mode D — gap G5, change `add-github-mcp-issue-traceability`) to link OpenSpec changes to GitHub Issues. The agent consults when relevant in explore/propose; it does **not** intercept edits or add a step to the interactive flow.
 
-#### Instalação
+#### Installation
 
-**Opção primária — endpoint remoto (OAuth, sem token commitado):**
+**Primary option — remote endpoint (OAuth, no committed token):**
 
 1. Cursor → Settings → MCP → Add server
 2. URL: `https://api.githubcopilot.com/mcp/`
-3. Autenticar via OAuth quando solicitado
-4. Limitar toolsets a **issues** onde o cliente permitir
+3. Authenticate via OAuth when prompted
+4. Limit toolsets to **issues** where the client allows
 
-**Alternativa — binário local (air-gapped):**
+**Alternative — local binary (air-gapped):**
 
 ```bash
-# Imagem Docker oficial — pin por digest em produção
+# Official Docker image — pin by digest in production
 docker pull ghcr.io/github/github-mcp-server:v1.7.0
 ```
 
-Configurar em `~/.cursor/mcp.json` (gitignored) com `--toolsets issues`. **NUNCA** commitar tokens ou `GITHUB_PERSONAL_ACCESS_TOKEN` no repo.
+Configure in `~/.cursor/mcp.json` (gitignored) with `--toolsets issues`. **NEVER** commit tokens or `GITHUB_PERSONAL_ACCESS_TOKEN` in the repo.
 
-#### Verificar
+#### Verify
 
 ```bash
-# Na sessão do agente
-mcp_get_tools   # deve listar tools do github-mcp-server
+# In the agent session
+mcp_get_tools   # should list github-mcp-server tools
 
-# Ou inspeccionar config local
-cat ~/.cursor/mcp.json   # confirmar entrada github-mcp-server
+# Or inspect local config
+cat ~/.cursor/mcp.json   # confirm github-mcp-server entry
 ```
 
-Actualizar `openspec/infra.md` para ✅ quando confirmado.
+Update `openspec/infra.md` to ✅ when confirmed.
 
-#### Quando o agente deve consultar (matriz A–E)
+#### When the agent should consult (A–E matrix)
 
-| Tipo | Consultar? | Quando |
+| Type | Consult? | When |
 |------|------------|--------|
-| **A — Trivial** | ❌ Não | — |
-| **B — Bug fix** | ✅ Sim | Framing do change — issue de origem, critérios de aceite |
-| **C — Refactor** | ⬜ Opcional | Se change referencia issue |
-| **D — Feature** | ✅ Sim | Durante `/opsx:propose` — user story, critérios, dependências |
-| **E — Exploração** | ✅ Sim | Durante research — duplicatas, contexto de bugs anteriores |
+| **A — Trivial** | ❌ No | — |
+| **B — Bug fix** | ✅ Yes | Change framing — source issue, acceptance criteria |
+| **C — Refactor** | ⬜ Optional | If change references an issue |
+| **D — Feature** | ✅ Yes | During `/opsx:propose` — user story, criteria, dependencies |
+| **E — Exploration** | ✅ Yes | During research — duplicates, prior bug context |
 
-**Campo `**Issue:**` em `proposal.md`:** URL completo, `#123`, ou `—` (sem issue). Valores aceites mas não validados por gate de CI.
+**`**Issue:**` field in `proposal.md`:** full URL, `#123`, or `—` (no issue). Accepted values are not validated by a CI gate.
 
-**Cloud agents:** `gh` CLI read-only já cobre consultas ad-hoc em runners efémeros; github-mcp é para sessões interactivas locais.
+**Cloud agents:** read-only `gh` CLI already covers ad-hoc queries on ephemeral runners; github-mcp is for local interactive sessions.
 
 #### Troubleshooting
 
-| Sintoma | Causa provável | Acção |
+| Symptom | Likely cause | Action |
 |---------|----------------|-------|
-| MCP não aparece em `mcp_get_tools` | Servidor não configurado ou auth falhou | Rever `~/.cursor/mcp.json`; repetir OAuth |
-| Tools de PR/repo/code visíveis | Escopo excessivo | Limitar a `--toolsets issues` |
-| Agente não consulta issues | Tipo A ou MCP indisponível | Modo D é fail-open — fluxo continua sem contexto |
-| Token exposto no repo | Config commitada por engano | Revogar token; mover para `~/.cursor/mcp.json` |
+| MCP missing from `mcp_get_tools` | Server not configured or auth failed | Review `~/.cursor/mcp.json`; retry OAuth |
+| PR/repo/code tools visible | Excessive scope | Limit to `--toolsets issues` |
+| Agent does not consult issues | Type A or MCP unavailable | Mode D is fail-open — flow continues without context |
+| Token exposed in repo | Config committed by mistake | Revoke token; move to `~/.cursor/mcp.json` |
 
-#### Desligar / rollback
+#### Disable / rollback
 
-1. Remover entrada `github-mcp-server` de `~/.cursor/mcp.json`
-2. Reverter `openspec/infra.md`, `AGENTS.md` e template `proposal.md` via change de remoção
-3. Bump MANIFEST + recalcular checksums
+1. Remove `github-mcp-server` entry from `~/.cursor/mcp.json`
+2. Revert `openspec/infra.md`, `AGENTS.md`, and template `proposal.md` via a removal change
+3. Bump MANIFEST + recalculate checksums
 
-Sem impacto em CI — github-mcp não entra no `sdd-gates.yml`.
+No CI impact — github-mcp is not in `sdd-gates.yml`.
 
-### 2.16 Módulo Probity (G2) — operação
+### 2.16 Probity module (G2) — operation
 
-Módulo opcional pós-C1 que materializa R6 (`enforceTdd`) via PreToolUse hook. Candidato G2; **TDD Guard superseded por Probity (2026-07)** — não re-propor TDD Guard.
+Optional post-C1 module that materializes R6 (`enforceTdd`) via a PreToolUse hook. G2 candidate; **TDD Guard superseded by Probity (2026-07)** — do not re-propose TDD Guard.
 
-**Perfis:** APP/HYBRID com Vitest, Jest ou pytest. DOCS_SPECS sem test runner: SKIP.
+**Profiles:** APP/HYBRID with Vitest, Jest, or pytest. DOCS_SPECS without a test runner: SKIP.
 
-#### Instalação
+#### Installation
 
 ```bash
 bash sdd-kit/install-probity-module.sh --detect
 bash sdd-kit/install-probity-module.sh --apply --yes
 ```
 
-Depois, no Claude Code:
+Then, in Claude Code:
 
 ```text
 /plugin marketplace add nizos/probity
 /plugin install probity@probity
-# Reiniciar sessão
+# Restart session
 ```
 
-Pin: `@nizos/probity@1.10.0`. Doc detalhado: `doc/design/004-probity-module-install.md`.
+Pin: `@nizos/probity@1.10.0`. Detailed doc: `doc/design/004-probity-module-install.md`.
 
-Ordem de hooks PreToolUse sugerida: **GitNexus → Graphify → Probity**.
+Suggested PreToolUse hook order: **GitNexus → Graphify → Probity**.
 
-#### Piloto (obrigatório)
+#### Pilot (required)
 
-Antes de activar como default num repo APP, validar critérios em `openspec/changes/add-probity-tdd-module/design.md` (p95 < 8s, falsos positivos tipo C < 15%, R6 tipo B 100%, Cursor hooks). Nota de estado do hub: `openspec/changes/add-probity-tdd-module/piloto-nota.md`.
+Before enabling as default on an APP repo, validate criteria in `openspec/changes/add-probity-tdd-module/design.md` (p95 < 8s, type C false positives < 15%, R6 type B 100%, Cursor hooks). Hub status note: `openspec/changes/add-probity-tdd-module/piloto-nota.md`.
 
 #### Cursor IDE
 
-Probity documenta Claude Code / Codex / Copilot CLI. Cursor third-party hooks: [docs](https://cursor.com/docs/reference/third-party-hooks). Validar no piloto; se não disparar Write/Edit, usar Claude Code como primário e documentar a limitação.
+Probity documents Claude Code / Codex / Copilot CLI. Cursor third-party hooks: [docs](https://cursor.com/docs/reference/third-party-hooks). Validate in the pilot; if Write/Edit does not fire, use Claude Code as primary and document the limitation.
 
-#### Matriz A–E
+#### A–E matrix
 
-| Tipo | Probity |
+| Type | Probity |
 |------|---------|
-| A | off (globs excluem docs; não editar prod) |
+| A | off (globs exclude docs; do not edit prod) |
 | B / C / D | on (`enforceTdd`) |
 | E | n/a |
 
-#### Desligar
+#### Disable
 
-| Método | Comando / acção |
+| Method | Command / action |
 |--------|-----------------|
-| Globs | Já exclui `doc/**`, `openspec/**`, `sdd-kit/**` |
+| Globs | Already excludes `doc/**`, `openspec/**`, `sdd-kit/**` |
 | Plugin | `/plugin uninstall probity@probity` |
 | Repo | `bash sdd-kit/install-probity-module.sh --uninstall` |
 
 #### Troubleshooting
 
-| Sintoma | Causa | Acção |
+| Symptom | Cause | Action |
 |---------|-------|-------|
-| Bloqueio em edit de docs | Glob errado | Confirmar exclusões em `probity.config.ts` |
-| Latência alta por edit | 3 hooks + validator LLM | Restringir `files`; medir p95; abortar se > 8s |
-| Sem config → tudo bloqueado | Fail-closed Probity | Restaurar template; `--apply` |
-| Cursor não dispara hook | Sem suporte nativo | Claude Code; ver resultado do piloto |
+| Block on doc edit | Wrong glob | Confirm exclusions in `probity.config.ts` |
+| High latency per edit | 3 hooks + LLM validator | Restrict `files`; measure p95; abort if > 8s |
+| No config → everything blocked | Probity fail-closed | Restore template; `--apply` |
+| Cursor does not fire hook | No native support | Claude Code; see pilot outcome |
 
 #### Lint opt-in
 
-`requireCommand` lint-before-commit **não** está no template default (repos variam). Adicionar manualmente se `npm run lint` for estável.
+`requireCommand` lint-before-commit is **not** in the default template (repos vary). Add manually if `npm run lint` is stable.
 
 #### Rollback
 
 ```bash
 bash sdd-kit/install-probity-module.sh --uninstall
 /plugin uninstall probity@probity
-# Reverter secção Probity em openspec/infra.md se necessário
+# Revert Probity section in openspec/infra.md if needed
 ```
 
-### 2.17 Métricas SDD (sdd-metrics.sh) — operação
+### 2.17 SDD metrics (sdd-metrics.sh) — operation
 
-Script local sob demanda (**modo C**) que gera um relatório markdown de eficácia do framework SDD a partir de `git` + `openspec/changes/` / `openspec/changes/archive/`. Materializa o gap **G4** sem adoptar Apache DevLake (DORA pesado; não mede métricas por change-id).
+Local on-demand script (**mode C**) that generates a markdown effectiveness report for the SDD framework from `git` + `openspec/changes/` / `openspec/changes/archive/`. Materializes gap **G4** without adopting Apache DevLake (heavy DORA; does not measure per change-id metrics).
 
-**Perfis:** APP, DOCS_SPECS, HYBRID — útil onde existir archive OpenSpec + histórico git.
+**Profiles:** APP, DOCS_SPECS, HYBRID — useful where OpenSpec archive + git history exist.
 
-#### Quando correr
+#### When to run
 
-| Situação | Acção |
+| Situation | Action |
 |----------|--------|
-| Retrospectiva / calibração de overhead SDD | `bash scripts/sdd-metrics.sh` |
-| Janela temporal | `bash scripts/sdd-metrics.sh --since YYYY-MM-DD` |
-| Guardar artefacto | `bash scripts/sdd-metrics.sh --output path/relatorio.md` |
-| Verificar se cadência pede nudge | `bash scripts/sdd-metrics.sh --check-cadence` |
-| Durante explore/propose/apply | **Não** acionar relatório — fora da pipeline |
-| Pós-archive (Session Handoff) | Só `--check-cadence` (advisory); **nunca** auto-correr o relatório |
+| Retrospective / SDD overhead calibration | `bash scripts/sdd-metrics.sh` |
+| Time window | `bash scripts/sdd-metrics.sh --since YYYY-MM-DD` |
+| Save artifact | `bash scripts/sdd-metrics.sh --output path/report.md` |
+| Check if cadence warrants nudge | `bash scripts/sdd-metrics.sh --check-cadence` |
+| During explore/propose/apply | **Do not** run report — outside pipeline |
+| Post-archive (Session Handoff) | `--check-cadence` only (advisory); **never** auto-run full report |
 
-Não é gate de CI (`sdd-gates`). Sem skill/rule dedicada (R3 N/A) — descoberta via `AGENTS.md` Commands. Cadência = nudge no handoff de archive, não etapa obrigatória.
+Not a CI gate (`sdd-gates`). No dedicated skill/rule (R3 N/A) — discover via `AGENTS.md` Commands. Cadence = nudge in archive handoff, not a mandatory step.
 
-#### Como ler o relatório (M1–M4)
+#### How to read the report (M1–M4)
 
-| Secção | Significado |
+| Section | Meaning |
 |--------|-------------|
-| **M1 Volume** | Changes activos vs arquivados (no período) |
-| **M2 Lead time** | Dias entre o primeiro commit que menciona o change-id (proxy de propose) e a data do prefixo do dir de archive; inclui média e mediana |
-| **M3 Rework** | Commits `fix:` / `fix(...):` **após** a data de archive que ainda mencionam o change-id (R9) |
-| **M4 Actividade pós-archive** | Resumo usando M3 como proxy primário de correcções pós-archive |
+| **M1 Volume** | Active vs archived changes (in period) |
+| **M2 Lead time** | Days between first commit mentioning change-id (propose proxy) and archive dir prefix date; includes mean and median |
+| **M3 Rework** | `fix:` / `fix(...):` commits **after** archive date that still mention change-id (R9) |
+| **M4 Post-archive activity** | Summary using M3 as primary proxy for post-archive fixes |
 
-#### Interpretar → actuar
+#### Interpret → act
 
-Após ler o relatório, mapear sinais a **um** ajuste concreto no processo SDD. Ritual mínimo: **1 insight → 1 ajuste** (ou registar explicitamente “sem mudança”).
+After reading the report, map signals to **one** concrete SDD process adjustment. Minimum ritual: **1 insight → 1 adjustment** (or explicitly record “no change”).
 
-| Sinal | Acção de processo sugerida |
+| Signal | Suggested process action |
 |-------|----------------------------|
-| **M1** — muitos activos / poucos archives | Revisar WIP: fechar ou arquivar changes parados; evitar propose sem capacidade de apply |
-| **M1** — volume estável e baixo | OK se o ritmo do time for intencional; não optimizar prematuremente |
-| **M2** — lead time alto ou a subir | Encurtar escopo do change; reforçar handoffs explore→propose→apply; cortar scope creep |
-| **M2** — lead time muito baixo + M3 alto | Archives prematuros? Endurecer gates de tasks / specs antes de `/opsx:archive` |
-| **M3** — rework `fix` recorrente pós-archive | Investigar specs fracas, R9 em falta, ou archive antes de validação; **não** adoptar Apache DevLake |
-| **M4** (via M3) — actividade correctiva pós-archive | Tratar como dívida do ciclo anterior; 1 mudança no playbook de archive (checklist, Pattern/Gate) |
+| **M1** — many active / few archives | Review WIP: close or archive stalled changes; avoid propose without apply capacity |
+| **M1** — stable low volume | OK if team pace is intentional; do not optimize prematurely |
+| **M2** — high or rising lead time | Shorten change scope; reinforce explore→propose→apply handoffs; cut scope creep |
+| **M2** — very low lead time + high M3 | Premature archives? Tighten task/spec gates before `/opsx:archive` |
+| **M3** — recurring post-archive `fix` rework | Investigate weak specs, missing R9, or archive before validation; **do not** adopt Apache DevLake |
+| **M4** (via M3) — corrective post-archive activity | Treat as prior-cycle debt; one archive playbook change (checklist, Pattern/Gate) |
 
-**Apache DevLake continua fora de escopo** — o playbook actua sobre o *processo* SDD (handoffs, escopo, R9), não sobre dashboards DORA.
+**Apache DevLake remains out of scope** — the playbook acts on the SDD *process* (handoffs, scope, R9), not DORA dashboards.
 
-#### Cadência e nudge (N=5, T=30)
+#### Cadence and nudge (N=5, T=30)
 
-| Limiar | Default | Efeito |
+| Threshold | Default | Effect |
 |--------|---------|--------|
-| Archives desde last-run | **N = 5** | Nudge no Session Handoff de `/opsx:archive` |
-| Idade do stamp | **T = 30** dias | Mesmo nudge |
-| Sem stamp (nunca correu) | ≥ 1 archive nos últimos T dias | Nudge de baseline (onboarding suave) |
+| Archives since last-run | **N = 5** | Nudge in `/opsx:archive` Session Handoff |
+| Stamp age | **T = 30** days | Same nudge |
+| No stamp (never run) | ≥ 1 archive in last T days | Baseline nudge (soft onboarding) |
 
-- Stamp local: `.sdd/metrics-last-run` (gitignored) — escrito automaticamente após relatório com exit 0 (ISO `YYYY-MM-DD`).
-- Verificar: `bash scripts/sdd-metrics.sh --check-cadence` — exit **0** = silêncio; exit **1** = nudge recomendado (stdout curto); **não** gera o relatório.
-- No handoff de archive: se exit 1, sugerir `bash scripts/sdd-metrics.sh` + este playbook; **nunca** auto-executar o relatório; **nunca** falhar o archive se o script estiver ausente.
+- Local stamp: `.sdd/metrics-last-run` (gitignored) — written automatically after report exits 0 (ISO `YYYY-MM-DD`).
+- Check: `bash scripts/sdd-metrics.sh --check-cadence` — exit **0** = silent; exit **1** = nudge recommended (short stdout); does **not** generate the report.
+- In archive handoff: if exit 1, suggest `bash scripts/sdd-metrics.sh` + this playbook; **never** auto-run report; **never** fail archive if script is missing.
 
-#### Proxies e limites (honestidade)
+#### Proxies and limits (honesty)
 
-- **M2** — o propose real pode ser anterior ao primeiro commit (chat-only) ou o change-id só entrar no commit de archive.
-- **M3** — depende de disciplina R9; commits sem change-id **não** contam (subcontagem).
-- **t_end** canónico = prefixo `YYYY-MM-DD` do dir `openspec/changes/archive/YYYY-MM-DD-<id>/`.
-- Dirs de archive sem esse prefixo são ignorados com `WARN` em stderr.
+- **M2** — real propose may predate first commit (chat-only) or change-id may only appear on archive commit.
+- **M3** — depends on R9 discipline; commits without change-id **do not** count (under-count).
+- Canonical **t_end** = `YYYY-MM-DD` prefix of `openspec/changes/archive/YYYY-MM-DD-<id>/`.
+- Archive dirs without that prefix are skipped with `WARN` on stderr.
 
 #### Troubleshooting
 
-| Sintoma | Causa | Acção |
+| Symptom | Cause | Action |
 |---------|-------|-------|
-| Exit 2 | Flag inválida ou `--since` malformado | `bash scripts/sdd-metrics.sh --help` |
-| Exit 1 com `--check-cadence` | Cadência atingida (N archives / T dias / baseline) | Correr `bash scripts/sdd-metrics.sh` e aplicar o playbook |
-| M2 tudo `n/a` | Histórico git sem menção ao change-id | Confirmar R9; archives antigos podem não ter âncora |
-| M3 sempre 0 | Poucos `fix:` com change-id | Esperado se não houver rework; ou reforçar R9 |
-| WARN skip archive | Nome sem `YYYY-MM-DD-` | Renomear na convenção OpenSpec do hub |
+| Exit 2 | Invalid flag or malformed `--since` | `bash scripts/sdd-metrics.sh --help` |
+| Exit 1 with `--check-cadence` | Cadence hit (N archives / T days / baseline) | Run `bash scripts/sdd-metrics.sh` and apply playbook |
+| M2 all `n/a` | Git history without change-id mention | Confirm R9; old archives may lack anchor |
+| M3 always 0 | Few `fix:` with change-id | Expected if no rework; or reinforce R9 |
+| WARN skip archive | Name without `YYYY-MM-DD-` | Rename to hub OpenSpec convention |
 
 #### Rollback
 
 ```bash
 rm -f scripts/sdd-metrics.sh
 rm -f .sdd/metrics-last-run
-# Em consumidores: remover entry do MANIFEST / reverter upgrade do kit
-# Reverter secção SDD Metrics em openspec/infra.md se necessário
+# In consumer repos: remove MANIFEST entry / revert kit upgrade
+# Revert SDD Metrics section in openspec/infra.md if needed
 ```
 
-Stamp local em `.sdd/metrics-last-run` (gitignored); sem hooks; sem serviços. **Apache DevLake permanece fora de escopo** — reavaliar só se equipe/DORA justificar (ver `doc/avaliacoes/2026-07-25-oss-coverage-gaps-tooling.md`).
+Local stamp in `.sdd/metrics-last-run` (gitignored); no hooks; no services. **Apache DevLake remains out of scope** — re-evaluate only if team/DORA justifies (see `doc/avaliacoes/2026-07-25-oss-coverage-gaps-tooling.md`).
 
 ### 2.9 Actualização de instalação existente
 
