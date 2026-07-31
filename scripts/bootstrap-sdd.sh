@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Bootstrap SDD — ver doc/sistema-sdd-pedro.md v1.1 §12.6
+# Bootstrap SDD — see doc/sistema-sdd-pedro.md v1.1 §12.6
 set -euo pipefail
 REPO="${1:-.}"
 cd "$REPO"
@@ -8,12 +8,12 @@ echo "==> OpenSpec..."
 npm install -g @fission-ai/openspec@latest
 openspec init --tools "cursor,claude" "$REPO" 2>/dev/null || openspec init --tools "cursor,claude"
 
-echo "==> GitNexus (opcional — não aborta o bootstrap se falhar)..."
+echo "==> GitNexus (optional — does not abort bootstrap on failure)..."
 if npm install -g gitnexus; then
-  gitnexus setup || echo "WARN: 'gitnexus setup' falhou — a continuar"
-  gitnexus analyze || echo "WARN: 'gitnexus analyze' falhou — a continuar"
+  gitnexus setup || echo "WARN: 'gitnexus setup' failed — continuing"
+  gitnexus analyze || echo "WARN: 'gitnexus analyze' failed — continuing"
 else
-  echo "WARN: instalação do GitNexus falhou (ex.: binário nativo do onnxruntime bloqueado pela rede) — a continuar sem GitNexus"
+  echo "WARN: GitNexus install failed (e.g. onnxruntime native binary blocked by network) — continuing without GitNexus"
 fi
 
 echo "==> Graphify..."

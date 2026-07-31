@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Bootstrap SDD — ver doc/sistema-sdd-pedro.md v1.1 §12.6
+# Bootstrap SDD — see doc/sistema-sdd-pedro.md v1.1 §12.6
 set -euo pipefail
 REPO="${1:-.}"
 cd "$REPO"
@@ -8,12 +8,12 @@ echo "==> OpenSpec..."
 npm install -g @fission-ai/openspec@latest
 openspec init --tools "cursor,claude" "$REPO" 2>/dev/null || openspec init --tools "cursor,claude"
 
-echo "==> GitNexus (opcional — não aborta o bootstrap se falhar)..."
+echo "==> GitNexus (optional — does not abort bootstrap on failure)..."
 if npm install -g gitnexus; then
-  gitnexus setup || echo "WARN: 'gitnexus setup' falhou — a continuar"
-  gitnexus analyze || echo "WARN: 'gitnexus analyze' falhou — a continuar"
+  gitnexus setup || echo "WARN: 'gitnexus setup' failed — continuing"
+  gitnexus analyze || echo "WARN: 'gitnexus analyze' failed — continuing"
 else
-  echo "WARN: instalação do GitNexus falhou (ex.: binário nativo do onnxruntime bloqueado pela rede) — a continuar sem GitNexus"
+  echo "WARN: GitNexus install failed (e.g. onnxruntime native binary blocked by network) — continuing without GitNexus"
 fi
 
 echo "==> Graphify..."
@@ -31,9 +31,9 @@ echo "==> SDD Install Kit (payloads)..."
 if [[ -f "$REPO/sdd-kit/install.sh" ]]; then
   # Profile: detect HYBRID when both package.json and openspec/ coexist; warn and default to APP
   if [[ -f "$REPO/package.json" ]] && [[ -d "$REPO/openspec" ]]; then
-    echo "WARN: package.json e openspec/ coexistem — perfil pode ser HYBRID." >&2
-    echo "      Confirmar: relançar com --profile HYBRID ou DOCS_SPECS se não for APP." >&2
-    echo "      A continuar com --profile APP por defeito (passar 'APP', 'DOCS_SPECS' ou 'HYBRID' como 1º argumento)." >&2
+    echo "WARN: package.json and openspec/ coexist — profile may be HYBRID." >&2
+    echo "      Confirm: rerun with --profile HYBRID or DOCS_SPECS if not APP." >&2
+    echo "      Continuing with --profile APP by default (pass 'APP', 'DOCS_SPECS', or 'HYBRID' as 1st argument)." >&2
     PROFILE="APP"
   elif [[ -f "$REPO/package.json" ]]; then
     PROFILE="APP"
