@@ -3,9 +3,7 @@
 ## Purpose
 
 Normative requirements for English as the canonical default language of versioned repository artifacts, controlled PT→EN substitution waves, glossary and inventory, verification gates, and the F7 distinction between chat language and repository language.
-
 ## Requirements
-
 ### Requirement: English is the canonical default for versioned artifacts
 
 English MUST be the default and canonical language of all versioned repository artifacts after this capability is adopted. New OpenSpec proposals, designs, specs, tasks, skills, guide prose, evaluations, rules prose, and kit template markdown MUST be written in English. Portuguese (pt-BR) remaining in versioned files MUST be treated as legacy to be replaced, not as a permanent bilingual layer.
@@ -203,7 +201,6 @@ The files `sdd-kit/templates/CLAUDE.md` and `sdd-kit/templates/openspec/infra.md
 - **WHEN** an agent reads `sdd-kit/templates/openspec/infra.md` after W2b
 - **THEN** the HTML comment marker tags used by `scripts/verify-infra.sh` (including openspec-version, mcp-list, env-list, and kit-version/status pairs) remain present so infra verification injection continues to work
 
-
 ### Requirement: Kit Cursor rules install templates (W2c slice) are English
 
 The files `sdd-kit/templates/.cursor/rules/000-base.mdc`, `sdd-kit/templates/.cursor/rules/015-session-phases.mdc`, `sdd-kit/templates/.cursor/rules/016-session-coordination.mdc`, and `sdd-kit/templates/.cursor/rules/010-typescript.mdc` MUST be written in English as the canonical language of those surfaces. Residual Portuguese prose in these files is FORBIDDEN after the W2c substitution wave. Dual-file siblings such as `*.en.mdc` or `*-pt.mdc` MUST NOT be introduced for these paths. Freeze-list tokens (paths, brand/tool names, YAML keys `alwaysApply`/`globs` and glob pattern strings, slash commands such as `/opsx:propose`, shell/script paths, and code identifiers such as `cn` and `Zod`) MUST remain unaltered aside from intentional non-i18n fixes. Human-readable YAML `description` values MUST be English. When any of these template paths under `sdd-kit/templates/` change, MANIFEST checksums MUST be regenerated so `bash sdd-kit/verify.sh` passes (G-MANIFEST).
@@ -393,3 +390,335 @@ The path `openspec/changes/explore-oss-coverage-gaps/metodologia-insercao.md` MU
 
 - **WHEN** W1 apply completes
 - **THEN** English content is at `AGENTS.md`, `CLAUDE.md`, and `openspec/project.md` and no permanent `*.en.md` / `*-pt.md` sibling for those paths exists
+
+### Requirement: opsx-archive command mirrors are English
+
+The logical command `opsx-archive` MUST be written in English at both mirror paths `.cursor/commands/opsx-archive.md` and `.claude/commands/opsx/archive.md`. Residual Portuguese prose in either path is FORBIDDEN after the commands substitution wave. Dual-file siblings such as `opsx-archive.en.md` or `*-pt.md` MUST NOT be introduced for these paths. Freeze-list tokens (paths, change-ids, slash commands such as `/opsx:archive`, `/opsx:explore`, `/opsx:propose`, and `/opsx:apply`, fenced shell commands, archive workflow semantics including sync assessment and `.openspec.yaml` preservation, and brand/tool names) MUST remain unaltered aside from intentional non-i18n fixes. Platform-specific YAML frontmatter structure MAY differ between Cursor and Claude (keys such as `name`, `id`, `tags`); human-readable `description` values MUST be English. Chat-language and Session Handoff guidance in the command MUST align with F7 (chat MAY be Portuguese; the versioned command artifact MUST be English) and MUST NOT hard-require Portuguese-only responses.
+
+#### Scenario: opsx-archive mirrors pass per-wave verification
+
+- **WHEN** an operator runs `bash scripts/verify-i18n-wave.sh --files .cursor/commands/opsx-archive.md,.claude/commands/opsx/archive.md` after the commands substitution is applied on a base that includes the asymmetric opsx G-MIRROR peer map
+- **THEN** the script exits 0 (including G-PT on those files and G-MIRROR peer listing for the asymmetric opsx command paths)
+
+#### Scenario: No dual-file migration for opsx-archive
+
+- **WHEN** the commands substitution wave apply completes
+- **THEN** English content is at both `.cursor/commands/opsx-archive.md` and `.claude/commands/opsx/archive.md` and no permanent `*.en.md` / `*-pt.md` sibling exists for either path
+
+#### Scenario: Platform frontmatter may differ
+
+- **WHEN** an agent compares Cursor and Claude `opsx-archive` command files after substitution
+- **THEN** YAML frontmatter MAY differ by IDE while both prose bodies are English and free of residual Portuguese deny-list hits
+
+### Requirement: opsx-propose command mirrors are English
+
+The logical command `opsx-propose` MUST be written in English at both mirror paths `.cursor/commands/opsx-propose.md` and `.claude/commands/opsx/propose.md`. Residual Portuguese prose in either path is FORBIDDEN after the commands substitution wave. Dual-file siblings such as `opsx-propose.en.md` or `*-pt.md` MUST NOT be introduced for these paths. Freeze-list tokens (paths, change-ids, slash commands such as `/opsx:propose`, `/opsx:apply`, `/opsx:explore`, and `/opsx:archive`, fenced shell commands, propose workflow semantics including the create-change → status → instructions loop, enriched-tasks §12.10 Gate/Pattern rules, and brand/tool names) MUST remain unaltered aside from intentional non-i18n fixes. Platform-specific YAML frontmatter structure MAY differ between Cursor and Claude (keys such as `name`, `id`, `tags`); human-readable `description` values MUST be English. Chat-language and Session Handoff guidance in the command MUST align with F7 (chat MAY be Portuguese; the versioned command artifact MUST be English) and MUST NOT hard-require Portuguese-only responses. This requirement covers the **command** mirrors only and MUST NOT be read as superseding or replacing the separate `openspec-propose` **skill** mirror requirement.
+
+#### Scenario: opsx-propose mirrors pass per-wave verification
+
+- **WHEN** an operator runs `bash scripts/verify-i18n-wave.sh --files .cursor/commands/opsx-propose.md,.claude/commands/opsx/propose.md` after the commands substitution is applied on a base that includes the asymmetric opsx G-MIRROR peer map
+- **THEN** the script exits 0 (including G-PT on those files and G-MIRROR peer listing for the asymmetric opsx command paths)
+
+#### Scenario: No dual-file migration for opsx-propose
+
+- **WHEN** the commands substitution wave apply completes
+- **THEN** English content is at both `.cursor/commands/opsx-propose.md` and `.claude/commands/opsx/propose.md` and no permanent `*.en.md` / `*-pt.md` sibling exists for either path
+
+#### Scenario: Platform frontmatter may differ
+
+- **WHEN** an agent compares Cursor and Claude `opsx-propose` command files after substitution
+- **THEN** YAML frontmatter MAY differ by IDE while both prose bodies are English and free of residual Portuguese deny-list hits
+
+### Requirement: opsx-explore command mirrors are English
+
+The logical command `opsx-explore` MUST be written in English at both mirror paths `.cursor/commands/opsx-explore.md` and `.claude/commands/opsx/explore.md`. Residual Portuguese prose in either path is FORBIDDEN after the commands substitution wave. Dual-file siblings such as `opsx-explore.en.md` or `*-pt.md` MUST NOT be introduced for these paths. Freeze-list tokens (paths, change-ids, slash commands such as `/opsx:explore`, `/opsx:propose`, `/opsx:apply`, and `/opsx:archive`, fenced shell commands, explore workflow semantics including research.md conventions and Session Handoff to `/opsx:propose`, and brand/tool names) MUST remain unaltered aside from intentional non-i18n fixes. Platform-specific YAML frontmatter structure MAY differ between Cursor and Claude (keys such as `name`, `id`, `tags`); human-readable `description` values MUST be English. Chat-language and Session Handoff guidance in the command MUST align with F7 (chat MAY be Portuguese; the versioned command artifact MUST be English) and MUST NOT hard-require Portuguese-only responses. This requirement covers the **command** mirrors only and MUST NOT be read as superseding or replacing the separate `openspec-explore` **skill** mirror requirement.
+
+#### Scenario: opsx-explore mirrors pass per-wave verification
+
+- **WHEN** an operator runs `bash scripts/verify-i18n-wave.sh --files .cursor/commands/opsx-explore.md,.claude/commands/opsx/explore.md` after the commands substitution is applied on a base that includes the asymmetric opsx G-MIRROR peer map
+- **THEN** the script exits 0 (including G-PT on those files and G-MIRROR peer listing for the asymmetric opsx command paths)
+
+#### Scenario: No dual-file migration for opsx-explore
+
+- **WHEN** the commands substitution wave apply completes
+- **THEN** English content is at both `.cursor/commands/opsx-explore.md` and `.claude/commands/opsx/explore.md` and no permanent `*.en.md` / `*-pt.md` sibling exists for either path
+
+#### Scenario: Platform frontmatter may differ
+
+- **WHEN** an agent compares Cursor and Claude `opsx-explore` command files after substitution
+- **THEN** YAML frontmatter MAY differ by IDE while both prose bodies are English and free of residual Portuguese deny-list hits
+
+### Requirement: translate-design-wave-3 target surface is English
+
+The following path MUST be written in English after substitution: `doc/design/001-pipeline-open-design-shadcn-impeccable.md`. Residual Portuguese prose in the substituted slice (lines 1–325) is FORBIDDEN after apply. Dual-file siblings such as `*.en.md` or `*-pt.md` MUST NOT be introduced. Freeze-list tokens (paths, change-ids, `/opsx:*`, package pins, URLs, fenced shell, profile labels, and brand/tool names) MUST remain unaltered aside from intentional non-i18n fixes.
+
+#### Scenario: Per-wave verification passes
+
+- **WHEN** an operator runs the wave gate command after apply
+- **THEN** the script exits 0 (including G-PT and G-LINK on `doc/design/001-pipeline-open-design-shadcn-impeccable.md`)
+
+#### Scenario: No dual-file migration
+
+- **WHEN** the wave apply completes
+- **THEN** English content remains at `doc/design/001-pipeline-open-design-shadcn-impeccable.md` with no permanent `*.en.md` / `*-pt.md` sibling
+
+### Requirement: translate-design-wave-4 target surface is English
+
+The following path MUST be written in English after substitution: `doc/design/001-pipeline-open-design-shadcn-impeccable.md`. Residual Portuguese prose in the substituted slice (lines 326–592) is FORBIDDEN after apply. Dual-file siblings such as `*.en.md` or `*-pt.md` MUST NOT be introduced. Freeze-list tokens (paths, change-ids, `/opsx:*`, package pins, URLs, fenced shell, profile labels, and brand/tool names) MUST remain unaltered aside from intentional non-i18n fixes.
+
+#### Scenario: Per-wave verification passes
+
+- **WHEN** an operator runs the wave gate command after apply
+- **THEN** the script exits 0 (including G-PT and G-LINK on `doc/design/001-pipeline-open-design-shadcn-impeccable.md`)
+
+#### Scenario: No dual-file migration
+
+- **WHEN** the wave apply completes
+- **THEN** English content remains at `doc/design/001-pipeline-open-design-shadcn-impeccable.md` with no permanent `*.en.md` / `*-pt.md` sibling
+
+### Requirement: translate-guide-wave-2 target surface is English
+
+The following path MUST be written in English after substitution: `doc/sistema-sdd-pedro.md`. Residual Portuguese prose in the substituted slice (lines 133–297) is FORBIDDEN after apply. Dual-file siblings such as `*.en.md` or `*-pt.md` MUST NOT be introduced. Freeze-list tokens (paths, change-ids, `/opsx:*`, package pins, URLs, fenced shell, profile labels, and brand/tool names) MUST remain unaltered aside from intentional non-i18n fixes.
+
+#### Scenario: Per-wave verification passes
+
+- **WHEN** an operator runs the wave gate command after apply
+- **THEN** the script exits 0 (including G-PT and G-LINK on `doc/sistema-sdd-pedro.md`)
+
+#### Scenario: No dual-file migration
+
+- **WHEN** the wave apply completes
+- **THEN** English content remains at `doc/sistema-sdd-pedro.md` with no permanent `*.en.md` / `*-pt.md` sibling
+
+### Requirement: translate-guide-wave-3 target surface is English
+
+The following path MUST be written in English after substitution: `doc/sistema-sdd-pedro.md`. Residual Portuguese prose in the substituted slice (lines 298–424) is FORBIDDEN after apply. Dual-file siblings such as `*.en.md` or `*-pt.md` MUST NOT be introduced. Freeze-list tokens (paths, change-ids, `/opsx:*`, package pins, URLs, fenced shell, profile labels, and brand/tool names) MUST remain unaltered aside from intentional non-i18n fixes.
+
+#### Scenario: Per-wave verification passes
+
+- **WHEN** an operator runs the wave gate command after apply
+- **THEN** the script exits 0 (including G-PT and G-LINK on `doc/sistema-sdd-pedro.md`)
+
+#### Scenario: No dual-file migration
+
+- **WHEN** the wave apply completes
+- **THEN** English content remains at `doc/sistema-sdd-pedro.md` with no permanent `*.en.md` / `*-pt.md` sibling
+
+### Requirement: Evaluation wave-2 surfaces are English
+
+The following evaluation documentation paths MUST be written in English after the evaluations substitution wave: `doc/avaliacoes/2026-07-26-sdd-discovery-positioning.md` and `doc/avaliacoes/2026-06-27-sdd-ui-development-module.md`. Residual Portuguese prose in either of these files is FORBIDDEN after apply. Dual-file siblings such as `*.en.md` or `*-pt.md` MUST NOT be introduced for these paths. Freeze-list tokens (paths including the `doc/avaliacoes/` directory segment until a dedicated rename wave, change-ids, slash commands such as `/opsx:*`, package pins, URLs, fenced shell commands, and brand/tool names including ByeByeVibe) MUST remain unaltered aside from intentional non-i18n fixes. Historical decision outcomes (Adopted / Discarded / Deferred / Under evaluation / Do not implement) MUST keep the same meaning after label language is normalized to glossary-canonical English.
+
+#### Scenario: Evaluation wave-2 files pass per-wave verification
+
+- **WHEN** an operator runs `bash scripts/verify-i18n-wave.sh --files doc/avaliacoes/2026-07-26-sdd-discovery-positioning.md,doc/avaliacoes/2026-06-27-sdd-ui-development-module.md` after the evaluations substitution is applied
+- **THEN** the script exits 0 (including G-PT and G-LINK on those files)
+
+#### Scenario: No dual-file migration for evaluation wave-2
+
+- **WHEN** the evaluations wave-2 substitution apply completes
+- **THEN** English content is at the two listed `doc/avaliacoes/` paths and no permanent `*.en.md` / `*-pt.md` sibling exists for either of them
+
+#### Scenario: Decision outcomes remain stable
+
+- **WHEN** an agent reads the discovery-positioning and UI-module evaluation records after substitution
+- **THEN** ByeByeVibe / P1–P4 Adopted surfaces remain Adopted, deferred and do-not-implement rows keep their pre-wave outcome meaning, and the UI-module record remains Adopted (add-on with Impeccable confirmation semantics) while prose and status labels are English
+
+### Requirement: Kit-scripts wave-2 verify-infra residual-PT scripts are English
+
+The verify-infra script paths `scripts/verify-infra.sh` and `sdd-kit/templates/scripts/verify-infra.sh` MUST be written in English after the kit-scripts substitution wave. Residual Portuguese prose in these files is FORBIDDEN after apply, including operator-facing `echo` / stderr messages and the match-and-rewrite chrome strings previously used against `openspec/infra.md` (timestamp line, env-table headers, and the Agent rule section anchor) that matched the wave deny-list or Portuguese manifesto labels. Dual-file siblings such as `*.en.sh`, `*-pt.sh`, `*.en.md`, or `*-pt.md` MUST NOT be introduced for these paths. Freeze-list tokens (paths including `scripts/verify-infra.sh`, `sdd-kit/templates/scripts/verify-infra.sh`, `openspec/infra.md`, and `sdd-kit/MANIFEST.yaml`; HTML comment marker names such as `openspec-version`, `mcp-list`, and `kit-version`; status glyphs ✅/❌; `[NEEDS VERIFICATION]`; env var **names**; slash commands such as `/opsx:*`; fenced shell commands; and brand/tool names including ByeByeVibe, OpenSpec, GitNexus, and Graphify) MUST remain unaltered aside from intentional non-i18n fixes. Script control flow and hub↔template content equivalence MUST keep the same meaning after prose is normalized to glossary-canonical English. Chrome vocabulary MUST align to the kit English manifesto forms already present in `sdd-kit/templates/openspec/infra.md` (`Last verified`, `Variable | Present | Verify with`, `## Agent rule`). When the kit template file is edited, `sdd-kit/MANIFEST.yaml` checksums for that template MUST be regenerated via `bash sdd-kit/gen-manifest-checksums.sh` so kit integrity remains honest.
+
+#### Scenario: Kit-scripts wave-2 files pass per-wave verification
+
+- **WHEN** an operator runs `bash scripts/verify-i18n-wave.sh --files scripts/verify-infra.sh,sdd-kit/templates/scripts/verify-infra.sh` after the kit-scripts substitution is applied (including MANIFEST checksum regeneration)
+- **THEN** the script exits 0 (including G-PT and G-MANIFEST on those paths)
+
+#### Scenario: No dual-file migration for kit-scripts wave-2
+
+- **WHEN** the kit-scripts substitution wave apply completes
+- **THEN** English content is at `scripts/verify-infra.sh` and `sdd-kit/templates/scripts/verify-infra.sh` and no permanent language-suffixed sibling exists for those paths
+
+#### Scenario: Verify-infra contracts remain stable
+
+- **WHEN** an operator runs `bash scripts/verify-infra.sh` after substitution against an English `openspec/infra.md` whose chrome matches the kit manifesto labels
+- **THEN** core SDD checks, HTML marker status updates, timestamp refresh on the `Last verified` line, and env-table rewrite against `## Agent rule` remain equivalent to the pre-wave Portuguese-chrome scripts while comments and operator-facing messages are English
+
+### Requirement: Kit-scripts wave-3 bootstrap residual-PT scripts are English
+
+The bootstrap script paths `scripts/bootstrap-sdd.sh` and `sdd-kit/templates/scripts/bootstrap-sdd.sh` MUST be written in English after the kit-scripts substitution wave. Residual Portuguese prose in these files is FORBIDDEN after apply, including comments and operator-facing `echo` / stderr messages (shared GitNexus optional-continue banner, failure warnings, and — on the template only — HYBRID coexistence warning lines) that matched the wave deny-list or remaining Portuguese operator chrome. Dual-file siblings such as `*.en.sh`, `*-pt.sh`, `*.en.md`, or `*-pt.md` MUST NOT be introduced for these paths. Freeze-list tokens (paths including `scripts/bootstrap-sdd.sh`, `sdd-kit/templates/scripts/bootstrap-sdd.sh`, `sdd-kit/install.sh`, `sdd-kit/MANIFEST.yaml`, and `openspec/project.md`; profile enum names `APP`, `DOCS_SPECS`, and `HYBRID`; slash commands such as `/opsx:*`; fenced shell commands; and brand/tool names including ByeByeVibe, OpenSpec, GitNexus, and Graphify) MUST remain unaltered aside from intentional non-i18n fixes. Script control flow and the intentional hub↔template profile-detection divergence MUST keep the same meaning after prose is normalized to glossary-canonical English. When the kit template file is edited, `sdd-kit/MANIFEST.yaml` checksums for that template MUST be regenerated via `bash sdd-kit/gen-manifest-checksums.sh` so kit integrity remains honest. Operator-facing bootstrap stderr remains the runtime source-of-truth for those messages (including the template HYBRID warning); other artifacts MUST NOT re-embed legacy Portuguese tokens from these scripts as normative quoted contracts in this wave.
+
+#### Scenario: Kit-scripts wave-3 files pass per-wave verification
+
+- **WHEN** an operator runs `bash scripts/verify-i18n-wave.sh --files scripts/bootstrap-sdd.sh,sdd-kit/templates/scripts/bootstrap-sdd.sh` after the kit-scripts substitution is applied (including MANIFEST checksum regeneration)
+- **THEN** the script exits 0 (including G-PT and G-MANIFEST on those paths)
+
+#### Scenario: No dual-file migration for kit-scripts wave-3
+
+- **WHEN** the kit-scripts substitution wave apply completes
+- **THEN** English content is at `scripts/bootstrap-sdd.sh` and `sdd-kit/templates/scripts/bootstrap-sdd.sh` and no permanent language-suffixed sibling exists for those paths
+
+#### Scenario: Bootstrap contracts remain stable
+
+- **WHEN** an operator runs `bash scripts/bootstrap-sdd.sh` (hub) or the kit template copy after substitution
+- **THEN** OpenSpec init, optional GitNexus continue-on-failure, Graphify setup, and `sdd-kit/install.sh --profile …` invocation remain equivalent to the pre-wave scripts while comments and operator-facing messages are English, and the template-only HYBRID coexistence warning behavior is preserved (not removed and not ported into the hub by this wave)
+
+### Requirement: Kit-scripts wave-4 upgrade.sh residual-PT script is English
+
+The kit upgrade script path `sdd-kit/upgrade.sh` MUST be written in English after the kit-scripts substitution wave. Residual Portuguese prose in this file is FORBIDDEN after apply, including comments, dry-run `UPGRADE_REPORT.md` scaffold headings and labels, operator-facing `echo` / stderr messages, and the approval checkbox text plus the matching `grep` needle used by `--apply`. Dual-file siblings such as `*.en.sh`, `*-pt.sh`, `*.en.md`, or `*-pt.md` MUST NOT be introduced for this path. Freeze-list tokens (paths including `sdd-kit/upgrade.sh`, `sdd-kit/MANIFEST.yaml`, and `UPGRADE_REPORT.md`; flags `--from`, `--to`, `--profile`, `--dry-run`, `--apply`, `--force`, and `--repo`; merge classification labels `KEEP_LOCAL`, `MERGE`, `COPY`, `NEW`, and `SKIP`; profile enum names `APP`, `DOCS_SPECS`, and `HYBRID`; slash commands such as `/opsx:*`; fenced shell commands; and brand/tool names including ByeByeVibe and OpenSpec) MUST remain unaltered aside from intentional non-i18n fixes. Upgrade control flow (dry-run report scaffolding, approval gate before COPY apply, main/master branch safety, and template integrity checks) MUST keep the same meaning after prose is normalized to glossary-canonical English. The approval checkbox string written into new `UPGRADE_REPORT.md` scaffolds and the string grepped by `--apply` MUST remain identical to each other after substitution; `sdd-kit/upgrade.sh` remains the runtime source-of-truth for that needle. Other artifacts MUST NOT be edited in this wave solely to re-quote a legacy Portuguese checkbox token.
+
+#### Scenario: Kit-scripts wave-4 file passes per-wave verification
+
+- **WHEN** an operator runs `bash scripts/verify-i18n-wave.sh --files sdd-kit/upgrade.sh` after the kit-scripts substitution is applied
+- **THEN** the script exits 0 (including G-PT on that path)
+
+#### Scenario: No dual-file migration for kit-scripts wave-4
+
+- **WHEN** the kit-scripts substitution wave apply completes
+- **THEN** English content is at `sdd-kit/upgrade.sh` and no permanent language-suffixed sibling exists for that path
+
+#### Scenario: Upgrade approval gate remains coherent
+
+- **WHEN** an operator runs `bash sdd-kit/upgrade.sh --from … --to … --dry-run` and later `--apply` with a matching checked approval checkbox in `UPGRADE_REPORT.md` after substitution
+- **THEN** the dry-run scaffold and the `--apply` grep needle use the same English approval string, `--apply` still refuses an unchecked or missing report, and COPY/MERGE/profile/`--force`/integrity behavior remains equivalent to the pre-wave script while comments and operator-facing messages are English
+
+### Requirement: Kit-scripts wave-5 install-ui-module.sh residual-PT script is English
+
+The kit UI-module installer path `sdd-kit/install-ui-module.sh` MUST be written in English after the kit-scripts substitution wave. Residual Portuguese prose in this file is FORBIDDEN after apply, including comments, operator-facing `echo` / stderr messages, and the embedded `openspec/infra.md` UI Development Module table chrome (headers and cell wording) written by the script. Dual-file siblings such as `*.en.sh`, `*-pt.sh`, `*.en.md`, or `*-pt.md` MUST NOT be introduced for this path. Freeze-list tokens (paths including `sdd-kit/install-ui-module.sh`, `doc/design/002-ui-module-install.md`, `openspec/infra.md`, and `openspec/project.md`; flags `--detect`, `--dry-run`, `--apply`, `--yes`, and `--repo`; brand/tool names including Impeccable, Open Design, Pencil, Figma MCP, and shadcn; slash commands such as `/opsx:*`; and fenced shell commands) MUST remain unaltered aside from intentional non-i18n fixes. Install-ui-module control flow (detect inventory, dry-run planning, design-doc install, infra section update, and optional Impeccable install) MUST keep the same meaning after prose is normalized to glossary-canonical English. The template twin `sdd-kit/templates/install-ui-module.sh` is out of scope for this wave’s file list and MUST NOT be required to change in the same apply.
+
+#### Scenario: Kit-scripts wave-5 file passes per-wave verification
+
+- **WHEN** an operator runs `bash scripts/verify-i18n-wave.sh --files sdd-kit/install-ui-module.sh` after the kit-scripts substitution is applied
+- **THEN** the script exits 0 (including G-PT on that path)
+
+#### Scenario: No dual-file migration for kit-scripts wave-5
+
+- **WHEN** the kit-scripts substitution wave apply completes
+- **THEN** English content is at `sdd-kit/install-ui-module.sh` and no permanent language-suffixed sibling exists for that path
+
+#### Scenario: Embedded infra UI-module chrome stays English-aligned
+
+- **WHEN** an operator runs `bash sdd-kit/install-ui-module.sh --apply` (or `--dry-run` planning that would write the same section) after substitution
+- **THEN** the embedded UI Development Module table uses English headers equivalent to `Component` / `Status` / `Verify with` and English on-demand / in-session cell wording, without reintroducing Portuguese `Componente`, `Estado`, `Verificar com`, `sob demanda`, or `sessão` tokens into newly written section text, while detect/apply/impeccable control flow remains equivalent to the pre-wave script
+
+### Requirement: Kit-scripts wave-6 templates/install-ui-module.sh residual-PT script is English
+
+The kit UI-module installer template path `sdd-kit/templates/install-ui-module.sh` MUST be written in English after the kit-scripts substitution wave. Residual Portuguese prose in this file is FORBIDDEN after apply, including comments, operator-facing `echo` / stderr messages, and the embedded `openspec/infra.md` UI Development Module table chrome (headers and cell wording) written by the script. Dual-file siblings such as `*.en.sh`, `*-pt.sh`, `*.en.md`, or `*-pt.md` MUST NOT be introduced for this path. Freeze-list tokens (paths including `sdd-kit/templates/install-ui-module.sh`, `sdd-kit/install-ui-module.sh`, `doc/design/002-ui-module-install.md`, `openspec/infra.md`, and `openspec/project.md`; flags `--detect`, `--dry-run`, `--apply`, `--yes`, and `--repo`; brand/tool names including Impeccable, Open Design, Pencil, Figma MCP, and shadcn; slash commands such as `/opsx:*`; and fenced shell commands) MUST remain unaltered aside from intentional non-i18n fixes. Install-ui-module control flow (detect inventory, dry-run planning, design-doc install, infra section update, and optional Impeccable install) MUST keep the same meaning after prose is normalized to glossary-canonical English. When this template under `sdd-kit/templates/` is edited, `sdd-kit/MANIFEST.yaml` checksums for the corresponding `source:` MUST be refreshed via `bash sdd-kit/gen-manifest-checksums.sh` in the same apply. The hub path `sdd-kit/install-ui-module.sh` is out of scope for this wave’s file list and MUST NOT be required to change in the same apply.
+
+#### Scenario: Kit-scripts wave-6 file passes per-wave verification
+
+- **WHEN** an operator runs `bash scripts/verify-i18n-wave.sh --files sdd-kit/templates/install-ui-module.sh` after the kit-scripts substitution is applied
+- **THEN** the script exits 0 (including G-PT and G-MANIFEST on that path)
+
+#### Scenario: No dual-file migration for kit-scripts wave-6
+
+- **WHEN** the kit-scripts substitution wave apply completes
+- **THEN** English content is at `sdd-kit/templates/install-ui-module.sh` and no permanent language-suffixed sibling exists for that path
+
+#### Scenario: Embedded infra UI-module chrome stays English-aligned
+
+- **WHEN** a consumer install copies this MANIFEST `source:` template (or an operator runs the template script with `--apply` / `--dry-run` planning that would write the same section) after substitution
+- **THEN** the embedded UI Development Module table uses English headers equivalent to `Component` / `Status` / `Verify with` and English on-demand / in-session cell wording, without reintroducing Portuguese `Componente`, `Estado`, `Verificar com`, `sob demanda`, or `sessão` tokens into newly written section text, while detect/apply/impeccable control flow remains equivalent to the pre-wave script
+
+### Requirement: translate-kit-design-wave-3 target surface is English
+
+The following path MUST be written in English after substitution: `sdd-kit/templates/doc/design/001-pipeline-open-design-shadcn-impeccable.md`. Residual Portuguese prose in the substituted slice (lines 1–325) is FORBIDDEN after apply. Dual-file siblings such as `*.en.md` or `*-pt.md` MUST NOT be introduced. Freeze-list tokens (paths, change-ids, `/opsx:*`, package pins, URLs, fenced shell, profile labels, and brand/tool names) MUST remain unaltered aside from intentional non-i18n fixes. G-MANIFEST satisfied when kit templates change. Kit template checksums MUST be regenerated when templates change.
+
+#### Scenario: Per-wave verification passes
+
+- **WHEN** an operator runs the wave gate command after apply
+- **THEN** the script exits 0 (including G-PT and G-LINK on `sdd-kit/templates/doc/design/001-pipeline-open-design-shadcn-impeccable.md`)
+
+#### Scenario: No dual-file migration
+
+- **WHEN** the wave apply completes
+- **THEN** English content remains at `sdd-kit/templates/doc/design/001-pipeline-open-design-shadcn-impeccable.md` with no permanent `*.en.md` / `*-pt.md` sibling
+
+### Requirement: translate-kit-design-wave-4 target surface is English
+
+The following path MUST be written in English after substitution: `sdd-kit/templates/doc/design/001-pipeline-open-design-shadcn-impeccable.md`. Residual Portuguese prose in the substituted slice (lines 326–592) is FORBIDDEN after apply. Dual-file siblings such as `*.en.md` or `*-pt.md` MUST NOT be introduced. Freeze-list tokens (paths, change-ids, `/opsx:*`, package pins, URLs, fenced shell, profile labels, and brand/tool names) MUST remain unaltered aside from intentional non-i18n fixes. G-MANIFEST satisfied when kit templates change. Kit template checksums MUST be regenerated when templates change.
+
+#### Scenario: Per-wave verification passes
+
+- **WHEN** an operator runs the wave gate command after apply
+- **THEN** the script exits 0 (including G-PT and G-LINK on `sdd-kit/templates/doc/design/001-pipeline-open-design-shadcn-impeccable.md`)
+
+#### Scenario: No dual-file migration
+
+- **WHEN** the wave apply completes
+- **THEN** English content remains at `sdd-kit/templates/doc/design/001-pipeline-open-design-shadcn-impeccable.md` with no permanent `*.en.md` / `*-pt.md` sibling
+
+### Requirement: simplify-review skill mirrors are English
+
+The logical skill `simplify-review` MUST be written in English at both mirror paths `.cursor/skills/simplify-review/SKILL.md` and `.claude/skills/simplify-review/SKILL.md`. Residual Portuguese prose in either mirror is FORBIDDEN after the skills substitution wave. The two mirrors MUST remain content-equivalent after substitution. Dual-file siblings such as `SKILL.en.md` or `*-pt.md` MUST NOT be introduced for these paths. Freeze-list tokens (paths, change-ids, slash commands such as `/opsx:apply`, sibling skill names `correctness-review` and `security-reviewer`, finding tags `delete:` / `stdlib:` / `native:` / `yagni:` / `shrink:`, marker `sdd-shortcut:`, fenced shell commands, and brand/tool names) MUST remain unaltered aside from intentional non-i18n fixes. YAML frontmatter keys MUST keep their structure; human-readable `description` and `adaptedFrom` values MUST be English. Chat-language guidance in the skill MUST align with F7 (chat MAY be Portuguese; the versioned skill artifact MUST be English) and MUST NOT hard-require Portuguese-only responses.
+
+#### Scenario: simplify-review mirrors pass per-wave verification
+
+- **WHEN** an operator runs `bash scripts/verify-i18n-wave.sh --files .cursor/skills/simplify-review/SKILL.md,.claude/skills/simplify-review/SKILL.md` after the skills substitution is applied
+- **THEN** the script exits 0 (including G-PT and G-MIRROR on those files)
+
+#### Scenario: No dual-file migration for simplify-review
+
+- **WHEN** the skills substitution wave apply completes
+- **THEN** English content is at both `.cursor/skills/simplify-review/SKILL.md` and `.claude/skills/simplify-review/SKILL.md` and no permanent `SKILL.en.md` / `*-pt.md` sibling exists for either path
+
+#### Scenario: Mirrors stay content-equivalent
+
+- **WHEN** an agent compares the two simplify-review skill mirrors after substitution
+- **THEN** the file contents are identical (`cmp` succeeds) so Cursor and Claude load the same English instructions
+
+### Requirement: openspec-apply-change skill mirrors are English
+
+The logical skill `openspec-apply-change` MUST be written in English at both mirror paths `.cursor/skills/openspec-apply-change/SKILL.md` and `.claude/skills/openspec-apply-change/SKILL.md`. Residual Portuguese prose in either mirror is FORBIDDEN after the skills substitution wave. The two mirrors MUST remain content-equivalent after substitution. Dual-file siblings such as `SKILL.en.md` or `*-pt.md` MUST NOT be introduced for these paths. Freeze-list tokens (paths, change-ids, slash commands such as `/opsx:apply` and `/opsx:archive`, session coordination scripts under `scripts/sdd-session-*.sh`, sibling skill names `simplify-review` and `security-reviewer`, fenced shell commands, numeric review-suggestion thresholds, and brand/tool names) MUST remain unaltered aside from intentional non-i18n fixes. YAML frontmatter keys MUST keep their structure; human-readable `description` values MUST be English. Chat-language and Session Handoff guidance in the skill MUST align with F7 (chat MAY be Portuguese; the versioned skill artifact MUST be English) and MUST NOT hard-require Portuguese-only responses.
+
+#### Scenario: openspec-apply-change mirrors pass per-wave verification
+
+- **WHEN** an operator runs `bash scripts/verify-i18n-wave.sh --files .cursor/skills/openspec-apply-change/SKILL.md,.claude/skills/openspec-apply-change/SKILL.md` after the skills substitution is applied
+- **THEN** the script exits 0 (including G-PT and G-MIRROR on those files)
+
+#### Scenario: No dual-file migration for openspec-apply-change
+
+- **WHEN** the skills substitution wave apply completes
+- **THEN** English content is at both `.cursor/skills/openspec-apply-change/SKILL.md` and `.claude/skills/openspec-apply-change/SKILL.md` and no permanent `SKILL.en.md` / `*-pt.md` sibling exists for either path
+
+#### Scenario: Mirrors stay content-equivalent
+
+- **WHEN** an agent compares the two openspec-apply-change skill mirrors after substitution
+- **THEN** the file contents are identical (`cmp` succeeds) so Cursor and Claude load the same English instructions
+
+### Requirement: openspec-archive-change skill mirrors are English
+
+The logical skill `openspec-archive-change` MUST be written in English at both mirror paths `.cursor/skills/openspec-archive-change/SKILL.md` and `.claude/skills/openspec-archive-change/SKILL.md`. Residual Portuguese prose in either mirror is FORBIDDEN after the skills substitution wave. The two mirrors MUST remain content-equivalent after substitution. Dual-file siblings such as `SKILL.en.md` or `*-pt.md` MUST NOT be introduced for these paths. Freeze-list tokens (paths, change-ids, slash commands such as `/opsx:archive`, `/opsx:explore`, and `/opsx:propose`, skill directory name `openspec-archive-change`, fenced shell commands, archive Guardrails / sync assessment semantics, optional pattern-promotion checklist meaning, advisory metrics-cadence behavior, and brand/tool names) MUST remain unaltered aside from intentional non-i18n fixes. YAML frontmatter keys MUST keep their structure; human-readable `description` values MUST be English. Chat-language and Session Handoff guidance in the skill MUST align with F7 (chat MAY be Portuguese; the versioned skill artifact MUST be English) and MUST NOT hard-require Portuguese-only responses.
+
+#### Scenario: openspec-archive-change mirrors pass per-wave verification
+
+- **WHEN** an operator runs `bash scripts/verify-i18n-wave.sh --files .cursor/skills/openspec-archive-change/SKILL.md,.claude/skills/openspec-archive-change/SKILL.md` after the skills substitution is applied
+- **THEN** the script exits 0 (including G-PT and G-MIRROR on those files)
+
+#### Scenario: No dual-file migration for openspec-archive-change
+
+- **WHEN** the skills substitution wave apply completes
+- **THEN** English content is at both `.cursor/skills/openspec-archive-change/SKILL.md` and `.claude/skills/openspec-archive-change/SKILL.md` and no permanent `SKILL.en.md` / `*-pt.md` sibling exists for either path
+
+#### Scenario: Mirrors stay content-equivalent
+
+- **WHEN** an agent compares the two openspec-archive-change skill mirrors after substitution
+- **THEN** the file contents are identical (`cmp` succeeds) so Cursor and Claude load the same English instructions
+
+### Requirement: openspec-propose skill mirrors are English
+
+The logical skill `openspec-propose` MUST be written in English at both mirror paths `.cursor/skills/openspec-propose/SKILL.md` and `.claude/skills/openspec-propose/SKILL.md`. Residual Portuguese prose in either mirror is FORBIDDEN after the skills substitution wave. The two mirrors MUST remain content-equivalent after substitution. Dual-file siblings such as `SKILL.en.md` or `*-pt.md` MUST NOT be introduced for these paths. Freeze-list tokens (paths, change-ids, slash commands such as `/opsx:propose` and `/opsx:apply`, OpenSpec CLI fences, §12.10 Gate/Pattern references, fenced shell commands, and brand/tool names) MUST remain unaltered aside from intentional non-i18n fixes. YAML frontmatter keys MUST keep their structure; human-readable `description` values MUST be English. Chat-language and Session Handoff guidance in the skill MUST align with F7 (chat MAY be Portuguese; the versioned skill artifact MUST be English) and MUST NOT hard-require Portuguese-only responses.
+
+#### Scenario: openspec-propose mirrors pass per-wave verification
+
+- **WHEN** an operator runs `bash scripts/verify-i18n-wave.sh --files .cursor/skills/openspec-propose/SKILL.md,.claude/skills/openspec-propose/SKILL.md` after the skills substitution is applied
+- **THEN** the script exits 0 (including G-PT and G-MIRROR on those files)
+
+#### Scenario: No dual-file migration for openspec-propose
+
+- **WHEN** the skills substitution wave apply completes
+- **THEN** English content is at both `.cursor/skills/openspec-propose/SKILL.md` and `.claude/skills/openspec-propose/SKILL.md` and no permanent `SKILL.en.md` / `*-pt.md` sibling exists for either path
+
+#### Scenario: Mirrors stay content-equivalent
+
+- **WHEN** an agent compares the two openspec-propose skill mirrors after substitution
+- **THEN** the file contents are identical (`cmp` succeeds) so Cursor and Claude load the same English instructions
+
