@@ -30,3 +30,4 @@ C1 install today is command-correct but narratively thin: operators (and agents 
 - **Non-goals / out of scope:** rewrite §4 master table; GIF/landing; change C1 tool order; interactive menu X at end of C1; auto-install UI/Probity/CI/Metrics; invent “Sem ela…” copy beyond the explore drafts refined in design
 - **Checksums:** if templates under `sdd-kit/templates/` change, run `bash sdd-kit/gen-manifest-checksums.sh` before commit
 - **Sources:** explore decisions in propose prompt; guide §2 + §4; `README.md`; `sdd-kit/README.md`; `sdd-kit/install.sh`; `templates/scripts/bootstrap-sdd.sh`; `openspec/specs/sdd-install-kit/`; language axes via `sdd-language-policy`
+- **Explore merge (2026-07-31):** decisions confirmed (A+B, Y after §2.8, S↔T, F7); design D3/D5 tightened — full S copy table + Install if/Skip if; no apply in merge pass
