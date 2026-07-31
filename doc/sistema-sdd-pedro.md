@@ -422,202 +422,202 @@ Use after every installation (human or AI):
 - [ ] `.github/workflows/sdd-gates.yml` present (see §2.12 to configure branch protection manually)
 - [ ] `renovate.json` present if APP/HYBRID profile (see §2.13 to install the Renovate app)
 
-### 2.11 Módulo de desenvolvimento de UI (C1-UI, opcional)
+### 2.11 UI development module (C1-UI, optional)
 
-**Pré-requisito:** C1 concluído (checklist §2.8 acima).
+**Prerequisite:** C1 complete (checklist §2.8 above).
 
-**Perfis:** APP e HYBRID com frontend (`app/` ou `apps/web/`). DOCS_SPECS sem app: `--detect` reporta `SKIP`; docs de referência distribuídos pelo kit.
+**Profiles:** APP and HYBRID with a frontend (`app/` or `apps/web/`). DOCS_SPECS without an app: `--detect` reports `SKIP`; reference docs are distributed via the kit.
 
-| Passo | Acção |
+| Step | Action |
 |-------|--------|
 | 1 | `bash sdd-kit/install-ui-module.sh --detect` |
-| 2 | Ler `doc/design/002-ui-module-install.md` §1 (decisão shadcn — recomendado + opt-out) |
+| 2 | Read `doc/design/002-ui-module-install.md` §1 (shadcn decision — recommended + opt-out) |
 | 3 | `bash sdd-kit/install-ui-module.sh --apply [--yes]` |
 | 4 | Checklist §2.11.1 |
 
-**O que o módulo inclui:**
+**What the module includes:**
 
-- Documentação `doc/design/000`–`003` (pipeline, instalação, adapters)
-- Actualização de `openspec/infra.md` (secção UI Development Module)
-- Impeccable (`npx impeccable install`) **apenas** com `--yes` e Node 24+
+- Documentation `doc/design/000`–`003` (pipeline, installation, adapters)
+- Update to `openspec/infra.md` (UI Development Module section)
+- Impeccable (`npx impeccable install`) **only** with `--yes` and Node 24+
 
-**O que não inclui:** Open Design, Pencil, Figma MCP (instalar sob demanda — ver `002` §5).
+**What it does not include:** Open Design, Pencil, Figma MCP (install on demand — see `002` §5).
 
-**Detalhe operacional:** [`doc/design/001-pipeline-open-design-shadcn-impeccable.md`](design/001-pipeline-open-design-shadcn-impeccable.md) — **não** duplicar fluxos A–D neste guia (§5.3).
+**Operational detail:** [`doc/design/001-pipeline-open-design-shadcn-impeccable.md`](design/001-pipeline-open-design-shadcn-impeccable.md) — **do not** duplicate flows A–D in this guide (§5.3).
 
-#### 2.11.1 Checklist verificação UI module
+#### 2.11.1 UI module verification checklist
 
-Após C1-UI (`--apply`):
+After C1-UI (`--apply`):
 
-- [ ] `bash sdd-kit/install-ui-module.sh --detect` reporta `UI stack` correcto
-- [ ] `doc/design/002-ui-module-install.md` e `003-ui-stack-adapters.md` presentes
-- [ ] `openspec/infra.md` — secção **UI Development Module** actualizada
-- [ ] `UI stack:` em `openspec/project.md` reflecte a decisão (shadcn | tailwind-custom | other | none)
-- [ ] Node 24+ confirmado antes de Impeccable (gate M3)
-- [ ] `DESIGN.md` na raiz (se Impeccable instalado) — distinto de `openspec/changes/<id>/design.md`
-- [ ] `npx gitnexus analyze --force` se `components/ui/` foi alterado
-- [ ] `graphify update .` para indexar `doc/design/*`
-- [ ] `.cursor/skills/impeccable/` presente (se Impeccable aplicado) — separado de skills SDD
+- [ ] `bash sdd-kit/install-ui-module.sh --detect` reports the correct `UI stack`
+- [ ] `doc/design/002-ui-module-install.md` and `003-ui-stack-adapters.md` present
+- [ ] `openspec/infra.md` — **UI Development Module** section updated
+- [ ] `UI stack:` in `openspec/project.md` reflects the decision (shadcn | tailwind-custom | other | none)
+- [ ] Node 24+ confirmed before Impeccable (gate M3)
+- [ ] `DESIGN.md` at repo root (if Impeccable installed) — distinct from `openspec/changes/<id>/design.md`
+- [ ] `npx gitnexus analyze --force` if `components/ui/` was changed
+- [ ] `graphify update .` to index `doc/design/*`
+- [ ] `.cursor/skills/impeccable/` present (if Impeccable applied) — separate from SDD skills
 
-### 2.12 Gates de CI (sdd-gates) — operação
+### 2.12 CI gates (sdd-gates) — operation
 
-Enforcement fail-closed dos gates SDD no servidor (gap G1 — `add-sdd-ci-gates-workflow`). O workflow `.github/workflows/sdd-gates.yml` **só orquestra comandos já existentes**; não há skill nem rule associada (modo A — automático out-of-band, R3 do contrato de registro = N/A).
+Fail-closed enforcement of SDD gates on the server (gap G1 — `add-sdd-ci-gates-workflow`). The `.github/workflows/sdd-gates.yml` workflow **only orchestrates existing commands**; there is no associated skill or rule (type A — automatic out-of-band; registration contract R3 = N/A).
 
-**Quando corre:** `push` para `main`/`master` e qualquer `pull_request`.
+**When it runs:** `push` to `main`/`master` and any `pull_request`.
 
-**Passos e política:**
+**Steps and policy:**
 
-| Passo | Comando | Política |
+| Step | Command | Policy |
 |-------|---------|----------|
-| OpenSpec validate | `npx --yes @fission-ai/openspec@1.3.1 validate --all --strict --no-interactive` | **Bloqueante** (fail-closed) |
-| Task patterns | `bash scripts/verify-task-patterns.sh` | Bloqueante (SKIP se ausente — perfil APP) |
-| OSV-Scanner | `google/osv-scanner-action` (SHA-pinned) | Bloqueante (SKIP se sem lockfile na raiz) |
-| sdd-kit verify | `bash sdd-kit/verify.sh` | Report-only (`continue-on-error`) — inclui `verify-infra.sh`, que verifica CLIs de conhecimento ausentes no runner |
+| OpenSpec validate | `npx --yes @fission-ai/openspec@1.3.1 validate --all --strict --no-interactive` | **Blocking** (fail-closed) |
+| Task patterns | `bash scripts/verify-task-patterns.sh` | Blocking (SKIP if absent — APP profile) |
+| OSV-Scanner | `google/osv-scanner-action` (SHA-pinned) | Blocking (SKIP if no lockfile at repo root) |
+| sdd-kit verify | `bash sdd-kit/verify.sh` | Report-only (`continue-on-error`) — includes `verify-infra.sh`, which checks for knowledge CLIs missing on the runner |
 
-**Como ler o output:** no separador Actions (ou check do PR), o passo vermelho indica o gate que falhou. `OpenSpec validate` lista `✗ change/<id>` — reproduzir localmente com `npx openspec validate <id> --strict` e corrigir o artefacto. `Task patterns` lista `FAIL missing: <path>` — corrigir o `Pattern:` no `tasks.md`. O passo `sdd-kit verify` pode aparecer com aviso sem bloquear (esperado: GitNexus/Graphify não existem no runner).
+**How to read the output:** in the Actions tab (or PR check), the red step indicates which gate failed. `OpenSpec validate` lists `✗ change/<id>` — reproduce locally with `npx openspec validate <id> --strict` and fix the artifact. `Task patterns` lists `FAIL missing: <path>` — fix the `Pattern:` in `tasks.md`. The `sdd-kit verify` step may show a warning without blocking (expected: GitNexus/Graphify are not on the runner).
 
-**Desbloquear merge:** corrigir o artefacto que falhou e fazer push — o check reexecuta. **Não** contornar com edição do workflow no mesmo PR; se o gate estiver errado, abrir change próprio.
+**Unblock merge:** fix the failed artifact and push — the check re-runs. **Do not** work around by editing the workflow in the same PR; if the gate is wrong, open a dedicated change.
 
 **Troubleshooting:**
 
-| Sintoma | Causa provável | Acção |
+| Symptom | Likely cause | Action |
 |---------|----------------|-------|
-| `✗ change/<id>` no validate | Delta sem `## ADDED/MODIFIED/... Requirements` ou requirement sem `#### Scenario:` | Corrigir o delta; `openspec validate <id> --strict` local |
-| `FAIL missing:` no task patterns | Path de `Pattern:` inexistente | Actualizar `tasks.md` |
-| Workflow verde mas merge não bloqueado | Branch protection não configurada | Ver acção manual abaixo |
-| `notarget`/404 no npx | Versão pinada divergente de `min_openspec` | Alinhar com `sdd-kit/MANIFEST.yaml` |
+| `✗ change/<id>` in validate | Delta missing `## ADDED/MODIFIED/... Requirements` or requirement without `#### Scenario:` | Fix the delta; run `openspec validate <id> --strict` locally |
+| `FAIL missing:` in task patterns | `Pattern:` path does not exist | Update `tasks.md` |
+| Green workflow but merge not blocked | Branch protection not configured | See manual action below |
+| `notarget`/404 on npx | Pinned version diverges from `min_openspec` | Align with `sdd-kit/MANIFEST.yaml` |
 
-`[AÇÃO MANUAL NECESSÁRIA]` **Branch protection** — o workflow reporta o check, mas só bloqueia merge de facto com branch protection activa: GitHub → Settings → Branches → Add rule para `main`/`master` → "Require status checks to pass" → seleccionar **SDD Gates**. Confirmar num PR de teste antes de confiar no gate.
+`[MANUAL ACTION REQUIRED]` **Branch protection** — the workflow reports the check, but merge is only actually blocked with active branch protection: GitHub → Settings → Branches → Add rule for `main`/`master` → "Require status checks to pass" → select **SDD Gates**. Confirm on a test PR before relying on the gate.
 
-**Rollback:** apagar `.github/workflows/sdd-gates.yml` desactiva o gate imediatamente (sem estado residual).
+**Rollback:** deleting `.github/workflows/sdd-gates.yml` disables the gate immediately (no residual state).
 
-### 2.13 Supply chain (Renovate + OSV-Scanner) — operação
+### 2.13 Supply chain (Renovate + OSV-Scanner) — operation
 
-Gates automáticos de supply chain (gap G8 — `add-supply-chain-gates`). Operam **independentemente** da tarefa A–E em curso na sessão SDD.
+Automatic supply-chain gates (gap G8 — `add-supply-chain-gates`). They run **independently** of the A–E task in progress in the SDD session.
 
 **OSV-Scanner (CI):**
 
-- **Quando corre:** no job `SDD Gates`, após `openspec validate` e `task patterns`, antes de `sdd-kit verify` (report-only).
-- **Condição:** só executa se existir lockfile suportado na raiz (`package-lock.json`, `pnpm-lock.yaml`, `yarn.lock`, `poetry.lock`, `Pipfile.lock`, `Cargo.lock`, `go.sum`, `Gemfile.lock`, `composer.lock`).
-- **SKIP:** sem lockfile → log `SKIP: no lockfile at repo root — OSV-Scanner not applicable` (hub DOCS_SPECS sem deps).
-- **Política:** fail-closed — vulnerabilidade no lockfile bloqueia merge.
+- **When it runs:** in the `SDD Gates` job, after `openspec validate` and `task patterns`, before `sdd-kit verify` (report-only).
+- **Condition:** runs only if a supported lockfile exists at the repo root (`package-lock.json`, `pnpm-lock.yaml`, `yarn.lock`, `poetry.lock`, `Pipfile.lock`, `Cargo.lock`, `go.sum`, `Gemfile.lock`, `composer.lock`).
+- **SKIP:** no lockfile → log `SKIP: no lockfile at repo root — OSV-Scanner not applicable` (DOCS_SPECS hub without deps).
+- **Policy:** fail-closed — vulnerability in the lockfile blocks merge.
 
-**Como ler falha OSV no Actions:**
+**How to read an OSV failure in Actions:**
 
-1. Abrir o check `SDD Gates` no PR → passo `OSV-Scanner (blocking)` vermelho.
-2. Expandir logs — lista pacote, versão e advisory ID (OSV).
-3. Actualizar dependência ou aplicar override documentado (último recurso).
+1. Open the `SDD Gates` check on the PR → red `OSV-Scanner (blocking)` step.
+2. Expand logs — lists package, version, and advisory ID (OSV).
+3. Update the dependency or apply a documented override (last resort).
 
-**Renovate (updates automatizados):**
+**Renovate (automated updates):**
 
-`[AÇÃO MANUAL NECESSÁRIA]` **Instalar app GitHub Renovate** — perfis APP/HYBRID apenas:
+`[MANUAL ACTION REQUIRED]` **Install the GitHub Renovate app** — APP/HYBRID profiles only:
 
-1. Ir a [github.com/apps/renovate](https://github.com/apps/renovate) → Install.
-2. Seleccionar o repositório (ou organização).
-3. Confirmar que `renovate.json` existe na raiz (copiado por `sdd-kit/install.sh` em APP/HYBRID).
-4. Aguardar PR inicial de onboarding do Renovate.
+1. Go to [github.com/apps/renovate](https://github.com/apps/renovate) → Install.
+2. Select the repository (or organization).
+3. Confirm `renovate.json` exists at the repo root (copied by `sdd-kit/install.sh` on APP/HYBRID).
+4. Wait for Renovate's initial onboarding PR.
 
-**Preset conservador** (`sdd-kit/templates/renovate.json`):
+**Conservative preset** (`sdd-kit/templates/renovate.json`):
 
-- Schedule: segunda-feira antes das 9h (America/Sao_Paulo).
-- Limites: 5 PRs concorrentes, 2/hora.
-- Agrupamento de minor/patch não-major.
-- Automerge **apenas** patches — requer `requiredStatusChecks: ["SDD Gates"]` + branch protection activa (opt-in).
-- Majors e minors: **sem** automerge — review humano obrigatório.
+- Schedule: Monday before 9am (America/Sao_Paulo).
+- Limits: 5 concurrent PRs, 2/hour.
+- Grouping of non-major minor/patch updates.
+- Automerge **patches only** — requires `requiredStatusChecks: ["SDD Gates"]` + active branch protection (opt-in).
+- Majors and minors: **no** automerge — human review required.
 
-**Classificação agente (AGENTS.md):**
+**Agent classification (AGENTS.md):**
 
-| Origem | Tipo | Acção |
+| Source | Type | Action |
 |--------|------|-------|
-| Renovate patch | A | Review rápido; merge se CI verde |
-| Renovate minor/major | B/C | Review de breaking behaviour |
-| OSV vermelho no PR | B | Corrigir deps antes de merge/archive |
+| Renovate patch | A | Quick review; merge if CI green |
+| Renovate minor/major | B/C | Review breaking behaviour |
+| Red OSV on PR | B | Fix deps before merge/archive |
 
 **Troubleshooting:**
 
-| Sintoma | Causa provável | Acção |
+| Symptom | Likely cause | Action |
 |---------|----------------|-------|
-| OSV bloqueia merge legítimo | Advisory em transitiva ou falso positivo | Actualizar dep; override temporário (pin/ignore) — ver abaixo |
-| Renovate não abre PRs | App não instalada ou `renovate.json` ausente | Instalar app; `install.sh --profile APP` |
-| Automerge não funciona | Branch protection sem automerge ou check errado | Configurar "SDD Gates" como required check + automerge no GitHub |
-| Spam de PRs Renovate | Preset demasiado agressivo | Ajustar `prConcurrentLimit` / `schedule` em `renovate.json` |
+| OSV blocks legitimate merge | Advisory on transitive dep or false positive | Update dep; temporary override (pin/ignore) — see below |
+| Renovate does not open PRs | App not installed or `renovate.json` missing | Install app; `install.sh --profile APP` |
+| Automerge does not work | Branch protection without automerge or wrong check | Configure "SDD Gates" as required check + automerge on GitHub |
+| Renovate PR spam | Preset too aggressive | Adjust `prConcurrentLimit` / `schedule` in `renovate.json` |
 
-**Override OSV (último recurso):** preferir corrigir a dependência. Se inevitável, documentar no PR o motivo e usar mecanismo suportado pelo OSV-Scanner (ex.: `osv-scanner.toml` com ignore temporário). Não desactivar o step no workflow para contornar.
+**OSV override (last resort):** prefer fixing the dependency. If unavoidable, document the reason in the PR and use a mechanism supported by OSV-Scanner (e.g. `osv-scanner.toml` with a temporary ignore). Do not disable the workflow step to work around.
 
-**Checklist piloto APP** (volume de PRs Renovate):
+**APP pilot checklist** (Renovate PR volume):
 
-- [ ] Após 2 semanas de operação, confirmar ≤5 PRs/semana em média
-- [ ] Automerge de patches não quebra CI
-- [ ] Majors sempre com review humano
+- [ ] After 2 weeks of operation, confirm ≤5 PRs/week on average
+- [ ] Patch automerge does not break CI
+- [ ] Majors always get human review
 
 **Rollback:**
 
-| Componente | Acção |
+| Component | Action |
 |------------|-------|
-| OSV | Remover step `OSV-Scanner` de `sdd-gates.yml` (hub + template) |
-| Renovate | Remover `renovate.json` + desinstalar app GitHub |
+| OSV | Remove `OSV-Scanner` step from `sdd-gates.yml` (hub + template) |
+| Renovate | Remove `renovate.json` + uninstall GitHub app |
 
-### 2.14 Reviews pós-apply — correctness-review
+### 2.14 Post-apply reviews — correctness-review
 
-Skill on-demand que detecta bugs lógicos, edge cases não tratados, violações de contrato e erros silenciosos em código gerado por IA. Posicionada na pipeline **após testes (R6/Probity `enforceTdd`)** e **antes de `simplify-review`**.
+On-demand skill that detects logic bugs, unhandled edge cases, contract violations, and silent errors in AI-generated code. Positioned in the pipeline **after tests (R6/Probity `enforceTdd`)** and **before `simplify-review`**.
 
-#### Quando acionar
+#### When to invoke
 
-| Tipo de tarefa | Acionar? | Gatilho |
+| Task type | Invoke? | Trigger |
 |----------------|----------|---------|
-| **B — Bug fix** | ✅ Sempre | Diff > 0 linhas de lógica |
-| **C — Refactor** | ✅ Sim | Diff > ~80 linhas ou > 4 ficheiros |
-| **D — Feature** | ✅ Sempre | Diff com lógica nova |
-| **A — Trivial** | ❌ Não | — |
-| **E — Exploração** | ❌ Não | — (sem código gerado) |
+| **B — Bug fix** | ✅ Always | Diff > 0 lines of logic |
+| **C — Refactor** | ✅ Yes | Diff > ~80 lines or > 4 files |
+| **D — Feature** | ✅ Always | Diff with new logic |
+| **A — Trivial** | ❌ No | — |
+| **E — Exploration** | ❌ No | — (no generated code) |
 
-**Posição no pipeline:**
+**Pipeline position:**
 
 ```
-/opsx:apply  →  [implementação]  →  testes (R6/Probity enforceTdd)
+/opsx:apply  →  [implementation]  →  tests (R6/Probity enforceTdd)
   →  correctness-review (B/C/D)
-  →  simplify-review (opcional, C/D)
-  →  security-reviewer (se auth/API/pagamentos)
-  →  commit (R9)  →  gates CI  →  /opsx:archive
+  →  simplify-review (optional, C/D)
+  →  security-reviewer (if auth/API/payments)
+  →  commit (R9)  →  CI gates  →  /opsx:archive
 ```
 
-#### Como ler o output
+#### How to read the output
 
-A skill produz achados com 5 tags:
+The skill produces findings with 5 tags:
 
-| Tag | Significa |
+| Tag | Meaning |
 |-----|-----------|
-| `logic:` | Ramo lógico errado; resultado incorreto para input válido |
-| `edge:` | Input extremo não tratado (null, vazio, overflow, unicode) |
-| `contract:` | Violação de pré/pós-condição ou invariante de API |
-| `race:` | Condição de corrida (shared mutable state, async sem lock) |
-| `silent:` | Erro silencioso — excepção engolida, valor errado sem alerta |
+| `logic:` | Wrong logic branch; incorrect result for valid input |
+| `edge:` | Extreme input not handled (null, empty, overflow, unicode) |
+| `contract:` | Pre/post-condition or API invariant violation |
+| `race:` | Race condition (shared mutable state, async without lock) |
+| `silent:` | Silent error — swallowed exception, wrong value without alert |
 
-**Vereditos:**
+**Verdicts:**
 
-| Veredito | Acção |
+| Verdict | Action |
 |----------|-------|
-| `CORRECT` | Nenhum achado — ship |
-| `RISKY` | ≥1 achado acionável — revisar antes de commit |
-| `ESCOPO INSUFICIENTE` | Diff demasiado pequeno ou sem lógica — ignorar |
+| `CORRECT` | No findings — ship |
+| `RISKY` | ≥1 actionable finding — review before commit |
+| `INSUFFICIENT SCOPE` | Diff too small or no logic — ignore |
 
-#### Como não acionar
+#### How not to invoke
 
-- **Nunca** configurar como hook ou rule `alwaysApply`.
-- **Nunca** bloquear commit automaticamente com base nesta skill.
-- Não invocar em tarefas Tipo A ou E.
+- **Never** configure as a hook or `alwaysApply` rule.
+- **Never** block commit automatically based on this skill.
+- Do not invoke on type A or E tasks.
 
 #### Troubleshooting
 
-| Sintoma | Causa | Acção |
+| Symptom | Cause | Action |
 |---------|-------|-------|
-| Achados sobre complexidade/estilo | Scope errado | Usar `simplify-review` para esses; `correctness-review` só caça bugs |
-| Achados sobre segurança | Scope errado | Usar `security-reviewer` |
-| Muitos falsos positivos | Modelo especulando sem evidência | Pedir `[mostrar evidência no código]`; descartar achado sem localização concreta |
+| Findings about complexity/style | Wrong scope | Use `simplify-review` for those; `correctness-review` only hunts bugs |
+| Security findings | Wrong scope | Use `security-reviewer` |
+| Too many false positives | Model speculating without evidence | Ask for `[show evidence in code]`; discard findings without a concrete location |
 
-**Skill files:** `.claude/skills/correctness-review/SKILL.md` (espelho em `.cursor/skills/correctness-review/SKILL.md`).
+**Skill files:** `.claude/skills/correctness-review/SKILL.md` (mirror at `.cursor/skills/correctness-review/SKILL.md`).
 
-**Rollback:** `rm -r .claude/skills/correctness-review/ .cursor/skills/correctness-review/` + reverter `AGENTS.md` e `openspec/infra.md`.
+**Rollback:** `rm -r .claude/skills/correctness-review/ .cursor/skills/correctness-review/` + revert `AGENTS.md` and `openspec/infra.md`.
 
 ### 2.15 GitHub Issues MCP (github-mcp-server) — operação
 
