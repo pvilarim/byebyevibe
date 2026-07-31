@@ -187,7 +187,7 @@ files:
 
   - path: sdd-kit/install-ui-module.sh
     source: templates/install-ui-module.sh
-    sha256: "ad16d863f0e6447af0dd4dec49f7270140ebef3536e7e2f14954a97170e1bdea"
+    sha256: "3dfb209172f76e1673336a2abd0f5cf25d975073ff0316876e289c02a2a2412a"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -x sdd-kit/install-ui-module.sh"
