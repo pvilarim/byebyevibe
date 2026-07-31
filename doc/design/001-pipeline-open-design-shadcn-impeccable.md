@@ -323,91 +323,91 @@ Open Design uses 9 native sections. When coming from Pencil or Figma, draft or c
 
 ---
 
-## 4. Fase 2 — Transformar POC em design system (shadcn)
+## 4. Phase 2 — Transform POC into design system (shadcn)
 
-### Objetivo
+### Objective
 
-Traduzir decisões visuais da Fase 1 em **tokens e componentes** determinísticos para Next.js.
+Translate Phase 1 visual decisions into deterministic **tokens and components** for Next.js.
 
-### Princípio
+### Principle
 
-> Nenhum artefato de prototipagem entra em produção como está (HTML OD, canvas Pencil, frames Figma).  
-> O que entra: **tokens CSS**, **variantes shadcn** e **`DESIGN.md` canônico**.
+> No prototyping artifact enters production as-is (OD HTML, Pencil canvas, Figma frames).  
+> What enters: **CSS tokens**, **shadcn variants**, and **canonical `DESIGN.md`**.
 
-### Fonte do POC → ação na Fase 2
+### POC source → Phase 2 action
 
-| Fonte Fase 1 | Ação na Fase 2 |
-|--------------|----------------|
-| Open Design (`DESIGN.md` + screenshots) | Extrair tokens; não copiar HTML |
-| Pencil (`.pen`) | Agente implementa com `@/components/ui/*`; extrair tokens do layout aprovado |
-| Figma (variáveis + frames) | MCP → HSL em `globals.css`; mapear componentes shadcn |
+| Phase 1 source | Phase 2 action |
+|----------------|----------------|
+| Open Design (`DESIGN.md` + screenshots) | Extract tokens; do not copy HTML |
+| Pencil (`.pen`) | Agent implements with `@/components/ui/*`; extract tokens from approved layout |
+| Figma (variables + frames) | MCP → HSL in `globals.css`; map shadcn components |
 
-### Onde gravar no projeto alvo
+### Where to store in the target project
 
-| Artefato | Caminho sugerido | Função |
-|----------|------------------|--------|
-| Tokens CSS | `app/globals.css` | `--primary`, `--radius`, … |
-| Tema Tailwind | `tailwind.config.ts` | `colors`, `fontFamily`, `borderRadius` |
-| Contrato de marca | `DESIGN.md` (raiz do app) | Impeccable + agentes |
-| Contexto de produto | `PRODUCT.md` | Público, tom, anti-referências |
-| Protótipos Pencil | `design/*.pen` | Referência versionada (não deploy) |
-| Componentes | `components/ui/*` | Variantes CVA |
+| Artifact | Suggested path | Function |
+|----------|----------------|----------|
+| CSS tokens | `app/globals.css` | `--primary`, `--radius`, … |
+| Tailwind theme | `tailwind.config.ts` | `colors`, `fontFamily`, `borderRadius` |
+| Brand contract | `DESIGN.md` (app root) | Impeccable + agents |
+| Product context | `PRODUCT.md` | Audience, tone, anti-references |
+| Pencil prototypes | `design/*.pen` | Versioned reference (not deploy) |
+| Components | `components/ui/*` | CVA variants |
 
-> Em monorepo: prefixar com `apps/web/` nos caminhos acima.
+> In a monorepo: prefix paths above with `apps/web/`.
 
-### Checklist de tradução
+### Translation checklist
 
-- [ ] Extrair cores para HSL em `globals.css`
-- [ ] Mapear tokens semânticos shadcn (`--primary`, `--muted`, …)
-- [ ] Definir `--radius` e fontes
-- [ ] Ajustar variantes `button`, `card`, `badge` se necessário
-- [ ] Redigir/atualizar `DESIGN.md` canônico no repo
-- [ ] Se Figma: anotar versão/frame aprovado no `DESIGN.md`
-- [ ] **Não** copiar HTML OD nem export cru Figma para `page.tsx`
+- [ ] Extract colors to HSL in `globals.css`
+- [ ] Map shadcn semantic tokens (`--primary`, `--muted`, …)
+- [ ] Define `--radius` and fonts
+- [ ] Adjust `button`, `card`, `badge` variants if needed
+- [ ] Write/update canonical `DESIGN.md` in the repo
+- [ ] If Figma: note approved version/frame in `DESIGN.md`
+- [ ] **Do not** copy OD HTML or raw Figma export into `page.tsx`
 
-### Prompt para agente (Fase 2)
+### Agent prompt (Phase 2)
 
 ```
-Leia doc/design/001-pipeline-open-design-shadcn-impeccable.md.
-Fonte do POC: [Open Design | Pencil design/site-home.pen | Figma URL].
-Traduza para:
-1. app/globals.css (tokens HSL)
-2. Ajustes mínimos em components/ui/* se necessário
-3. DESIGN.md na raiz alinhado ao shadcn
-Reimplementar com @/components/ui/* — sem HTML/PNG como página final.
-Escopo: site público apenas; não tocar app/[locale]/app nem lib/parametric [se aplicável].
+Read doc/design/001-pipeline-open-design-shadcn-impeccable.md.
+POC source: [Open Design | Pencil design/site-home.pen | Figma URL].
+Translate to:
+1. app/globals.css (HSL tokens)
+2. Minimal adjustments in components/ui/* if needed
+3. Root DESIGN.md aligned with shadcn
+Reimplement with @/components/ui/* — no HTML/PNG as final page.
+Scope: public site only; do not touch app/[locale]/app or lib/parametric [if applicable].
 ```
 
 ---
 
-## 5. Fase 3 — Integração e aperfeiçoamento com Impeccable
+## 5. Phase 3 — Integration and refinement with Impeccable
 
-### Objetivo
+### Objective
 
-Manter páginas **alinhadas** ao `DESIGN.md` e **livres de regressões** visuais.
+Keep pages **aligned** with `DESIGN.md` and **free from visual regressions**.
 
 ### Setup
 
 ```bash
 npx impeccable install
-# No Cursor:
+# In Cursor:
 /impeccable init
 /impeccable document
 ```
 
-Detalhes: [`000-impeccable-design-system-guia.md`](./000-impeccable-design-system-guia.md)
+Details: [`000-impeccable-design-system-guia.md`](./000-impeccable-design-system-guia.md)
 
-### Comandos por etapa
+### Commands by stage
 
-| Etapa | Comando |
+| Stage | Command |
 |-------|---------|
-| Após implementação | `/impeccable polish landing` |
-| Hierarquia | `/impeccable typeset` |
-| Cor / contraste | `/impeccable colorize` |
-| Espaçamento | `/impeccable layout` |
-| Antes do merge | `/impeccable audit` + `npx impeccable detect` |
+| After implementation | `/impeccable polish landing` |
+| Hierarchy | `/impeccable typeset` |
+| Color / contrast | `/impeccable colorize` |
+| Spacing | `/impeccable layout` |
+| Before merge | `/impeccable audit` + `npx impeccable detect` |
 
-### Escopo detector (`ignoreFiles`)
+### Detector scope (`ignoreFiles`)
 
 ```json
 {
@@ -425,168 +425,168 @@ Detalhes: [`000-impeccable-design-system-guia.md`](./000-impeccable-design-syste
 }
 ```
 
-> Ajustar prefixo `apps/web/` em monorepo. Entradas `parametric` / `three` são **[se aplicável]**.
+> Adjust `apps/web/` prefix in monorepos. `parametric` / `three` entries are **[if applicable]**.
 
-> `design/**` ignora arquivos `.pen` no detector — protótipos não são código de produção.
+> `design/**` ignores `.pen` files in the detector — prototypes are not production code.
 
 ---
 
-## 6. Papéis das ferramentas (resumo)
+## 6. Tool roles (summary)
 
-| Pergunta | Open Design | Pencil | Figma MCP | shadcn | Impeccable |
+| Question | Open Design | Pencil | Figma MCP | shadcn | Impeccable |
 |----------|-------------|--------|-----------|--------|------------|
-| Explorar direções de marca | ✅ | ⚠️ | ⚠️ | ❌ | ❌ |
-| POC no repo (Git) | ❌ | ✅ | ❌ | ❌ | ❌ |
-| Marca já no Figma | ⚠️ import | colar | ✅ | ❌ | ❌ |
-| Alinhado a shadcn | Indireto | ✅ | Via tokens | ✅ | Lê existente |
-| Código de produção | ❌ | ❌ | ❌ | ✅ | Orienta |
-| Guardrails CI | ❌ | ❌ | ❌ | ❌ | ✅ |
+| Explore brand directions | ✅ | ⚠️ | ⚠️ | ❌ | ❌ |
+| POC in repo (Git) | ❌ | ✅ | ❌ | ❌ | ❌ |
+| Brand already in Figma | ⚠️ import | paste | ✅ | ❌ | ❌ |
+| Aligned with shadcn | Indirect | ✅ | Via tokens | ✅ | Reads existing |
+| Production code | ❌ | ❌ | ❌ | ✅ | Guides |
+| CI guardrails | ❌ | ❌ | ❌ | ❌ | ✅ |
 
 ---
 
-## 7. Escopo no projeto alvo
+## 7. Scope in the target project
 
-### Dentro do pipeline
+### Within the pipeline
 
-| Superfície | Fase 1 | Fase 2 | Fase 3 |
-|------------|--------|--------|--------|
+| Surface | Phase 1 | Phase 2 | Phase 3 |
+|---------|---------|---------|---------|
 | Home | OD / Pencil / Figma | `page.tsx` + tokens | polish / audit |
-| Galeria | idem | `gallery/` | polish / audit |
-| Produto | idem | `product/[id]/` | polish / audit |
-| FAQ, About, Contact | Pencil ou Figma | páginas existentes | clarify / layout |
-| Carrinho / checkout | idem | componentes UI | harden / audit |
+| Gallery | same | `gallery/` | polish / audit |
+| Product | same | `product/[id]/` | polish / audit |
+| FAQ, About, Contact | Pencil or Figma | existing pages | clarify / layout |
+| Cart / checkout | same | UI components | harden / audit |
 
-### Fora do pipeline **[se aplicável]**
+### Outside the pipeline **[if applicable]**
 
-| Superfície | Usar |
-|------------|------|
-| Configurador `/app` | skills paramétricas do domínio |
-| Admin / dashboard | shadcn; Impeccable opcional (modo product) |
-| Canvas WebGL | Skills paramétricas |
+| Surface | Use |
+|---------|-----|
+| Configurator `/app` | domain parametric skills |
+| Admin / dashboard | shadcn; Impeccable optional (product mode) |
+| WebGL canvas | Parametric skills |
 
 ---
 
-## 8. Fluxos de trabalho recomendados
+## 8. Recommended workflows
 
-### Fluxo A — Exploração ampla (recomendado para redesign)
+### Flow A — Broad exploration (recommended for redesign)
 
-1. Brief de produto.
-2. **Open Design** — 2–3 direções + `DESIGN.md`.
-3. Aprovação humana.
-4. **Pencil** — `design/site-*.pen` com shadcn.
-5. Fase 2 — tokens + implementação Next.js.
-6. Fase 3 — Impeccable + CI.
+1. Product brief.
+2. **Open Design** — 2–3 directions + `DESIGN.md`.
+3. Human approval.
+4. **Pencil** — `design/site-*.pen` with shadcn.
+5. Phase 2 — tokens + Next.js implementation.
+6. Phase 3 — Impeccable + CI.
 
-### Fluxo B — Dev solo, direção já clara (sem OD)
+### Flow B — Solo dev, direction already clear (no OD)
 
 1. Brief.
-2. **Pencil** — wireframe/alta no repo.
-3. Agente implementa → Fase 2 tokens → Fase 3 Impeccable.
+2. **Pencil** — wireframe/high-fidelity in repo.
+3. Agent implements → Phase 2 tokens → Phase 3 Impeccable.
 
-### Fluxo C — Marca no Figma (designer + dev)
+### Flow C — Brand in Figma (designer + dev)
 
-1. Designer mantém Figma atualizado.
-2. **Figma MCP** — agente extrai variáveis e layout.
-3. Opcional: adaptar no **Pencil** para `.pen` versionado.
-4. Fase 2 + 3.
+1. Designer keeps Figma updated.
+2. **Figma MCP** — agent extracts variables and layout.
+3. Optional: adapt in **Pencil** for versioned `.pen`.
+4. Phase 2 + 3.
 
-### Fluxo D — Incremental (sem redesign)
+### Flow D — Incremental (no redesign)
 
-1. Pular Fase 1a.
-2. **Pencil** só na seção alterada (ex.: hero) **ou** patch direto em tokens.
-3. `/impeccable polish` na área.
+1. Skip Phase 1a.
+2. **Pencil** only in the changed section (e.g. hero) **or** direct token patch.
+3. `/impeccable polish` on the area.
 
 ---
 
-## 9. Prompts prontos para agentes
+## 9. Ready prompts for agents
 
-### Escolher ferramenta Fase 1
-
-```
-Leia doc/design/001-pipeline-open-design-shadcn-impeccable.md §3.0.
-Temos Figma de marca? [sim/não]. Redesign amplo ou ajuste pontual?
-Recomende: Open Design, Pencil ou Figma MCP e justifique em 3 linhas.
-```
-
-### Pencil → implementação
+### Choose Phase 1 tool
 
 ```
-Implemente design/site-home.pen em app/[locale]/page.tsx.
-Use apenas @/components/ui/* e tokens de globals.css.
-i18n via messages/ — sem strings PT fixas na view.
-Depois: /impeccable polish landing.
+Read doc/design/001-pipeline-open-design-shadcn-impeccable.md §3.0.
+Do we have brand Figma? [yes/no]. Broad redesign or targeted tweak?
+Recommend: Open Design, Pencil, or Figma MCP and justify in 3 lines.
+```
+
+### Pencil → implementation
+
+```
+Implement design/site-home.pen in app/[locale]/page.tsx.
+Use only @/components/ui/* and globals.css tokens.
+i18n via messages/ — no hardcoded PT strings in the view.
+Then: /impeccable polish landing.
 ```
 
 ### Figma MCP → tokens
 
 ```
-Arquivo Figma: [URL]. Extraia variáveis de cor e tipografia para app/globals.css (HSL shadcn).
-Atualize DESIGN.md com referência ao frame [nome] e data de sync.
-Não copiar export PNG/SVG como layout da página.
+Figma file: [URL]. Extract color and typography variables to app/globals.css (shadcn HSL).
+Update DESIGN.md with reference to frame [name] and sync date.
+Do not copy PNG/SVG export as page layout.
 ```
 
 ### Open Design → Pencil
 
 ```
-Direção aprovada no Open Design [anexar DESIGN.md].
-Crie wireframe equivalente em design/site-gallery.pen (shadcn).
-Não implementar Next.js ainda.
+Approved direction in Open Design [attach DESIGN.md].
+Create equivalent wireframe in design/site-gallery.pen (shadcn).
+Do not implement Next.js yet.
 ```
 
-### Pipeline completo
+### Full pipeline
 
 ```
-Siga doc/design/001-pipeline-open-design-shadcn-impeccable.md.
-Fase actual: [1a OD | 1b Pencil | 1b Figma | 2 shadcn | 3 Impeccable].
-Escopo: site público apenas.
+Follow doc/design/001-pipeline-open-design-shadcn-impeccable.md.
+Current phase: [1a OD | 1b Pencil | 1b Figma | 2 shadcn | 3 Impeccable].
+Scope: public site only.
 ```
 
 ---
 
-## 10. Riscos e mitigações
+## 10. Risks and mitigations
 
-| Risco | Mitigação |
-|-------|-----------|
-| Três fontes de verdade (OD + Pencil + Figma) | Escolher **uma** fonte canônica por projeto; OD só para exploração |
-| HTML OD / export Figma no `page.tsx` | Reimplementar com shadcn |
-| Figma drift | Data + frame ID no `DESIGN.md` |
-| `.pen` desatualizado vs código | Commit `.pen` junto com PR de UI |
-| Impeccable vs skills paramétricas **[se aplicável]** | `ignoreFiles` para `/app`, `lib/parametric`, `design/**` |
-| Pencil MCP offline | Abrir `.pen` antes de chamar o agente |
-
----
-
-## 11. Licença e custo
-
-| Ferramenta | Licença | Custo |
-|------------|---------|-------|
-| Open Design | Apache 2.0 | Gratuito; BYOK ou AMR opcional |
-| Pencil | Ver [pencil.dev](https://www.pencil.dev) | Extensão; plano conforme vendor |
-| Figma | Proprietário | Plano Figma conforme uso |
-| Figma MCP (Cursor) | Conforme plugin | Incluso no fluxo Cursor |
-| shadcn/ui | MIT | Já no projeto APP |
-| Impeccable | Apache 2.0 | Gratuito |
+| Risk | Mitigation |
+|------|------------|
+| Three sources of truth (OD + Pencil + Figma) | Choose **one** canonical source per project; OD for exploration only |
+| OD HTML / Figma export in `page.tsx` | Reimplement with shadcn |
+| Figma drift | Date + frame ID in `DESIGN.md` |
+| `.pen` out of date vs code | Commit `.pen` together with UI PR |
+| Impeccable vs parametric skills **[if applicable]** | `ignoreFiles` for `/app`, `lib/parametric`, `design/**` |
+| Pencil MCP offline | Open `.pen` before calling the agent |
 
 ---
 
-## 12. Documentos relacionados
+## 11. License and cost
 
-| Documento | Conteúdo |
-|-----------|----------|
-| [000-impeccable-design-system-guia.md](./000-impeccable-design-system-guia.md) | Impeccable isolado |
-| [AGENTS.md](../../AGENTS.md) | Roteamento de agentes |
-| [doc/sistema-sdd-pedro.md](../sistema-sdd-pedro.md) | Guia canónico SDD — **destino futuro deste pipeline** |
-| [openspec/project.md](../../openspec/project.md) | Constituição do projecto |
+| Tool | License | Cost |
+|------|---------|------|
+| Open Design | Apache 2.0 | Free; optional BYOK or AMR |
+| Pencil | See [pencil.dev](https://www.pencil.dev) | Extension; plan per vendor |
+| Figma | Proprietary | Figma plan per usage |
+| Figma MCP (Cursor) | Per plugin | Included in Cursor workflow |
+| shadcn/ui | MIT | Already in APP project |
+| Impeccable | Apache 2.0 | Free |
+
+---
+
+## 12. Related documents
+
+| Document | Content |
+|----------|---------|
+| [000-impeccable-design-system-guia.md](./000-impeccable-design-system-guia.md) | Impeccable in isolation |
+| [AGENTS.md](../../AGENTS.md) | Agent routing |
+| [doc/sistema-sdd-pedro.md](../sistema-sdd-pedro.md) | Canonical SDD guide — **future home of this pipeline** |
+| [openspec/project.md](../../openspec/project.md) | Project constitution |
 | [Open Design](https://github.com/nexu-io/open-design) | Skills, `od-figma-migration` |
-| [Pencil docs](https://docs.pencil.dev) | Instalação, MCP |
-| [Impeccable](https://github.com/pbakaus/impeccable) | Comandos, detector |
+| [Pencil docs](https://docs.pencil.dev) | Installation, MCP |
+| [Impeccable](https://github.com/pbakaus/impeccable) | Commands, detector |
 
 ---
 
-## 13. Histórico
+## 13. History
 
-| Data | Nota |
+| Date | Note |
 |------|------|
-| 2026-06-26 | Documento criado no repo de origem — pipeline OD → shadcn → Impeccable |
-| 2026-06-26 | Fase 1b: Pencil e Figma MCP — quando usar cada um, fluxos A–D, matriz comparativa |
-| 2026-06-27 | Importado para spec-pedro; generalizado para stack SDD; integração no guia SDD pendente |
+| 2026-06-26 | Document created in source repo — OD → shadcn → Impeccable pipeline |
+| 2026-06-26 | Phase 1b: Pencil and Figma MCP — when to use each, flows A–D, comparison matrix |
+| 2026-06-27 | Imported to spec-pedro; generalized for SDD stack; SDD guide integration pending |
