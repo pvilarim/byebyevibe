@@ -100,9 +100,9 @@ Implement tasks from an OpenSpec change.
    - Total changed lines (insertions + deletions) **> ~80**, or
    - **> 4** files changed
 
-   Then **suggest** invoking the `simplify-review` skill (see `AGENTS.md` → Reviews pós-implementação). Example message:
+   Then **suggest** invoking the `simplify-review` skill (see `AGENTS.md` → Post-implementation reviews). Example message:
 
-   > Diff grande (+X/-Y, N ficheiros). Quer correr `simplify-review` antes do commit? (opcional — não bloqueia archive.)
+   > Large diff (+X/-Y, N files). Want to run `simplify-review` before commit? (optional — does not block archive.)
 
    Rules:
    - **Never** auto-invoke without user consent
@@ -175,16 +175,16 @@ What would you like to do?
 
 ## Session coordination (apply)
 
-Antes de editar ficheiros:
+Before editing files:
 
 ```bash
 bash scripts/sdd-session-register.sh --phase apply --change-id "<id>"
 bash scripts/sdd-session-check.sh --phase apply --change-id "<id>"
 ```
 
-Se exit ≠ 0: **parar** e informar o utilizador (outro apply activo na mesma worktree).
+If exit ≠ 0: **stop** and inform the user (another active apply in the same worktree).
 
-Ao concluir ou pausar (incluindo Session Handoff):
+When finishing or pausing (including Session Handoff):
 
 ```bash
 bash scripts/sdd-session-release.sh
@@ -202,18 +202,18 @@ bash scripts/sdd-session-release.sh
 
 ## Session Handoff
 
-Esta fase terminou ou foi pausada. **Sugestão: abrir novo chat** para continuar (contexto limpo).
+This phase finished or was paused. **Suggestion: open a new chat** to continue (clean context).
 
-Cole no primeiro message do novo chat:
+Paste in the first message of the new chat:
 
 ---
-/opsx:archive <change-id>          # se todas as tasks concluídas
-# ou /opsx:apply <change-id>       # se pausado por blocker
+/opsx:archive <change-id>          # if all tasks complete
+# or /opsx:apply <change-id>       # if paused due to blocker
 
 Change: openspec/changes/<change-id>/
-Ler: tasks.md (progresso), artefactos pendentes
-Infra: openspec/infra.md (assumir ✅ — não reinstalar)
-Libertar lock: bash scripts/sdd-session-release.sh  # se apply pausado
+Read: tasks.md (progress), pending artifacts
+Infra: openspec/infra.md (assume ✅ — do not reinstall)
+Release lock: bash scripts/sdd-session-release.sh  # if apply paused
 ---
 
 **Fluid Workflow Integration**
