@@ -1971,22 +1971,22 @@ claude mcp list
 
 ---
 
-## 11. Protocolos de código (questão 7)
+## 11. Code protocols (question 7)
 
-### 11.1 Princípios não-negociáveis
+### 11.1 Non-negotiable principles
 
-Estes vão para `openspec/project.md` na secção "Coding standards":
+These go in `openspec/project.md` in the "Coding standards" section:
 
-1. **Replicabilidade**: cada solução é testável de forma reproduzível. Sem testes, sem merge.
-2. **Legibilidade > esperteza**: código claro com 2 funções é melhor que one-liner enigmático.
-3. **Self-documenting names**: variáveis e funções comunicam intenção. Comentários explicam *porquê*, não *o quê*.
-4. **Comments document decisions, not mechanics**: `// retries 3x because n8n webhook timeout is 10s` é útil. `// increment i` é ruído.
-5. **Modularização por capability, não por type**: pasta `auth/` com `auth.service.ts`, `auth.controller.ts`, `auth.types.ts`, em vez de pastas globais `services/`, `controllers/`, `types/`.
-6. **No silent failures**: erros são propagados ou registados explicitamente, nunca engolidos.
-7. **Input validation at boundaries**: cada entrada externa (API, webhook, CSV, env) é validada por schema (Zod, Pydantic) no primeiro ponto de contacto.
-8. **Tracing built-in**: para o multi-agent bot do Pedro, cada agent step deve loggar (correlation ID, agent name, input hash, output hash, duration, errors).
+1. **Replicability**: each solution is reproducibly testable. No tests, no merge.
+2. **Readability > cleverness**: clear code with 2 functions is better than a cryptic one-liner.
+3. **Self-documenting names**: variables and functions communicate intent. Comments explain *why*, not *what*.
+4. **Comments document decisions, not mechanics**: `// retries 3x because n8n webhook timeout is 10s` is useful. `// increment i` is noise.
+5. **Modularization by capability, not by type**: `auth/` folder with `auth.service.ts`, `auth.controller.ts`, `auth.types.ts`, instead of global `services/`, `controllers/`, `types/` folders.
+6. **No silent failures**: errors are propagated or logged explicitly, never swallowed.
+7. **Input validation at boundaries**: every external input (API, webhook, CSV, env) is validated by schema (Zod, Pydantic) at the first point of contact.
+8. **Tracing built-in**: for Pedro's multi-agent bot, each agent step must log (correlation ID, agent name, input hash, output hash, duration, errors).
 
-### 11.2 Estrutura de comentários
+### 11.2 Comment structure
 
 ```typescript
 /**
@@ -2007,7 +2007,7 @@ export class AssociationEngine {
 }
 ```
 
-Comentários inline (raros):
+Inline comments (rare):
 
 ```typescript
 // Reset retries when we hit a 429 — Supabase rate limit window is 60s,
@@ -2018,11 +2018,11 @@ if (response.status === 429) {
 }
 ```
 
-### 11.3 Estrutura modular para o multi-agent bot
+### 11.3 Modular structure for the multi-agent bot
 
 ```
 src/
-├── agents/                          ← capability: cada agent é módulo isolado
+├── agents/                          ← capability: each agent is an isolated module
 │   ├── orchestrator/
 │   │   ├── orchestrator.service.ts
 │   │   ├── orchestrator.types.ts
@@ -2050,18 +2050,18 @@ src/
     └── time.ts
 ```
 
-Cada pasta capability tem:
-- Um único entry point (`index.ts` que re-exporta apenas a API pública)
-- `README.md` explicando propósito, dependências, e como testar
-- Testes co-locados (`*.test.ts`)
+Each capability folder has:
+- A single entry point (`index.ts` that re-exports only the public API)
+- `README.md` explaining purpose, dependencies, and how to test
+- Co-located tests (`*.test.ts`)
 
-### 11.4 Rastreabilidade de dados
+### 11.4 Data traceability
 
-Para o pipeline multi-agent, cada peça de dado que flui entre etapas carrega:
+For the multi-agent pipeline, each piece of data flowing between stages carries:
 
 ```typescript
 type TraceContext = {
-  correlationId: string;          // ID único de toda a request
+  correlationId: string;          // unique ID for the entire request
   agentChain: string[];           // ["orchestrator", "retrieval", "synthesis"]
   step: number;
   parentSpanId: string | null;
@@ -2072,35 +2072,35 @@ type TraceContext = {
 type AgentInput<T> = {
   trace: TraceContext;
   payload: T;
-  schemaVersion: string;          // e.g. "v1.2.0" — para detectar drift
+  schemaVersion: string;          // e.g. "v1.2.0" — to detect drift
 };
 ```
 
-Toda função que processa dados entre agents recebe e propaga este contexto. Logger interno escreve cada step em formato estruturado para Supabase (`agent_traces` table) ou logger compatível.
+Every function that processes data between agents receives and propagates this context. Internal logger writes each step in structured format to Supabase (`agent_traces` table) or compatible logger.
 
-### 11.5 Prevenção de bugs
+### 11.5 Bug prevention
 
-- **Tests are first-class**: cada bug fix começa com teste que falha. Cada feature inclui testes para casos felizes, edge cases, e error paths.
-- **Property-based testing** para lógica pura (fast-check em TS, hypothesis em Python).
-- **Contract tests** nas fronteiras (cada agent declara o seu contrato Zod; outros agents validam contra esse contrato).
-- **Type safety end-to-end**: TS strict + Zod runtime; Pydantic em Python.
+- **Tests are first-class**: each bug fix starts with a failing test. Each feature includes tests for happy paths, edge cases, and error paths.
+- **Property-based testing** for pure logic (fast-check in TS, hypothesis in Python).
+- **Contract tests** at boundaries (each agent declares its Zod contract; other agents validate against that contract).
+- **Type safety end-to-end**: TS strict + Zod runtime; Pydantic in Python.
 
-### 11.6 Prevenção de ataques
+### 11.6 Attack prevention
 
-| Vector | Defesa | Onde implementar |
+| Vector | Defense | Where to implement |
 |---|---|---|
-| SQL injection | Parameterised queries via Supabase client; nunca string concat | `infra/supabase/client.ts` |
-| Prompt injection | Sanitize all external strings antes de meter em prompts a LLMs; usar role separation | `agents/*/prompt.ts` |
-| SSRF (Tavily, web fetch) | Allowlist de domínios; reject IPs privados e localhost | `infra/web/fetch.ts` |
-| Webhook spoofing | HMAC verification em todos os webhooks | `infra/n8n/webhook.handler.ts` |
-| Secret leakage | Hooks PreToolUse bloqueiam leitura de `.env`; logger redacta padrões `sk-*`, `api_key=*` | `.claude/hooks/`, `core/tracing/logger.ts` |
-| Dependency injection | Audit `pnpm audit` / `pip-audit` em CI; reject deps com vulns críticas | `.github/workflows/audit.yml` |
-| XSS (se houver UI) | Sanitização em render; CSP headers; React por defeito escapa, JSX dangerouslySetInnerHTML proibido sem review | Configuração frontend |
-| Rate limiting | Tokens bucket por user/agent na entrada de cada API; backoff exponencial | `core/rate-limit.ts` |
+| SQL injection | Parameterised queries via Supabase client; never string concat | `infra/supabase/client.ts` |
+| Prompt injection | Sanitize all external strings before putting them in LLM prompts; use role separation | `agents/*/prompt.ts` |
+| SSRF (Tavily, web fetch) | Domain allowlist; reject private IPs and localhost | `infra/web/fetch.ts` |
+| Webhook spoofing | HMAC verification on all webhooks | `infra/n8n/webhook.handler.ts` |
+| Secret leakage | PreToolUse hooks block reading `.env`; logger redacts patterns `sk-*`, `api_key=*` | `.claude/hooks/`, `core/tracing/logger.ts` |
+| Dependency injection | Audit `pnpm audit` / `pip-audit` in CI; reject deps with critical vulns | `.github/workflows/audit.yml` |
+| XSS (if UI exists) | Sanitization on render; CSP headers; React escapes by default, dangerouslySetInnerHTML forbidden without review | Frontend configuration |
+| Rate limiting | Token bucket per user/agent at each API entry; exponential backoff | `core/rate-limit.ts` |
 
-### 11.7 Documentação por módulo
+### 11.7 Module documentation
 
-Cada capability tem `README.md`:
+Each capability has `README.md`:
 
 ```markdown
 # Retrieval Agent
