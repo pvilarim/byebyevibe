@@ -124,14 +124,14 @@ When creating `tasks.md`, follow `doc/sistema-sdd-pedro.md` §12.10:
 
 ## Session Handoff
 
-Esta fase terminou. **Sugestão: abrir novo chat** para a próxima fase (contexto limpo).
+This phase finished. **Suggestion: open a new chat** for the next phase (clean context).
 
-Cole no primeiro message do novo chat:
+Paste in the first message of the new chat:
 
 ---
 /opsx:apply <change-id>
 
 Change: openspec/changes/<change-id>/
-Ler: proposal.md, design.md, tasks.md, specs/
-Infra: openspec/infra.md (assumir ✅ — não reinstalar)
+Read: proposal.md, design.md, tasks.md, specs/
+Infra: openspec/infra.md (assume ✅ — do not reinstall)
 ---
