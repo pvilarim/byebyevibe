@@ -12,7 +12,7 @@
 
 - [ ] 2.1 Rewrite lines **1279–1457** (§5–§6 docs cross-refs + research dimension) Portuguese prose → glossary-canonical English; do not edit lines outside the slice
   - **Pattern:** `doc/sistema-sdd-pedro.md`
-  - **Gate:** `bash scripts/verify-i18n-wave.sh --files doc/sistema-sdd-pedro.md`
+  - **Gate:** `bash scripts/verify-i18n-wave.sh --files doc/sistema-sdd-pedro.md --slice 1279-1457`
   - **Forbidden:** dual-file siblings; edits outside lines 1279–1457
 
 ## 3. Validate

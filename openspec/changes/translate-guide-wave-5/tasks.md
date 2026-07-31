@@ -12,7 +12,7 @@
 
 - [ ] 2.1 Rewrite lines **622–839** (§2.15–2.17 GitHub MCP, Probity, SDD metrics) Portuguese prose → glossary-canonical English; do not edit lines outside the slice
   - **Pattern:** `doc/sistema-sdd-pedro.md`
-  - **Gate:** `bash scripts/verify-i18n-wave.sh --files doc/sistema-sdd-pedro.md`
+  - **Gate:** `bash scripts/verify-i18n-wave.sh --files doc/sistema-sdd-pedro.md --slice 622-839`
   - **Forbidden:** dual-file siblings; edits outside lines 622–839
 
 ## 3. Validate

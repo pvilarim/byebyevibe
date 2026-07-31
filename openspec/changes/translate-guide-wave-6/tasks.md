@@ -12,7 +12,7 @@
 
 - [ ] 2.1 Rewrite lines **840–1046** (§2.9 SDD upgrade procedure) Portuguese prose → glossary-canonical English; do not edit lines outside the slice
   - **Pattern:** `doc/sistema-sdd-pedro.md`
-  - **Gate:** `bash scripts/verify-i18n-wave.sh --files doc/sistema-sdd-pedro.md`
+  - **Gate:** `bash scripts/verify-i18n-wave.sh --files doc/sistema-sdd-pedro.md --slice 840-1046`
   - **Forbidden:** dual-file siblings; edits outside lines 840–1046
 
 ## 3. Validate

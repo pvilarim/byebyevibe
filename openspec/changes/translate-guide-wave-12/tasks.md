@@ -12,7 +12,7 @@
 
 - [ ] 2.1 Rewrite lines **2140–2503** (§12.1–12.5 annex templates (project, AGENTS, design)) Portuguese prose → glossary-canonical English; do not edit lines outside the slice
   - **Pattern:** `doc/sistema-sdd-pedro.md`
-  - **Gate:** `bash scripts/verify-i18n-wave.sh --files doc/sistema-sdd-pedro.md`
+  - **Gate:** `bash scripts/verify-i18n-wave.sh --files doc/sistema-sdd-pedro.md --slice 2140-2503`
   - **Forbidden:** dual-file siblings; edits outside lines 2140–2503
 
 ## 3. Validate
