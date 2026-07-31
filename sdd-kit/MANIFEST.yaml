@@ -187,7 +187,7 @@ files:
 
   - path: sdd-kit/install-ui-module.sh
     source: templates/install-ui-module.sh
-    sha256: "ad16d863f0e6447af0dd4dec49f7270140ebef3536e7e2f14954a97170e1bdea"
+    sha256: "3dfb209172f76e1673336a2abd0f5cf25d975073ff0316876e289c02a2a2412a"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -x sdd-kit/install-ui-module.sh"
@@ -201,7 +201,12 @@ files:
 
   - path: doc/design/001-pipeline-open-design-shadcn-impeccable.md
     source: templates/doc/design/001-pipeline-open-design-shadcn-impeccable.md
+    sha256: "0901467ed29d596aa805ea0b031ae10d69e643a2fdde158a1b26e71a14b69ac0"
+<<<<<<< HEAD
     sha256: "775f614cdb1a5c92403c585f4d87ae872c8151a6ea0d7a7bbf4830f6e36552b2"
+=======
+    sha256: "59eeca1b1b9e635445cf41b97438559b64f953ce3138768a45b2a3cd28a800b4"
+>>>>>>> origin/master
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f doc/design/001-pipeline-open-design-shadcn-impeccable.md"
