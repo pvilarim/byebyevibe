@@ -69,7 +69,7 @@ Archive a completed change in the experimental workflow.
 
    Before archiving, ask the operator:
 
-   > Este change estabeleceu um pattern reutilizável? Se sim, promover para `.cursor/skills/<domínio>-pattern/SKILL.md` ou nota em `openspec/project.md` Cross-references antes de arquivar.
+   > Did this change establish a reusable pattern? If yes, promote it to `.cursor/skills/<domain>-pattern/SKILL.md` or add a note in `openspec/project.md` Cross-references before archiving.
 
    Do not block archive if the user declines.
 
@@ -125,24 +125,24 @@ All artifacts complete. All tasks complete.
 
 ## Session Handoff
 
-Arquivo concluído. **Sugestão: novo chat** para a próxima tarefa (contexto limpo).
+Archive complete. **Suggestion: open a new chat** for the next task (clean context).
 
 ### Metrics cadence nudge (advisory)
 
-Após archive bem-sucedido, se `scripts/sdd-metrics.sh` existir:
+After a successful archive, if `scripts/sdd-metrics.sh` exists:
 
 ```bash
 bash scripts/sdd-metrics.sh --check-cadence
 ```
 
-- Exit **1** → incluir no handoff ≤5 linhas sugerindo `bash scripts/sdd-metrics.sh` + playbook em `doc/sistema-sdd-pedro.md` §2.17 (1 insight → 1 ajuste).
-- Exit **0** → omitir o bloco de métricas.
-- Script ausente ou falha inesperada → **SKIP** (nunca falhar o archive; nunca auto-executar o relatório completo).
+- Exit **1** → include in the handoff ≤5 lines suggesting `bash scripts/sdd-metrics.sh` + playbook in `doc/sistema-sdd-pedro.md` §2.17 (1 insight → 1 adjustment).
+- Exit **0** → omit the metrics block.
+- Script missing or unexpected failure → **SKIP** (never fail archive; never auto-run the full report).
 
-Cole no primeiro message do novo chat (se aplicável):
+Paste into the first message of the new chat (if applicable):
 
 ---
-/opsx:explore <tópico>   # ou /opsx:propose <descrição>
+/opsx:explore <topic>   # or /opsx:propose <description> (after /opsx:archive)
 
-Infra: openspec/infra.md (assumir ✅ — não reinstalar)
+Infra: openspec/infra.md (assume ✅ — do not reinstall)
 ---
