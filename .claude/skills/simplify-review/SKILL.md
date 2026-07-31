@@ -1,168 +1,168 @@
 ---
 name: simplify-review
 description: >
-  Review focado exclusivamente em over-engineering e complexidade evitável.
-  Encontra o que apagar ou encolher: stdlib reinventada, dependências desnecessárias,
-  abstrações especulativas, flexibilidade morta. Um achado por linha: localização,
-  o que cortar, substituto. Use quando o utilizador pedir "review de simplicidade",
-  "está over-engineered?", "o que podemos apagar?", "simplify review", após
-  /opsx:apply com diff grande, ou antes de commit/PR em tarefas Tipo B/C/D.
-  Complementa security-reviewer (segurança) e review de correctness — este caça
-  apenas complexidade desnecessária, respeitando specs OpenSpec aprovadas.
+  Review focused exclusively on over-engineering and avoidable complexity.
+  Finds what to delete or shrink: reinvented stdlib, unnecessary dependencies,
+  speculative abstractions, dead flexibility. One finding per line: location,
+  what to cut, substitute. Use when the user asks for "simplicity review",
+  "is this over-engineered?", "what can we delete?", "simplify review", after
+  /opsx:apply with a large diff, or before commit/PR on Type B/C/D tasks.
+  Complements security-reviewer (security) and correctness review — this hunts
+  only unnecessary complexity, respecting approved OpenSpec specs.
 license: MIT
 metadata:
   author: sdd-pedro
   version: "0.1.0"
-  adaptedFrom: "ponytail-review (MIT) — regras SDD, não integração do projeto Ponytail"
+  adaptedFrom: "ponytail-review (MIT) — SDD rules, not Ponytail project integration"
 ---
 
 # simplify-review
 
-Review de diffs ou ficheiros alterados **só para complexidade evitável**. O melhor
-resultado é um diff mais curto, não um relatório longo.
+Review diffs or changed files **for avoidable complexity only**. The best
+outcome is a shorter diff, not a long report.
 
-**Não aplica fixes.** Lista achados; o utilizador ou `/opsx:apply` implementa.
+**Does not apply fixes.** Lists findings; the user or `/opsx:apply` implements them.
 
-Responder sempre em **pt-BR**.
-
----
-
-## Quando invocar (integração SDD)
-
-| Momento | Tipo de tarefa | Gatilho sugerido |
-|---------|----------------|------------------|
-| **Pós-implementação** | C, D | Após `/opsx:apply` concluir tasks, antes de commit |
-| **Pré-PR** | B, C, D | Diff > ~80 linhas ou > 4 ficheiros tocados |
-| **Refactor concluído** | C | `design.md` exige parity — validar que simplificação não mudou comportamento |
-| **Audit pontual** | E → implementação | Utilizador pede explicitamente; ou dívida técnica conhecida |
-| **Não invocar** | A | Trivial — R4 basta |
-| **Não invocar** | Durante propose | Antes de spec aprovada — escopo ainda em debate |
-
-### Posição no pipeline
-
-```
-/opsx:apply  →  [implementação]  →  simplify-review (opcional)  →  security-reviewer (se auth/API)
-                →  testes (R6)     →  commit (R9)               →  /opsx:archive
-```
-
-Invocação **on-demand** (nível 6 na hierarquia §8.3 do guia SDD). Nunca always-on.
-
-### Inputs recomendados
-
-1. Diff (`git diff` ou descrição de PR)
-2. `openspec/changes/<id>/design.md` — o que foi **aprovado** (não simplificar fora do escopo aprovado)
-3. `openspec/project.md` — stack e non-goals
-4. Opcional: `gitnexus impact` se achado envolve símbolo com muitos dependentes
+Chat responses MAY use pt-BR (F7); findings format and tags remain as specified below.
 
 ---
 
-## Formato de saída
+## When to invoke (SDD integration)
 
-Ficheiro sugerido: `simplify-review.md` na raiz do change ou comentário inline no PR.
+| Moment | Task type | Suggested trigger |
+|--------|-----------|-------------------|
+| **Post-implementation** | C, D | After `/opsx:apply` completes tasks, before commit |
+| **Pre-PR** | B, C, D | Diff > ~80 lines or > 4 files touched |
+| **Refactor complete** | C | `design.md` requires parity — verify simplification did not change behavior |
+| **Ad-hoc audit** | E → implementation | User asks explicitly; or known tech debt |
+| **Do not invoke** | A | Trivial — R4 is enough |
+| **Do not invoke** | During propose | Before spec approved — scope still under debate |
 
-### Cabeçalho
+### Pipeline position
+
+```
+/opsx:apply  →  [implementation]  →  simplify-review (optional)  →  security-reviewer (if auth/API)
+                →  tests (R6)     →  commit (R9)               →  /opsx:archive
+```
+
+**On-demand** invocation (level 6 in the SDD guide §8.3 hierarchy). Never always-on.
+
+### Recommended inputs
+
+1. Diff (`git diff` or PR description)
+2. `openspec/changes/<id>/design.md` — what was **approved** (do not simplify outside approved scope)
+3. `openspec/project.md` — stack and non-goals
+4. Optional: `gitnexus impact` if a finding involves a symbol with many dependents
+
+---
+
+## Output format
+
+Suggested file: `simplify-review.md` at the change root or inline PR comment.
+
+### Header
 
 ```markdown
 # simplify-review
 
-**Change:** <change-id ou "uncommitted">
-**Escopo:** <N ficheiros, +X/-Y linhas>
-**Veredito:** LEAN | TRIMMABLE | ESCOPO CONFLITANTE
+**Change:** <change-id or "uncommitted">
+**Scope:** <N files, +X/-Y lines>
+**Verdict:** LEAN | TRIMMABLE | CONFLICTING SCOPE
 ```
 
-### Achados (um por linha)
+### Findings (one per line)
 
-Formato: `` `path/to/file.ts:L12-38` **tag:** descrição. Substituto: … ``
+Format: `` `path/to/file.ts:L12-38` **tag:** description. Substitute: … ``
 
-| Tag | Significado |
-|-----|-------------|
-| `delete:` | Código morto, flexibilidade especulativa, feature não pedida na spec. Substituto: nada. |
-| `stdlib:` | Reinvenção da stdlib. Nomear função/API nativa. |
-| `native:` | Dependência ou código que a plataforma já cobre (`<input type="date">`, CSS, constraint DB). |
-| `yagni:` | Abstração com uma implementação, config nunca usada, camada com um caller. |
-| `shrink:` | Mesma lógica, menos linhas. Mostrar forma mais curta. |
+| Tag | Meaning |
+|-----|---------|
+| `delete:` | Dead code, speculative flexibility, feature not requested in spec. Substitute: nothing. |
+| `stdlib:` | Reinventing the stdlib. Name the native function/API. |
+| `native:` | Dependency or code the platform already covers (`<input type="date">`, CSS, DB constraint). |
+| `yagni:` | Abstraction with one implementation, config never used, layer with one caller. |
+| `shrink:` | Same logic, fewer lines. Show the shorter form. |
 
-### Exemplos (estilo esperado)
+### Examples (expected style)
 
-❌ "Esta classe EmailValidator parece complexa demais; considere simplificar."
+❌ "This EmailValidator class seems too complex; consider simplifying."
 
-✅ `src/lib/email.ts:L12-38` **stdlib:** validador de 27 linhas. `"@" in email` ou regex mínima na fronteira Zod; validação real = email de confirmação.
+✅ `src/lib/email.ts:L12-38` **stdlib:** 27-line validator. `"@" in email` or minimal regex at Zod boundary; real validation = confirmation email.
 
-✅ `src/utils/date.ts:L4` **native:** `moment` importado para um format. `Intl.DateTimeFormat`, 0 deps.
+✅ `src/utils/date.ts:L4` **native:** `moment` imported for one format. `Intl.DateTimeFormat`, 0 deps.
 
-✅ `src/agents/retrieval/repo.ts:L88` **yagni:** `AbstractRepository` com uma implementação. Inline até existir segunda implementação concreta.
+✅ `src/agents/retrieval/repo.ts:L88` **yagni:** `AbstractRepository` with one implementation. Inline until a second concrete implementation exists.
 
-✅ `src/lib/retry.ts:L52-71` **delete:** wrapper de retry em chamada idempotente local. Substituto: nada.
+✅ `src/lib/retry.ts:L52-71` **delete:** retry wrapper on local idempotent call. Substitute: nothing.
 
-✅ `src/core/map.ts:L30-44` **shrink:** loop manual constrói dict. `Object.fromEntries(...)`, 1 linha.
+✅ `src/core/map.ts:L30-44` **shrink:** manual loop builds dict. `Object.fromEntries(...)`, 1 line.
 
-### Métrica final
+### Final metric
 
-Terminar com: **`net: -N linhas possíveis`** (soma estimada de linhas removíveis).
+End with: **`net: -N lines possible`** (estimated sum of removable lines).
 
-Se não houver nada a cortar: **`Lean already. Ship.`** e parar.
+If nothing to cut: **`Lean already. Ship.`** and stop.
 
-### Vereditos
+### Verdicts
 
-| Veredito | Critério |
-|----------|----------|
-| **LEAN** | `net: 0` ou achados só cosméticos |
-| **TRIMMABLE** | `net: > 0` com achados acionáveis sem violar spec |
-| **ESCOPO CONFLITANTE** | Simplificação desejada contradiz `design.md`, shadcn obrigatório, ou contratos multi-agent |
+| Verdict | Criterion |
+|---------|-----------|
+| **LEAN** | `net: 0` or findings are cosmetic only |
+| **TRIMMABLE** | `net: > 0` with actionable findings without violating spec |
+| **CONFLICTING SCOPE** | Desired simplification contradicts `design.md`, mandatory shadcn, or multi-agent contracts |
 
 ---
 
-## Boundaries — nunca flaggar para remoção
+## Boundaries — never flag for removal
 
-Respeitar **precedência**: `design.md` aprovado > simplify-review.
+Respect **precedence**: approved `design.md` > simplify-review.
 
-| Protegido | Motivo (SDD / project.md) |
+| Protected | Reason (SDD / project.md) |
 |-----------|---------------------------|
-| Schemas Zod/Pydantic em fronteiras I/O | §11.1 item 7, RLS-adjacent |
-| Políticas RLS e migrations Supabase | Segurança non-negotiable |
-| Componentes shadcn/ui quando spec ou `project.md` exige design system | Conflito Ponytail-style nativo vs shadcn |
-| Testes exigidos por R6 (bug) ou `tasks.md` | Cobertura > minimal assert |
-| `TraceContext`, correlation IDs, logging estruturado | Multi-agent bot §11.3–11.4 |
-| Estrutura por capability (`agents/`, `infra/`) | Modularização aprovada em design |
-| Comentários `sdd-shortcut:` com upgrade path | Atalho consciente já documentado |
-| Código referenciado em `openspec/specs/` como requisito | Spec vigente |
+| Zod/Pydantic schemas at I/O boundaries | §11.1 item 7, RLS-adjacent |
+| RLS policies and Supabase migrations | Security non-negotiable |
+| shadcn/ui components when spec or `project.md` requires design system | Ponytail-style native vs shadcn conflict |
+| Tests required by R6 (bug) or `tasks.md` | Coverage > minimal assert |
+| `TraceContext`, correlation IDs, structured logging | Multi-agent bot §11.3–11.4 |
+| Capability structure (`agents/`, `infra/`) | Approved modularization in design |
+| `sdd-shortcut:` comments with upgrade path | Conscious shortcut already documented |
+| Code referenced in `openspec/specs/` as requirement | Current spec |
 
-**Fora de scope deste review:** bugs de correctness, segurança (→ `security-reviewer`), performance, acessibilidade detalhada.
+**Out of scope for this review:** correctness bugs, security (→ `security-reviewer`), performance, detailed accessibility.
 
-Um smoke test ou teste co-located mínimo **não** é bloat.
+A smoke test or minimal co-located test is **not** bloat.
 
 ---
 
-## Atalhos conscientes (`sdd-shortcut:`)
+## Conscious shortcuts (`sdd-shortcut:`)
 
-Se o diff **introduz** simplificação com tecto conhecido, verificar presença de:
+If the diff **introduces** simplification with a known ceiling, verify presence of:
 
 ```typescript
-// sdd-shortcut: global lock — per-account locks se throughput > X req/s
+// sdd-shortcut: global lock — per-account locks if throughput > X req/s
 ```
 
-Ausência de comentário em atalho não-trivial → achado opcional **`shrink:`** ou nota em "dívida" (não bloqueante).
+Missing comment on non-trivial shortcut → optional **`shrink:`** finding or "debt" note (non-blocking).
 
 ---
 
-## Integração no SDD (activa)
+## SDD integration (active)
 
-| Nível | Estado | Onde |
-|-------|--------|------|
-| **AGENTS.md** | ✅ | Secção "Reviews pós-implementação" — quando invocar / não invocar |
-| **openspec-apply-change** | ✅ | Passo 8 — *sugere* review se diff > ~80 linhas ou > 4 ficheiros (não bloqueia) |
-| **Manual** | ✅ | Utilizador pede explicitamente |
-| **Subagent** | ⏳ | `.claude/agents/simplify-reviewer.md` — só após validação em repo APP |
-| **Pre-commit / hooks** | ❌ | Não recomendado |
+| Level | Status | Where |
+|-------|--------|-------|
+| **AGENTS.md** | ✅ | "Post-implementation reviews" section — when to invoke / not invoke |
+| **openspec-apply-change** | ✅ | Step 8 — *suggests* review if diff > ~80 lines or > 4 files (non-blocking) |
+| **Manual** | ✅ | User asks explicitly |
+| **Subagent** | ⏳ | `.claude/agents/simplify-reviewer.md` — only after validation in APP repo |
+| **Pre-commit / hooks** | ❌ | Not recommended |
 
-**Não recomendado:** hook always-on, rule `.mdc` alwaysApply, ou bloqueio automático de commit.
+**Not recommended:** always-on hook, alwaysApply `.mdc` rule, or automatic commit blocking.
 
 ---
 
-## Comandos úteis
+## Useful commands
 
 ```bash
-# Diff do change actual
+# Diff of current change
 git diff --stat
 git diff
 
@@ -172,25 +172,25 @@ git diff origin/master...HEAD --stat
 
 ---
 
-## Saída de exemplo completa
+## Complete output example
 
 ```markdown
 # simplify-review
 
 **Change:** add-rate-limit-helper
-**Escopo:** 6 ficheiros, +142/-8 linhas
-**Veredito:** TRIMMABLE
+**Scope:** 6 files, +142/-8 lines
+**Verdict:** TRIMMABLE
 
-## Achados
+## Findings
 
-- `src/lib/rate-limit.ts:L1-89` **yagni:** classe `RateLimiter` com estratégias pluggáveis; spec pede limite fixo por IP. Substituto: Map in-memory + timestamp, ~15 linhas.
-- `src/lib/rate-limit.ts:L4` **delete:** interface `RateLimitStrategy` — uma implementação. Substituto: nada.
-- `package.json` **native:** dependência `rate-limiter-flexible` adicionada; spec não exige Redis. Substituto: implementação in-process até escala exigir.
+- `src/lib/rate-limit.ts:L1-89` **yagni:** `RateLimiter` class with pluggable strategies; spec asks for fixed per-IP limit. Substitute: in-memory Map + timestamp, ~15 lines.
+- `src/lib/rate-limit.ts:L4` **delete:** `RateLimitStrategy` interface — one implementation. Substitute: nothing.
+- `package.json` **native:** `rate-limiter-flexible` dependency added; spec does not require Redis. Substitute: in-process implementation until scale requires it.
 
-**net: -78 linhas possíveis**
+**net: -78 lines possible**
 
-## Notas
+## Notes
 
-- Não cortar: schema Zod em `src/infra/supabase/schemas.ts` (fronteira aprovada em design.md).
-- Próximo passo: aplicar achados ou marcar `sdd-shortcut:` nos atalhos mantidos de propósito.
+- Do not cut: Zod schema in `src/infra/supabase/schemas.ts` (approved boundary in design.md).
+- Next step: apply findings or mark `sdd-shortcut:` on shortcuts kept on purpose.
 ```
