@@ -1044,51 +1044,51 @@ Repeat §2.8 and add:
 
 ---
 
-## 3. Classificação de tarefas e pipelines (questões 2, 3, 3.1)
+## 3. Task classification and pipelines (questions 2, 3, 3.1)
 
-### 3.1 Não há *uma* pipeline. Há cinco.
+### 3.1 There is not *one* pipeline. There are five.
 
-A tua intuição na conversa anterior estava correcta: forçar todos os trabalhos pelo mesmo fluxo é exagero para uns e insuficiente para outros. Define-se cinco tipos de trabalho, cada um com a sua pipeline:
+Your intuition in the earlier conversation was correct: forcing all work through the same flow is overkill for some and insufficient for others. Define five work types, each with its own pipeline:
 
-#### Tipo A — Trivial (sem spec, sem research)
-**Detecção**: prompt curto, mudança óbvia, sem implicação arquitectural.
-Ex: "corrige este typo", "renomeia esta variável para `userEmail`", "actualiza versão do package no `package.json`".
-**Pipeline**: directa → implementar → testar
-**Ferramentas envolvidas**: nenhuma das três (Claude Code edita directamente).
+#### Type A — Trivial (no spec, no research)
+**Detection**: short prompt, obvious change, no architectural implication.
+Ex: "fix this typo", "rename this variable to `userEmail`", "update package version in `package.json`".
+**Pipeline**: direct → implement → test
+**Tools involved**: none of the three (Claude Code edits directly).
 
-#### Tipo B — Bug fix definido
-**Detecção**: erro reproduzível, ficheiro/função conhecida, sem ambiguidade na causa.
-Ex: "o endpoint X está a retornar 500 quando Y, deveria retornar 400".
-**Pipeline**: framing leve → **GitNexus (blast radius)** → patch → testar
-**Ferramentas envolvidas**: GitNexus apenas (para garantir que o fix não parte algo a jusante).
-**OpenSpec/Graphify**: não.
+#### Type B — Defined bug fix
+**Detection**: reproducible error, known file/function, unambiguous cause.
+Ex: "endpoint X returns 500 when Y; it should return 400".
+**Pipeline**: light framing → **GitNexus (blast radius)** → patch → test
+**Tools involved**: GitNexus only (ensure the fix does not break downstream).
+**OpenSpec/Graphify**: no.
 
-#### Tipo C — Refactor de módulo existente
-**Detecção**: "refactor", "extrair", "mover", "renomear símbolo global", "consolidar".
-Ex: "extrai a lógica de autenticação para um serviço dedicado".
-**Pipeline**: framing → **GitNexus (AS-IS)** → **OpenSpec (proposal + design)** → implementar
-**Ferramentas envolvidas**: GitNexus + OpenSpec.
-**Graphify**: opcional, só se o refactor envolver decisões teóricas.
+#### Type C — Refactor of existing module
+**Detection**: "refactor", "extract", "move", "rename global symbol", "consolidate".
+Ex: "extract auth logic into a dedicated service".
+**Pipeline**: framing → **GitNexus (AS-IS)** → **OpenSpec (proposal + design)** → implement
+**Tools involved**: GitNexus + OpenSpec.
+**Graphify**: optional, only if refactor involves theoretical decisions.
 
-#### Tipo D — Feature nova com base teórica (caso central do Pedro)
-**Detecção**: "implementa X baseado em Y framework/teoria/conceito", "novo módulo de Z", referência a docs internos ou papers.
-Ex: "implementa sistema de associação de conceitos KBS no RAG", "adiciona análise solar baseada nos princípios Ladybug".
-**Pipeline**: framing → **Graphify (research teoria) + GitNexus (AS-IS) em paralelo** → human review gate → **OpenSpec (propose informado)** → human review gate → implementar
-**Ferramentas envolvidas**: as três.
-**Gates humanos**: dois — após research, e após spec.
+#### Type D — New feature grounded in theory (Pedro's central case)
+**Detection**: "implement X based on Y framework/theory/concept", "new Z module", reference to internal docs or papers.
+Ex: "implement KBS concept-association system in RAG", "add solar analysis based on Ladybug principles".
+**Pipeline**: framing → **Graphify (theory research) + GitNexus (AS-IS) in parallel** → human review gate → **OpenSpec (informed propose)** → human review gate → implement
+**Tools involved**: all three.
+**Human gates**: two — after research, and after spec.
 
-#### Tipo E — Exploração / R&D
-**Detecção**: "investiga", "explora", "compara X vs Y", "viabilidade de…".
-Ex: "qual a melhor abordagem para integrar Blender MCP no nosso pipeline?".
-**Pipeline**: framing → **Graphify (procura o que já existe e foi documentado)** → produzir `research.md` em `openspec/changes/explore-<topic>/`
-**Ferramentas envolvidas**: Graphify principal, OpenSpec apenas para arquivar o estudo.
-**Saída**: documento, não código. Decisão de implementar é uma tarefa Tipo C ou D *separada*.
+#### Type E — Exploration / R&D
+**Detection**: "investigate", "explore", "compare X vs Y", "feasibility of…".
+Ex: "what is the best approach to integrate Blender MCP in our pipeline?".
+**Pipeline**: framing → **Graphify (search what already exists and was documented)** → produce `research.md` in `openspec/changes/explore-<topic>/`
+**Tools involved**: Graphify main; OpenSpec only to archive the study.
+**Output**: document, not code. Decision to implement is a separate Type C or D task.
 
-### 3.2 Detecção automática vs declaração explícita
+### 3.2 Automatic detection vs explicit declaration
 
-**Recomendação: usa declaração explícita.** Detecção automática a partir de prompt genérico é tentadora mas falível — um prompt como "ajuda com o sistema de auth" pode ser Tipo A (typo) ou Tipo D (refactor profundo) dependendo do contexto que tu tens na cabeça e o agente não tem.
+**Recommendation: use explicit declaration.** Automatic detection from a generic prompt is tempting but error-prone — a prompt like "help with the auth system" can be Type A (typo) or Type D (deep refactor) depending on context in your head that the agent does not have.
 
-O AGENTS.md deve ter um bloco que ensina o agente a **perguntar antes**:
+`AGENTS.md` should include a block that teaches the agent to **ask first**:
 
 ```markdown
 ## Task Type Detection Protocol
@@ -1105,172 +1105,172 @@ If unsure between two types, ASK the user which type before proceeding.
 NEVER skip classification. NEVER assume Type A by default.
 ```
 
-### 3.3 Tarefas paralelas e isolamento de contexto
+### 3.3 Parallel tasks and context isolation
 
-Quando há paralelismo (Tipo D), as duas threads de research devem rodar em **subagents isolados** para evitar contaminação de contexto:
+When there is parallelism (Type D), the two research threads should run in **isolated subagents** to avoid context contamination:
 
-- **Claude Code**: cria `.claude/agents/graphify-researcher.md` e `.claude/agents/codebase-researcher.md`. Cada subagent tem o seu próprio contexto, retorna apenas o sumário, e não polui o agente principal.
-- **Cursor**: usa o Explore agent built-in para um lado, e prompt directo no Composer para outro — ou abre dois worktrees git e duas sessões.
+- **Claude Code**: create `.claude/agents/graphify-researcher.md` and `.claude/agents/codebase-researcher.md`. Each subagent has its own context, returns only the summary, and does not pollute the main agent.
+- **Cursor**: use the built-in Explore agent for one side, and direct prompt in Composer for the other — or open two git worktrees and two sessions.
 
-A síntese acontece *após* os dois subagents terminarem, no agente principal, com base nos dois `.md` produzidos.
+Synthesis happens *after* both subagents finish, in the main agent, based on the two `.md` files produced.
 
-#### Apply sequencial vs paralelo (mesma máquina)
+#### Sequential vs parallel apply (same machine)
 
-O risco de paralelismo não é merge Git — é **dois agentes a editar o mesmo working tree** (status sujo partilhado, last-write-wins).
+The parallelism risk is not Git merge — it is **two agents editing the same working tree** (shared dirty status, last-write-wins).
 
-| Modo | Quando usar | Como |
+| Mode | When to use | How |
 |------|-------------|------|
-| **Sequencial (default)** | Um change de cada vez na mesma pasta | `/opsx:apply` num chat; outro apply só após `sdd-session-release` |
-| **Paralelo seguro** | Dois changes em simultâneo | `git worktree add ../repo-wt-b -b feat/b` + segunda sessão IDE na pasta do worktree |
+| **Sequential (default)** | One change at a time in the same folder | `/opsx:apply` in one chat; next apply only after `sdd-session-release` |
+| **Safe parallel** | Two changes at once | `git worktree add ../repo-wt-b -b feat/b` + second IDE session in worktree folder |
 
-**Scripts de coordenação** (locks locais por worktree root):
+**Coordination scripts** (local locks per worktree root):
 
 ```bash
-# Início de apply (skill /opsx:apply)
+# Start of apply (skill /opsx:apply)
 bash scripts/sdd-session-register.sh --phase apply --change-id "<id>"
 bash scripts/sdd-session-check.sh --phase apply --change-id "<id>"
 
-# Durante apply longo (opcional)
+# During long apply (optional)
 bash scripts/sdd-session-heartbeat.sh
 
-# Fim ou pause (Session Handoff)
+# End or pause (Session Handoff)
 bash scripts/sdd-session-release.sh
 
-# Inspecção humana/agente
+# Human/agent inspection
 bash scripts/sdd-session-status.sh
 ```
 
-- Lock exclusivo: `flock` em `.sdd/runtime/apply.lock` (gitignored).
-- Presença: `.sdd/runtime/sessions/<uuid>.json` com heartbeat TTL 5 min.
-- Se `sdd-session-check` falha: outro apply activo na **mesma** worktree — parar ou mudar para worktree separado.
-- Explore/propose read-only: check devolve exit 0 (advisory); apply é bloqueio hard.
-- Regra always-on: `.cursor/rules/016-session-coordination.mdc` · R11 em `AGENTS.md`.
+- Exclusive lock: `flock` on `.sdd/runtime/apply.lock` (gitignored).
+- Presence: `.sdd/runtime/sessions/<uuid>.json` with 5 min heartbeat TTL.
+- If `sdd-session-check` fails: another apply active in the **same** worktree — stop or switch to separate worktree.
+- Explore/propose read-only: check returns exit 0 (advisory); apply is hard block.
+- Always-on rule: `.cursor/rules/016-session-coordination.mdc` · R11 in `AGENTS.md`.
 
-### 3.4 Pipeline visual completa
+### 3.4 Full visual pipeline
 
 ```
-                                 PROMPT do utilizador
+                                 User PROMPT
                                           │
                                           ▼
                           ┌────────────────────────────────┐
-                          │  Classificação do tipo (A-E)   │
-                          │  (com pergunta se ambíguo)     │
+                          │  Type classification (A-E)     │
+                          │  (ask if ambiguous)            │
                           └────────────────────────────────┘
                                           │
         ┌─────────────┬───────────────────┼───────────────────┬─────────────┐
         ▼             ▼                   ▼                   ▼             ▼
-     Tipo A        Tipo B              Tipo C              Tipo D         Tipo E
-   directo      GitNexus only      GitNexus + OS      Graphify ∥ GitNexus  Graphify
+     Type A        Type B              Type C              Type D         Type E
+   direct      GitNexus only      GitNexus + OS      Graphify ∥ GitNexus  Graphify
         │             │                   │                   │             │
         │             ▼                   ▼                   ▼             ▼
         │       impact check         AS-IS doc         knowledge.md +   research.md
         │             │                   │             codebase.md         │
         │             │                   │                   │             ▼
-        │             │                   │              ⊕ human gate   arquivar
-        │             │                   │                   │             em
-        │             │                   │           ⊕ novo chat + handoff   openspec/
-        │             │             /opsx:propose       ⊕ novo chat + handoff
+        │             │                   │              ⊕ human gate   archive
+        │             │                   │                   │             in
+        │             │                   │           ⊕ new chat + handoff   openspec/
+        │             │             /opsx:propose       ⊕ new chat + handoff
         │             │                   │                   │
         │             │             ⊕ human gate         /opsx:apply
-        │             │                   │           ⊕ novo chat + handoff
+        │             │                   │           ⊕ new chat + handoff
         │             │                   │                   │
         ▼             ▼            /opsx:apply                ▼
-     edição        patch                  │            /opsx:archive
-       ↓            ↓                     ▼           ⊕ novo chat + handoff
-     testes       testes           /opsx:archive              │
+     edit          patch                  │            /opsx:archive
+       ↓            ↓                     ▼           ⊕ new chat + handoff
+     tests         tests           /opsx:archive              │
                                           │                   ▼
                                           ▼             /graphify --update
                                   /graphify --update           (loop)
                                        (loop)
 ```
 
-A seta de feedback `/graphify --update` é o que torna o sistema **acumulativo**: cada spec arquivado entra no knowledge graph e fica disponível para próximas tarefas.
+The `/graphify --update` feedback arrow is what makes the system **cumulative**: each archived spec enters the knowledge graph and becomes available for future tasks.
 
 ---
 
-## 4. Tabela mestre (questão 3)
+## 4. Master table (question 3)
 
-### 4.1 Responsabilidades
+### 4.1 Responsibilities
 
-| Aspecto | OpenSpec | GitNexus | Graphify |
+| Aspect | OpenSpec | GitNexus | Graphify |
 |---|---|---|---|
-| **Domínio** | Intenção e decisões | Estrutura de código | Conhecimento multimodal |
-| **Pergunta que responde** | "O quê e porquê?" | "Como o código está organizado, o que parte se eu mudar X?" | "O que já sei, decidi ou escrevi sobre Y?" |
-| **Input principal** | Prompt humano + estado actual | Código-fonte (TS, Py, Go, Rust, Java, C/C++, Ruby, C#, Kotlin, Scala, PHP, Swift) | Qualquer pasta: código, docs, PDFs, imagens, vídeos, SQL, Obsidian, papers |
-| **Output principal** | `openspec/changes/<id>/{proposal,design,tasks}.md` + `specs/` | Knowledge graph queryável (KuzuDB) + ferramentas MCP | `graph.json` + `GRAPH_REPORT.md` + `graph.html` + MCP |
-| **Persistência** | Git (Markdown plano) | `.gitnexus/` local (gitignored), regenerável | `graphify-out/` local (gitignored), regenerável |
-| **Trigger automático** | Slash commands (`/opsx:propose`, `/opsx:apply`, `/opsx:archive`) | PreToolUse hook (enriquece grep/glob) + queries diretas via MCP | PreToolUse hook (lê grafo antes de file-read) + queries via MCP |
-| **Quando NÃO usar** | Tarefa Tipo A (trivial) | Tarefa Tipo E (research puro) | Tarefas só de código sem implicação teórica |
-| **Sinal de problema** | Specs ficam desactualizados (não fazes archive) | Index stale (mudaste muito código sem reanalisar) | Grafo sem nodes para topic relevante |
+| **Domain** | Intent and decisions | Code structure | Multimodal knowledge |
+| **Question answered** | "What and why?" | "How is the code organized; what breaks if I change X?" | "What do I already know, decide, or write about Y?" |
+| **Main input** | Human prompt + current state | Source code (TS, Py, Go, Rust, Java, C/C++, Ruby, C#, Kotlin, Scala, PHP, Swift) | Any folder: code, docs, PDFs, images, videos, SQL, Obsidian, papers |
+| **Main output** | `openspec/changes/<id>/{proposal,design,tasks}.md` + `specs/` | Queryable knowledge graph (KuzuDB) + MCP tools | `graph.json` + `GRAPH_REPORT.md` + `graph.html` + MCP |
+| **Persistence** | Git (plain Markdown) | Local `.gitnexus/` (gitignored), regenerable | Local `graphify-out/` (gitignored), regenerable |
+| **Automatic trigger** | Slash commands (`/opsx:propose`, `/opsx:apply`, `/opsx:archive`) | PreToolUse hook (enriches grep/glob) + direct MCP queries | PreToolUse hook (reads graph before file-read) + MCP queries |
+| **When NOT to use** | Type A task (trivial) | Type E task (pure research) | Code-only tasks with no theoretical implication |
+| **Problem signal** | Specs go stale (no archive) | Stale index (lots of code changed without reanalyze) | Graph has no nodes for relevant topic |
 
-### 4.2 Detecção pelo agente
+### 4.2 Agent detection
 
-Como o agente "sabe" qual ferramenta usar? Três mecanismos combinados:
+How does the agent "know" which tool to use? Three combined mechanisms:
 
-1. **AGENTS.md** declara explicitamente quando cada ferramenta é consultada — ver template anexo 12.2.
-2. **Hooks pré-tool** (Claude Code) interceptam comandos e enriquecem automaticamente. Ex: antes de qualquer `grep`, o hook do GitNexus injecta contexto de call chains relacionadas.
-3. **Skill descriptions** — cada skill tem uma descrição que diz ao agente quando se auto-invocar. Ex: a skill do Graphify diz "use when investigating concepts, theory, or cross-domain relationships".
+1. **AGENTS.md** explicitly declares when each tool is consulted — see template annex 12.2.
+2. **Pre-tool hooks** (Claude Code) intercept commands and enrich automatically. Ex: before any `grep`, GitNexus hook injects related call-chain context.
+3. **Skill descriptions** — each skill has a description telling the agent when to self-invoke. Ex: Graphify skill says "use when investigating concepts, theory, or cross-domain relationships".
 
-A combinação evita ter de escrever explicitamente "agora chama GitNexus" em cada prompt.
+The combination avoids writing "now call GitNexus" explicitly in every prompt.
 
-### 4.3 Inputs e outputs detalhados
+### 4.3 Detailed inputs and outputs
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────┐
 │ OpenSpec                                                                 │
 ├──────────────────────────────────────────────────────────────────────────┤
 │ INPUTS                                                                   │
-│   • Prompt humano em /opsx:propose                                       │
-│   • openspec/project.md (Constitution — sempre lido)                     │
-│   • openspec/specs/*.md (specs vigentes)                                 │
+│   • Human prompt in /opsx:propose                                       │
+│   • openspec/project.md (Constitution — always read)                     │
+│   • openspec/specs/*.md (current specs)                                  │
 │   • openspec/config.yaml (rules + context)                               │
-│   • Opcionalmente: knowledge.md e codebase.md de fases de research       │
+│   • Optionally: knowledge.md and codebase.md from research phases       │
 │                                                                          │
 │ OUTPUTS                                                                  │
-│   • openspec/changes/<change-id>/proposal.md   (porquê, escopo)          │
-│   • openspec/changes/<change-id>/design.md     (decisões técnicas)       │
+│   • openspec/changes/<change-id>/proposal.md   (why, scope)              │
+│   • openspec/changes/<change-id>/design.md     (technical decisions)     │
 │   • openspec/changes/<change-id>/tasks.md      (checklist)               │
 │   • openspec/changes/<change-id>/specs/        (delta specs ADDED/MOD)   │
-│   • Após archive: openspec/specs/ actualizado + changes/archive/         │
+│   • After archive: openspec/specs/ updated + changes/archive/           │
 └──────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────┐
 │ GitNexus                                                                 │
 ├──────────────────────────────────────────────────────────────────────────┤
 │ INPUTS                                                                   │
-│   • Código-fonte do repo                                                 │
-│   • Configs de toolchain (tsconfig, go.mod, etc.)                        │
+│   • Repository source code                                               │
+│   • Toolchain configs (tsconfig, go.mod, etc.)                           │
 │                                                                          │
-│ OUTPUTS (via MCP, não como ficheiros)                                    │
-│   • query(text)         — busca semântica + textual                      │
-│   • context(symbol)     — sumário de função/classe + vizinhança          │
-│   • impact(target)      — blast radius upstream/downstream               │
-│   • detect_changes()    — diff vs index, surfaces o que mudou            │
-│   • rename(old, new)    — propor renaming seguro (sempre dry_run=true)   │
-│   • cypher(query)       — query bruta ao grafo                           │
+│ OUTPUTS (via MCP, not as files)                                          │
+│   • query(text)         — semantic + textual search                        │
+│   • context(symbol)     — function/class summary + neighborhood          │
+│   • impact(target)      — upstream/downstream blast radius               │
+│   • detect_changes()    — diff vs index, surfaces what changed           │
+│   • rename(old, new)    — propose safe rename (always dry_run=true)      │
+│   • cypher(query)       — raw graph query                                │
 │                                                                          │
-│ OUTPUTS COMPLEMENTARES (ficheiros)                                       │
-│   • gitnexus wiki  → wiki/index.md + páginas por módulo                  │
+│ COMPLEMENTARY OUTPUTS (files)                                            │
+│   • gitnexus wiki  → wiki/index.md + pages per module                    │
 └──────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────┐
 │ Graphify                                                                 │
 ├──────────────────────────────────────────────────────────────────────────┤
 │ INPUTS                                                                   │
-│   • Qualquer pasta (código, docs, vault, PDFs, imagens, vídeos)          │
-│   • URLs (papers via arxiv, vídeos YouTube)                              │
+│   • Any folder (code, docs, vault, PDFs, images, videos)               │
+│   • URLs (papers via arxiv, YouTube videos)                              │
 │                                                                          │
 │ OUTPUTS                                                                  │
-│   • graphify-out/graph.json         — grafo serializado                  │
-│   • graphify-out/GRAPH_REPORT.md    — sumário god-nodes + surpresas      │
-│   • graphify-out/graph.html         — viz interactiva                    │
-│   • Opcionalmente: --wiki produz markdown wiki + index.md                │
+│   • graphify-out/graph.json         — serialized graph                   │
+│   • graphify-out/GRAPH_REPORT.md    — god-nodes + surprises summary      │
+│   • graphify-out/graph.html         — interactive viz                      │
+│   • Optionally: --wiki produces markdown wiki + index.md                 │
 │                                                                          │
 │ OUTPUTS via MCP                                                          │
-│   • query_graph(text)          — busca semântica no grafo                │
-│   • get_node(id)               — detalhe de um node                      │
-│   • get_neighbors(id)          — vizinhança                              │
-│   • shortest_path(a, b)        — relação entre dois conceitos            │
+│   • query_graph(text)          — semantic search on graph                │
+│   • get_node(id)               — node detail                               │
+│   • get_neighbors(id)          — neighborhood                            │
+│   • shortest_path(a, b)        — relation between two concepts           │
 └──────────────────────────────────────────────────────────────────────────┘
 ```
 
