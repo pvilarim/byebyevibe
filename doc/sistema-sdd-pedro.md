@@ -2725,121 +2725,121 @@ bash scripts/verify-task-patterns.sh   # Pattern: paths exist; DOCS_SPECS withou
 
 ---
 
-## 13. Alinhamento workshop ↔ agents.md
+## 13. Workshop alignment ↔ agents.md
 
-| Tema (Workshop IA 5/2026, Aula 01) | Onde no guia |
+| Topic (Workshop IA 5/2026, Lesson 01) | Where in guide |
 |-----------------------------------|--------------|
-| [agents.md](https://agents.md/) como padrão | §2.5, 12.2 |
-| `AGENTS.md` curto; on-demand loading | §2.5.3, 12.2 |
-| Não pedir à IA para gerar `AGENTS.md` | §2.5.1 |
-| Exemplos reais > regras abstritas | §7, §11 |
-| Context rot; janela nova por tarefa | §3, §7 |
-| Skills lazy vs rules estáticas | §4.2, §8.1 |
-| Legado: AS-IS antes de instrumentar | §2.5.3, §2.0 prompt |
-| `CLAUDE.md` aponta para `AGENTS.md` | §10.3 |
+| [agents.md](https://agents.md/) as standard | §2.5, 12.2 |
+| Short `AGENTS.md`; on-demand loading | §2.5.3, 12.2 |
+| Do not ask AI to generate `AGENTS.md` | §2.5.1 |
+| Real examples > abstract rules | §7, §11 |
+| Context rot; new window per task | §3, §7 |
+| Lazy skills vs static rules | §4.2, §8.1 |
+| Legacy: AS-IS before instrumenting | §2.5.3, §2.0 prompt |
+| `CLAUDE.md` points to `AGENTS.md` | §10.3 |
 
 ---
 
-## Changelog do guia
+## Guide changelog
 
 ### 1.6.1 (2026-07-26)
 
-- **Cadência + playbook (G4 extensão)** — §2.17: “Interpretar → actuar” (M1–M4 → 1 insight → 1 ajuste); limiares N=5 archives / T=30 dias; stamp `.sdd/metrics-last-run`; flag `--check-cadence`; nudge advisory no Session Handoff de `/opsx:archive` (change `add-sdd-metrics-cadence-nudge`).
-- **`sdd-kit/`** — Script/template `sdd-metrics.sh` actualizado; MANIFEST **1.6.0 → 1.6.1**.
-- **Discovery / first contact** — §2.0b quickstart vibe coder → `README.md` raiz (**ByeByeVibe**) + `install.sh --dry-run`; avaliação `doc/avaliacoes/2026-07-26-sdd-discovery-positioning.md` (change `add-sdd-discovery-positioning`; rename público `rename-byebyevibe-public-name`). Sem bump de MANIFEST (só docs).
+- **Cadence + playbook (G4 extension)** — §2.17: "Interpret → act" (M1–M4 → 1 insight → 1 adjustment); thresholds N=5 archives / T=30 days; stamp `.sdd/metrics-last-run`; flag `--check-cadence`; advisory nudge in `/opsx:archive` Session Handoff (change `add-sdd-metrics-cadence-nudge`).
+- **`sdd-kit/`** — `sdd-metrics.sh` script/template updated; MANIFEST **1.6.0 → 1.6.1**.
+- **Discovery / first contact** — §2.0b vibe coder quickstart → root `README.md` (**ByeByeVibe**) + `install.sh --dry-run`; evaluation `doc/avaliacoes/2026-07-26-sdd-discovery-positioning.md` (change `add-sdd-discovery-positioning`; public rename `rename-byebyevibe-public-name`). No MANIFEST bump (docs only).
 
 ### 1.6.0 (2026-07-26)
 
-- **Métricas SDD (G4)** — Script local sob demanda `scripts/sdd-metrics.sh` (modo C): volume, lead time propose→archive, rework pós-archive; **sem** Apache DevLake (change `add-sdd-metrics-script`).
-- **§2.17** — Operação humana das métricas: quando correr, leitura M1–M4, proxies, troubleshooting, rollback.
+- **SDD Metrics (G4)** — Local on-demand script `scripts/sdd-metrics.sh` (mode C): volume, lead time propose→archive, post-archive rework; **no** Apache DevLake (change `add-sdd-metrics-script`).
+- **§2.17** — Human operation of metrics: when to run, reading M1–M4, proxies, troubleshooting, rollback.
 - **`sdd-kit/`** — Template `scripts/sdd-metrics.sh`; MANIFEST **1.5.0 → 1.6.0**.
-- **Probity (G2)** — Módulo opcional APP/HYBRID `@nizos/probity@1.10.0` com `enforceTdd` (change `add-probity-tdd-module`). TDD Guard superseded por Probity (2026-07).
-- **§2.16** — Operação humana Probity: install plugin, piloto, Cursor hooks, desligar, troubleshooting, rollback.
+- **Probity (G2)** — Optional APP/HYBRID module `@nizos/probity@1.10.0` with `enforceTdd` (change `add-probity-tdd-module`). TDD Guard superseded by Probity (2026-07).
+- **§2.16** — Human operation Probity: install plugin, pilot, Cursor hooks, disable, troubleshooting, rollback.
 - **`sdd-kit/`** — `install-probity-module.sh`, template `probity.config.ts`, `doc/design/004-probity-module-install.md`.
-- **Supply chain (G8)** — OSV-Scanner bloqueante no `sdd-gates.yml` (quando lockfile presente) + template `renovate.json` conservador para perfis APP/HYBRID (change `add-supply-chain-gates`).
-- **§2.13** — Operação humana supply chain: OSV no Actions, instalar app Renovate, preset, automerge patches (opt-in), troubleshooting, rollback.
-- **Renumerado** — §2.13 correctness-review → §2.14; §2.14 github-mcp → §2.15; Probity → §2.16.
-- **`sdd-kit/`** — `templates/renovate.json`; OSV em `templates/.github/workflows/sdd-gates.yml`.
+- **Supply chain (G8)** — OSV-Scanner blocking in `sdd-gates.yml` (when lockfile present) + conservative `renovate.json` template for APP/HYBRID profiles (change `add-supply-chain-gates`).
+- **§2.13** — Human operation supply chain: OSV in Actions, install Renovate app, preset, patch automerge (opt-in), troubleshooting, rollback.
+- **Renumbered** — §2.13 correctness-review → §2.14; §2.14 github-mcp → §2.15; Probity → §2.16.
+- **`sdd-kit/`** — `templates/renovate.json`; OSV in `templates/.github/workflows/sdd-gates.yml`.
 
 ### 1.5.0 (2026-07-26)
 
-- **GitHub Issues MCP (G5)** — `github-mcp-server` como MCP passivo (modo D) + campo `**Issue:**` no template de `proposal.md` para rastreabilidade issue → change → PR (change `add-github-mcp-issue-traceability`).
-- **§2.15** — Operação humana do github-mcp: instalação (endpoint remoto OAuth + binário local), escopo mínimo `--toolsets issues`, matriz A–E, troubleshooting, rollback.
+- **GitHub Issues MCP (G5)** — `github-mcp-server` as passive MCP (mode D) + `**Issue:**` field in `proposal.md` template for issue → change → PR traceability (change `add-github-mcp-issue-traceability`).
+- **§2.15** — Human operation of github-mcp: install (remote OAuth endpoint + local binary), minimum scope `--toolsets issues`, A–E matrix, troubleshooting, rollback.
 - **`sdd-kit/`** — Template `openspec/changes/_template/proposal.md`; MANIFEST 1.4.0 → 1.5.0.
 
 ### 1.4.0 (2026-07-25)
 
-- **CI Gates (G1)** — `.github/workflows/sdd-gates.yml`: enforcement fail-closed dos gates SDD em `push`/`pull_request` (`openspec validate --all --strict` bloqueante; `verify-task-patterns.sh` bloqueante; `sdd-kit/verify.sh` report-only). Só orquestra comandos existentes — zero dependência nova (change `add-sdd-ci-gates-workflow`).
-- **§2.12** — Operação humana dos gates de CI: leitura de output, desbloqueio de merge, troubleshooting, `[AÇÃO MANUAL]` branch protection.
-- **`sdd-kit/`** — Template `templates/.github/workflows/sdd-gates.yml` (COPY, perfis APP/DOCS_SPECS/HYBRID); check do workflow em `verify.sh`; MANIFEST 1.3.2 → 1.4.0.
+- **CI Gates (G1)** — `.github/workflows/sdd-gates.yml`: fail-closed SDD gate enforcement on `push`/`pull_request` (`openspec validate --all --strict` blocking; `verify-task-patterns.sh` blocking; `sdd-kit/verify.sh` report-only). Orchestrates existing commands only — zero new dependency (change `add-sdd-ci-gates-workflow`).
+- **§2.12** — Human operation of CI gates: reading output, unblocking merge, troubleshooting, `[MANUAL ACTION]` branch protection.
+- **`sdd-kit/`** — Template `templates/.github/workflows/sdd-gates.yml` (COPY, APP/DOCS_SPECS/HYBRID profiles); workflow check in `verify.sh`; MANIFEST 1.3.2 → 1.4.0.
 
 ### 1.3.2 (2026-07-06)
 
-- **`scripts/bootstrap-sdd.sh`** — GitNexus agora é opcional: falha em install/setup/analyze já não aborta o bootstrap (Graphify + `sdd-kit/install.sh` continuam). Corrigido também line-endings CRLF que quebravam o parse do bash.
-- **`scripts/sdd-session-check.sh`** — Removido probe `flock -n` redundante que colidia com o próprio holder da sessão (register corre antes de check, rule `016`); detecção de conflito continua via scan dos session-files. Corrigido gap em que uma sessão com heartbeat expirado mas PID ainda vivo (operação longa sem heartbeat) não era detectada como conflito — agora só sessões provadamente stale (heartbeat velho **e** PID morto) são ignoradas.
-- **`sdd-kit/templates/AGENTS.core.md`** — Removidas linhas duplicadas (Módulo UI / Pipeline design) na tabela "Contexto sob demanda".
+- **`scripts/bootstrap-sdd.sh`** — GitNexus is now optional: install/setup/analyze failure no longer aborts bootstrap (Graphify + `sdd-kit/install.sh` continue). Also fixed CRLF line endings that broke bash parsing.
+- **`scripts/sdd-session-check.sh`** — Removed redundant `flock -n` probe that collided with the session holder itself (register runs before check, rule `016`); conflict detection still via session-file scan. Fixed gap where a session with expired heartbeat but live PID (long operation without heartbeat) was not detected as conflict — now only provably stale sessions (old heartbeat **and** dead PID) are ignored.
+- **`sdd-kit/templates/AGENTS.core.md`** — Removed duplicate lines (UI Module / Design pipeline) in "On-demand context" table.
 
 ### 1.3.1 (2026-06-27)
 
-- **C1-UI** — Módulo de desenvolvimento de UI opcional pós-C1: `sdd-kit/install-ui-module.sh`, `doc/design/002-*`, `003-*`.
-- **§2.11 / §2.11.1** — Procedimento e checklist do módulo UI (ponteiros, sem duplicar pipeline).
-- **§5.6** — Tabela de referências cruzadas ao módulo UI.
-- **§1.6** — Cenário C1-UI na tabela de instalação.
-- **`doc/avaliacoes/2026-06-27-sdd-ui-development-module.md`** — Avaliação agregada Impeccable + OD + Pencil (**Adopted**).
+- **C1-UI** — Optional post-C1 UI development module: `sdd-kit/install-ui-module.sh`, `doc/design/002-*`, `003-*`.
+- **§2.11 / §2.11.1** — UI module procedure and checklist (pointers, no pipeline duplication).
+- **§5.6** — Cross-reference table to UI module.
+- **§1.6** — C1-UI scenario in install table.
+- **`doc/avaliacoes/2026-06-27-sdd-ui-development-module.md`** — Aggregate evaluation Impeccable + OD + Pencil (**Adopted**).
 
 ### 1.3.0 (2026-06-17)
 
-- **`sdd-kit/`** — Install kit versionado: `MANIFEST.yaml`, `install.sh`, `upgrade.sh`, `verify.sh`, `templates/`.
-- **§1.6** — Organização em quatro camadas; cenários C1 / C2 / C2b / C3; perfis APP / DOCS_SPECS / HYBRID; hub vs consumidor.
-- **§2.0 / §2.9.5** — Instalação e upgrade usam `sdd-kit/templates/` em vez de extrair markdown §12.
-- **§12.6 / §12.9** — Scripts inteiros deprecados no guia; ponteiro para `sdd-kit/templates/`.
-- **`scripts/sdd-upgrade-diff.sh`** — Inventário lê paths de `sdd-kit/MANIFEST.yaml`.
-- **Session coordination** — Entrada no changelog; rules `015`/`016` e scripts `sdd-session-*` no MANIFEST.
-- **`openspec/infra.md`** — Secção Install Kit.
+- **`sdd-kit/`** — Versioned install kit: `MANIFEST.yaml`, `install.sh`, `upgrade.sh`, `verify.sh`, `templates/`.
+- **§1.6** — Four-layer organization; scenarios C1 / C2 / C2b / C3; APP / DOCS_SPECS / HYBRID profiles; hub vs consumer.
+- **§2.0 / §2.9.5** — Install and upgrade use `sdd-kit/templates/` instead of extracting markdown §12.
+- **§12.6 / §12.9** — Full scripts deprecated in guide; pointer to `sdd-kit/templates/`.
+- **`scripts/sdd-upgrade-diff.sh`** — Inventory reads paths from `sdd-kit/MANIFEST.yaml`.
+- **Session coordination** — Changelog entry; rules `015`/`016` and `sdd-session-*` scripts in MANIFEST.
+- **`openspec/infra.md`** — Install Kit section.
 
 ### 1.2.1 (2026-06-16)
 
-- **§12.10** — Template `tasks.md` com Pattern, Gate, modelo 3 níveis, regra DOCS_SPECS (specs aqui, código APP no repo APP), patterns cross-repo via Skills.
-- **§5.2 / §7.2** — Referências cruzadas a tasks enriquecidas.
-- **`scripts/verify-task-patterns.sh`** — validação de paths em `Pattern:`.
+- **§12.10** — `tasks.md` template with Pattern, Gate, 3-level model, DOCS_SPECS rule (specs here, APP code in APP repo), cross-repo patterns via Skills.
+- **§5.2 / §7.2** — Cross-references to enriched tasks.
+- **`scripts/verify-task-patterns.sh`** — validation of paths in `Pattern:`.
 
 ### 1.2.0 (2026-06-15)
 
-- **§2.9** — Actualização de instalação existente (detecção, prompt IA, ferramentas, merge, checklist).
-- **§2.9.5** — Matriz de comparação ficheiros curados vs templates (KEEP_LOCAL / MERGE / APPLY_TEMPLATE / NEW / SKIP).
-- **§12.8** — Template `UPGRADE_REPORT.md` para aprovação humana antes de editar ficheiros.
-- **§12.9** + `scripts/sdd-upgrade-diff.sh` — inventário e diff contra staging.
-- Tabela "Como usar" distingue instalação vs actualização (humano e agente).
+- **§2.9** — Upgrade of existing install (detection, AI prompt, tools, merge, checklist).
+- **§2.9.5** — Curated files vs templates comparison matrix (KEEP_LOCAL / MERGE / APPLY_TEMPLATE / NEW / SKIP).
+- **§12.8** — `UPGRADE_REPORT.md` template for human approval before editing files.
+- **§12.9** + `scripts/sdd-upgrade-diff.sh` — inventory and diff against staging.
+- "How to use" table distinguishes install vs upgrade (human and agent).
 
 ### 1.1.0 (2026-05-25)
 
-- Guia explicitamente como **artefacto de instalação** reutilizável (humano + IA).
-- §2.0 prompt de instalação assistida; §2.8 checklist de verificação.
-- Formato alvo `AGENTS.md`: Commands, on-demand, integrações resumidas (agents.md).
-- §2.5.1 anti-padrões; §2.5.2 perfis APP / DOCS_SPECS / HYBRID.
-- Templates 12.2a / 12.2b / 12.7; `graphify update` em vez de `graphify .`.
-- `openspec init --tools`; bootstrap actualizado.
+- Guide explicitly as reusable **install artifact** (human + AI).
+- §2.0 assisted install prompt; §2.8 verification checklist.
+- Target `AGENTS.md` format: Commands, on-demand, summarized integrations (agents.md).
+- §2.5.1 anti-patterns; §2.5.2 APP / DOCS_SPECS / HYBRID profiles.
+- Templates 12.2a / 12.2b / 12.7; `graphify update` instead of `graphify .`.
+- `openspec init --tools`; bootstrap updated.
 
 ### 1.0.0 (2026-05)
 
-- Versão inicial: OpenSpec + GitNexus + Graphify, Cursor, Claude Code.
+- Initial version: OpenSpec + GitNexus + Graphify, Cursor, Claude Code.
 
 ---
 
-## Apêndice — Disclaimer técnico final
+## Appendix — Final technical disclaimer
 
-Este sistema combina três projectos open source em rápida evolução. Os comandos básicos (`openspec init`, `gitnexus analyze`, `graphify .`) são estáveis. Flags exóticas, formato exacto de subagents, e detalhes de hooks podem mudar em releases mensais. Antes de automatizar processos críticos em produção:
+This system combines three fast-evolving open source projects. Basic commands (`openspec init`, `gitnexus analyze`, `graphify .`) are stable. Exotic flags, exact subagent format, and hook details may change in monthly releases. Before automating critical production processes:
 
-1. Confirmar versões com `<ferramenta> --version`
-2. Ler CHANGELOG da release mais recente
-3. Testar em branch separada antes de PR
+1. Confirm versions with `<tool> --version`
+2. Read the CHANGELOG of the latest release
+3. Test on a separate branch before PR
 
-Se algo falhar na configuração, a ordem habitual de debug é:
-1. `gitnexus status` e `claude mcp list` — MCPs estão registados?
-2. `cat ~/.cursor/mcp.json` — sintaxe correcta?
-3. Restart Cursor/VS Code após qualquer mudança de configuração (skills são carregadas no arranque da sessão).
-4. Logs: `.claude/logs/` se hooks de logging estiverem configurados.
+If something fails during configuration, the usual debug order is:
+1. `gitnexus status` and `claude mcp list` — are MCPs registered?
+2. `cat ~/.cursor/mcp.json` — correct syntax?
+3. Restart Cursor/VS Code after any configuration change (skills load at session startup).
+4. Logs: `.claude/logs/` if logging hooks are configured.
 
 ---
 
-*Guia v1.2.0 — Junho 2026. Ferramentas de referência: OpenSpec 1.3.1+, GitNexus 1.6+, Graphify 0.8.5+, Claude Code 2.1.140+, Cursor `.mdc`, VS Code 1.109+. Confirmar com `--version` antes de automatizar.*
+*Guide v1.2.0 — June 2026. Reference tools: OpenSpec 1.3.1+, GitNexus 1.6+, Graphify 0.8.5+, Claude Code 2.1.140+, Cursor `.mdc`, VS Code 1.109+. Confirm with `--version` before automating.*
