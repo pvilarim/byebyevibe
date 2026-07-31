@@ -295,132 +295,132 @@ AGENTS.md                   # MODIFIED — watch for conflict (see §4)
 
 **Same attention as GitNexus**: in the canonical `AGENTS.md`, summarize Graphify in 2–3 lines (read `GRAPH_REPORT.md`, `graphify update .` after code). Detail in `CLAUDE.md` / `.cursor/rules/graphify.mdc` if installed.
 
-### 2.5 Passo 4 — Curar o `AGENTS.md` único
+### 2.5 Step 4 — Curate the single `AGENTS.md`
 
-Este é o passo crítico. Ferramentas geram ou alteram `AGENTS.md`/`CLAUDE.md` — o canónico é **curado por ti**, com template **12.2a** (app) ou **12.2b** (docs/specs).
+This is the critical step. Tools generate or modify `AGENTS.md`/`CLAUDE.md` — the canonical file is **curated by you**, using template **12.2a** (app) or **12.2b** (docs/specs).
 
 ```bash
-# 1. Preserva output automático
+# 1. Preserve automatic output
 mv AGENTS.md AGENTS.tools-generated.md 2>/dev/null || true
 echo "AGENTS.tools-generated.md" >> .gitignore
 echo "CLAUDE.tools-generated.md" >> .gitignore
 
-# 2. Cria AGENTS.md a partir do anexo 12.2a ou 12.2b (NÃO pedir à IA para inventar)
+# 2. Create AGENTS.md from annex 12.2a or 12.2b (do NOT ask the AI to invent it)
 $EDITOR AGENTS.md
 
-# 3. CLAUDE.md mínimo: apontar para ./AGENTS.md (template §10.3)
+# 3. Minimal CLAUDE.md: point to ./AGENTS.md (template §10.3)
 ```
 
-**O `AGENTS.md` canónico DEVE conter (formato alvo v1.1):**
+**The canonical `AGENTS.md` MUST contain (target format v1.1):**
 
-| Secção | Conteúdo |
-|--------|----------|
-| Contexto | Aponta `./openspec/project.md` — **não** duplicar stack |
-| **Commands** | Tabela de comandos reais deste repo (dev, test, openspec, gitnexus, graphify) |
-| Fontes de conhecimento | Ordem 1–7 (§5.2) |
-| **Contexto sob demanda** | Tabela situação → ficheiro (§2.5.3) |
-| Protocolo A–E + R1–R9 | §3 e §8.2 |
-| Workflow OpenSpec | `/opsx:*`, graphify update, gitnexus analyze |
-| **Integrações** | GitNexus + Graphify em ≤10 linhas cada; ponte para skills |
-| Segurança + comunicação | §7 |
+| Section | Content |
+|---------|---------|
+| Context | Points to `./openspec/project.md` — **do not** duplicate stack |
+| **Commands** | Table of real commands for this repo (dev, test, openspec, gitnexus, graphify) |
+| Knowledge sources | Order 1–7 (§5.2) |
+| **On-demand context** | Situation → file table (§2.5.3) |
+| Protocol A–E + R1–R9 | §3 and §8.2 |
+| OpenSpec workflow | `/opsx:*`, graphify update, gitnexus analyze |
+| **Integrations** | GitNexus + Graphify in ≤10 lines each; bridge to skills |
+| Security + communication | §7 |
 
-**Meta:** ~100–150 linhas. Se `gitnexus analyze` ou `graphify install` voltarem a injectar blocos longos, **remover** e manter só o resumo em Integrações.
+**Target:** ~100–150 lines. If `gitnexus analyze` or `graphify install` inject long blocks again, **remove** them and keep only the summary under Integrations.
 
-#### 2.5.1 Anti-padrões (não adoptar no `AGENTS.md` canónico)
+#### 2.5.1 Anti-patterns (do not adopt in the canonical `AGENTS.md`)
 
-| Anti-padrão | Porquê | Em vez disso |
-|-------------|--------|--------------|
-| Pedir à IA para gerar o `AGENTS.md` inicial | Ficheiro gigante, genérico, context rot | Template 12.2 + edição humana iterativa |
-| Colar bloco `<!-- gitnexus:start -->` completo | Duplica skills; +40 linhas sempre no contexto | §2.5 Integrações + skills lazy |
-| Duplicar stack de `openspec/project.md` | Drift em 3 meses | Apontar para `project.md` |
-| YAML AAIF (`agent.name`, `compliance`) | Overhead; não usado por Cursor/Claude | Markdown livre ([agents.md](https://agents.md/)) |
-| Mover tudo para `AGENTS.md` e apagar `.mdc` | Cursor perde auto-attach por glob | `AGENTS.md` + `.cursor/rules/*.mdc` |
-| `AGENTS.md` > 200 linhas sem razão | Confunde modelo; custo de tokens | Quebrar em docs referenciados + Skills |
+| Anti-pattern | Why | Instead |
+|--------------|-----|---------|
+| Ask the AI to generate the initial `AGENTS.md` | Huge, generic file; context rot | Template 12.2 + iterative human editing |
+| Paste the full `<!-- gitnexus:start -->` block | Duplicates skills; +40 lines always in context | §2.5 Integrations + lazy-loaded skills |
+| Duplicate stack from `openspec/project.md` | Drift within months | Point to `project.md` |
+| YAML AAIF (`agent.name`, `compliance`) | Overhead; unused by Cursor/Claude | Free Markdown ([agents.md](https://agents.md/)) |
+| Move everything into `AGENTS.md` and delete `.mdc` | Cursor loses glob auto-attach | `AGENTS.md` + `.cursor/rules/*.mdc` |
+| `AGENTS.md` > 200 lines without reason | Confuses the model; token cost | Split into referenced docs + Skills |
 
-#### 2.5.2 Perfis de repositório
+#### 2.5.2 Repository profiles
 
-| Perfil | Sinais | Template Commands | `AGENTS.md` aninhado |
-|--------|--------|-------------------|----------------------|
-| **APP** | `package.json`, `npm run dev`, app Next/etc. | `dev`, `test`, `lint`, `build` (nota: não correr build em sessão agente se agents.md assim disser) | Por package em monorepos |
-| **DOCS_SPECS** | `openspec/`, `doc/`, sem app na raiz | `openspec list`, `gitnexus status`, `graphify update .` | `doc/**/scripts/`, pastas com tooling próprio |
-| **HYBRID** | App + `openspec/` + `doc/` | Combinar ambas tabelas no Commands | Ambos |
+| Profile | Signals | Template Commands | Nested `AGENTS.md` |
+|---------|---------|-------------------|---------------------|
+| **APP** | `package.json`, `npm run dev`, Next app/etc. | `dev`, `test`, `lint`, `build` (note: do not run build in agent sessions if agents.md says so) | Per package in monorepos |
+| **DOCS_SPECS** | `openspec/`, `doc/`, no app at root | `openspec list`, `gitnexus status`, `graphify update .` | `doc/**/scripts/`, folders with their own tooling |
+| **HYBRID** | App + `openspec/` + `doc/` | Combine both tables under Commands | Both |
 
-#### 2.5.3 Contexto sob demanda (mapa no `AGENTS.md`)
+#### 2.5.3 On-demand context (map in `AGENTS.md`)
 
-Incluir tabela como esta (adaptar paths ao repo):
+Include a table like this (adapt paths to the repo):
 
 ```markdown
-## Contexto sob demanda
+## On-demand context
 
-| Situação | Carregar |
-|----------|----------|
-| Stack, convenções, non-goals | `openspec/project.md` |
-| Requisitos por capability | `openspec/specs/` |
-| Change em curso | `openspec/changes/<id>/` |
-| Relações entre conceitos / teoria | `graphify-out/GRAPH_REPORT.md` |
-| Legado: entender codebase | Perguntar padrões AS-IS **sem criar ficheiros**; depois documentar |
-| Convenções TS/Python/DB (ficheiro aberto) | `.cursor/rules/010-*.mdc`, etc. |
-| Guia SDD completo (instalação) | `doc/sistema-sdd-pedro.md` |
+| Situation | Load |
+|-----------|------|
+| Stack, conventions, non-goals | `openspec/project.md` |
+| Requirements by capability | `openspec/specs/` |
+| Change in progress | `openspec/changes/<id>/` |
+| Concept relations / theory | `graphify-out/GRAPH_REPORT.md` |
+| Legacy: understand codebase | Ask for AS-IS patterns **without creating files**; then document |
+| TS/Python/DB conventions (open file) | `.cursor/rules/010-*.mdc`, etc. |
+| Full SDD guide (installation) | `doc/sistema-sdd-pedro.md` |
 ```
 
-#### 2.5.4 `AGENTS.md` aninhados ([agents.md](https://agents.md/))
+#### 2.5.4 Nested `AGENTS.md` ([agents.md](https://agents.md/))
 
-Criar `AGENTS.md` em subpastas com lógica própria (scripts, packages). O agente usa o ficheiro **mais próximo** do ficheiro editado. Ver template **12.7**.
+Create `AGENTS.md` in subfolders with their own logic (scripts, packages). The agent uses the file **closest** to the file being edited. See template **12.7**.
 
-### 2.6 Passo 5 — Verificar configuração MCP
+### 2.6 Step 5 — Verify MCP configuration
 
 ```bash
-# Cursor: verifica que os dois servidores MCP estão registados
+# Cursor: verify both MCP servers are registered
 cat ~/.cursor/mcp.json
-# Deve mostrar gitnexus e (se usaste graphify mcp) graphify
+# Should show gitnexus and (if you used graphify mcp) graphify
 
-# Claude Code: lista os MCPs activos
+# Claude Code: list active MCPs
 claude mcp list
-# Deve mostrar gitnexus
+# Should show gitnexus
 
-# Testa GitNexus
-gitnexus status              # Deve mostrar o repo indexado
+# Test GitNexus
+gitnexus status              # Should show the repo indexed
 
-# Testa Graphify
-ls graphify-out/             # Deve ter graph.json e GRAPH_REPORT.md
+# Test Graphify
+ls graphify-out/             # Should have graph.json and GRAPH_REPORT.md
 ```
 
-### 2.7 Passo 6 — Sanity check end-to-end
+### 2.7 Step 6 — End-to-end sanity check
 
-Abre Claude Code ou Cursor e tenta:
+Open Claude Code or Cursor and try:
 
 ```
-/opsx:propose adicionar validação de input no endpoint /users
+/opsx:propose add input validation to the /users endpoint
 ```
 
-Deves ver o agente a criar `openspec/changes/add-user-input-validation/` com `proposal.md`, `design.md`, `tasks.md` e `specs/`. Se o agente também consultar GitNexus/Graphify durante a propose-phase (lê código existente e contexto), os três stacks estão integrados.
+You should see the agent create `openspec/changes/add-user-input-validation/` with `proposal.md`, `design.md`, `tasks.md`, and `specs/`. If the agent also consults GitNexus/Graphify during the propose phase (reads existing code and context), all three stacks are integrated.
 
-Se algo falhar: corre `gitnexus status`, verifica que `mcp.json` está correcto, e relê AGENTS.md.
+If something fails: run `gitnexus status`, verify `mcp.json` is correct, and re-read AGENTS.md.
 
-### 2.8 Verificação pós-instalação (checklist)
+### 2.8 Post-installation verification (checklist)
 
-Usar após cada instalação (humano ou IA):
+Use after every installation (human or AI):
 
-- [ ] `openspec/project.md` editado com Purpose, Stack, Cross-references
-- [ ] `AGENTS.md` existe, ≤150 linhas, **sem** bloco duplicado `<!-- gitnexus:start -->`
-- [ ] `AGENTS.tools-generated.md` e `CLAUDE.tools-generated.md` no `.gitignore`
-- [ ] `CLAUDE.md` aponta para `./AGENTS.md` (≤25 linhas úteis)
-- [ ] `.cursor/rules/000-base.mdc` e `050-security.mdc` presentes
-- [ ] `npx openspec list` corre sem erro
+- [ ] `openspec/project.md` edited with Purpose, Stack, Cross-references
+- [ ] `AGENTS.md` exists, ≤150 lines, **without** duplicated `<!-- gitnexus:start -->` block
+- [ ] `AGENTS.tools-generated.md` and `CLAUDE.tools-generated.md` in `.gitignore`
+- [ ] `CLAUDE.md` points to `./AGENTS.md` (≤25 useful lines)
+- [ ] `.cursor/rules/000-base.mdc` and `050-security.mdc` present
+- [ ] `npx openspec list` runs without error
 - [ ] `npx gitnexus status` → index up-to-date
-- [ ] `graphify-out/GRAPH_REPORT.md` existe (após `graphify update .`)
-- [ ] `/opsx:propose` (ou `npx openspec new change teste`) cria change
-- [ ] IDE reiniciada (slash commands e skills)
-- [ ] Perfil APP/DOCS_SPECS reflectido na tabela Commands do `AGENTS.md`
-- [ ] `openspec/infra.md` existe com secções SDD Stack e MCP Servers
-- [ ] `.cursor/rules/015-session-phases.mdc` presente (alwaysApply)
-- [ ] `.cursor/rules/016-session-coordination.mdc` presente (alwaysApply)
-- [ ] `scripts/sdd-session-check.sh` e `scripts/sdd-session-status.sh` executáveis
-- [ ] `.sdd/runtime/` no `.gitignore`
-- [ ] `openspec/infra.md` secção Session Coordination presente
-- [ ] `bash scripts/verify-infra.sh` completa sem erro (ou documentar ❌ pendentes)
-- [ ] `.github/workflows/sdd-gates.yml` presente (ver §2.12 para configurar branch protection manual)
-- [ ] `renovate.json` presente se perfil APP/HYBRID (ver §2.13 para instalar app Renovate)
+- [ ] `graphify-out/GRAPH_REPORT.md` exists (after `graphify update .`)
+- [ ] `/opsx:propose` (or `npx openspec new change test`) creates a change
+- [ ] IDE restarted (slash commands and skills)
+- [ ] APP/DOCS_SPECS profile reflected in the `AGENTS.md` Commands table
+- [ ] `openspec/infra.md` exists with SDD Stack and MCP Servers sections
+- [ ] `.cursor/rules/015-session-phases.mdc` present (alwaysApply)
+- [ ] `.cursor/rules/016-session-coordination.mdc` present (alwaysApply)
+- [ ] `scripts/sdd-session-check.sh` and `scripts/sdd-session-status.sh` executable
+- [ ] `.sdd/runtime/` in `.gitignore`
+- [ ] `openspec/infra.md` Session Coordination section present
+- [ ] `bash scripts/verify-infra.sh` completes without error (or document ❌ pending items)
+- [ ] `.github/workflows/sdd-gates.yml` present (see §2.12 to configure branch protection manually)
+- [ ] `renovate.json` present if APP/HYBRID profile (see §2.13 to install the Renovate app)
 
 ### 2.11 Módulo de desenvolvimento de UI (C1-UI, opcional)
 
