@@ -130,170 +130,170 @@ Exact commands: `sdd-kit/README.md`.
 
 ---
 
-## 2. Passo a passo de instalação (questão 1)
+## 2. Installation step by step (question 1)
 
 ### 2.0b First contact / vibe coder (quickstart)
 
-Chegaste de *vibe coding* e queres o caminho mínimo **sem** ler o guia inteiro?
+Coming from *vibe coding* and want the minimum path **without** reading the entire guide?
 
-1. Lê o hero e a demo em [`README.md`](../README.md) na raiz do hub (EN) — marca pública **ByeByeVibe**; posicionamento “from vibe coding to shippable AI engineering”; **não** é boilerplate de app (payload continua em `sdd-kit/`).
-2. Pré-visualiza o que o kit instalaria (sem escrever ficheiros):
+1. Read the hero and demo in [`README.md`](../README.md) at the hub root (EN) — public brand **ByeByeVibe**; positioning “from vibe coding to shippable AI engineering”; **not** an app boilerplate (payload remains in `sdd-kit/`).
+2. Preview what the kit would install (without writing files):
 
 ```bash
 bash sdd-kit/install.sh --profile DOCS_SPECS --dry-run
-# ou, num repo de aplicação: --profile APP
+# or, in an application repo: --profile APP
 ```
 
-3. Se fizer sentido, segue a instalação completa: §2.1 → CLIs → `install.sh` (sem `--dry-run`) → checklist §2.8.
-4. Mapa amigável C1/C2/C3/G*: [`sdd-kit/README.md`](../sdd-kit/README.md). Análise de mercado / backlog: [`doc/avaliacoes/2026-07-26-sdd-discovery-positioning.md`](../avaliacoes/2026-07-26-sdd-discovery-positioning.md).
+3. If it makes sense, follow the full install: §2.1 → CLIs → `install.sh` (without `--dry-run`) → checklist §2.8.
+4. Friendly map C1/C2/C3/G*: [`sdd-kit/README.md`](../sdd-kit/README.md). Market analysis / backlog: [`doc/avaliacoes/2026-07-26-sdd-discovery-positioning.md`](../doc/avaliacoes/2026-07-26-sdd-discovery-positioning.md).
 
-Este bloco **não** substitui o procedimento §2.1–§2.8 — só reduz fricção no primeiro contacto.
+This block **does not** replace procedure §2.1–§2.8 — it only reduces friction on first contact.
 
-### 2.1 Ordem importa
+### 2.1 Order matters
 
-Instala nesta ordem específica. **Não inverter** — cada passo assume que o anterior está feito:
-
-```
-1. OpenSpec    → 2. GitNexus    → 3. Graphify    → 3b. sdd-kit/install.sh    → 4. Curar AGENTS.md    → 5. Configurar IDEs
-```
-
-A razão: OpenSpec gera o esqueleto `openspec/`, GitNexus indexa código e cria `AGENTS.md` inicial, Graphify adiciona contexto não-código. Se inverteres, ferramentas posteriores podem sobrescrever ficheiros criadas antes.
-
-### 2.0 Instalação assistida por IA (prompt)
-
-Cola este prompt na raiz do repositório alvo (substitui `REPO_ROOT` e o perfil):
+Install in this specific order. **Do not reverse** — each step assumes the previous one is done:
 
 ```
-Instala o sistema SDD (OpenSpec + GitNexus + Graphify) neste repositório seguindo
-estritamente o guia em doc/sistema-sdd-pedro.md v1.4.0 e o install kit em sdd-kit/.
+1. OpenSpec    → 2. GitNexus    → 3. Graphify    → 3b. sdd-kit/install.sh    → 4. Curate AGENTS.md    → 5. Configure IDEs
+```
 
-Perfil do repositório: [APP | DOCS_SPECS | HYBRID]
+Why: OpenSpec generates the `openspec/` skeleton, GitNexus indexes code and creates the initial `AGENTS.md`, Graphify adds non-code context. If you reverse the order, later tools may overwrite files created earlier.
 
-Ordem:
-1. bash scripts/bootstrap-sdd.sh  (ou CLIs manuais §2.2–2.4)
-2. bash sdd-kit/install.sh --profile <PERFIL> [--dry-run primeiro]
-3. Editar openspec/project.md (Purpose, Stack — NÃO substituir por template)
-4. Merge AGENTS.md se já existia (templates: sdd-kit/templates/AGENTS.core.md + commands)
+### 2.0 AI-assisted installation (prompt)
+
+Paste this prompt at the target repository root (replace `REPO_ROOT` and the profile):
+
+```
+Install the SDD system (OpenSpec + GitNexus + Graphify) in this repository following
+strictly the guide in doc/sistema-sdd-pedro.md v1.4.0 and the install kit in sdd-kit/.
+
+Repository profile: [APP | DOCS_SPECS | HYBRID]
+
+Order:
+1. bash scripts/bootstrap-sdd.sh  (or manual CLIs §2.2–2.4)
+2. bash sdd-kit/install.sh --profile <PROFILE> [--dry-run first]
+3. Edit openspec/project.md (Purpose, Stack — do NOT replace with template)
+4. Merge AGENTS.md if it already existed (templates: sdd-kit/templates/AGENTS.core.md + commands)
 5. bash sdd-kit/verify.sh + checklist §2.8
 
-NÃO extrair scripts do markdown §12 — usar sdd-kit/templates/.
-NÃO colar blocos <!-- gitnexus:start --> completos em AGENTS.md.
+Do NOT extract scripts from markdown §12 — use sdd-kit/templates/.
+Do NOT paste full <!-- gitnexus:start --> blocks into AGENTS.md.
 
-Entregar: checklist §2.8 + output de sdd-kit/verify.sh.
+Deliver: checklist §2.8 + output of sdd-kit/verify.sh.
 ```
 
-### 2.2 Passo 1 — OpenSpec (intenção)
+### 2.2 Step 1 — OpenSpec (intent)
 
 ```bash
-# Instalação global
+# Global install
 npm install -g @fission-ai/openspec@latest
 
-# Verificação
-openspec --version          # Esperar 1.3.1 ou superior
+# Verification
+openspec --version          # Expect 1.3.1 or higher
 
-# Inicializar no projecto
-cd ~/projects/meu-repo   # raiz do repo alvo
+# Initialize in the project
+cd ~/projects/meu-repo   # target repo root
 openspec init --tools "cursor,claude"
 
-# Modo não-interactivo: gera comandos opsx em .cursor/ e .claude/
-# Adiciona outras ferramentas separadas por vírgula se necessário (ver openspec init --help)
+# Non-interactive mode: generates opsx commands in .cursor/ and .claude/
+# Add other tools comma-separated if needed (see openspec init --help)
 ```
 
-O que isto cria:
+What this creates:
 ```
 openspec/
-├── project.md              # Editar manualmente: stack, convenções, decisões arquitecturais
-├── AGENTS.md               # GERADO — NÃO EDITAR (regenerado por openspec update)
-├── specs/                  # Vazio inicialmente; cresce com archive
-└── changes/                # Vazio inicialmente; cresce com propose
-.claude/commands/opsx-*.md  # Slash commands do OpenSpec para Claude Code
-.cursor/commands/opsx-*.md  # Slash commands do OpenSpec para Cursor
+├── project.md              # Edit manually: stack, conventions, architectural decisions
+├── AGENTS.md               # GENERATED — DO NOT EDIT (regenerated by openspec update)
+├── specs/                  # Empty initially; grows with archive
+└── changes/                # Empty initially; grows with propose
+.claude/commands/opsx-*.md  # OpenSpec slash commands for Claude Code
+.cursor/commands/opsx-*.md  # OpenSpec slash commands for Cursor
 ```
 
-**Acção obrigatória após init**: editar `openspec/project.md`. Este ficheiro é a Constituição do projecto. Sem ele bem escrito, OpenSpec não dá benefício real. Vê template no anexo 12.1.
+**Required action after init**: edit `openspec/project.md`. This file is the project Constitution. Without it written well, OpenSpec does not deliver real benefit. See template in annex 12.1.
 
-### 2.3 Passo 2 — GitNexus (código)
+### 2.3 Step 2 — GitNexus (code)
 
 ```bash
-# Instalação global
+# Global install
 npm install -g gitnexus
 
-# Verificação
-gitnexus --version          # Esperar 1.4.8 ou superior
+# Verification
+gitnexus --version          # Expect 1.4.8 or higher
 
-# Setup MCP one-time (configura ~/.cursor/mcp.json e claude-code)
+# One-time MCP setup (configures ~/.cursor/mcp.json and claude-code)
 gitnexus setup
 
-# Indexar o repo (correr a partir da raiz do repo)
+# Index the repo (run from repo root)
 cd ~/projects/multi-agent-bot
 gitnexus analyze
 
-# Para reindexar após mudanças significativas:
+# To reindex after significant changes:
 gitnexus analyze --force
 
-# Para gerar wiki LLM-powered:
+# To generate LLM-powered wiki:
 gitnexus wiki
 ```
 
-O que isto cria:
+What this creates:
 ```
-.gitnexus/                   # Base de dados local (gitignored)
-~/.gitnexus/registry.json    # Registo global de repos indexados
-~/.cursor/mcp.json           # GitNexus registado como MCP server
-~/.cursor/skills/            # Skills do GitNexus para Cursor
-~/.claude/skills/            # Skills do GitNexus para Claude Code
-~/.claude/hooks/             # PreToolUse hooks que enriquecem grep/glob com graph
-AGENTS.md                    # CRIADO ou MODIFICADO — atenção a conflito (ver §4)
-CLAUDE.md                    # CRIADO ou MODIFICADO — atenção a conflito
+.gitnexus/                   # Local database (gitignored)
+~/.gitnexus/registry.json    # Global registry of indexed repos
+~/.cursor/mcp.json           # GitNexus registered as MCP server
+~/.cursor/skills/            # GitNexus skills for Cursor
+~/.claude/skills/            # GitNexus skills for Claude Code
+~/.claude/hooks/             # PreToolUse hooks that enrich grep/glob with graph
+AGENTS.md                    # CREATED or MODIFIED — watch for conflict (see §4)
+CLAUDE.md                    # CREATED or MODIFIED — watch for conflict
 ```
 
-**Atenção**: se já tens `AGENTS.md` curado, **renomeia-o antes** (`AGENTS.tools-generated.md`), corre `gitnexus analyze`, depois aplica o template **12.2** — **não** copies o bloco completo `<!-- gitnexus:start -->` para o canónico (ver §2.5.1). O detalhe operacional vive nas skills em `.claude/skills/gitnexus/`.
+**Attention**: if you already have a curated `AGENTS.md`, **rename it first** (`AGENTS.tools-generated.md`), run `gitnexus analyze`, then apply template **12.2** — **do not** copy the full `<!-- gitnexus:start -->` block into the canonical file (see §2.5.1). Operational detail lives in skills under `.claude/skills/gitnexus/`.
 
-### 2.4 Passo 3 — Graphify (conhecimento)
+### 2.4 Step 3 — Graphify (knowledge)
 
 ```bash
-# Instalação via uv (recomendado — coloca CLI no PATH automaticamente)
+# Install via uv (recommended — puts CLI on PATH automatically)
 uv tool install graphifyy
 
-# Verificação
-graphify --version          # Esperar 0.8.4 ou superior
+# Verification
+graphify --version          # Expect 0.8.4 or higher
 
-# Instalar skill no Claude Code
-graphify install            # auto-detecta plataforma; macOS/Linux
+# Install skill in Claude Code
+graphify install            # auto-detects platform; macOS/Linux
 
-# Instalar skill no Cursor
+# Install skill in Cursor
 graphify install --platform cursor
 
-# Instalar skill no VS Code (Claude Code extension)
+# Install skill in VS Code (Claude Code extension)
 graphify vscode install
 
-# Instalar hook git para rebuild automático em commits
+# Install git hook for automatic rebuild on commits
 graphify hook install
 
-# Construir grafo inicial — a partir da raiz do repo
+# Build initial graph — from repo root
 cd ~/projects/meu-repo
-graphify update .           # AST + estrutura (sem API key LLM)
+graphify update .           # AST + structure (no LLM API key)
 
-# Com API key (ANTHROPIC/GEMINI/etc.) para semântica completa:
+# With API key (ANTHROPIC/GEMINI/etc.) for full semantics:
 # graphify extract . --max-workers 4
 
-# Vault Obsidian ou pasta externa (opcional):
-# graphify extract /caminho/para/vault --out graphify-out-vault
+# Obsidian vault or external folder (optional):
+# graphify extract /path/to/vault --out graphify-out-vault
 ```
 
-O que isto cria:
+What this creates:
 ```
 graphify-out/
-├── graph.json              # O grafo serializado
-├── GRAPH_REPORT.md         # Resumo legível por humanos e LLMs
-├── graph.html              # Visualização interactiva no browser
-└── .graphify_root          # Ponteiro para o root do projecto
-~/.claude/skills/graphify/  # SKILL.md instalado
-~/.cursor/skills/graphify/  # SKILL.md instalado
-AGENTS.md                   # MODIFICADO — atenção a conflito (ver §4)
+├── graph.json              # Serialized graph
+├── GRAPH_REPORT.md         # Human- and LLM-readable summary
+├── graph.html              # Interactive browser visualization
+└── .graphify_root          # Pointer to project root
+~/.claude/skills/graphify/  # SKILL.md installed
+~/.cursor/skills/graphify/  # SKILL.md installed
+AGENTS.md                   # MODIFIED — watch for conflict (see §4)
 ```
 
-**Atenção idêntica ao GitNexus**: no `AGENTS.md` canónico, resume Graphify em 2–3 linhas (ler `GRAPH_REPORT.md`, `graphify update .` após código). Detalhe em `CLAUDE.md` / `.cursor/rules/graphify.mdc` se instalados.
+**Same attention as GitNexus**: in the canonical `AGENTS.md`, summarize Graphify in 2–3 lines (read `GRAPH_REPORT.md`, `graphify update .` after code). Detail in `CLAUDE.md` / `.cursor/rules/graphify.mdc` if installed.
 
 ### 2.5 Passo 4 — Curar o `AGENTS.md` único
 
