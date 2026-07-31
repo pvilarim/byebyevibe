@@ -19,7 +19,7 @@ profiles: [APP, DOCS_SPECS, HYBRID]
 files:
   - path: scripts/verify-infra.sh
     source: templates/scripts/verify-infra.sh
-    sha256: "f296108c5734edb71f166d6ec716b541714d52c5760309117f103183c37893cf"
+    sha256: "4704bd339fb9228383d491bf595ef8ebb4b86ac1c457bcdedc8355b5d1ccf79f"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -x scripts/verify-infra.sh"

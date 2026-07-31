@@ -95,7 +95,7 @@ if [[ -f "$ENV_EXAMPLE" ]]; then
     fi
   done < "$ENV_EXAMPLE"
 else
-  ENV_LINES="| _(sem .env.example no repo)_ | — | — |"
+  ENV_LINES="| _(no .env.example in repo)_ | — | — |"
 fi
 echo "Env vars: checked from .env.example (values not read)"
 
@@ -128,13 +128,13 @@ if [[ -f "$REPO_ROOT/sdd-kit/MANIFEST.yaml" ]]; then
   fi
   echo "Install Kit: $(to_emoji "$KIT_STATUS") v${KIT_VERSION}"
 else
-  echo "Install Kit: ❌ (sdd-kit/MANIFEST.yaml ausente)"
+  echo "Install Kit: ❌ (sdd-kit/MANIFEST.yaml missing)"
 fi
 [[ "$KIT_STATUS" == "fail" ]] && ((FAILURES++)) || true
 
 # --- Update infra.md timestamps and status markers ---
 if [[ -f "$INFRA_FILE" ]]; then
-  sed -i "s|> Última verificação: .* · Script:|> Última verificação: ${TODAY} · Script:|" "$INFRA_FILE"
+  sed -i "s|> Last verified: .* · Script:|> Last verified: ${TODAY} · Script:|" "$INFRA_FILE"
   replace_between "$INFRA_FILE" "openspec-version" "$OPENSPEC_VERSION"
   replace_between "$INFRA_FILE" "openspec-status" "$(to_emoji "$OPENSPEC_STATUS")"
   replace_between "$INFRA_FILE" "gitnexus-version" "$GITNEXUS_VERSION"
@@ -148,14 +148,14 @@ if [[ -f "$INFRA_FILE" ]]; then
     replace_between "$INFRA_FILE" "kit-install-status" "$(to_emoji "$KIT_STATUS")"
     replace_between "$INFRA_FILE" "kit-verify-status" "$(to_emoji "$KIT_STATUS")"
   fi
-  if [[ -n "$ENV_LINES" && "$ENV_LINES" != *"sem .env.example"* ]]; then
+  if [[ -n "$ENV_LINES" && "$ENV_LINES" != *"no .env.example"* ]]; then
     python3 - <<PY "$INFRA_FILE" "$ENV_LINES"
 import re, sys
 path, rows = sys.argv[1], sys.argv[2].strip()
 text = open(path).read()
-block = "| Variável | Presente | Verificar com |\n|----------|----------|---------------|\n" + rows.replace("\\n", "\n")
+block = "| Variable | Present | Verify with |\n|----------|----------|---------------|\n" + rows.replace("\\n", "\n")
 text = re.sub(
-    r"(\| Variável \| Presente \| Verificar com \|\n\|[-| ]+\|\n)(.*?)(\n## Regra agentes)",
+    r"(\| Variable \| Present \| Verify with \|\n\|[-| ]+\|\n)(.*?)(\n## Agent rule)",
     block + r"\3",
     text,
     count=1,
