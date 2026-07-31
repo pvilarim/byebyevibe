@@ -2501,76 +2501,76 @@ alwaysApply: false
 - Credentials never inline; use n8n credentials store with env-var refs
 ```
 
-### 12.6 Comando de instalação one-shot
+### 12.6 One-shot install command
 
-> **v1.3.0:** O script completo vive em `scripts/bootstrap-sdd.sh` (repo) e `sdd-kit/templates/scripts/bootstrap-sdd.sh` (kit). Após CLIs, delega payloads a `sdd-kit/install.sh`. **Não** copiar blocos bash deste anexo — usar `sdd-kit/templates/`.
+> **v1.3.0:** The full script lives in `scripts/bootstrap-sdd.sh` (repo) and `sdd-kit/templates/scripts/bootstrap-sdd.sh` (kit). After CLIs, it delegates payloads to `sdd-kit/install.sh`. **Do not** copy bash blocks from this annex — use `sdd-kit/templates/`.
 
-Resumo da ordem:
+Order summary:
 
 ```bash
-bash scripts/bootstrap-sdd.sh          # CLIs globais + openspec init
+bash scripts/bootstrap-sdd.sh          # global CLIs + openspec init
 bash sdd-kit/install.sh --profile DOCS_SPECS [--dry-run]
 bash sdd-kit/verify.sh
 ```
 
-Ver `sdd-kit/README.md` para perfis e cenários C1–C3.
+See `sdd-kit/README.md` for profiles and C1–C3 scenarios.
 
-### 12.7 Template `AGENTS.md` aninhado (subpasta)
+### 12.7 Nested `AGENTS.md` template (subfolder)
 
-Exemplo para `doc/curso/scripts/AGENTS.md` ou `packages/foo/AGENTS.md`:
+Example for `doc/curso/scripts/AGENTS.md` or `packages/foo/AGENTS.md`:
 
 ```markdown
-# AGENTS.md — [nome da pasta]
+# AGENTS.md — [folder name]
 
-Instruções locais; o canónico na raiz é `../../AGENTS.md`.
+Local instructions; the canonical file at the root is `../../AGENTS.md`.
 
 ## Commands
 
-| Comando | Uso |
+| Command | Use |
 |---------|-----|
-| `python script.py` | [descrever] |
+| `python script.py` | [describe] |
 
-## Regras locais
+## Local rules
 
-- [Regra específica desta pasta]
-- Herdar segurança e protocolo A–E do `AGENTS.md` raiz
+- [Folder-specific rule]
+- Inherit security and A–E protocol from root `AGENTS.md`
 ```
 
-### 12.8 Template `UPGRADE_REPORT.md` (actualização SDD)
+### 12.8 Template `UPGRADE_REPORT.md` (SDD upgrade)
 
-Guardar em `openspec/changes/upgrade-sdd-<versão>/UPGRADE_REPORT.md` **antes** de editar ficheiros curados.
+Save in `openspec/changes/upgrade-sdd-<version>/UPGRADE_REPORT.md` **before** editing curated files.
 
 ```markdown
-# Relatório de actualização SDD
+# SDD upgrade report
 
-| Campo | Valor |
+| Field | Value |
 |-------|--------|
-| Repositório | [nome/caminho] |
-| Perfil | APP / DOCS_SPECS / HYBRID |
-| Versão guia (antes) | vX.Y.Z ou desconhecida |
-| Versão guia (alvo) | vA.B.C |
-| Data | YYYY-MM-DD |
+| Repository | [name/path] |
+| Profile | APP / DOCS_SPECS / HYBRID |
+| Guide version (before) | vX.Y.Z or unknown |
+| Guide version (target) | vA.B.C |
+| Date | YYYY-MM-DD |
 | Branch | chore/upgrade-sdd-vA.B.C |
 
-## Versões das ferramentas
+## Tool versions
 
-| Ferramenta | Antes | Depois |
+| Tool | Before | After |
 |------------|-------|--------|
 | OpenSpec | | |
 | GitNexus | | |
 | Graphify | | |
 
-## Resumo executivo
+## Executive summary
 
-- [ ] Actualização aprovada pelo utilizador
-- Breaking changes do guia aplicáveis: [sim/não — listar]
+- [ ] Upgrade approved by user
+- Applicable guide breaking changes: [yes/no — list]
 
-## Matriz de ficheiros
+## File matrix
 
-| Ficheiro | Existe | Linhas (antes) | Classificação | Acção proposta | Aprovado |
+| File | Exists | Lines (before) | Classification | Proposed action | Approved |
 |----------|--------|----------------|---------------|----------------|----------|
-| AGENTS.md | sim/não | | MERGE | Sincronizar 12.2; manter Commands | [ ] |
-| openspec/project.md | | | MERGE | Actualizar Cross-references; manter Purpose/Stack | [ ] |
+| AGENTS.md | yes/no | | MERGE | Sync 12.2; keep Commands | [ ] |
+| openspec/project.md | | | MERGE | Update Cross-references; keep Purpose/Stack | [ ] |
 | CLAUDE.md | | | MERGE | Template §10.3 | [ ] |
 | .cursor/rules/000-base.mdc | | | APPLY/MERGE | | [ ] |
 | .cursor/rules/050-security.mdc | | | APPLY/MERGE | | [ ] |
@@ -2579,53 +2579,51 @@ Guardar em `openspec/changes/upgrade-sdd-<versão>/UPGRADE_REPORT.md` **antes** 
 | .cursor/rules/030-supabase.mdc | | | SKIP/KEEP | | [ ] |
 | .cursor/rules/graphify.mdc | | | MERGE/KEEP | | [ ] |
 
-Classificações: `KEEP_LOCAL` · `MERGE` · `APPLY_TEMPLATE` · `NEW` · `SKIP`
+Classifications: `KEEP_LOCAL` · `MERGE` · `APPLY_TEMPLATE` · `NEW` · `SKIP`
 
-## Diffs relevantes (resumo)
+## Relevant diffs (summary)
 
 ### AGENTS.md
-- Secções só no local: …
-- Secções só no template: …
-- Conflitos: …
+- Sections only in local: …
+- Sections only in template: …
+- Conflicts: …
 
 ### openspec/project.md
 - …
 
-## Ficheiros gerados (não curados)
+## Generated files (not curated)
 
-| Caminho | Acção |
+| Path | Action |
 |---------|--------|
 | `.cursor/commands/opsx-*` | `openspec update` |
-| `openspec/AGENTS.md` | regenerado — ignorar para canónico |
+| `openspec/AGENTS.md` | regenerated — ignore for canonical |
 
-## Pós-actualização
+## Post-upgrade
 
-- [ ] §2.9.4 executado
+- [ ] §2.9.4 executed
 - [ ] §2.9.7 checklist
-- [ ] IDE reiniciada
-- [ ] `/opsx:propose` testado
+- [ ] IDE restarted
+- [ ] `/opsx:propose` tested
 ```
 
-### 12.9 Script de diff (`scripts/sdd-upgrade-diff.sh`)
+### 12.9 Diff script (`scripts/sdd-upgrade-diff.sh`)
 
-### 12.9 Script de diff (`scripts/sdd-upgrade-diff.sh`)
+> **v1.3.0:** Canonical template source = `sdd-kit/templates/`. The script reads the file list from `sdd-kit/MANIFEST.yaml` when present.
 
-> **v1.3.0:** Fonte canónica de templates = `sdd-kit/templates/`. O script lê a lista de ficheiros de `sdd-kit/MANIFEST.yaml` quando presente.
-
-Inventaria ficheiros curados e, com directorio de staging, mostra `diff -u`:
+Inventories curated files and, with a staging directory, shows `diff -u`:
 
 ```bash
-# Só inventário (lê MANIFEST.yaml)
+# Inventory only (reads MANIFEST.yaml)
 ./scripts/sdd-upgrade-diff.sh
 
-# Diff contra templates do kit (recomendado)
+# Diff against kit templates (recommended)
 ./scripts/sdd-upgrade-diff.sh sdd-kit/templates/
 
-# Staging local para revisão
+# Local staging for review
 ./scripts/sdd-upgrade-diff.sh openspec/changes/upgrade-sdd-v1.3.0/sdd-staging/
 ```
 
-Estrutura do kit (`sdd-kit/templates/` espelha paths do repo):
+Kit structure (`sdd-kit/templates/` mirrors repo paths):
 
 ```
 sdd-kit/templates/
@@ -2638,91 +2636,91 @@ sdd-kit/templates/
 └── .cursor/rules/
 ```
 
-**Não** extrair scripts do markdown deste guia — copiar de `sdd-kit/templates/` ou correr `sdd-kit/install.sh`.
+**Do not** extract scripts from this guide's markdown — copy from `sdd-kit/templates/` or run `sdd-kit/install.sh`.
 
-### 12.10 Template `openspec/changes/<id>/tasks.md` (patterns e gates)
+### 12.10 Template `openspec/changes/<id>/tasks.md` (patterns and gates)
 
-Tasks atómicas com sub-bullets estruturados. **Decisões** vivem em `design.md` (§12.3); **passos verificáveis** vivem aqui.
+Atomic tasks with structured sub-bullets. **Decisions** live in `design.md` (§12.3); **verifiable steps** live here.
 
-#### Modelo de 3 níveis de ancoragem
+#### 3-level anchoring model
 
-| Nível | Quando usar | Formato |
+| Level | When to use | Format |
 |-------|-------------|---------|
-| **1 — Pointer** (default) | Já existe implementação clara no repo | `Pattern: path/relativo.ext` |
-| **2 — Esqueleto** | Padrão não óbvio | ≤15 linhas (interface + 1 teste) + pointer |
-| **3 — Boilerplate** | SQL migration, Zod base, hook template | Snippet completo + tag `boilerplate-only` |
+| **1 — Pointer** (default) | Clear implementation already exists in the repo | `Pattern: relative/path.ext` |
+| **2 — Skeleton** | Non-obvious pattern | ≤15 lines (interface + 1 test) + pointer |
+| **3 — Boilerplate** | SQL migration, Zod base, hook template | Full snippet + `boilerplate-only` tag |
 
-**Regra:** snippets com mais de 15 linhas **não** ficam em `tasks.md` — mover para skill (`.cursor/skills/` / `.claude/skills/`) ou referenciar change arquivado.
+**Rule:** snippets longer than 15 lines **do not** stay in `tasks.md` — move to skill (`.cursor/skills/` / `.claude/skills/`) or reference an archived change.
 
-#### Formato de task (checkbox + sub-bullets)
+#### Task format (checkbox + sub-bullets)
 
 ```markdown
-## 2. Implementação
+## 2. Implementation
 
-- [ ] 2.3 Criar `SubscriptionRepository`
+- [ ] 2.3 Create `SubscriptionRepository`
   - **Pattern:** `src/infra/stripe/customer.repo.ts`
   - **Invariants:** R-BILL-003 (`openspec/specs/billing/spec.md`)
   - **Gate:** `npm test -- subscription.repo`
-  - **Proibido:** criar `BaseRepository` (já existe em `src/core/`)
+  - **Forbidden:** create `BaseRepository` (already exists in `src/core/`)
 
-- [ ] 2.4 Actualizar guia §12.10
+- [ ] 2.4 Update guide §12.10
   - **Pattern:** `doc/sistema-sdd-pedro.md` §12.3
   - **Gate:** `grep -q '12.10' doc/sistema-sdd-pedro.md`
 ```
 
-| Sub-bullet | Obrigatório | Notas |
+| Sub-bullet | Mandatory | Notes |
 |------------|-------------|-------|
-| **Pattern** | Recomendado em código; opcional em docs | Path **relativo ao repo actual** |
-| **Gate** | **Sim** em qualquer task verificável | Comando shell; exit 0 = pronto |
-| **Invariants** | Se spec aplicável | ID de requisito OpenSpec |
-| **Proibido** | Opcional | Anti-patterns (R4) |
-| **Skill** | Cross-repo ou pattern longo | Ver abaixo |
+| **Pattern** | Recommended for code; optional for docs | Path **relative to the current repo** |
+| **Gate** | **Yes** on any verifiable task | Shell command; exit 0 = done |
+| **Invariants** | If spec applies | OpenSpec requirement ID |
+| **Forbidden** | Optional | Anti-patterns (R4) |
+| **Skill** | Cross-repo or long pattern | See below |
 
-#### Perfil DOCS_SPECS — fronteira de repo (regra normativa)
+#### DOCS_SPECS profile — repo boundary (normative rule)
 
-Em repositórios **DOCS_SPECS** (sem app na raiz — §2.5.2):
+In **DOCS_SPECS** repositories (no app at root — §2.5.2):
 
-1. **`Pattern:`** deve apontar **apenas** para ficheiros **deste repo** (`doc/`, `scripts/`, `openspec/`, etc.).
-2. **Implementação de código APP** (Next.js, `src/`, APIs) → **OpenSpec change no repo APP**, não tasks de código APP neste hub de specs.
-3. **Specs aqui, código lá:** este repo define *o quê* (`openspec/specs/`); o repo APP implementa *como* com GitNexus local.
-4. `scripts/verify-task-patterns.sh` falha se detectar `Pattern: repo:path` em perfil DOCS_SPECS.
+1. **`Pattern:`** must point **only** to files **in this repo** (`doc/`, `scripts/`, `openspec/`, etc.).
+2. **APP code implementation** (Next.js, `src/`, APIs) → **OpenSpec change in the APP repo**, not APP code tasks in this specs hub.
+3. **Specs here, code there:** this repo defines *what* (`openspec/specs/`); the APP repo implements *how* with local GitNexus.
+4. `scripts/verify-task-patterns.sh` fails if it detects `Pattern: repo:path` in DOCS_SPECS profile.
 
-Exemplo **válido** (DOCS_SPECS):
+Example **valid** (DOCS_SPECS):
 
 ```markdown
-- [ ] 1.2 Melhorar `enrich-transcripts.py`
+- [ ] 1.2 Improve `enrich-transcripts.py`
   - **Pattern:** `doc/curso/scripts/extract-lessons-batch.py`
   - **Gate:** `python -m py_compile doc/curso/scripts/enrich-transcripts.py`
 ```
 
-Exemplo **inválido** (DOCS_SPECS — mover change para repo APP):
+Example **invalid** (DOCS_SPECS — move change to APP repo):
 
 ```markdown
-- [ ] 2.1 Criar `SubscriptionRepository`
-  - **Pattern:** `multi-agent-bot:src/infra/stripe/customer.repo.ts`  ← PROIBIDO neste perfil
+- [ ] 2.1 Create `SubscriptionRepository`
+  - **Pattern:** `multi-agent-bot:src/infra/stripe/customer.repo.ts`  ← FORBIDDEN in this profile
 ```
 
-#### Patterns cross-repo — usar Skills (não tasks)
+#### Cross-repo patterns — use Skills (not tasks)
 
-Quando o padrão canónico vive noutro repositório ou é demasiado longo para uma task:
+When the canonical pattern lives in another repository or is too long for a single task:
 
-1. Criar ou actualizar skill: `.cursor/skills/<domínio>-pattern/SKILL.md`
-2. Na task, referenciar: `- **Skill:** supabase-repo-pattern`
-3. Na skill: descrever estrutura + path canónico no repo APP (texto, não copy-paste massivo)
-4. Após archive de change bem-sucedido: considerar **promover** pattern estável para skill (checklist archive)
+1. Create or update skill: `.cursor/skills/<domain>-pattern/SKILL.md`
+2. In the task, reference: `- **Skill:** supabase-repo-pattern`
+3. In the skill: describe structure + canonical path in the APP repo (text, not mass copy-paste)
+4. After a successful change archive: consider **promoting** a stable pattern to a skill (archive checklist)
 
 ```markdown
-- [ ] 3.1 Implementar gateway Stripe no repo APP
+- [ ] 3.1 Implement Stripe gateway in APP repo
   - **Skill:** stripe-billing-pattern
-  - **Gate:** _(correr no repo APP)_ `npm test -- billing.gateway`
+  - **Gate:** _(run in APP repo)_ `npm test -- billing.gateway`
 ```
 
-> Hub DOCS_SPECS pode ter a **spec** e o **design**; a **task de código APP** vive no change do repo APP com skill partilhada ou pointer local GitNexus.
+> DOCS_SPECS hub can hold the **spec** and **design**; the **APP code task** lives in the APP repo change with a shared skill or local GitNexus pointer.
 
-#### Verificação
+#### Verification
 
 ```bash
-bash scripts/verify-task-patterns.sh   # paths Pattern: existem; DOCS_SPECS sem repo:path
+bash scripts/verify-task-patterns.sh   # Pattern: paths exist; DOCS_SPECS without repo:path
 ```
 
 ---
