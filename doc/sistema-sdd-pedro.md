@@ -1455,106 +1455,106 @@ Template to validate a source before adding to Graphify:
 
 ---
 
-## 7. Protocolos por tarefa (questão 3.4)
+## 7. Task protocols (question 3.4)
 
-### 7.1 Protocolos transversais (aplicam a todos os tipos)
+### 7.1 Cross-cutting protocols (apply to all types)
 
 **Token efficiency**
-- `CLAUDE.md` ≤ 200 linhas. Detalhes vão para `@imported.md` files que são carregados sob demanda.
-- Cursor rules: cada `.mdc` ≤ 500 linhas; total `alwaysApply: true` ≤ 2000 tokens.
-- Usa subagents para exploração: o subagent vê o ruído, retorna apenas a síntese ao agente principal.
-- Skills (`.claude/skills/<name>/SKILL.md`) carregam só a descrição; o corpo só é carregado quando invocado — usar isto para playbooks longos.
+- `CLAUDE.md` ≤ 200 lines. Details go to `@imported.md` files loaded on demand.
+- Cursor rules: each `.mdc` ≤ 500 lines; total `alwaysApply: true` ≤ 2000 tokens.
+- Use subagents for exploration: the subagent sees the noise, returns only the synthesis to the main agent.
+- Skills (`.claude/skills/<name>/SKILL.md`) load only the description; the body loads only when invoked — use this for long playbooks.
 
-**Anti-alucinação**
-- AGENTS.md tem cláusula: "If unsure, ASK before assuming. If the user provides an unfamiliar term, search the knowledge graph BEFORE answering."
-- Para chamadas a APIs externas: o agente deve sempre verificar via GitNexus se a API/função existe no repo antes de a usar; se não existir, declarar `[ASSUMPTION]`.
-- Para nomes de bibliotecas: verificar em `package.json`/`pyproject.toml` antes de assumir versão.
+**Anti-hallucination**
+- AGENTS.md has a clause: "If unsure, ASK before assuming. If the user provides an unfamiliar term, search the knowledge graph BEFORE answering."
+- For external API calls: the agent must always verify via GitNexus whether the API/function exists in the repo before using it; if not, declare `[ASSUMPTION]`.
+- For library names: verify in `package.json`/`pyproject.toml` before assuming version.
 
-**Simplicidade**
-- Princípio "smallest reasonable change" — qualquer task que toque > 5 ficheiros precisa de OpenSpec proposal.
-- Recusar abstracções antecipadas. Se design.md propõe uma factory/adapter/wrapper "para flexibilidade futura", rejeitar e pedir caso concreto.
+**Simplicity**
+- "Smallest reasonable change" principle — any task touching > 5 files needs an OpenSpec proposal.
+- Reject premature abstractions. If design.md proposes a factory/adapter/wrapper "for future flexibility", reject and ask for a concrete case.
 
-**Escalabilidade**
-- Specs arquivados são fonte primária para próximas features — não re-explicar conceitos já decididos.
-- Graphify hook automático em cada commit garante que o knowledge graph não fica stale.
-- Convenções de nomenclatura consistentes facilitam queries futuras (ex: change-id sempre `verb-noun-modifier`).
+**Scalability**
+- Archived specs are the primary source for future features — do not re-explain concepts already decided.
+- Graphify automatic hook on each commit ensures the knowledge graph does not go stale.
+- Consistent naming conventions ease future queries (e.g. change-id always `verb-noun-modifier`).
 
-**Segurança**
-- Claude Code: hooks `PreToolUse` para bloquear `rm -rf`, `git push --force`, `sudo`, comandos a paths fora do repo. Template em 12.4.
-- Permissões: `permissions.allow` enumera Bash safe; `permissions.deny` lista hard blocks. Nunca `Bash(*)` em allow.
-- Segredos: NUNCA em `CLAUDE.md`, `AGENTS.md`, `project.md` ou qualquer ficheiro em git. Sempre em `.env` (gitignored) ou variáveis de ambiente.
-- Graphify: por design, código local não sai da máquina (tree-sitter local); apenas docs/PDFs/imagens vão para o LLM via skill (a tua sessão IDE). Validar isto se trabalhares com IP sensível.
+**Security**
+- Claude Code: `PreToolUse` hooks to block `rm -rf`, `git push --force`, `sudo`, commands to paths outside the repo. Template in 12.4.
+- Permissions: `permissions.allow` enumerates safe Bash; `permissions.deny` lists hard blocks. Never `Bash(*)` in allow.
+- Secrets: NEVER in `CLAUDE.md`, `AGENTS.md`, `project.md`, or any file in git. Always in `.env` (gitignored) or environment variables.
+- Graphify: by design, local code does not leave the machine (local tree-sitter); only docs/PDFs/images go to the LLM via skill (your IDE session). Validate this if working with sensitive IP.
 - GitNexus: 100% local.
-- OpenSpec: 100% local (sem API keys).
+- OpenSpec: 100% local (no API keys).
 
-**Auditoria**
-- Todos os specs vivem no git — `git log openspec/specs/` mostra evolução de requisitos.
-- Mensagens de commit referem o change-id: `feat(auth): implement add-jwt change`.
-- `openspec/changes/archive/` mantém histórico de proposals, designs e tasks que levaram a cada feature — fonte primária para post-mortems.
-- Hook PreToolUse pode loggar todas as tool calls para `.claude/logs/` (template em 12.4).
-- GitNexus expõe `detect_changes()` para auditar drift entre código e o último index.
+**Audit**
+- All specs live in git — `git log openspec/specs/` shows requirements evolution.
+- Commit messages reference the change-id: `feat(auth): implement add-jwt change`.
+- `openspec/changes/archive/` keeps history of proposals, designs, and tasks that led to each feature — primary source for post-mortems.
+- PreToolUse hook can log all tool calls to `.claude/logs/` (template in 12.4).
+- GitNexus exposes `detect_changes()` to audit drift between code and the last index.
 
-### 7.2 Protocolos específicos por tipo
+### 7.2 Type-specific protocols
 
-**Tipo A — Trivial**
-- Recusar se ambíguo. Pedir confirmação se a mudança parecer ter implicação.
-- Não criar OpenSpec change.
-- Commit directo. Mensagem: `chore: <descrição curta>`.
+**Type A — Trivial**
+- Refuse if ambiguous. Ask for confirmation if the change seems to have implications.
+- Do not create OpenSpec change.
+- Direct commit. Message: `chore: <short description>`.
 
-**Tipo B — Bug fix**
-- Sempre `gitnexus impact <target>` antes de patch.
-- Sempre adicionar teste que falha *antes* da fix.
-- Verificar que o teste passa após.
-- Commit: `fix(<scope>): <descrição> (closes #<issue> se houver)`.
+**Type B — Bug fix**
+- Always `gitnexus impact <target>` before patch.
+- Always add a test that fails *before* the fix.
+- Verify the test passes after.
+- Commit: `fix(<scope>): <description> (closes #<issue> if any)`.
 
-**Tipo C — Refactor**
-- OpenSpec proposal obrigatório.
-- `design.md` deve incluir secção "Behavioral parity" — listar invariantes que devem permanecer iguais.
-- `tasks.md` com **Pattern** (ficheiro AS-IS a espelhar) e **Gate** (comando determinístico) por task de código — ver §12.10.
-- Testes existentes devem passar sem mudanças (excepto importação se ficheiros se moveram).
-- Sem novo comportamento adicionado num refactor — caso contrário é Tipo D.
+**Type C — Refactor**
+- OpenSpec proposal required.
+- `design.md` must include a "Behavioral parity" section — list invariants that must remain the same.
+- `tasks.md` with **Pattern** (AS-IS file to mirror) and **Gate** (deterministic command) per code task — see §12.10.
+- Existing tests must pass without changes (except imports if files moved).
+- No new behavior added in a refactor — otherwise it is Type D.
 
-**Tipo D — Feature com base teórica**
-- Dois research docs obrigatórios: `knowledge.md` e `codebase.md`.
-- `design.md` cita explicitamente nodes do Graphify e impact do GitNexus.
-- `tasks.md` com **Pattern** + **Gate** obrigatórios em tasks que tocam código — ver §12.10.
-- Pelo menos uma alternativa rejeitada documentada.
-- Testes para o caso teórico central, não só para o código.
+**Type D — Feature grounded in theory**
+- Two research docs required: `knowledge.md` and `codebase.md`.
+- `design.md` explicitly cites Graphify nodes and GitNexus impact.
+- `tasks.md` with mandatory **Pattern** + **Gate** on tasks that touch code — see §12.10.
+- At least one rejected alternative documented.
+- Tests for the central theoretical case, not only for the code.
 
-**Tipo E — Exploração**
-- Output é documento, não código. Recusar PRs de código directos a partir de Tipo E.
-- `research.md` arquivado em `openspec/changes/explore-<topic>/` mesmo se não levar a implementação.
-- Conclusão em formato "Recommendation: <action> because <reason>. Alternatives considered: <list>. Risks: <list>."
+**Type E — Exploration**
+- Output is a document, not code. Refuse direct code PRs from Type E.
+- `research.md` archived in `openspec/changes/explore-<topic>/` even if it does not lead to implementation.
+- Conclusion in format "Recommendation: <action> because <reason>. Alternatives considered: <list>. Risks: <list>."
 
 ---
 
-## 8. Regras gerais do sistema (questão 4)
+## 8. System-wide rules (question 4)
 
-### 8.1 Onde vivem as regras
+### 8.1 Where rules live
 
-**Princípio**: regras universais num único sítio canónico, com aliases para cada ferramenta.
+**Principle**: universal rules in a single canonical place, with aliases for each tool.
 
 ```
-AGENTS.md (raiz)                      ← FONTE DE VERDADE para regras universais
+AGENTS.md (root)                      ← SOURCE OF TRUTH for universal rules
   ↑
-  ├─ CLAUDE.md                        ← apenas: "Strictly follow ./AGENTS.md"
-  ├─ .cursor/rules/000-base.mdc       ← apenas: "Strictly follow ./AGENTS.md"
-  └─ openspec/AGENTS.md               ← gerado por OpenSpec, NÃO editar manualmente
-                                        (contém apenas instruções sobre OpenSpec)
+  ├─ CLAUDE.md                        ← only: "Strictly follow ./AGENTS.md"
+  ├─ .cursor/rules/000-base.mdc       ← only: "Strictly follow ./AGENTS.md"
+  └─ openspec/AGENTS.md               ← generated by OpenSpec, do NOT edit manually
+                                        (contains only OpenSpec instructions)
 
-openspec/project.md                   ← FONTE DE VERDADE para stack + convenções
-                                        do projecto específico
+openspec/project.md                   ← SOURCE OF TRUTH for stack + conventions
+                                        of the specific project
 
-.cursor/rules/*.mdc                   ← regras com glob scoping
-                                        (ex: regras específicas para *.tsx)
+.cursor/rules/*.mdc                   ← rules with glob scoping
+                                        (e.g. rules specific to *.tsx)
 
-.claude/agents/*.md                   ← personas de subagents
-.claude/skills/*/SKILL.md             ← playbooks invocáveis
-.claude/hooks/*                       ← guardrails determinísticos
-.claude/settings.json                 ← permissões
+.claude/agents/*.md                   ← subagent personas
+.claude/skills/*/SKILL.md             ← invocable playbooks
+.claude/hooks/*                       ← deterministic guardrails
+.claude/settings.json                 ← permissions
 ```
 
-### 8.2 As nove regras universais (em AGENTS.md)
+### 8.2 The nine universal rules (in AGENTS.md)
 
 ```markdown
 # Universal rules for AI agents working in this repo
@@ -1599,21 +1599,21 @@ implement add-jwt`) or a fix issue (`fix(api): handle null x (closes
 #42)`). No `wip`, `misc`, or unscoped commits.
 ```
 
-### 8.3 Hierarquia de precedência
+### 8.3 Precedence hierarchy
 
-Quando regras competem:
+When rules compete:
 
 ```
-1. Hooks (PreToolUse)              ← Determinístico, não negociável
-2. permissions.deny                ← Bloqueia mesmo se model "quer"
-3. AGENTS.md universal rules       ← Aplicado a todos
-4. openspec/project.md             ← Específico do projecto
-5. .cursor/rules/*.mdc (glob match)← Específico de ficheiros/contexto
+1. Hooks (PreToolUse)              ← Deterministic, non-negotiable
+2. permissions.deny                ← Blocks even if model "wants"
+3. AGENTS.md universal rules       ← Applied to all
+4. openspec/project.md             ← Project-specific
+5. .cursor/rules/*.mdc (glob match)← File/context-specific
 6. Slash commands (skills)         ← On-demand
-7. User prompt                     ← Mais flexível
+7. User prompt                     ← Most flexible
 ```
 
-User prompt nunca anula um hook. Se um hook bloqueia, o user tem de reconfigurar o hook conscientemente, não bypass via prompt.
+User prompt never overrides a hook. If a hook blocks, the user must reconfigure the hook consciously, not bypass via prompt.
 
 ---
 
