@@ -89,7 +89,7 @@ files:
 
   - path: scripts/bootstrap-sdd.sh
     source: templates/scripts/bootstrap-sdd.sh
-    sha256: "9a9299813c8b150e88114d39256f23197097a9c68e89bff93286752711f14b12"
+    sha256: "d96a5481e5dbfdc1d8a761263863426205a51ae3f34e3732655f1d2de7ca3347"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -x scripts/bootstrap-sdd.sh"
@@ -166,7 +166,7 @@ files:
 
   - path: AGENTS.md
     source: templates/AGENTS.core.md
-    sha256: "21a2482dc9c9da759c4b6dbe76f9cc3df662d721c10f8bdc372ad504039c54d4"
+    sha256: "54584251c4066ded472d4145b843cadb9f5d29ce9b4a13def332a8318eeb04b3"
     merge: MERGE_PROFILE
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test $(wc -l < AGENTS.md) -le 150"
@@ -202,11 +202,6 @@ files:
   - path: doc/design/001-pipeline-open-design-shadcn-impeccable.md
     source: templates/doc/design/001-pipeline-open-design-shadcn-impeccable.md
     sha256: "0901467ed29d596aa805ea0b031ae10d69e643a2fdde158a1b26e71a14b69ac0"
-<<<<<<< HEAD
-    sha256: "775f614cdb1a5c92403c585f4d87ae872c8151a6ea0d7a7bbf4830f6e36552b2"
-=======
-    sha256: "59eeca1b1b9e635445cf41b97438559b64f953ce3138768a45b2a3cd28a800b4"
->>>>>>> origin/master
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f doc/design/001-pipeline-open-design-shadcn-impeccable.md"
