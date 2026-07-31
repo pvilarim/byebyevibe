@@ -201,7 +201,7 @@ files:
 
   - path: doc/design/001-pipeline-open-design-shadcn-impeccable.md
     source: templates/doc/design/001-pipeline-open-design-shadcn-impeccable.md
-    sha256: "a1e9c28fb3b0e78b4c6aeedfa0e8ed3a6992aa5363774f53d0cea38b69e9eb4b"
+    sha256: "775f614cdb1a5c92403c585f4d87ae872c8151a6ea0d7a7bbf4830f6e36552b2"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f doc/design/001-pipeline-open-design-shadcn-impeccable.md"
