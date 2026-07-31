@@ -65,7 +65,7 @@ Archive a completed change in the experimental workflow.
 
    Before archiving, ask the operator:
 
-   > Este change estabeleceu um pattern reutilizável? Se sim, promover para `.cursor/skills/<domínio>-pattern/SKILL.md` ou nota em `openspec/project.md` Cross-references antes de arquivar.
+   > Did this change establish a reusable pattern? If so, promote to `.cursor/skills/<domain>-pattern/SKILL.md` or a note in `openspec/project.md` Cross-references before archiving.
 
    Do not block archive if the user declines.
 
@@ -168,12 +168,12 @@ Target archive directory already exists.
 
 ## Session Handoff
 
-Arquivo concluído. **Sugestão: novo chat** para a próxima tarefa (contexto limpo).
+Archive complete. **Suggestion: open a new chat** for the next task (clean context).
 
-Cole no primeiro message do novo chat (se aplicável):
+Paste in the first message of the new chat (if applicable):
 
 ---
-/opsx:explore <tópico>   # ou /opsx:propose <descrição>
+/opsx:explore <topic>   # or /opsx:propose <description>
 
-Infra: openspec/infra.md (assumir ✅ — não reinstalar)
+Infra: openspec/infra.md (assume ✅ — do not reinstall)
 ---
