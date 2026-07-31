@@ -1,57 +1,57 @@
-# Pipeline de design — prototipagem → shadcn/ui → Impeccable
+# Design pipeline — prototyping → shadcn/ui → Impeccable
 
-> **shadcn/ui = caminho default (Fase 2).** Opt-out e stacks alternativas: [`003-ui-stack-adapters.md`](./003-ui-stack-adapters.md). Procedimento C1-UI: [`002-ui-module-install.md`](./002-ui-module-install.md).
+> **shadcn/ui = default path (Phase 2).** Opt-out and alternative stacks: [`003-ui-stack-adapters.md`](./003-ui-stack-adapters.md). C1-UI procedure: [`002-ui-module-install.md`](./002-ui-module-install.md).
 >
-> **Importação e estado de adaptação**
+> **Import and adaptation status**
 >
-> - **Origem:** repositório [pvilarim/topocnc-art](https://github.com/pvilarim/topocnc-art), branch `import/site-metal-p5`, importado em 2026-06-27 para **spec-pedro** (`gitnexus-graphify-openspec`).
-> - **Status:** `[REFERÊNCIA — REQUER ADAPTAÇÃO]` — pipeline conceitual validado no projeto de origem; caminhos e exemplos de rotas reflectem um monorepo APP com site público e configurador 3D.
-> - **Próximo passo:** incorporar este pipeline no guia canónico [`doc/sistema-sdd-pedro.md`](../sistema-sdd-pedro.md) (§ futuro: design system / UI) e propagar via `sdd-kit/` para instalação SDD em **qualquer** repositório alvo (perfis APP, HYBRID ou DOCS_SPECS com app).
-> - Secções **[se aplicável]** referem-se a configurador 3D, CNC ou rotas `/app` — omitir em projectos sem esse domínio.
+> - **Origin:** [pvilarim/topocnc-art](https://github.com/pvilarim/topocnc-art) repository, branch `import/site-metal-p5`, imported on 2026-06-27 into **spec-pedro** (`gitnexus-graphify-openspec`).
+> - **Status:** `[REFERENCE — NEEDS ADAPTATION]` — conceptual pipeline validated in the source project; paths and route examples reflect an APP monorepo with a public site and 3D configurator.
+> - **Next step:** incorporate this pipeline into the canonical guide [`doc/sistema-sdd-pedro.md`](../sistema-sdd-pedro.md) (future §: design system / UI) and propagate via `sdd-kit/` for SDD installation in **any** target repository (APP, HYBRID, or DOCS_SPECS with an app).
+> - Sections marked **[if applicable]** refer to a 3D configurator, CNC, or `/app` routes — omit in projects without that domain.
 
-Documento de referência para o fluxo de trabalho de **prototipagem visual** até **integração e manutenção** no código de produção (shadcn/ui + Impeccable).
+Reference document for the workflow from **visual prototyping** through **integration and maintenance** in production code (shadcn/ui + Impeccable).
 
-**Status:** `[PLANEJADO]` — pipeline conceitual; ferramentas ainda não instaladas no repo alvo (exceto Pencil/Figma MCP no ambiente local do desenvolvedor, se configurados).
+**Status:** `[PLANNED]` — conceptual pipeline; tools not yet installed in the target repo (except Pencil/Figma MCP in the developer's local environment, if configured).
 
-**Complementa:** [`000-impeccable-design-system-guia.md`](./000-impeccable-design-system-guia.md) (detalhes do Impeccable isolado).
+**Complements:** [`000-impeccable-design-system-guia.md`](./000-impeccable-design-system-guia.md) (Impeccable in isolation).
 
 ---
 
-## 1. Visão geral
+## 1. Overview
 
-Quatro camadas com responsabilidades distintas:
+Four layers with distinct responsibilities:
 
-| Camada | Ferramenta(s) | Papel | Onde vive |
-|--------|---------------|-------|-----------|
-| **1 · Exploração** | [Open Design](https://github.com/nexu-io/open-design) | POC amplo — várias direções de marca, decks, motion | App/desktop OD (fora do repo) |
-| **1b · Prototipagem no repo** | [Pencil](https://www.pencil.dev) **ou** Figma + MCP | Wireframe/alta fidelidade alinhada a shadcn ou marca existente | `.pen` no repo **ou** arquivo Figma (cloud) |
-| **2 · Fundação** | **shadcn/ui** + Tailwind | Componentes React e tokens CSS no código real | `components/ui/`, `globals.css` |
-| **3 · Qualidade** | [Impeccable](https://github.com/pbakaus/impeccable) | Aperfeiçoamento, consistência e guardrails para agentes | `.cursor/skills/impeccable`, `DESIGN.md` no repo |
+| Layer | Tool(s) | Role | Where it lives |
+|-------|---------|------|----------------|
+| **1 · Exploration** | [Open Design](https://github.com/nexu-io/open-design) | Broad POC — multiple brand directions, decks, motion | OD app/desktop (outside the repo) |
+| **1b · Prototyping in repo** | [Pencil](https://www.pencil.dev) **or** Figma + MCP | Wireframe/high-fidelity aligned to shadcn or existing brand | `.pen` in repo **or** Figma file (cloud) |
+| **2 · Foundation** | **shadcn/ui** + Tailwind | React components and CSS tokens in real code | `components/ui/`, `globals.css` |
+| **3 · Quality** | [Impeccable](https://github.com/pbakaus/impeccable) | Polish, consistency, and guardrails for agents | `.cursor/skills/impeccable`, `DESIGN.md` in repo |
 
-> **Caminhos:** em monorepo, prefixar com `apps/web/` (ex.: `apps/web/components/ui/`). Em Next.js na raiz, usar `app/`, `components/ui/` directamente.
+> **Paths:** in a monorepo, prefix with `apps/web/` (e.g. `apps/web/components/ui/`). With root-level Next.js, use `app/`, `components/ui/` directly.
 
-### Analogia
+### Analogy
 
 ```
-Open Design     = laboratório (explorar direções)
-Pencil          = ateliê no repo (prototipar com shadcn, versionado em Git)
-Figma + MCP     = importar marca/UI já desenhada por designer
-shadcn/ui       = implementação (componentes + tokens)
-Impeccable      = coach + lint de design no código de produção
+Open Design     = lab (explore directions)
+Pencil          = in-repo studio (prototype with shadcn, Git-versioned)
+Figma + MCP     = import brand/UI already designed by a designer
+shadcn/ui       = implementation (components + tokens)
+Impeccable      = coach + design lint on production code
 ```
 
-### Pipeline completo (três entradas na Fase 1)
+### Full pipeline (three Phase 1 entry points)
 
 ```mermaid
 flowchart TB
-  subgraph fase1a [Fase 1a — Explorar opcional]
+  subgraph fase1a [Phase 1a — Optional exploration]
     OD[Open Design]
     OD --> ODout[DESIGN.md + screenshots / HTML]
   end
 
-  subgraph fase1b [Fase 1b — Prototipar escolha A ou B]
-    PC[Pencil .pen no repo]
-    FG[Figma + MCP no Cursor]
+  subgraph fase1b [Phase 1b — Prototype path A or B]
+    PC[Pencil .pen in repo]
+    FG[Figma + MCP in Cursor]
   end
 
   ODout --> PC
@@ -61,265 +61,265 @@ flowchart TB
   PC --> F2
   FG --> F2
 
-  subgraph fase2 [Fase 2 — Design system]
-    F2[Extrair tokens e regras]
-    F2 --> G[DESIGN.md canônico no repo]
+  subgraph fase2 [Phase 2 — Design system]
+    F2[Extract tokens and rules]
+    F2 --> G[Canonical DESIGN.md in repo]
     G --> H[globals.css + tailwind.config.ts]
-    H --> I[Variantes shadcn]
+    H --> I[shadcn variants]
   end
 
-  subgraph fase3 [Fase 3 — Integração]
-    I --> J[Páginas Next.js]
+  subgraph fase3 [Phase 3 — Integration]
+    I --> J[Next.js pages]
     J --> K[Impeccable polish/audit]
-    K --> L[detect no CI]
-    L --> M[Produção]
+    K --> L[detect in CI]
+    L --> M[Production]
   end
 ```
 
 ---
 
-## 2. Por que este pipeline
+## 2. Why this pipeline
 
-| Problema | Solução no pipeline |
-|----------|---------------------|
-| Commitar código antes de validar identidade visual | Fase 1 (OD / Pencil / Figma) gera POC sem produção prematura |
-| Artefato de POC não roda direto no Next.js | Fase 2 traduz decisões para tokens shadcn |
-| Agente “esquece” a marca entre sessões | `DESIGN.md` + Impeccable persistem contexto |
-| Visual genérico de IA em produção | Impeccable detecta e bloqueia anti-padrões |
-| Design fora do repo envelhece | Pencil (`.pen` no Git) ou Figma como fonte explícita com data de sync |
-| Configurador 3D ≠ site marketing **[se aplicável]** | Escopo explícito — pipeline só para **site público** |
+| Problem | Pipeline solution |
+|---------|-------------------|
+| Committing code before validating visual identity | Phase 1 (OD / Pencil / Figma) produces POC without premature production |
+| POC artifact does not run directly in Next.js | Phase 2 translates decisions into shadcn tokens |
+| Agent "forgets" the brand between sessions | `DESIGN.md` + Impeccable persist context |
+| Generic AI look in production | Impeccable detects and blocks anti-patterns |
+| Design outside the repo goes stale | Pencil (`.pen` in Git) or Figma as explicit source with sync date |
+| 3D configurator ≠ marketing site **[if applicable]** | Explicit scope — pipeline only for **public site** |
 
 ---
 
-## 3. Fase 1 — Prototipagem (três ferramentas, dois caminhos principais)
+## 3. Phase 1 — Prototyping (three tools, two main paths)
 
-A Fase 1 divide-se em:
+Phase 1 splits into:
 
-- **1a · Open Design** (opcional) — explorar direção de marca em escala
-- **1b · Pencil ou Figma** — prototipar a interface que será implementada (escolher **um** como caminho principal de wireframe/alta)
+- **1a · Open Design** (optional) — explore brand direction at scale
+- **1b · Pencil or Figma** — prototype the interface to be implemented (choose **one** as the main wireframe/high-fidelity path)
 
-### 3.0 — Qual ferramenta usar? (decisão rápida)
+### 3.0 — Which tool to use? (quick decision)
 
-| Situação | Ferramenta recomendada |
-|----------|------------------------|
-| Redesign amplo; comparar 2–3 identidades visuais | **Open Design** → depois Pencil ou Figma |
-| Já sabe a direção; quer wireframe no repo com shadcn | **Pencil** |
-| Já existe arquivo Figma de marca/UI; designer usa Figma | **Figma + MCP** |
-| Pitch deck, vídeo, motion, 150 `DESIGN.md` prontos | **Open Design** |
-| Colaboração designer (fora do IDE) + handoff estruturado | **Figma + MCP** |
-| POC versionado em Git, mesmo workspace do Cursor | **Pencil** |
-| Só ajuste incremental numa página existente | Pular Fase 1a; **Pencil** ou direto Fase 2 |
+| Situation | Recommended tool |
+|-----------|------------------|
+| Broad redesign; compare 2–3 visual identities | **Open Design** → then Pencil or Figma |
+| Direction already known; want wireframe in repo with shadcn | **Pencil** |
+| Figma brand/UI file already exists; designer uses Figma | **Figma + MCP** |
+| Pitch deck, video, motion, 150 ready `DESIGN.md` files | **Open Design** |
+| Designer collaboration (outside IDE) + structured handoff | **Figma + MCP** |
+| Git-versioned POC, same Cursor workspace | **Pencil** |
+| Incremental tweak on an existing page only | Skip Phase 1a; **Pencil** or go straight to Phase 2 |
 
-### Matriz comparativa
+### Comparison matrix
 
-| Critério | Open Design | Pencil | Figma + MCP |
-|----------|-------------|--------|-------------|
-| Onde vive o design | Fora do repo | `.pen` no repo | Arquivo Figma (cloud) |
-| Alinhamento shadcn | Indireto | **Nativo** | Via variáveis / Dev Mode |
-| Explorar muitas direções | **⭐⭐⭐** | ⭐⭐ | ⭐ |
-| Versionamento Git do design | ❌ | **⭐⭐⭐** | ❌ (só export) |
-| Designer não-dev no fluxo | ⭐ | ⭐ | **⭐⭐⭐** |
-| Integração Cursor/MCP | ⭐⭐ (`od mcp`) | **⭐⭐⭐** | **⭐⭐⭐** |
-| Decks / vídeo / motion | **⭐⭐⭐** | ❌ | ⭐⭐ |
-| Curva de setup | Média | Baixa (já instalado) | Média (conta Figma + MCP) |
+| Criterion | Open Design | Pencil | Figma + MCP |
+|-----------|-------------|--------|-------------|
+| Where design lives | Outside repo | `.pen` in repo | Figma file (cloud) |
+| shadcn alignment | Indirect | **Native** | Via variables / Dev Mode |
+| Explore many directions | **⭐⭐⭐** | ⭐⭐ | ⭐ |
+| Git versioning of design | ❌ | **⭐⭐⭐** | ❌ (export only) |
+| Non-dev designer in flow | ⭐ | ⭐ | **⭐⭐⭐** |
+| Cursor/MCP integration | ⭐⭐ (`od mcp`) | **⭐⭐⭐** | **⭐⭐⭐** |
+| Decks / video / motion | **⭐⭐⭐** | ❌ | ⭐⭐ |
+| Setup curve | Medium | Low (already installed) | Medium (Figma account + MCP) |
 
-### Combinações recomendadas
+### Recommended combinations
 
-| Combo | Quando usar |
+| Combo | When to use |
 |-------|-------------|
-| **OD → Pencil** | Padrão recomendado: OD escolhe marca; Pencil refina landing/galeria no repo com shadcn |
-| **Figma → Pencil** | Marca já no Figma; colar/adaptar frames no Pencil; implementar no Cursor |
-| **Figma → direto Fase 2** | UI simples; MCP extrai tokens; sem wireframe intermediário |
-| **OD → Figma** | OD gera direção; designer formaliza no Figma antes do código |
-| **OD + Pencil + Figma** | Só com papéis claros — evitar três fontes de verdade simultâneas |
+| **OD → Pencil** | Recommended default: OD picks brand; Pencil refines landing/gallery in repo with shadcn |
+| **Figma → Pencil** | Brand already in Figma; paste/adapt frames in Pencil; implement in Cursor |
+| **Figma → straight to Phase 2** | Simple UI; MCP extracts tokens; no intermediate wireframe |
+| **OD → Figma** | OD generates direction; designer formalizes in Figma before code |
+| **OD + Pencil + Figma** | Only with clear roles — avoid three sources of truth at once |
 
 ---
 
-## 3.1 — Fase 1a: Open Design (exploração)
+## 3.1 — Phase 1a: Open Design (exploration)
 
-### Objetivo
+### Goal
 
-Validar **direção de marca**, hierarquia, tipografia, cor e tom **antes** de comprometer o repo — especialmente quando ainda não há consenso visual.
+Validate **brand direction**, hierarchy, typography, color, and tone **before** committing the repo — especially when there is no visual consensus yet.
 
-### Quando usar
+### When to use
 
-- Redesign de home, galeria ou página de produto **sem** identidade definida
-- Comparar 2–3 direções (ex.: industrial minimal vs editorial warm)
-- Pitch deck, landing de campanha, motion (HyperFrames)
-- Testar um dos 150 `DESIGN.md` prontos (Linear, Stripe, `warm-editorial`, …)
+- Home, gallery, or product page redesign **without** a defined identity
+- Compare 2–3 directions (e.g. industrial minimal vs editorial warm)
+- Pitch deck, campaign landing, motion (HyperFrames)
+- Try one of 150 ready `DESIGN.md` files (Linear, Stripe, `warm-editorial`, …)
 
-### Quando **não** usar
+### When **not** to use
 
-- Direção visual já aprovada em Figma ou Pencil → ir direto à Fase 1b ou Fase 2
-- Configurador `/app`, admin, canvas WebGL **[se aplicável]**
+- Visual direction already approved in Figma or Pencil → go straight to Phase 1b or Phase 2
+- `/app` configurator, admin, WebGL canvas **[if applicable]**
 
 ### Setup
 
 ```bash
-# App desktop: https://open-design.ai
-# Ou MCP no Cursor:
+# Desktop app: https://open-design.ai
+# Or MCP in Cursor:
 od mcp install cursor
 ```
 
-### Entregáveis → próxima fase
+### Deliverables → next phase
 
-| Entregável | Destino |
-|------------|---------|
-| `DESIGN.md` aprovado | Base do contrato no repo (Fase 2) |
-| Screenshots / HTML | Referência para Pencil ou implementação |
-| Anti-referências | Seção do `DESIGN.md` canônico |
+| Deliverable | Destination |
+|-------------|-------------|
+| Approved `DESIGN.md` | Contract base in repo (Phase 2) |
+| Screenshots / HTML | Reference for Pencil or implementation |
+| Anti-references | Section of canonical `DESIGN.md` |
 
-Documentação: https://github.com/nexu-io/open-design
+Documentation: https://github.com/nexu-io/open-design
 
 ---
 
-## 3.2 — Fase 1b (opção A): Pencil
+## 3.2 — Phase 1b (option A): Pencil
 
-### O que é
+### What it is
 
-[Pencil](https://www.pencil.dev) é um canvas de design **dentro do IDE** (extensão Cursor/VS Code). Arquivos `.pen` (JSON) vivem no repositório, versionados em Git. MCP local expõe o canvas ao agente — alinhado a **shadcn** como design system de referência.
+[Pencil](https://www.pencil.dev) is a design canvas **inside the IDE** (Cursor/VS Code extension). `.pen` files (JSON) live in the repository, versioned in Git. Local MCP exposes the canvas to the agent — aligned with **shadcn** as the reference design system.
 
-### Objetivo
+### Goal
 
-Prototipar **wireframes ou alta fidelidade** de páginas do site público **no monorepo**, com vocabulário próximo de `components/ui/`, antes de codificar em Next.js.
+Prototype **wireframes or high fidelity** for public-site pages **in the monorepo**, with vocabulary close to `components/ui/`, before coding in Next.js.
 
-### Quando usar Pencil
+### When to use Pencil
 
-| Cenário | Por quê Pencil |
-|---------|----------------|
-| POC de home, galeria, produto **no repo** | `.pen` commitável; agente implementa no mesmo workspace |
-| Stack já é shadcn + Tailwind | Pencil suporta shadcn como sistema de referência |
-| Fluxo solo ou pequena equipe dev | Sem dependência de conta Figma |
-| Iteração rápida com agente no Cursor | MCP lê/altera `.pen` e gera React |
-| Veio do Open Design com direção aprovada | Traduz `DESIGN.md` em layout concreto antes do código |
-| Quer evitar “link Figma desatualizado” | Fonte de design versionada junto ao código |
+| Scenario | Why Pencil |
+|----------|------------|
+| Home, gallery, product POC **in repo** | Committable `.pen`; agent implements in same workspace |
+| Stack is already shadcn + Tailwind | Pencil supports shadcn as reference system |
+| Solo or small dev team flow | No Figma account dependency |
+| Fast iteration with agent in Cursor | MCP reads/edits `.pen` and generates React |
+| Came from Open Design with approved direction | Translates `DESIGN.md` into concrete layout before code |
+| Want to avoid "stale Figma link" | Design source versioned alongside code |
 
-### Quando **não** usar Pencil
+### When **not** to use Pencil
 
-| Cenário | Usar em vez disso |
-|---------|-------------------|
-| Designer principal trabalha só em Figma | **Figma + MCP** |
-| Precisa de deck PPTX ou vídeo MP4 | **Open Design** |
-| Explorar 10+ direções de marca rapidamente | **Open Design** primeiro |
-| Configurador 3D `/app` **[se aplicável]** | Skills paramétricas do domínio |
+| Scenario | Use instead |
+|----------|-------------|
+| Lead designer works only in Figma | **Figma + MCP** |
+| Need PPTX deck or MP4 video | **Open Design** |
+| Explore 10+ brand directions quickly | **Open Design** first |
+| 3D configurator `/app` **[if applicable]** | Domain parametric skills |
 
-### Setup (referência)
+### Setup (reference)
 
-1. Extensão **Pencil** no Cursor (Extensions → “Pencil”).
-2. Ativar conta / login conforme docs Pencil.
-3. Criar arquivo ex.: `design/site-publico.pen` na raiz ou em `app/design/`.
-4. Verificar MCP: **Settings → Tools & MCP** → Pencil listado (servidor local ao abrir o `.pen`).
-5. Opcional: selecionar design system **shadcn** no Pencil.
+1. **Pencil** extension in Cursor (Extensions → "Pencil").
+2. Activate account / login per Pencil docs.
+3. Create file e.g. `design/site-publico.pen` at root or in `app/design/`.
+4. Verify MCP: **Settings → Tools & MCP** → Pencil listed (local server when `.pen` is open).
+5. Optional: select **shadcn** design system in Pencil.
 
-Documentação: https://docs.pencil.dev
+Documentation: https://docs.pencil.dev
 
-### Estrutura sugerida no repo
+### Suggested repo structure
 
 ```
 design/
-  site-home.pen           # POC home
-  site-gallery.pen        # POC galeria
-  README.md               # [opcional] notas de handoff — só se necessário
+  site-home.pen           # home POC
+  site-gallery.pen        # gallery POC
+  README.md               # [optional] handoff notes — only if needed
 ```
 
-> **Nota:** pastas `design/` criar na adoção do pipeline no **projeto APP alvo** — não existem neste hub DOCS_SPECS.
+> **Note:** create `design/` folders when adopting the pipeline in the **target APP project** — they do not exist in this DOCS_SPECS hub.
 
-### Fluxo na prática
+### Flow in practice
 
-1. Abrir `.pen` no Cursor.
-2. Desenhar seções (hero, grid galeria, card produto) com componentes shadcn de referência.
-3. Se veio do OD: aplicar paleta/tipo do `DESIGN.md` aprovado.
-4. No chat: *“Implemente design/site-home.pen em app/[locale]/page.tsx com @/components/ui/*”*.
-5. Passar para Fase 2 (tokens) e Fase 3 (Impeccable).
+1. Open `.pen` in Cursor.
+2. Draw sections (hero, gallery grid, product card) with shadcn reference components.
+3. If from OD: apply palette/type from approved `DESIGN.md`.
+4. In chat: *"Implement design/site-home.pen in app/[locale]/page.tsx with @/components/ui/*"*.
+5. Move to Phase 2 (tokens) and Phase 3 (Impeccable).
 
-### Entregáveis → Fase 2
+### Deliverables → Phase 2
 
-| Entregável | Uso |
-|------------|-----|
-| `design/*.pen` aprovado | Referência visual para implementação |
-| Screenshots exportados | PR / documentação |
-| Notas de tokens extraídos | `globals.css`, `DESIGN.md` |
-
----
-
-## 3.3 — Fase 1b (opção B): Figma + MCP
-
-### O que é
-
-**Figma** como ferramenta de design (cloud); **MCP no Cursor** permite ao agente ler estrutura, screenshots, variáveis e — com skills como `figma-use` — editar nós via Plugin API. Open Design também oferece plugin [`od-figma-migration`](https://github.com/nexu-io/open-design/tree/main/plugins/_official/scenarios/od-figma-migration) para pipeline Figma → tokens → artefato HTML.
-
-### Objetivo
-
-Usar **marca ou UI já existente no Figma** como fonte de verdade visual, importando layout e tokens para o projeto alvo sem redesenhar do zero.
-
-### Quando usar Figma + MCP
-
-| Cenário | Por quê Figma |
-|---------|---------------|
-| **Já existe** arquivo Figma de marca ou UI | Fonte canônica do designer |
-| Designer trabalha fora do IDE | Colaboração padrão da indústria |
-| Variáveis/tokens no Figma (cores, tipo, espaçamento) | MCP extrai para `globals.css` |
-| Dev Mode / componentes Figma documentados | Handoff estruturado para shadcn |
-| Importar frames de referência (moodboard) | Screenshots + metadata via MCP |
-| Migração Figma → React via Open Design | Plugin `od-figma-migration` |
-
-### Quando **não** usar Figma + MCP
-
-| Cenário | Usar em vez disso |
-|---------|-------------------|
-| Não há Figma nem designer Figma | **Pencil** ou **Open Design** |
-| Só dev solo; quer tudo no repo | **Pencil** |
-| Exploração rápida sem arquivo Figma | **Open Design** |
-| POC deve ser commitável em Git sem export manual | **Pencil** |
-
-### Setup (referência)
-
-1. Conta Figma com arquivo do projeto.
-2. MCP Figma configurado no Cursor (**Settings → Tools & MCP**).
-3. Compartilhar link do arquivo ou node ID com o agente.
-4. Para escrita no Figma: carregar skill `figma-use` antes de `use_figma`.
-
-### Fluxo na prática
-
-**Caminho A — Figma → código direto**
-
-1. Agente lê variáveis e layout via MCP (screenshot + metadata).
-2. Traduz para `globals.css` + páginas shadcn (Fase 2).
-3. Impeccable polish (Fase 3).
-
-**Caminho B — Figma → Pencil → código** (recomendado se quiser `.pen` no repo)
-
-1. Designer mantém Figma como fonte de marca.
-2. Colar/adaptar frames relevantes no Pencil.
-3. Implementar do `.pen` no Next.js.
-
-**Caminho C — Figma → Open Design → código**
-
-1. Plugin `od-figma-migration` no Open Design (`figma-extract` → `token-map` → artefato).
-2. Aprovar HTML/`DESIGN.md`; seguir Fase 2.
-
-### Entregáveis → Fase 2
-
-| Entregável | Uso |
-|------------|-----|
-| URL do arquivo Figma + node IDs | Referência persistente |
-| Variáveis exportadas / documentadas | `globals.css` |
-| Screenshots de frames aprovados | Implementação layout |
-| Data da última sync Figma → repo | Evitar drift |
-
-### Risco específico
-
-> Figma vive **fora** do repo. Registrar no `DESIGN.md` a **data e versão** do frame aprovado; sem isso, código e design divergem silenciosamente.
+| Deliverable | Use |
+|-------------|-----|
+| Approved `design/*.pen` | Visual reference for implementation |
+| Exported screenshots | PR / documentation |
+| Extracted token notes | `globals.css`, `DESIGN.md` |
 
 ---
 
-## 3.4 — Schema `DESIGN.md` (comum às três entradas)
+## 3.3 — Phase 1b (option B): Figma + MCP
 
-Independente de OD, Pencil ou Figma, o contrato canônico no repo deve cobrir:
+### What it is
+
+**Figma** as the design tool (cloud); **MCP in Cursor** lets the agent read structure, screenshots, variables, and — with skills like `figma-use` — edit nodes via Plugin API. Open Design also offers plugin [`od-figma-migration`](https://github.com/nexu-io/open-design/tree/main/plugins/_official/scenarios/od-figma-migration) for Figma → tokens → HTML artifact pipeline.
+
+### Goal
+
+Use **brand or UI already in Figma** as the visual source of truth, importing layout and tokens into the target project without redesigning from scratch.
+
+### When to use Figma + MCP
+
+| Scenario | Why Figma |
+|----------|-----------|
+| **Existing** Figma brand or UI file | Designer's canonical source |
+| Designer works outside the IDE | Industry-standard collaboration |
+| Variables/tokens in Figma (color, type, spacing) | MCP extracts to `globals.css` |
+| Dev Mode / documented Figma components | Structured handoff to shadcn |
+| Import reference frames (moodboard) | Screenshots + metadata via MCP |
+| Figma → React migration via Open Design | `od-figma-migration` plugin |
+
+### When **not** to use Figma + MCP
+
+| Scenario | Use instead |
+|----------|-------------|
+| No Figma and no Figma designer | **Pencil** or **Open Design** |
+| Solo dev; want everything in repo | **Pencil** |
+| Quick exploration without Figma file | **Open Design** |
+| POC must be committable in Git without manual export | **Pencil** |
+
+### Setup (reference)
+
+1. Figma account with project file.
+2. Figma MCP configured in Cursor (**Settings → Tools & MCP**).
+3. Share file link or node ID with the agent.
+4. For Figma writes: load `figma-use` skill before `use_figma`.
+
+### Flow in practice
+
+**Path A — Figma → code directly**
+
+1. Agent reads variables and layout via MCP (screenshot + metadata).
+2. Translates to `globals.css` + shadcn pages (Phase 2).
+3. Impeccable polish (Phase 3).
+
+**Path B — Figma → Pencil → code** (recommended if you want `.pen` in repo)
+
+1. Designer keeps Figma as brand source.
+2. Paste/adapt relevant frames in Pencil.
+3. Implement from `.pen` in Next.js.
+
+**Path C — Figma → Open Design → code**
+
+1. `od-figma-migration` plugin in Open Design (`figma-extract` → `token-map` → artifact).
+2. Approve HTML/`DESIGN.md`; proceed to Phase 2.
+
+### Deliverables → Phase 2
+
+| Deliverable | Use |
+|-------------|-----|
+| Figma file URL + node IDs | Persistent reference |
+| Exported / documented variables | `globals.css` |
+| Screenshots of approved frames | Layout implementation |
+| Last Figma → repo sync date | Avoid drift |
+
+### Specific risk
+
+> Figma lives **outside** the repo. Record in `DESIGN.md` the **date and version** of the approved frame; without this, code and design diverge silently.
+
+---
+
+## 3.4 — `DESIGN.md` schema (common to all three entry points)
+
+Regardless of OD, Pencil, or Figma, the canonical contract in the repo must cover:
 
 1. Color · 2. Typography · 3. Spacing · 4. Layout · 5. Components · 6. Motion · 7. Voice · 8. Brand · 9. Anti-patterns
 
-Open Design usa 9 seções nativas. Ao vir do Pencil ou Figma, redigir ou completar manualmente na Fase 2.
+Open Design uses 9 native sections. When coming from Pencil or Figma, draft or complete manually in Phase 2.
 
 ---
 
