@@ -63,7 +63,7 @@ done
 
 [[ -n "$FROM_VER" && -n "$TO_VER" ]] || { echo "ERROR: --from and --to are required" >&2; usage 2; }
 if $DRY_RUN && $APPLY; then
-  echo "ERROR: --dry-run e --apply são mutuamente exclusivos" >&2
+  echo "ERROR: --dry-run and --apply are mutually exclusive" >&2
   exit 2
 fi
 
@@ -158,35 +158,35 @@ if $DRY_RUN && ! $APPLY; then
   if [[ ! -f "$REPORT_FILE" ]]; then
     mkdir -p "$REPORT_DIR"
     cat > "$REPORT_FILE" <<EOF
-# Relatório de actualização SDD
+# SDD upgrade report
 
-| Campo | Valor |
+| Field | Value |
 |-------|--------|
-| Repositório | $(basename "$REPO_ROOT") |
-| Versão guia (antes) | v$FROM_VER |
-| Versão guia (alvo) | v$TO_VER |
-| Data | $(date +%Y-%m-%d) |
+| Repository | $(basename "$REPO_ROOT") |
+| Guide version (before) | v$FROM_VER |
+| Guide version (target) | v$TO_VER |
+| Date | $(date +%Y-%m-%d) |
 
-## Resumo executivo
+## Executive summary
 
-- [ ] Actualização aprovada pelo utilizador
+- [ ] Upgrade approved by the user
 
-## Matriz de ficheiros
+## File matrix
 
-Ver output de \`bash sdd-kit/upgrade.sh --from $FROM_VER --to $TO_VER --dry-run\`
+See output of \`bash sdd-kit/upgrade.sh --from $FROM_VER --to $TO_VER --dry-run\`
 
-Classificações: KEEP_LOCAL · MERGE · COPY · NEW · SKIP
+Classifications: KEEP_LOCAL · MERGE · COPY · NEW · SKIP
 
-## Aprovação
+## Approval
 
-- [ ] Humano aprovou merge de AGENTS.md e openspec/project.md
+- [ ] Human approved merge of AGENTS.md and openspec/project.md
 EOF
     echo "Created UPGRADE_REPORT scaffold."
   else
     echo "UPGRADE_REPORT already exists — not overwriting."
   fi
   echo ""
-  echo "PARAR: revisar relatório antes de --apply"
+  echo "STOP: review report before --apply"
   exit 0
 fi
 
@@ -205,13 +205,13 @@ if $APPLY; then
   fi
 
   if [[ ! -f "$REPORT_FILE" ]]; then
-    echo "ERROR: UPGRADE_REPORT não encontrado: $REPORT_FILE" >&2
-    echo "       Correr primeiro: bash sdd-kit/upgrade.sh --from $FROM_VER --to $TO_VER --dry-run" >&2
+    echo "ERROR: UPGRADE_REPORT not found: $REPORT_FILE" >&2
+    echo "       Run first: bash sdd-kit/upgrade.sh --from $FROM_VER --to $TO_VER --dry-run" >&2
     exit 1
   fi
-  if ! grep -q '\[x\] Actualização aprovada' "$REPORT_FILE"; then
-    echo "ERROR: UPGRADE_REPORT existe mas não foi aprovado." >&2
-    echo "       Marcar '- [x] Actualização aprovada' em $REPORT_FILE antes de --apply" >&2
+  if ! grep -q '\[x\] Upgrade approved' "$REPORT_FILE"; then
+    echo "ERROR: UPGRADE_REPORT exists but was not approved." >&2
+    echo "       Mark '- [x] Upgrade approved' in $REPORT_FILE before --apply" >&2
     exit 1
   fi
   echo ""
