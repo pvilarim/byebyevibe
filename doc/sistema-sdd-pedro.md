@@ -2137,7 +2137,7 @@ Pulls candidate documents from the pgvector store given a query embedding.
 
 ---
 
-## 12. Anexos: templates completos
+## 12. Annexes: complete templates
 
 ### 12.1 Template `openspec/project.md`
 
@@ -2184,118 +2184,118 @@ Pulls candidate documents from the pgvector store given a query embedding.
 - We do NOT implement auth from scratch — Supabase Auth handles it.
 ```
 
-### 12.2 Núcleo comum `AGENTS.md` (todas as instalações)
+### 12.2 Common core `AGENTS.md` (all installations)
 
-Bloco partilhado — colar e completar Commands conforme 12.2a ou 12.2b.
+Shared block — paste and complete Commands per 12.2a or 12.2b.
 
 ```markdown
-# AGENTS.md — Instruções Universais para Agentes de IA
+# AGENTS.md — Universal Instructions for AI Agents
 
-> Canónico para Cursor, Claude Code, Codex, etc. `CLAUDE.md` e `.cursor/rules/` apenas apontam aqui.
-> Padrão: https://agents.md/
+> Canonical for Cursor, Claude Code, Codex, etc. `CLAUDE.md` and `.cursor/rules/` only point here.
+> Standard: https://agents.md/
 
-## Contexto do projecto
+## Project context
 
-Ver `./openspec/project.md` (stack, convenções, constraints). **Não duplicar** stack aqui.
+See `./openspec/project.md` (stack, conventions, constraints). **Do not duplicate** stack here.
 
 ## Commands
 
-[PREENCHER: tabela do perfil 12.2a APP ou 12.2b DOCS_SPECS]
+[FILL IN: table from profile 12.2a APP or 12.2b DOCS_SPECS]
 
-## Fontes de conhecimento (por prioridade)
+## Knowledge sources (by priority)
 
 1. `./openspec/specs/`  2. `./openspec/changes/`  3. `./graphify-out/GRAPH_REPORT.md`
-4. GitNexus MCP  5. Graphify MCP ou `graphify query`  6. Docs em `project.md`  7. Web (último recurso)
+4. GitNexus MCP  5. Graphify MCP or `graphify query`  6. Docs in `project.md`  7. Web (last resort)
 
-Nunca afirmar factos sem fonte 1–6. Tipo D/E: Graphify + GitNexus antes de código.
+Never assert facts without source 1–6. Type D/E: Graphify + GitNexus before code.
 
-## Contexto sob demanda
+## On-demand context
 
-| Situação | Ficheiro |
+| Situation | File |
 |----------|----------|
-| Constituição | `openspec/project.md` |
+| Constitution | `openspec/project.md` |
 | Specs | `openspec/specs/` |
-| Change activo | `openspec/changes/<id>/` |
-| Grafo | `graphify-out/GRAPH_REPORT.md` |
-| Infra instalada | `openspec/infra.md` |
-| Guia SDD | `doc/sistema-sdd-pedro.md` |
-| Actualização SDD | `doc/sistema-sdd-pedro.md` §2.9 |
+| Active change | `openspec/changes/<id>/` |
+| Graph | `graphify-out/GRAPH_REPORT.md` |
+| Installed infra | `openspec/infra.md` |
+| SDD guide | `doc/sistema-sdd-pedro.md` |
+| SDD upgrade | `doc/sistema-sdd-pedro.md` §2.9 |
 | TS / Py / DB | `.cursor/rules/010-*.mdc`, `020-*.mdc`, `030-*.mdc` |
 
-## Protocolo de tarefas (A–E)
+## Task protocol (A–E)
 
-| Tipo | Pipeline |
+| Type | Pipeline |
 |------|----------|
-| A Trivial | Edição directa |
-| B Bug | GitNexus impact → patch → teste |
-| C Refactor | GitNexus AS-IS → `/opsx:propose` → implementar |
-| D Feature | Graphify ∥ GitNexus → propose → implementar |
-| E Exploração | Graphify → `research.md` |
+| A Trivial | Direct edit |
+| B Bug | GitNexus impact → patch → test |
+| C Refactor | GitNexus AS-IS → `/opsx:propose` → implement |
+| D Feature | Graphify ∥ GitNexus → propose → implement |
+| E Exploration | Graphify → `research.md` |
 
-Se ambíguo, PERGUNTAR. Nunca assumir Tipo A.
+If ambiguous, ASK. Never assume Type A.
 
-## Regras R1–R11
+## Rules R1–R11
 
-R1 classificar · R2 specs>graphify>gitnexus · R3 `[NEEDS VERIFICATION]` · R4 mudança mínima ·
-R5 refactor sem comportamento novo · R6 teste antes do fix · R7 spec antes de código (C/D/E) ·
-R8 citar fontes · R9 commits com scope/change-id · R10 infra conhecida (`openspec/infra.md`) ·
-R11 coordenação local (`sdd-session-check` antes de apply; `sdd-session-release` ao fim)
+R1 classify · R2 specs>graphify>gitnexus · R3 `[NEEDS VERIFICATION]` · R4 minimal change ·
+R5 refactor with no new behavior · R6 test before fix · R7 spec before code (C/D/E) ·
+R8 cite sources · R9 commits with scope/change-id · R10 known infra (`openspec/infra.md`) ·
+R11 local coordination (`sdd-session-check` before apply; `sdd-session-release` at end)
 
 ## Workflow
 
 `/opsx:propose` · `/opsx:apply` · `/opsx:archive` · `/opsx:explore` · `graphify update .` · `npx gitnexus analyze --force`
 
-## Integrações (resumo)
+## Integrations (summary)
 
-**GitNexus:** impact antes de editar símbolos; `detect_changes` antes de commit. Skills: `.claude/skills/gitnexus/`.
+**GitNexus:** impact before editing symbols; `detect_changes` before commit. Skills: `.claude/skills/gitnexus/`.
 
-**Graphify:** ler `GRAPH_REPORT.md` antes de grep em perguntas de arquitectura; `graphify update .` após mudanças de código.
+**Graphify:** read `GRAPH_REPORT.md` before grep on architecture questions; `graphify update .` after code changes.
 
 ## Testing
 
-[PREENCHER: npm test / pytest / openspec validate / N/A para docs-only]
+[FILL IN: npm test / pytest / openspec validate / N/A for docs-only]
 
-## PR e commits
+## PR and commits
 
-Conventional Commits; referenciar change-id OpenSpec quando aplicável. Não commitar `graphify-out/`, `.gitnexus/`.
+Conventional Commits; reference OpenSpec change-id when applicable. Do not commit `graphify-out/`, `.gitnexus/`.
 
-## Segurança
+## Security
 
-Sem segredos em git; validar inputs; queries parametrizadas; não ler `.env`.
+No secrets in git; validate inputs; parameterized queries; do not read `.env`.
 
-## Comunicação
+## Communication
 
-[Adaptar: pt-BR, directo, sem preâmbulo]
+[Adapt: pt-BR, direct, no preamble]
 ```
 
-### 12.2a Commands — perfil APP
+### 12.2a Commands — APP profile
 
 ```markdown
-| Comando | Uso |
+| Command | Use |
 |---------|-----|
-| `npm run dev` / `pnpm dev` | Desenvolvimento (não `npm run build` em sessão agente) |
-| `npm test` / `pnpm test` | Testes |
+| `npm run dev` / `pnpm dev` | Development (not `npm run build` in agent session) |
+| `npm test` / `pnpm test` | Tests |
 | `npm run lint` | Lint |
-| `npx openspec list` | Changes OpenSpec |
-| `npx gitnexus analyze --force` | Reindexar código |
-| `graphify update .` | Actualizar grafo |
+| `npx openspec list` | OpenSpec changes |
+| `npx gitnexus analyze --force` | Reindex code |
+| `graphify update .` | Update graph |
 ```
 
-### 12.2b Commands — perfil DOCS_SPECS
+### 12.2b Commands — DOCS_SPECS profile
 
 ```markdown
-| Comando | Uso |
+| Command | Use |
 |---------|-----|
-| `npx openspec list` | Changes activos |
-| `npx openspec new change "<id>"` | Novo change (CLI) |
-| `/opsx:propose` | Proposta (Cursor/Claude) |
-| `npx gitnexus status` | Estado do index |
-| `npx gitnexus analyze --force` | Reindexar |
-| `graphify update .` | Grafo AST |
-| `graphify query "<pergunta>"` | Busca no grafo |
-| `bash scripts/sdd-session-status.sh` | Sessões SDD activas (worktree local) |
+| `npx openspec list` | Active changes |
+| `npx openspec new change "<id>"` | New change (CLI) |
+| `/opsx:propose` | Proposal (Cursor/Claude) |
+| `npx gitnexus status` | Index status |
+| `npx gitnexus analyze --force` | Reindex |
+| `graphify update .` | AST graph |
+| `graphify query "<question>"` | Graph search |
+| `bash scripts/sdd-session-status.sh` | Active SDD sessions (local worktree) |
 
-Nota: não há `npm run dev` na raiz deste perfil.
+Note: there is no `npm run dev` at the root of this profile.
 ```
 
 ### 12.3 Template `openspec/changes/<id>/design.md` (com cross-references)
@@ -2433,7 +2433,7 @@ Registar em `.claude/settings.json`:
 }
 ```
 
-### 12.5 Templates `.cursor/rules/*.mdc` adicionais
+### 12.5 Additional `.cursor/rules/*.mdc` templates
 
 `.cursor/rules/020-python.mdc`:
 
