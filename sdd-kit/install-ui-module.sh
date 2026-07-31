@@ -174,13 +174,13 @@ path, stack, impeccable = sys.argv[1:4]
 text = open(path).read()
 section = f"""## UI Development Module
 
-| Componente | Estado | Verificar com |
+| Component | Status | Verify with |
 |------------|--------|---------------|
 | UI stack | {stack} | `grep 'UI stack' openspec/project.md` |
 | Impeccable | {impeccable} | `test -d .cursor/skills/impeccable` |
-| Open Design | manual / not installed | sob demanda — ver doc/design/002 |
-| Pencil | manual / not installed | sob demanda — ver doc/design/002 |
-| Figma MCP | manual / not installed | `mcp_get_tools` na sessão |
+| Open Design | manual / not installed | on demand — see doc/design/002 |
+| Pencil | manual / not installed | on demand — see doc/design/002 |
+| Figma MCP | manual / not installed | `mcp_get_tools` in session |
 
 """
 marker = "## UI Development Module"
@@ -246,7 +246,7 @@ resolve_stack_for_apply() {
   fi
 
   if [[ "$detected" == "tailwind-custom" ]] && [[ -t 0 ]] && ! $AUTO_YES; then
-    read -r -p "Recomendamos shadcn/ui como caminho default. Instalar shadcn? [Y/n] " ans
+    read -r -p "We recommend shadcn/ui as the default path. Install shadcn? [Y/n] " ans
     case "$ans" in
       [nN]|[nN][oO]) echo "tailwind-custom" ;;
       *) echo "shadcn" ;;
