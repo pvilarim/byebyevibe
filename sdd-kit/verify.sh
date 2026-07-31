@@ -171,6 +171,31 @@ PY
   fi
 fi
 
+# Language policy (sdd-language-policy) — consumer installs
+echo ""
+echo "==> language policy"
+if [[ -f "$REPO_ROOT/AGENTS.md" ]]; then
+  if grep -q '{{CHAT_LANG}}\|{{DOCS_LANG}}\|{{CODE_LANG}}' "$REPO_ROOT/AGENTS.md"; then
+    echo "FAIL: AGENTS.md contains unreplaced language placeholders" >&2
+    ((FAILURES++)) || true
+  else
+    echo "OK: AGENTS.md language placeholders substituted"
+  fi
+else
+  echo "INFO: AGENTS.md not present — language placeholder check skipped"
+fi
+
+if [[ -f "$REPO_ROOT/openspec/project.md" ]]; then
+  if [[ -d "$REPO_ROOT/sdd-kit/templates" ]]; then
+    echo "INFO: hub distribution repo — Language policy in project.md skipped (grandfathered per sdd-language-policy)"
+  elif grep -q '## Language policy' "$REPO_ROOT/openspec/project.md" \
+     && grep -q 'chat_language\|docs_language\|code_language' "$REPO_ROOT/openspec/project.md"; then
+    echo "OK: openspec/project.md Language policy present"
+  else
+    echo "WARN: openspec/project.md missing Language policy section (add after install — see guide §2.1.1)" >&2
+  fi
+fi
+
 echo ""
 if [[ "$FAILURES" -eq 0 ]]; then
   echo "Summary: sdd-kit verification passed ✅"

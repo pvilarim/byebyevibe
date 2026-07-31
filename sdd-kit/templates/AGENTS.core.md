@@ -118,4 +118,15 @@ Conventional Commits; reference the OpenSpec change-id when applicable.
 
 ## Communication
 
-[Adapt: pt-BR, direct, no unnecessary preamble]
+**F7 — three language axes** (configured at install; see `openspec/project.md` Language policy):
+
+| Axis | Value | Scope |
+|------|-------|-------|
+| Chat | `{{CHAT_LANG}}` | Human↔agent conversation (ephemeral; not versioned prose) |
+| Docs | `{{DOCS_LANG}}` | Versioned artifacts: OpenSpec proposals, designs, specs, tasks, skills prose, rules prose, `doc/` |
+| Code | `{{CODE_LANG}}` | Comments, user-facing strings, error messages; identifiers stay English/ASCII |
+
+- Chat **MAY** use `{{CHAT_LANG}}`; chat language does **not** authorize docs or code outside the configured axes.
+- Documentation artifacts **MUST** be written in `{{DOCS_LANG}}`.
+- Code comments and user-facing strings **MUST** use `{{CODE_LANG}}`.
+- Glossary / i18n waves (when `docs_language` is `en`): `doc/i18n/`.
