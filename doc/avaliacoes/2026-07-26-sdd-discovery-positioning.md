@@ -1,80 +1,80 @@
-# Avaliação: Posicionamento e descoberta do SDD Kit (vibe coding → agentic engineering)
+# Evaluation: SDD Kit positioning and discovery (vibe coding → agentic engineering)
 
-| Campo | Valor |
+| Field | Value |
 |-------|--------|
-| **Data** | 2026-07-26 |
-| **Avaliador** | Sessão explore→propose `add-sdd-discovery-positioning` |
-| **Candidato** | Superfícies de discovery do hub SDD (README raiz, About/topics, first-contact) — análise de mercado/SEO/concorrência |
-| **Decisão** | **Misto** — P1–P4 + **P10 (ByeByeVibe)** **Adoptado** (docs); rename GitHub slug = `[AÇÃO MANUAL]`; P5 / fame gaps **Adiado** ou **Não implementar**; app scaffold **Non-goal** |
-| **Escopo** | Documentação + specs de discovery (perfil DOCS_SPECS); sem código de aplicação |
-| **Change** | [`add-sdd-discovery-positioning`](../../openspec/changes/add-sdd-discovery-positioning/proposal.md) |
-| **Research fonte** | [`openspec/changes/add-sdd-discovery-positioning/research.md`](../../openspec/changes/add-sdd-discovery-positioning/research.md) |
+| **Date** | 2026-07-26 |
+| **Evaluator** | Explore→propose session `add-sdd-discovery-positioning` |
+| **Candidate** | SDD hub discovery surfaces (root README, About/topics, first-contact) — market/SEO/competition analysis |
+| **Decision** | **Mixed** — P1–P4 + **P10 (ByeByeVibe)** **Adopted** (docs); GitHub slug rename = `[MANUAL ACTION]`; P5 / fame gaps **Deferred** or **Do not implement**; app scaffold **Non-goal** |
+| **Scope** | Discovery documentation + specs (DOCS_SPECS profile); no application code |
+| **Change** | [`add-sdd-discovery-positioning`](../../openspec/changes/archive/2026-07-30-add-sdd-discovery-positioning/proposal.md) |
+| **Source research** | [`openspec/changes/archive/2026-07-30-add-sdd-discovery-positioning/research.md`](../../openspec/changes/archive/2026-07-30-add-sdd-discovery-positioning/research.md) |
 
-## Resumo executivo
+## Executive summary
 
-O hub SDD era invisível em discovery GitHub (sem `README.md` na raiz; kit README só operacional). A análise 2026-07-26 mapeou posicionamento “from vibe coding to agentic engineering”, SEO (topics/About), concorrência (Spec Kit / OpenSpec / BMAD / GSD vs vibe boilerplates) e backlog de produto. **Adoptamos** superfícies P1–P4 (README EN, avaliação, quickstart, mapa amigável) e, em follow-up (`rename-byebyevibe-public-name`), o **nome público ByeByeVibe** (P10 docs; path `sdd-kit/` inalterado). **Não** implementamos Landing, Discord, one-liner fame, app scaffold, BMAD multi-persona nem brand GitHub. GIF/i18n ficam no roadmap (`research.md` §11). Rename do slug GitHub → `byebyevibe` permanece `[AÇÃO MANUAL]`.
+The SDD hub was invisible on GitHub discovery (no root `README.md`; kit README was operational only). The 2026-07-26 analysis mapped positioning “from vibe coding to agentic engineering”, SEO (topics/About), competition (Spec Kit / OpenSpec / BMAD / GSD vs vibe boilerplates), and product backlog. **We adopted** P1–P4 surfaces (EN README, evaluation, quickstart, friendly map) and, in follow-up (`rename-byebyevibe-public-name`), the **public name ByeByeVibe** (P10 docs; path `sdd-kit/` unchanged). **We did not** implement Landing, Discord, one-liner fame, app scaffold, BMAD multi-persona, or GitHub brand. GIF/i18n remain on the roadmap (`research.md` §11). GitHub slug rename → `byebyevibe` remains `[MANUAL ACTION]`.
 
-## Problema que tentava resolver
+## Problem it tried to solve
 
-Invisibilidade de discovery + fricção de first-contact para quem chega de *vibe coding*, sem diluir o diferencial (control plane / install kit — não boilerplate de app).
+Discovery invisibility + first-contact friction for people arriving from *vibe coding*, without diluting the differentiator (control plane / install kit — not an app boilerplate).
 
-## O que foi analisado
+## What was analyzed
 
 - Explore 2026-07-26; GitHub API (stars/topics)
-- READMEs públicos: Spec Kit, OpenSpec, BMAD-METHOD, GSD
+- Public READMEs: Spec Kit, OpenSpec, BMAD-METHOD, GSD
 - AS-IS: `sdd-kit/README.md`, `doc/sistema-sdd-pedro.md`, `openspec/project.md`
-- Complementar: `openspec/changes/explore-oss-coverage-gaps/research.md`
+- Complementary: `openspec/changes/explore-oss-coverage-gaps/research.md`
 
-## Encaixe no stack SDD
+## Fit in the SDD stack
 
-| Ferramenta | Relação |
-|------------|---------|
-| OpenSpec | Fluxo `/opsx:*` é o demo narrativo do README; nós **consumimos** o CLI |
-| GitNexus | Diferencial “code graph” vs Spec Kit / BMAD / GSD |
-| Graphify | Diferencial “knowledge graph” no evenamento de discovery |
-| AGENTS.md / sdd-kit | Anti-overwrite + payload versionado C1/C2 = pitch defensável |
+| Tool | Relationship |
+|------|--------------|
+| OpenSpec | `/opsx:*` flow is the README narrative demo; we **consume** the CLI |
+| GitNexus | “Code graph” differentiator vs Spec Kit / BMAD / GSD |
+| Graphify | “Knowledge graph” differentiator in discovery positioning |
+| AGENTS.md / sdd-kit | Anti-overwrite + versioned C1/C2 payload = defensible pitch |
 
-## Diagnóstico AS-IS (pré-apply)
+## AS-IS diagnosis (pre-apply)
 
-| Superfície | Estado pré-apply | Efeito |
-|------------|------------------|--------|
-| `README.md` na raiz | **Ausente** | Repo invisível em buscas GitHub |
-| `sdd-kit/README.md` | Só operacional | Não serve newcomers vibe coding |
-| Guia canónico | Profundo (v1.6.1) | Fricção alta como primeiro contacto |
-| About / topics | Não alinhados a `vibe-coding` / SDD | Perde tráfego de topic quente |
+| Surface | Pre-apply state | Effect |
+|---------|-----------------|--------|
+| Root `README.md` | **Missing** | Repo invisible in GitHub search |
+| `sdd-kit/README.md` | Operational only | Does not serve vibe-coding newcomers |
+| Canonical guide | Deep (v1.6.1) | High friction as first contact |
+| About / topics | Not aligned to `vibe-coding` / SDD | Misses hot-topic traffic |
 
-**Gancho de mercado (sem fingir boilerplate):**
+**Market hook (without pretending to be a boilerplate):**
 
-> Vibe coding até o primeiro PR. Depois disto, agentic engineering.
+> Vibe coding until the first PR. After that, agentic engineering.
 
-## Posicionamento adoptado
+## Adopted positioning
 
-| Elemento | Copy |
-|----------|------|
+| Element | Copy |
+|---------|------|
 | Tagline | From vibe coding to shippable AI engineering. |
-| Frase canónica | The missing operating system between your coding agent and a maintainable repo. |
-| Anti-posicionamento | Not another Next.js starter — the SDD control plane (OpenSpec + graphs + gates) your repo is missing. |
-| Nome público (P10) | **ByeByeVibe** (Adoptado — docs); path/payload continua `sdd-kit/` |
-| Working title legado | “SDD Install Kit” / “SDD Kit” (substituído no discovery; comandos `sdd-kit/` intactos) |
+| Canonical phrase | The missing operating system between your coding agent and a maintainable repo. |
+| Anti-positioning | Not another Next.js starter — the SDD control plane (OpenSpec + graphs + gates) your repo is missing. |
+| Public name (P10) | **ByeByeVibe** (Adopted — docs); path/payload remains `sdd-kit/` |
+| Legacy working title | “SDD Install Kit” / “SDD Kit” (replaced in discovery; `sdd-kit/` commands intact) |
 
-## Termos-chave e SEO GitHub
+## Key terms and GitHub SEO
 
-Topics de alto tráfego: `vibe-coding`, `spec-driven-development`, `context-engineering`, `agentic-coding`, `claude-code`, `cursor`, `agent-skills`, `agents-md`, `mcp`, `prd`.
+High-traffic topics: `vibe-coding`, `spec-driven-development`, `context-engineering`, `agentic-coding`, `claude-code`, `cursor`, `agent-skills`, `agents-md`, `mcp`, `prd`.
 
-### [AÇÃO MANUAL NECESSÁRIA] — Rename repo + About + topics no GitHub
+### [MANUAL ACTION REQUIRED] — Rename repo + About + topics on GitHub
 
-O agente **não** altera Settings do repositório. Operador humano deve aplicar:
+The agent **does not** change repository Settings. A human operator must apply:
 
-1. **Rename do repositório:** Settings → General → Repository name: `gitnexus-graphify-openspec` → **`byebyevibe`**
-2. **Remote local:** `git remote set-url origin git@github.com:pvilarim/byebyevibe.git` (ou HTTPS equivalente)
-3. **About** e **Topics** (abaixo)
-4. **Homepage** (opcional): `https://pedrocodeart.netlify.app/`
+1. **Repository rename:** Settings → General → Repository name: `gitnexus-graphify-openspec` → **`byebyevibe`**
+2. **Local remote:** `git remote set-url origin git@github.com:pvilarim/byebyevibe.git` (or HTTPS equivalent)
+3. **About** and **Topics** (below)
+4. **Homepage** (optional): `https://pedrocodeart.netlify.app/`
 
-**About sugerido (≤160 chars):**
+**Suggested About (≤160 chars):**
 
 > ByeByeVibe — Spec-Driven Development (SDD) install kit from vibe coding to shippable AI engineering. Control plane (OpenSpec + graphs + gates) for Cursor & Claude Code. Not a Next.js starter.
 
-**Topics (mínimo):**
+**Topics (minimum):**
 
 - `vibe-coding`
 - `spec-driven-development`
@@ -82,18 +82,18 @@ O agente **não** altera Settings do repositório. Operador humano deve aplicar:
 - `claude-code`
 - `cursor`
 
-Opcionais: `agentic-coding`, `agent-skills`, `openspec`, `mcp`, `agents-md`.
+Optional: `agentic-coding`, `agent-skills`, `openspec`, `mcp`, `agents-md`.
 
-**Onde:** GitHub → Settings do repo → General → Description / Topics / Rename.
+**Where:** GitHub → repo Settings → General → Description / Topics / Rename.
 
-## Rede semântica (features ↔ projectos)
+## Semantic network (features ↔ projects)
 
 ```
-VIBE CODING (dor/entrada)
+VIBE CODING (pain/entry)
         │ "from vibe →"
         ▼
 ┌───────────────────────────────────────┐
-│  ESTE KIT (OS / control plane)        │
+│  THIS KIT (OS / control plane)        │
 │  install + AGENTS.md + gates          │
 └───────────────┬───────────────────────┘
      ┌──────────┼──────────┬────────────┐
@@ -106,22 +106,22 @@ VIBE CODING (dor/entrada)
               CI sdd-gates · session locks · metrics G4
 ```
 
-## Concorrência — compare table (stars ≈ 2026-07-26, ordem de grandeza)
+## Competition — compare table (stars ≈ 2026-07-26, order of magnitude)
 
-### Camada A — frameworks SDD (vizinhos)
+### Layer A — SDD frameworks (neighbors)
 
-| Projecto | ★ (ordem) | Eles oferecem; nós não | Nós oferecemos; eles não |
-|----------|-----------|------------------------|---------------------------|
-| [github/spec-kit](https://github.com/github/spec-kit) | ~124k | Distribuição, polish, site, brand GitHub | Triplo OpenSpec+GitNexus+Graphify; kit C1/C2; Probity; métricas; session locks |
-| [Fission-AI/OpenSpec](https://github.com/Fission-AI/OpenSpec) | ~63k | O CLI de specs (nós consumimos) | Orquestração graphs+CI+install kit+guia |
-| [bmad-code-org/BMAD-METHOD](https://github.com/bmad-code-org/BMAD-METHOD) | ~51k | Multi-persona theatre | Menos cerimónia; brownfield; CI/TDD; dual-graph |
-| [gsd-build/get-shit-done](https://github.com/gsd-build/get-shit-done) | ~65k | Autonomia longa | Multi-IDE; Graphify+GitNexus; supply-chain |
+| Project | ★ (order) | They offer; we don't | We offer; they don't |
+|---------|-----------|----------------------|----------------------|
+| [github/spec-kit](https://github.com/github/spec-kit) | ~124k | Distribution, polish, site, GitHub brand | Triple OpenSpec+GitNexus+Graphify; C1/C2 kit; Probity; metrics; session locks |
+| [Fission-AI/OpenSpec](https://github.com/Fission-AI/OpenSpec) | ~63k | The specs CLI (we consume it) | Graphs+CI+install kit+guide orchestration |
+| [bmad-code-org/BMAD-METHOD](https://github.com/bmad-code-org/BMAD-METHOD) | ~51k | Multi-persona theatre | Less ceremony; brownfield; CI/TDD; dual-graph |
+| [gsd-build/get-shit-done](https://github.com/gsd-build/get-shit-done) | ~65k | Long autonomy | Multi-IDE; Graphify+GitNexus; supply-chain |
 
-### Camada B — vibe templates (mesma busca, produto diferente)
+### Layer B — vibe templates (same search, different product)
 
-App scaffolds / boilerplates (Next, Bun, FastAPI, etc.) — **non-goal permanente** deste kit. O README aparece nas duas buscas com disambiguação explícita.
+App scaffolds / boilerplates (Next, Bun, FastAPI, etc.) — **permanent non-goal** of this kit. The README appears in both searches with explicit disambiguation.
 
-### Matriz compacta
+### Compact matrix
 
 ```
                  Spec    Multi-agent  Code graph  Knowledge  Install kit  CI/TDD
@@ -130,85 +130,85 @@ OpenSpec         ●●●●    ●●           ○           ○          ●
 BMAD             ●●●     ●●●●         ○           ○          ●●●          ●●
 GSD              ●●●     ●●●          ○           ○          ●●           ●
 Vibe boilerplates ○      ○            ○           ○          ●●●● (app)   ●
-ESTE KIT         ●●●●    ●●           ●●●●        ●●●●       ●●●●         ●●●●
+THIS KIT         ●●●●    ●●           ●●●●        ●●●●       ●●●●         ●●●●
 ```
 
-**Diferenciais defensáveis:** (1) stack composto + anti-overwrite AGENTS.md; (2) payload `MANIFEST.yaml` + upgrade C2; (3) perfis APP/DOCS_SPECS/HYBRID; (4) gates reais; (5) session coordination; (6) SDD metrics G4 como retrospectives / calibrate-as-you-go (**sem** claim ML).
+**Defensible differentiators:** (1) composite stack + anti-overwrite AGENTS.md; (2) `MANIFEST.yaml` payload + C2 upgrade; (3) APP/DOCS_SPECS/HYBRID profiles; (4) real gates; (5) session coordination; (6) SDD metrics G4 as retrospectives / calibrate-as-you-go (**no** ML claim).
 
-## G4 Metrics no pitch de discovery
+## G4 Metrics in the discovery pitch
 
-`sdd-metrics.sh` + cadência + playbook §2.17 = retrospectives de processo (volume, lead time, rework). Framing permitido: “calibrate as you go”. **Proibido:** ML, self-learning agent, adaptação automática do kit. Detalhe: research §12 / design D11.
+`sdd-metrics.sh` + cadence + playbook §2.17 = process retrospectives (volume, lead time, rework). Allowed framing: “calibrate as you go”. **Forbidden:** ML, self-learning agent, automatic kit adaptation. Detail: research §12 / design D11.
 
-## Decisões por item (backlog de produto)
+## Decisions by item (product backlog)
 
-| ID | Melhoria | Decisão | Notas |
-|----|----------|---------|-------|
-| P1 | README + topics + avaliação | **Adoptado** | README raiz EN + esta avaliação + checklist About/topics |
-| P2 | Quickstart vibe coder no guia | **Adoptado** | §2.0b em `doc/sistema-sdd-pedro.md` |
-| P3 | Mapa amigável C1/C2/G* | **Adoptado** | Intro em `sdd-kit/README.md` |
-| P4 | Compare table actualizável | **Adoptado** | Esta secção (stars datados) |
-| P5 | Demo GIF / asciinema | **Adiado — pending explore** | Após README (idealmente após nome); E1–E6 em research §6.3 |
-| P6 | One-liner `npx` fame | **Não implementar** | CTA `install.sh --dry-run` basta |
-| P7 | Landing / GitHub Pages | **Não implementar** | D9 |
-| P8 | Discord | **Não implementar** | D9 |
-| P9 | App starter (auth/DB/deploy) | **Non-goal permanente** | Camada B |
-| P10 | Rename / nome público | **Adoptado (ByeByeVibe)** | Display name + hero/Maintainer nos docs; path `sdd-kit/` intacto; slug GitHub `byebyevibe` |
-| P11 | Policy EN + waves i18n (superfície pública) | **Adiado — lançamento público** | Explore `explore-public-release-surface` (F2); **não** esconder pastas via gitignore (F1/F6) |
-| P12 | `CHANGELOG.md` raiz EN (+ Releases opcional) | **Adiado — lançamento público** | Explore `explore-public-release-surface` (F3/F4); canónico continua §14 do guia até lá |
-| — | BMAD multi-persona | **Não implementar** | D9 |
-| — | Brand GitHub | **Não implementar** | D9 |
-| — | Split repo ops privado | **Adiado — só se dor real** | F5 no research; depois de P11 |
+| ID | Improvement | Decision | Notes |
+|----|-------------|----------|-------|
+| P1 | README + topics + evaluation | **Adopted** | Root EN README + this evaluation + About/topics checklist |
+| P2 | Vibe-coder quickstart in guide | **Adopted** | §2.0b in `doc/sistema-sdd-pedro.md` |
+| P3 | Friendly C1/C2/G* map | **Adopted** | Intro in `sdd-kit/README.md` |
+| P4 | Updatable compare table | **Adopted** | This section (dated stars) |
+| P5 | Demo GIF / asciinema | **Deferred — pending explore** | After README (ideally after name); E1–E6 in research §6.3 |
+| P6 | One-liner `npx` fame | **Do not implement** | `install.sh --dry-run` CTA is enough |
+| P7 | Landing / GitHub Pages | **Do not implement** | D9 |
+| P8 | Discord | **Do not implement** | D9 |
+| P9 | App starter (auth/DB/deploy) | **Permanent non-goal** | Layer B |
+| P10 | Rename / public name | **Adopted (ByeByeVibe)** | Display name + hero/Maintainer in docs; path `sdd-kit/` intact; GitHub slug `byebyevibe` |
+| P11 | EN policy + i18n waves (public surface) | **Deferred — public launch** | Explore `explore-public-release-surface` (F2); **do not** hide folders via gitignore (F1/F6) |
+| P12 | Root EN `CHANGELOG.md` (+ optional Releases) | **Deferred — public launch** | Explore `explore-public-release-surface` (F3/F4); canonical remains guide §14 until then |
+| — | BMAD multi-persona | **Do not implement** | D9 |
+| — | GitHub brand | **Do not implement** | D9 |
+| — | Private ops repo split | **Deferred — only if real pain** | F5 in research; after P11 |
 
-### Roadmap pós-apply (research §11 / design D10)
+### Post-apply roadmap (research §11 / design D10)
 
 ```
-① README + avaliação + quickstart   ← feito (`add-sdd-discovery-positioning`)
-② Explore→propose nome público (P10) ← feito
-③ Apply rename/rebrand (ByeByeVibe) ← feito; slug `byebyevibe` (manual)
-④ Policy EN + waves (+ CHANGELOG.md raiz) ← Adiado até lançamento público
+① README + evaluation + quickstart   ← done (`add-sdd-discovery-positioning`)
+② Explore→propose public name (P10) ← done
+③ Apply rename/rebrand (ByeByeVibe) ← done; slug `byebyevibe` (manual)
+④ EN policy + waves (+ root CHANGELOG.md) ← Deferred until public launch
    (research: openspec/changes/explore-public-release-surface/research.md · P11/P12)
 ⑤ Explore GIF/asciinema (P5)
-⑥ Landing/Discord/one-liner — fora (D9)
+⑥ Landing/Discord/one-liner — out of scope (D9)
 ```
 
-## Riscos por fase do workflow
+## Risks by workflow phase
 
-| Fase | Risco | Notas |
-|------|-------|-------|
-| Explore | Reabrir fame gaps já fechados (D9) | Checklist Non-goals |
-| Propose | Misturar rename/i18n/GIF neste change | D10 — changes separados |
-| Apply | Claim ML em metrics; omitir anti-boilerplate | Gate grep + D11 |
-| Archive | Esquecer checklist About/topics | `[AÇÃO MANUAL NECESSÁRIA]` abaixo |
+| Phase | Risk | Notes |
+|-------|------|-------|
+| Explore | Reopening fame gaps already closed (D9) | Non-goals checklist |
+| Propose | Mixing rename/i18n/GIF in this change | D10 — separate changes |
+| Apply | ML claim in metrics; omitting anti-boilerplate | Gate grep + D11 |
+| Archive | Forgetting About/topics checklist | `[MANUAL ACTION REQUIRED]` below |
 
-## Ganhos esperados vs observados
+## Expected vs observed gains
 
-| Ganho anunciado | Avaliação |
-|-----------------|-----------|
-| Repo encontrável em ≤30s | **Esperado** após README + About/topics manuais |
-| Newcomers entendem “não é starter” | **Esperado** via anti-posicionamento no hero |
-| Operadores mantêm docs ops | **Esperado** — kit README prepend, ops intacto |
-| Stars / SEO imediato | **Parcial** — depende de topics manuais + tempo |
+| Announced gain | Evaluation |
+|----------------|------------|
+| Repo findable in ≤30s | **Expected** after README + manual About/topics |
+| Newcomers understand “not a starter” | **Expected** via anti-positioning in hero |
+| Operators keep ops docs | **Expected** — kit README prepend, ops intact |
+| Immediate stars / SEO | **Partial** — depends on manual topics + time |
 
-## Alternativas já no stack
+## Alternatives already in the stack
 
-Sem README/avaliação, o guia + `sdd-kit/README.md` operacional já existiam — insuficientes para discovery GitHub. OpenSpec upstream cobre o CLI de specs; este hub orquestra graphs + kit + gates.
+Without README/evaluation, the guide + operational `sdd-kit/README.md` already existed — insufficient for GitHub discovery. OpenSpec upstream covers the specs CLI; this hub orchestrates graphs + kit + gates.
 
-## Decisão e condições de reavaliação
+## Decision and re-evaluation conditions
 
-**Decisão:** **Misto** — superfícies P1–P4 **Adoptado**; **P10 (ByeByeVibe)** **Adoptado**; P5 (GIF) **Adiado**; **P11/P12** (i18n + CHANGELOG raiz) **Adiado até lançamento público** (`explore-public-release-surface`); P6–P9 / BMAD / brand / Landing / Discord **Não implementar** / **Non-goal**.
+**Decision:** **Mixed** — P1–P4 surfaces **Adopted**; **P10 (ByeByeVibe)** **Adopted**; P5 (GIF) **Deferred**; **P11/P12** (i18n + root CHANGELOG) **Deferred until public launch** (`explore-public-release-surface`); P6–P9 / BMAD / brand / Landing / Discord **Do not implement** / **Non-goal**.
 
-**Condições para reabrir:**
+**Conditions to reopen:**
 
-- **P5:** explore fecha E1–E6 (formato, path do asset, script de gravação, drift)
-- **P11/P12:** gatilho = lançamento / tratar o repo como público para terceiros — `openspec/changes/explore-public-release-surface/research.md`
-- **Fame gaps (P6–P8):** só com nova proposta OpenSpec e confirmação humana explícita (hoje D9)
+- **P5:** explore closes E1–E6 (format, asset path, recording script, drift)
+- **P11/P12:** trigger = launch / treating the repo as public for third parties — `openspec/changes/explore-public-release-surface/research.md`
+- **Fame gaps (P6–P8):** only with a new OpenSpec proposal and explicit human confirmation (today D9)
 
-## Referências
+## References
 
-- Research completo: `openspec/changes/add-sdd-discovery-positioning/research.md`
-- Design (D9–D11): `openspec/changes/add-sdd-discovery-positioning/design.md`
-- Superfície pública (adiado): `openspec/changes/explore-public-release-surface/research.md`
-- README raiz: [`README.md`](../../README.md)
-- Guia: `doc/sistema-sdd-pedro.md` §2.0b
+- Full research: `openspec/changes/archive/2026-07-30-add-sdd-discovery-positioning/research.md`
+- Design (D9–D11): `openspec/changes/archive/2026-07-30-add-sdd-discovery-positioning/design.md`
+- Public surface (deferred): `openspec/changes/explore-public-release-surface/research.md`
+- Root README: [`README.md`](../../README.md)
+- Guide: `doc/sistema-sdd-pedro.md` §2.0b
 - agents.md: https://agents.md/
 - PR: [#54](https://github.com/pvilarim/gitnexus-graphify-openspec/pull/54)
