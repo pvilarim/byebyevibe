@@ -1,12 +1,12 @@
 ## 1. Guide §2 didactic narrative
 
-- [ ] 1.1 Enrich §2.1 with three-pillars (+ kit) diagram, S-layer why-order, and link to §4 (do not rewrite §4)
+- [ ] 1.1 Enrich §2.1 with three-pillars (+ kit) diagram, S-layer why-order, D3 sdd-kit What/Without it, combined login scenario (optional short), and link to §4 (do not rewrite §4)
   - **Pattern:** `doc/sistema-sdd-pedro.md`
-  - **Gate:** `grep -nE '2\.1|pillar|§4|section 4' doc/sistema-sdd-pedro.md | head -20 | grep -qiE 'pillar|OpenSpec|GitNexus|Graphify'`
+  - **Gate:** `grep -qiE 'pillar|OpenSpec|GitNexus|Graphify' doc/sistema-sdd-pedro.md && grep -q 'invents the process from scratch\|every repo invents' doc/sistema-sdd-pedro.md`
 
 - [ ] 1.2 Add What / Why now / Without it / You’ll get to §2.2 OpenSpec using design D3 EN copy
   - **Pattern:** `doc/sistema-sdd-pedro.md`
-  - **Gate:** `grep -q 'Without it' doc/sistema-sdd-pedro.md && grep -A2 '### 2.2' doc/sistema-sdd-pedro.md | head -1; grep -q 'nobody remembers why\|chat turns into code' doc/sistema-sdd-pedro.md`
+  - **Gate:** `grep -q 'playbook for a change\|think → agree\|think -> agree' doc/sistema-sdd-pedro.md && grep -q 'nobody remembers why\|chat turns into code' doc/sistema-sdd-pedro.md`
 
 - [ ] 1.3 Add What / Why now / Without it / You’ll get to §2.3 GitNexus using design D3 EN copy
   - **Pattern:** `doc/sistema-sdd-pedro.md`
@@ -16,9 +16,9 @@
   - **Pattern:** `doc/sistema-sdd-pedro.md`
   - **Gate:** `grep -q 'reinvents what the team already wrote' doc/sistema-sdd-pedro.md`
 
-- [ ] 1.5 Insert **Optional add-ons at a glance** immediately after §2.8 (UI, Probity, CI, Metrics pointers only; no menu)
+- [ ] 1.5 Insert **Optional add-ons at a glance** immediately after §2.8 and before §2.11 (UI, Probity, CI, Metrics; Install if… / Skip if… from design D5; pointers only; no menu)
   - **Pattern:** `doc/sistema-sdd-pedro.md`
-  - **Gate:** `awk '/### 2\.8/,/### 2\.11/' doc/sistema-sdd-pedro.md | grep -q 'Optional add-ons'`
+  - **Gate:** `awk '/### 2\.8/,/### 2\.11/' doc/sistema-sdd-pedro.md | grep -q 'Optional add-ons' && awk '/### 2\.8/,/### 2\.11/' doc/sistema-sdd-pedro.md | grep -qiE 'Install if|Skip if|Probity|metrics'`
 
 ## 2. Agent prompt §2.0 and discovery README
 

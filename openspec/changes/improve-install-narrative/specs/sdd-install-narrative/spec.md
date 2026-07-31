@@ -23,19 +23,29 @@ Guide §2.1 MUST include a diagram of the three pillars (OpenSpec, GitNexus, Gra
 - **WHEN** an operator opens §2.1 before installing
 - **THEN** they see a three-pillars (+ kit) diagram, a plain-language reason not to reverse the order, and a pointer to §4 for detailed comparison
 
-### Requirement: Canonical Without-it copy for core tools
+### Requirement: Canonical S-layer copy for core tools
 
-The guide and runtime banners/teasers MUST use the refined “Without it…” / “Sem ela…” meanings locked in design D3 for OpenSpec, GitNexus, Graphify, and sdd-kit. Apply MUST NOT invent alternate consequence slogans for these four tools.
+The guide and runtime banners/teasers MUST use the refined What / Why now / “Without it…” / You’ll get meanings locked in design D3 for OpenSpec, GitNexus, Graphify, and sdd-kit. Apply MUST NOT invent alternate slogans for these four tools. The sdd-kit row MUST appear in §2.1 (pillars + kit bridge) and/or the install-kit phase narrative/teaser — not only in scripts.
 
 #### Scenario: OpenSpec without-it appears in guide
 
 - **WHEN** the OpenSpec step narrative is rendered in the versioned guide
 - **THEN** it states that without OpenSpec, chat turns into code and nobody remembers why (EN wording per design D3)
 
+#### Scenario: Guide OpenSpec What line matches D3
+
+- **WHEN** the OpenSpec step S-layer is rendered in the versioned guide
+- **THEN** it presents OpenSpec as the playbook for a change (think → agree → do → keep a record) per design D3 EN What column
+
 #### Scenario: Runtime pt-BR uses Sem ela drafts
 
 - **WHEN** a TTY banner or install teaser runs with `chat_language` (or `--chat-lang` / `SDD_CHAT_LANG`) equal to `pt-BR`
 - **THEN** the corresponding “Sem ela…” strings from design D3 are used for those four tools
+
+#### Scenario: Kit without-it visible in guide narrative
+
+- **WHEN** an operator reads §2.1 or the sdd-kit phase description in the install path
+- **THEN** they see that without sdd-kit, every repo invents the process from scratch (EN wording per design D3)
 
 ### Requirement: Optional add-ons glance after checklist
 
