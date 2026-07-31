@@ -341,9 +341,49 @@ PY
 
 inject_language_policy
 
+print_optional_addons_teaser() {
+  # Optional entry points (pointers only — NEVER invoked here):
+  #   install-ui-module.sh · install-probity-module.sh · sdd-metrics.sh · guide §2.12
+  echo ""
+  if $DRY_RUN; then
+    if [[ "$CHAT_LANG" == "pt-BR" ]]; then
+      echo "PLAN — Complementos opcionais (somente lembrete; NÃO instalados neste dry-run):"
+      echo "  · UI (C1-UI)     → guia §2.11 · sdd-kit/install-ui-module"
+      echo "  · Probity (G2)   → guia §2.16 · sdd-kit/install-probity-module"
+      echo "  · CI gates       → guia §2.12 · proteção de branch (manual)"
+      echo "  · Métricas (G4)  → guia §2.17 · scripts/sdd-metrics"
+      echo "  (ponteiros apenas — rode depois do checklist §2.8 se fizer sentido)"
+    else
+      echo "PLAN — Optional add-ons (informational only; NOT installed in this dry-run):"
+      echo "  · UI (C1-UI)     → guide §2.11 · sdd-kit/install-ui-module"
+      echo "  · Probity (G2)   → guide §2.16 · sdd-kit/install-probity-module"
+      echo "  · CI gates       → guide §2.12 · branch protection (manual)"
+      echo "  · Metrics (G4)   → guide §2.17 · scripts/sdd-metrics"
+      echo "  (pointers only — run after checklist §2.8 if they fit)"
+    fi
+    return 0
+  fi
+  if [[ "$CHAT_LANG" == "pt-BR" ]]; then
+    echo "Complementos opcionais (ponteiros apenas — não instalados agora):"
+    echo "  · UI (C1-UI)     → guia §2.11 · sdd-kit/install-ui-module"
+    echo "  · Probity (G2)   → guia §2.16 · sdd-kit/install-probity-module"
+    echo "  · CI gates       → guia §2.12 · proteção de branch (manual)"
+    echo "  · Métricas (G4)  → guia §2.17 · scripts/sdd-metrics"
+    echo "  Rode depois do checklist §2.8 se fizer sentido. Sem menu; sem auto-install."
+  else
+    echo "Optional add-ons (pointers only — not installed now):"
+    echo "  · UI (C1-UI)     → guide §2.11 · sdd-kit/install-ui-module"
+    echo "  · Probity (G2)   → guide §2.16 · sdd-kit/install-probity-module"
+    echo "  · CI gates       → guide §2.12 · branch protection (manual)"
+    echo "  · Metrics (G4)   → guide §2.17 · scripts/sdd-metrics"
+    echo "  Run after checklist §2.8 if they fit. No menu; no auto-install."
+  fi
+}
+
 echo ""
 echo "Done. Next steps:"
 echo "  1. Edit openspec/project.md (Purpose, Stack — do not replace with template)"
 echo "  2. Merge AGENTS.md if it already existed"
 echo "  3. bash sdd-kit/verify.sh"
 echo "  4. Checklist doc/sistema-sdd-pedro.md §2.8"
+print_optional_addons_teaser

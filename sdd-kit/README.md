@@ -18,7 +18,7 @@ Versioned payload for reproducible SDD stack install (scripts, rules, skeletons)
 | **Probity / TDD enforce** (optional) | **G2** | APP/HYBRID — `@nizos/probity` after C1 |
 | **SDD metrics** (on demand) | **G4** | Retrospectives: lead time, rework — calibrate as you go |
 
-Discovery / hero: hub root [`README.md`](../README.md) (EN). Full procedure (pt-BR): [`doc/sistema-sdd-pedro.md`](../doc/sistema-sdd-pedro.md) §2.0b.
+Discovery / hero: hub root [`README.md`](../README.md) (EN). Full procedure: [`doc/sistema-sdd-pedro.md`](../doc/sistema-sdd-pedro.md) §2.0b. Didactic narrative (What / Why / Without it + optional add-ons glance): guide **§2.1** and the block after **§2.8**.
 
 ## Scenarios
 
@@ -49,12 +49,19 @@ bash sdd-kit/install.sh --profile DOCS_SPECS --dry-run
 # Install payloads after openspec init
 bash sdd-kit/install.sh --profile DOCS_SPECS
 
+# Bootstrap CLIs (OpenSpec → GitNexus → Graphify → install.sh)
+bash scripts/bootstrap-sdd.sh
+# CI/agents: suppress didactic TTY banners (WARN/ERROR still print)
+bash scripts/bootstrap-sdd.sh --quiet
+
 # Upgrade with report
 bash sdd-kit/upgrade.sh --from 1.2.0 --to 1.3.0 --dry-run
 
 # Post-install verification
 bash sdd-kit/verify.sh
 ```
+
+`--quiet` / `-q` on `bootstrap-sdd.sh` skips S-layer banners; non-TTY (CI) omits banners even without the flag. Optional: `--chat-lang pt-BR` or `SDD_CHAT_LANG=pt-BR` for runtime banner language.
 
 ## Structure
 

@@ -42,18 +42,27 @@ Sources: propose prompt (explore decisions); guide §2 + §4; `README.md`; `sdd-
 - **T→S:** when a technical term appears first in S prose, one short analogy/scenario follows in parentheses or a following sentence.
 - Agent §2.0 prompt MUST instruct: explain S before each step; expand T when the operator asks or when the next shell action needs exact commands.
 
-### D3 — Canonical “Without it…” copy (refine explore drafts; EN for versioned docs)
+### D3 — Canonical S-layer copy (What / Why now / Without it / You’ll get)
 
-Versioned guide/README use English. Runtime TTY MAY use pt-BR when `chat_language=pt-BR`.
+Versioned guide/README use English. Runtime TTY MAY use pt-BR when `chat_language=pt-BR`. Apply MUST NOT invent alternate slogans for these four tools (explore merge 2026-07-31 locked this table).
 
-| Tool | S — Without it… (EN, versioned) | S — Without it… (pt-BR, runtime when chat=pt-BR) |
-|------|--------------------------------|--------------------------------------------------|
-| OpenSpec | Without it, chat turns into code and nobody remembers why | Sem ela, conversa vira código e ninguém lembra o porquê |
-| GitNexus | Without it, the AI edits by vibe and breaks the neighborhood | Sem ela, a IA mexe no feeling e quebra o lado |
-| Graphify | Without it, the AI reinvents what the team already wrote | Sem ela, a IA reinventa o que o time já escreveu |
-| sdd-kit | Without it, every repo invents the process from scratch | Sem ela, cada repo monta o processo do zero |
+| Tool | What (EN) | Why now (EN) | Without it… (EN) | You’ll get (EN) |
+|------|-----------|--------------|------------------|-----------------|
+| OpenSpec | The **playbook** for a change: think → agree → do → keep a record | First: creates the `openspec/` skeleton other steps assume | Without it, chat turns into code and nobody remembers why | Slash commands `/opsx:*`, `openspec/`, change folders |
+| GitNexus | The **map of your repo’s code** | Second: indexes code and seeds `AGENTS.md` after the skeleton exists | Without it, the AI edits by vibe and breaks the neighborhood | Local code graph + impact / MCP tools |
+| Graphify | The **map of what the team already knows** (docs, decisions, ideas) | Third: adds non-code context without fighting the code index | Without it, the AI reinvents what the team already wrote | `graphify-out/` + `GRAPH_REPORT.md` |
+| sdd-kit | The **toolbox** that wires the control plane into *this* repo | After the three CLIs: copies curated rules, scripts, gates | Without it, every repo invents the process from scratch | Templates, `install.sh` / `verify.sh`, CI workflow payload |
 
-Short scenario (one line each, EN in guide): OpenSpec = “decision survives the chat”; GitNexus = “impact before the edit”; Graphify = “docs/concepts before reinventing”; sdd-kit = “same control plane, not a one-off ritual”.
+| Tool | What (pt-BR, runtime) | Without it… (pt-BR, runtime) |
+|------|----------------------|------------------------------|
+| OpenSpec | O **roteiro** da mudança: pensar → combinar → fazer → guardar o registro | Sem ela, conversa vira código e ninguém lembra o porquê |
+| GitNexus | O **mapa do código** do seu repo | Sem ela, a IA mexe no feeling e quebra o lado |
+| Graphify | O **mapa do que o time já sabe** (docs, decisões, ideias) | Sem ela, a IA reinventa o que o time já escreveu |
+| sdd-kit | A **caixa de ferramentas** que liga tudo isso no seu projeto | Sem ela, cada repo monta o processo do zero |
+
+**Combined scenario (EN, once in §2.1 — optional repeat shortened in banners):** You ask “add login.” Without OpenSpec, the AI already opens files. Without GitNexus, it edits the wrong place. Without Graphify, it ignores the auth decision you wrote last month. With all three (+ kit), it agrees on a plan, checks impact, and reuses what the team already knows.
+
+Per-tool one-liners (EN, if space is tight): OpenSpec = “decision survives the chat”; GitNexus = “impact before the edit”; Graphify = “docs/concepts before reinventing”; sdd-kit = “same control plane, not a one-off ritual”.
 
 ### D4 — §2.1 diagram + why order (S + T→§4)
 
@@ -65,18 +74,18 @@ Intent (OpenSpec) → Code graph (GitNexus) → Knowledge graph (Graphify) → p
 
 Why order stays S-level: later tools assume earlier artifacts; reversing risks overwrite of `AGENTS.md` / skeleton. One sentence + link: “Full responsibilities matrix → §4.”
 
-### D5 — Optional add-ons after §2.8 only
+### D5 — Optional add-ons after §2.8 only (Y confirmed at explore merge)
 
-New subsection immediately after checklist §2.8 (before existing §2.11 content or as a pointer block that lists):
+New subsection **immediately after** checklist §2.8 and **before** §2.11 (file order today: `### 2.8` → `### 2.11`):
 
-| Add-on | Pointer |
-|--------|---------|
-| UI module (C1-UI) | §2.11 · `install-ui-module.sh` |
-| Probity (G2) | §2.16 · `install-probity-module.sh` |
-| CI gates | §2.12 · workflow already in kit; branch protection manual |
-| SDD metrics (G4) | §2.17 · `sdd-metrics.sh` on demand |
+| Add-on | Install if… (S) | Skip if… (S) | Pointer |
+|--------|-----------------|--------------|---------|
+| UI module (C1-UI) | You have a frontend (`app/`) and want a design-system path | Docs/API-only repo | §2.11 · `install-ui-module.sh` |
+| Probity (G2) | APP/HYBRID with tests and you want TDD enforced for B/C/D | DOCS_SPECS / no test runner | §2.16 · `install-probity-module.sh` |
+| CI gates | You want merge blocked when specs/tasks fail | Local-only exploration (workflow may still ship in kit) | §2.12 · branch protection manual |
+| SDD metrics (G4) | After a few archives, to calibrate lead time/rework | First-day install | §2.17 · `sdd-metrics.sh` on demand |
 
-No prompts, no menu, no install from this block.
+No prompts, no menu X, no install from this block. The `install.sh` teaser (D7) only **reminds** these exist; operators run them later after §2.8.
 
 ### D6 — `bootstrap-sdd.sh` banners + `--quiet`
 
@@ -119,4 +128,4 @@ Hub `scripts/bootstrap-sdd.sh` currently differs slightly from the template (pro
 
 ## Open Questions
 
-- None blocking apply — explore closed A+B, Y (addons after §2.8), dual S↔T, audiences, F7 language split. Apply may tweak banner length for readability without changing requirements.
+- None blocking apply — explore closed A+B, Y (addons after §2.8), dual S↔T, audiences, F7 language split. **Explore ↔ propose merge (2026-07-31):** no decision reversals; D3 extended to lock full What / Why now / You’ll get (not only Without it) so apply cannot drift. Apply may tweak banner length for readability without changing requirements.

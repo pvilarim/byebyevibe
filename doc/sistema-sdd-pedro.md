@@ -176,13 +176,23 @@ bash sdd-kit/install.sh --profile DOCS_SPECS \
 
 ### 2.1 Order matters
 
-Install in this specific order. **Do not reverse** — each step assumes the previous one is done:
+Install in this specific order. **Do not reverse** — each step assumes the previous one is done.
+
+**Three pillars + kit (control plane):**
+
+```
+Intent (OpenSpec) → Code graph (GitNexus) → Knowledge graph (Graphify) → payloads (sdd-kit)
+```
 
 ```
 1. OpenSpec    → 2. GitNexus    → 3. Graphify    → 3b. sdd-kit/install.sh    → 4. Curate AGENTS.md    → 5. Configure IDEs
 ```
 
-Why: OpenSpec generates the `openspec/` skeleton, GitNexus indexes code and creates the initial `AGENTS.md`, Graphify adds non-code context. If you reverse the order, later tools may overwrite files created earlier.
+**Why this order (simple):** later tools assume earlier artifacts exist. Reversing risks overwrite of `AGENTS.md` / the `openspec/` skeleton. OpenSpec creates the playbook skeleton; GitNexus maps code after that skeleton exists; Graphify adds what the team already knows without fighting the code index; **sdd-kit** is the **toolbox** that wires the control plane into *this* repo — without it, every repo invents the process from scratch.
+
+**Scenario:** You ask “add login.” Without OpenSpec, the AI already opens files. Without GitNexus, it edits the wrong place. Without Graphify, it ignores the auth decision you wrote last month. With all three (+ kit), it agrees on a plan, checks impact, and reuses what the team already knows.
+
+Full responsibilities matrix → [§4](#4-master-table-question-3).
 
 ### 2.0 AI-assisted installation (prompt)
 
@@ -194,8 +204,17 @@ strictly the guide in doc/sistema-sdd-pedro.md v1.4.0 and the install kit in sdd
 
 Repository profile: [APP | DOCS_SPECS | HYBRID]
 
+Narrative (dual S↔T — mandatory):
+- Before EACH install step, explain the S layer in simple language:
+  What it is, Why now, Without it…, You’ll get (see guide §2.1–2.4).
+- Expand the T layer (exact commands, paths, flags, version pins) on demand,
+  or when the next shell action needs those exact invocations.
+- When you introduce a technical term, add a short T→S analogy or scenario
+  (term → plain-language picture).
+
 Order:
 1. bash scripts/bootstrap-sdd.sh  (or manual CLIs §2.2–2.4)
+   Prefer --quiet for CI/agents when didactic TTY banners are noise.
 2. bash sdd-kit/install.sh --profile <PROFILE> [--dry-run first]
 3. Edit openspec/project.md (Purpose, Stack — do NOT replace with template)
 4. Merge AGENTS.md if it already existed (templates: sdd-kit/templates/AGENTS.core.md + commands)
@@ -203,11 +222,21 @@ Order:
 
 Do NOT extract scripts from markdown §12 — use sdd-kit/templates/.
 Do NOT paste full <!-- gitnexus:start --> blocks into AGENTS.md.
+Do NOT auto-install optional add-ons (UI, Probity, CI enablement, Metrics) — point only.
 
 Deliver: checklist §2.8 + output of sdd-kit/verify.sh.
 ```
 
 ### 2.2 Step 1 — OpenSpec (intent)
+
+| | |
+|--|--|
+| **What** | The **playbook** for a change: think → agree → do → keep a record |
+| **Why now** | First: creates the `openspec/` skeleton other steps assume |
+| **Without it** | Without it, chat turns into code and nobody remembers why |
+| **You’ll get** | Slash commands `/opsx:*`, `openspec/`, change folders |
+
+Scenario: the decision survives the chat.
 
 ```bash
 # Global install
@@ -238,6 +267,15 @@ openspec/
 **Required action after init**: edit `openspec/project.md`. This file is the project Constitution. Without it written well, OpenSpec does not deliver real benefit. See template in annex 12.1.
 
 ### 2.3 Step 2 — GitNexus (code)
+
+| | |
+|--|--|
+| **What** | The **map of your repo’s code** |
+| **Why now** | Second: indexes code and seeds `AGENTS.md` after the skeleton exists |
+| **Without it** | Without it, the AI edits by vibe and breaks the neighborhood |
+| **You’ll get** | Local code graph + impact / MCP tools |
+
+Scenario: impact before the edit.
 
 ```bash
 # Global install
@@ -275,6 +313,15 @@ CLAUDE.md                    # CREATED or MODIFIED — watch for conflict
 **Attention**: if you already have a curated `AGENTS.md`, **rename it first** (`AGENTS.tools-generated.md`), run `gitnexus analyze`, then apply template **12.2** — **do not** copy the full `<!-- gitnexus:start -->` block into the canonical file (see §2.5.1). Operational detail lives in skills under `.claude/skills/gitnexus/`.
 
 ### 2.4 Step 3 — Graphify (knowledge)
+
+| | |
+|--|--|
+| **What** | The **map of what the team already knows** (docs, decisions, ideas) |
+| **Why now** | Third: adds non-code context without fighting the code index |
+| **Without it** | Without it, the AI reinvents what the team already wrote |
+| **You’ll get** | `graphify-out/` + `GRAPH_REPORT.md` |
+
+Scenario: docs/concepts before reinventing.
 
 ```bash
 # Install via uv (recommended — puts CLI on PATH automatically)
@@ -447,6 +494,17 @@ Use after every installation (human or AI):
 - [ ] `bash scripts/verify-infra.sh` completes without error (or document ❌ pending items)
 - [ ] `.github/workflows/sdd-gates.yml` present (see §2.12 to configure branch protection manually)
 - [ ] `renovate.json` present if APP/HYBRID profile (see §2.13 to install the Renovate app)
+
+### Optional add-ons at a glance
+
+Pointers only — **not** part of core C1. No menu; run later if they fit. `install.sh` may remind these exist; it does **not** install them.
+
+| Add-on | Install if… | Skip if… | Pointer |
+|--------|-------------|----------|---------|
+| UI module (C1-UI) | You have a frontend (`app/`) and want a design-system path | Docs/API-only repo | §2.11 · `bash sdd-kit/install-ui-module.sh` |
+| Probity (G2) | APP/HYBRID with tests and you want TDD enforced for B/C/D | DOCS_SPECS / no test runner | §2.16 · `bash sdd-kit/install-probity-module.sh` |
+| CI gates | You want merge blocked when specs/tasks fail | Local-only exploration (workflow may still ship in kit) | §2.12 · branch protection manual |
+| SDD metrics (G4) | After a few archives, to calibrate lead time/rework | First-day install | §2.17 · `bash scripts/sdd-metrics.sh` on demand |
 
 ### 2.11 UI development module (C1-UI, optional)
 

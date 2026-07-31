@@ -89,7 +89,7 @@ files:
 
   - path: scripts/bootstrap-sdd.sh
     source: templates/scripts/bootstrap-sdd.sh
-    sha256: "d96a5481e5dbfdc1d8a761263863426205a51ae3f34e3732655f1d2de7ca3347"
+    sha256: "6bd3b612ca1287877716f488781e04e1f01dae956f7792bf330c81d4d8bbee66"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -x scripts/bootstrap-sdd.sh"

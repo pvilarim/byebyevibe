@@ -1,13 +1,132 @@
 #!/usr/bin/env bash
-# Bootstrap SDD — see doc/sistema-sdd-pedro.md v1.1 §12.6
+# Bootstrap SDD — see doc/sistema-sdd-pedro.md §2 / §12.6
+# C1 order: OpenSpec → GitNexus → Graphify → sdd-kit/install.sh (MUST NOT change)
 set -euo pipefail
-REPO="${1:-.}"
-cd "$REPO"
 
+QUIET=false
+CHAT_LANG="${SDD_CHAT_LANG:-en}"
+REPO="."
+POSITIONAL=()
+
+usage() {
+  cat <<'EOF'
+Usage: bootstrap-sdd.sh [REPO_PATH] [--quiet|-q] [--chat-lang en|pt-BR]
+
+Bootstraps OpenSpec, GitNexus, Graphify, then sdd-kit/install.sh.
+Didactic S-layer banners print only on a TTY when --quiet is unset.
+Non-TTY (CI) omits banners even without --quiet. WARN/ERROR always print.
+
+Options:
+  --quiet, -q       Suppress didactic banners (keep WARN/ERROR + phase markers)
+  --chat-lang LANG  Banner language: en (default) or pt-BR (also SDD_CHAT_LANG)
+  -h, --help        Show this help
+EOF
+  exit "${1:-0}"
+}
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --quiet|-q) QUIET=true; shift ;;
+    --chat-lang)
+      CHAT_LANG="${2:-}"
+      [[ -n "$CHAT_LANG" ]] || { echo "ERROR: --chat-lang requires a value" >&2; usage 2; }
+      shift 2
+      ;;
+    -h|--help) usage 0 ;;
+    --) shift; POSITIONAL+=("$@"); break ;;
+    -*)
+      echo "ERROR: unknown option: $1" >&2
+      usage 2
+      ;;
+    *) POSITIONAL+=("$1"); shift ;;
+  esac
+done
+
+if [[ ${#POSITIONAL[@]} -gt 0 ]]; then
+  REPO="${POSITIONAL[0]}"
+fi
+if [[ ${#POSITIONAL[@]} -gt 1 ]]; then
+  echo "ERROR: unexpected arguments: ${POSITIONAL[*]:1}" >&2
+  usage 2
+fi
+
+case "$CHAT_LANG" in
+  en|pt-BR) ;;
+  *)
+    echo "WARN: unsupported --chat-lang '$CHAT_LANG' — falling back to en" >&2
+    CHAT_LANG="en"
+    ;;
+esac
+
+cd "$REPO"
+REPO="$(pwd)"
+
+# Didactic banners: TTY only, and not when --quiet (D6)
+SHOW_BANNERS=false
+if [[ -t 1 ]] && ! $QUIET; then
+  SHOW_BANNERS=true
+fi
+
+banner() {
+  local tool="$1"
+  $SHOW_BANNERS || return 0
+  echo ""
+  if [[ "$CHAT_LANG" == "pt-BR" ]]; then
+    case "$tool" in
+      openspec)
+        echo "--- OpenSpec ---"
+        echo "O que: O roteiro da mudança: pensar → combinar → fazer → guardar o registro"
+        echo "Sem ela, conversa vira código e ninguém lembra o porquê"
+        ;;
+      gitnexus)
+        echo "--- GitNexus ---"
+        echo "O que: O mapa do código do seu repo"
+        echo "Sem ela, a IA mexe no feeling e quebra o lado"
+        ;;
+      graphify)
+        echo "--- Graphify ---"
+        echo "O que: O mapa do que o time já sabe (docs, decisões, ideias)"
+        echo "Sem ela, a IA reinventa o que o time já escreveu"
+        ;;
+      kit)
+        echo "--- sdd-kit ---"
+        echo "O que: A caixa de ferramentas que liga tudo isso no seu projeto"
+        echo "Sem ela, cada repo monta o processo do zero"
+        ;;
+    esac
+  else
+    case "$tool" in
+      openspec)
+        echo "--- OpenSpec ---"
+        echo "What: The playbook for a change: think → agree → do → keep a record"
+        echo "Without it, chat turns into code and nobody remembers why"
+        ;;
+      gitnexus)
+        echo "--- GitNexus ---"
+        echo "What: The map of your repo's code"
+        echo "Without it, the AI edits by vibe and breaks the neighborhood"
+        ;;
+      graphify)
+        echo "--- Graphify ---"
+        echo "What: The map of what the team already knows (docs, decisions, ideas)"
+        echo "Without it, the AI reinvents what the team already wrote"
+        ;;
+      kit)
+        echo "--- sdd-kit ---"
+        echo "What: The toolbox that wires the control plane into this repo"
+        echo "Without it, every repo invents the process from scratch"
+        ;;
+    esac
+  fi
+  echo ""
+}
+
+banner openspec
 echo "==> OpenSpec..."
 npm install -g @fission-ai/openspec@latest
 openspec init --tools "cursor,claude" "$REPO" 2>/dev/null || openspec init --tools "cursor,claude"
 
+banner gitnexus
 echo "==> GitNexus (optional — does not abort bootstrap on failure)..."
 if npm install -g gitnexus; then
   gitnexus setup || echo "WARN: 'gitnexus setup' failed — continuing"
@@ -16,6 +135,7 @@ else
   echo "WARN: GitNexus install failed (e.g. onnxruntime native binary blocked by network) — continuing without GitNexus"
 fi
 
+banner graphify
 echo "==> Graphify..."
 if ! command -v uv &>/dev/null; then
   curl -LsSf https://astral.sh/uv/install.sh | sh
@@ -26,6 +146,7 @@ graphify install --platform cursor
 graphify hook install
 graphify update .
 
+banner kit
 echo ""
 echo "==> SDD Install Kit (payloads)..."
 if [[ -f "$REPO/sdd-kit/install.sh" ]]; then
@@ -40,7 +161,11 @@ if [[ -f "$REPO/sdd-kit/install.sh" ]]; then
   else
     PROFILE="DOCS_SPECS"
   fi
-  bash "$REPO/sdd-kit/install.sh" --profile "$PROFILE" --repo "$REPO" || {
+  INSTALL_ARGS=(--profile "$PROFILE" --repo "$REPO")
+  if [[ "$CHAT_LANG" == "pt-BR" || "$CHAT_LANG" == "en" ]]; then
+    INSTALL_ARGS+=(--chat-lang "$CHAT_LANG")
+  fi
+  bash "$REPO/sdd-kit/install.sh" "${INSTALL_ARGS[@]}" || {
     echo "WARN: sdd-kit/install.sh failed — run manually after editing project.md profile"
   }
 else

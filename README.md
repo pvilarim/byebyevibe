@@ -21,7 +21,11 @@ bash sdd-kit/install.sh --profile APP --dry-run
 
 Profiles: `APP` · `DOCS_SPECS` · `HYBRID` — see [`sdd-kit/README.md`](./sdd-kit/README.md).
 
-Full procedure (pt-BR): [`doc/sistema-sdd-pedro.md`](./doc/sistema-sdd-pedro.md) · first-contact §2.0b.
+### How the three tools fit
+
+**OpenSpec** captures intent (the playbook for a change). **GitNexus** maps your repo’s code so edits check impact first. **Graphify** maps what the team already knows so the AI doesn’t reinvent docs and decisions. **`sdd-kit/`** ships the control-plane payloads (rules, scripts, gates) into *this* repo. Full didactic path: guide [§2.1](./doc/sistema-sdd-pedro.md#21-order-matters).
+
+Full procedure: [`doc/sistema-sdd-pedro.md`](./doc/sistema-sdd-pedro.md) · first-contact §2.0b.
 
 ## The problem
 
