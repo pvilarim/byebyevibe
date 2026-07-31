@@ -1276,61 +1276,61 @@ The combination avoids writing "now call GitNexus" explicitly in every prompt.
 
 ---
 
-## 5. Documentos e referências cruzadas (questão 3.2)
+## 5. Documents and cross-references (question 3.2)
 
-### 5.1 Hierarquia de documentos
+### 5.1 Document hierarchy
 
-Há quatro níveis. Cada um aponta para o seguinte. **As referências cruzadas são o que faz o sistema funcionar como um todo.**
+There are four levels. Each points to the next. **Cross-references are what make the system work as a whole.**
 
 ```
-Nível 1 — Constitution (raramente muda)
-├── AGENTS.md                        ← entry point universal
-├── openspec/project.md              ← stack + convenções + decisões
-└── CLAUDE.md                        ← apenas referencia AGENTS.md
-└── .cursor/rules/000-base.mdc       ← apenas referencia AGENTS.md
+Level 1 — Constitution (rarely changes)
+├── AGENTS.md                        ← universal entry point
+├── openspec/project.md              ← stack + conventions + decisions
+└── CLAUDE.md                        ← only references AGENTS.md
+└── .cursor/rules/000-base.mdc       ← only references AGENTS.md
 
-Nível 2 — Specs vigentes (muda com cada feature)
+Level 2 — Current specs (changes with each feature)
 └── openspec/specs/<capability>/spec.md
 
-Nível 3 — Mudanças em curso (efémero, vira spec quando archive)
+Level 3 — Active changes (ephemeral, becomes spec on archive)
 └── openspec/changes/<change-id>/
     ├── proposal.md
     ├── design.md
     ├── tasks.md
     └── specs/
 
-Nível 4 — Conhecimento (regenerável, mas referenciado)
-├── graphify-out/GRAPH_REPORT.md     ← linkado de AGENTS.md
-├── graphify-out/graph.json          ← consumido via MCP
-└── .gitnexus/lbug                   ← consumido via MCP
+Level 4 — Knowledge (regenerable, but referenced)
+├── graphify-out/GRAPH_REPORT.md     ← linked from AGENTS.md
+├── graphify-out/graph.json          ← consumed via MCP
+└── .gitnexus/lbug                   ← consumed via MCP
 ```
 
-### 5.2 Referências cruzadas obrigatórias
+### 5.2 Mandatory cross-references
 
-Cada ficheiro deve referenciar explicitamente os outros relevantes. Sem isto, o agente não sabe que existem.
+Each file must explicitly reference the other relevant ones. Without this, the agent does not know they exist.
 
-**`AGENTS.md` deve conter** (templates completos em 12.2a / 12.2b):
+**`AGENTS.md` must contain** (full templates in 12.2a / 12.2b):
 
-- Secções obrigatórias: Contexto (aponta `project.md`), **Commands**, Fontes 1–7, **Contexto sob demanda**, Protocolo A–E, R1–R9, Workflow, **Integrações** (resumo), Segurança.
-- Ver §2.5 e anti-padrões §2.5.1.
+- Mandatory sections: Context (points to `project.md`), **Commands**, Sources 1–7, **On-demand context**, Protocol A–E, R1–R9, Workflow, **Integrations** (summary), Security.
+- See §2.5 and anti-patterns §2.5.1.
 
 ```markdown
-## Fontes de conhecimento (por prioridade)
+## Knowledge sources (by priority)
 
-1. `./openspec/specs/` — requisitos actuais
-2. `./openspec/changes/` — propostas e arquivo
+1. `./openspec/specs/` — current requirements
+2. `./openspec/changes/` — proposals and archive
 3. `./graphify-out/GRAPH_REPORT.md` — knowledge graph
-4. GitNexus via MCP — estrutura de código, impact
-5. Graphify via MCP ou CLI `graphify query` — conceitos
-6. Docs externos citados em `openspec/project.md`
-7. Web search (último recurso)
+4. GitNexus via MCP — code structure, impact
+5. Graphify via MCP or CLI `graphify query` — concepts
+6. External docs cited in `openspec/project.md`
+7. Web search (last resort)
 
-## Contexto sob demanda
+## On-demand context
 
-Ver tabela em §2.5.3 do guia de instalação (adaptar paths).
+See table in §2.5.3 of the install guide (adapt paths).
 ```
 
-**`openspec/project.md` deve conter**:
+**`openspec/project.md` must contain**:
 
 ```markdown
 ## Cross-references
@@ -1340,118 +1340,118 @@ Ver tabela em §2.5.3 do guia de instalação (adaptar paths).
 - Active changes are in `openspec/changes/` — always check before starting new work
 ```
 
-**`openspec/changes/<id>/design.md` deve, sempre que aplicável, citar**:
+**`openspec/changes/<id>/design.md` must, when applicable, cite**:
 
 ```markdown
 ## Knowledge sources consulted
 
-- Graphify: <conceito1> → <conceito2> via shortest_path (graph.json:node:xyz)
+- Graphify: <concept1> → <concept2> via shortest_path (graph.json:node:xyz)
 - GitNexus: impact analysis on AuthService showed 12 downstream dependents
 - Previous spec: openspec/specs/auth-session/spec.md
 - Previous archived change: openspec/changes/archive/2026-03-15-add-jwt/
 ```
 
-**`openspec/changes/<id>/tasks.md` deve seguir** o template **§12.10** (pattern pointers, gates). Decisões e alternativas ficam em `design.md` (§12.3) — não duplicar rationale nas tasks.
+**`openspec/changes/<id>/tasks.md` must follow** the **§12.10** template (pattern pointers, gates). Decisions and alternatives go in `design.md` (§12.3) — do not duplicate rationale in tasks.
 
-### 5.3 O que NÃO duplicar
+### 5.3 What NOT to duplicate
 
-Não copies stack ou convenções do `project.md` para o `AGENTS.md`. Aponta. A duplicação é a origem de drift — daqui a três meses tens duas versões da mesma regra em desacordo.
+Do not copy stack or conventions from `project.md` into `AGENTS.md`. Point to them. Duplication is the origin of drift — in three months you have two versions of the same rule in conflict.
 
-### 5.4 Quando regenerar referências
+### 5.4 When to regenerate references
 
-| Evento | Acção |
+| Event | Action |
 |---|---|
-| Mudaste muito código | `gitnexus analyze` |
-| Adicionaste docs/papers ao vault | `graphify . --update` |
-| Acabaste uma feature | `/opsx:archive` (actualiza specs) |
-| Onboarding novo dev/agente | Apenas garantir que abre o repo, AGENTS.md carrega tudo |
-| Hook automático | `graphify hook install` faz rebuild em cada commit |
+| You changed a lot of code | `gitnexus analyze` |
+| You added docs/papers to the vault | `graphify . --update` |
+| You finished a feature | `/opsx:archive` (updates specs) |
+| New dev/agent onboarding | Just ensure they open the repo, AGENTS.md loads everything |
+| Automatic hook | `graphify hook install` rebuilds on each commit |
 
-### 5.5 Avaliações de integração e aperfeiçoamento
+### 5.5 Integration evaluations and improvement
 
-Registo histórico de ferramentas e ideias **pesquisadas** para evoluir o stack SDD — adoptadas ou descartadas.
+Historical record of tools and ideas **researched** to evolve the SDD stack — adopted or discarded.
 
-| Artefacto | Papel |
+| Artifact | Role |
 |-----------|--------|
-| `doc/avaliacoes/README.md` | Índice e estados de decisão |
-| `doc/avaliacoes/TEMPLATE.md` | Modelo para novas avaliações |
-| `doc/avaliacoes/<data>-<slug>.md` | Avaliação individual |
+| `doc/avaliacoes/README.md` | Index and decision states |
+| `doc/avaliacoes/TEMPLATE.md` | Template for new evaluations |
+| `doc/avaliacoes/<date>-<slug>.md` | Individual evaluation |
 
-**Regra:** candidatos descartados aqui **não** entram no `sdd-kit` sem nova proposta OpenSpec. Exemplo: [Headroom](https://github.com/chopratejas/headroom) — compressão de contexto — **descartado** em 2026-03-26 (`doc/avaliacoes/2026-03-26-headroom-context-compression.md`).
+**Rule:** candidates discarded here **do not** enter `sdd-kit` without a new OpenSpec proposal. Example: [Headroom](https://github.com/chopratejas/headroom) — context compression — **discarded** on 2026-03-26 (`doc/avaliacoes/2026-03-26-headroom-context-compression.md`).
 
-### 5.6 Referências cruzadas — módulo de desenvolvimento de UI
+### 5.6 Cross-references — UI development module
 
-| Tema | Documento | Guia SDD |
+| Topic | Document | SDD Guide |
 |------|-----------|----------|
-| Instalação C1-UI | `doc/design/002-ui-module-install.md` | §2.11 |
-| Pipeline completa (shadcn default) | `doc/design/001-pipeline-open-design-shadcn-impeccable.md` | §2.11 passo 2 |
-| Impeccable isolado | `doc/design/000-impeccable-design-system-guia.md` | §2.11 |
-| Stacks sem shadcn | `doc/design/003-ui-stack-adapters.md` | §2.11 |
-| Script add-on | `sdd-kit/install-ui-module.sh` | §2.11 passo 3 |
-| Avaliação agregada | `doc/avaliacoes/2026-06-27-sdd-ui-development-module.md` | §5.5 |
-| Spec normativa | `openspec/specs/sdd-ui-module/spec.md` | após archive |
-| Estado workspace | `openspec/infra.md` — UI Development Module | §2.11.1 |
+| C1-UI installation | `doc/design/002-ui-module-install.md` | §2.11 |
+| Full pipeline (shadcn default) | `doc/design/001-pipeline-open-design-shadcn-impeccable.md` | §2.11 step 2 |
+| Impeccable standalone | `doc/design/000-impeccable-design-system-guia.md` | §2.11 |
+| Stacks without shadcn | `doc/design/003-ui-stack-adapters.md` | §2.11 |
+| Add-on script | `sdd-kit/install-ui-module.sh` | §2.11 step 3 |
+| Aggregate evaluation | `doc/avaliacoes/2026-06-27-sdd-ui-development-module.md` | §5.5 |
+| Normative spec | `openspec/specs/sdd-ui-module/spec.md` | after archive |
+| Workspace state | `openspec/infra.md` — UI Development Module | §2.11.1 |
 
-**Regra §5.3:** este guia **aponta** para `doc/design/*`; não copiar matrizes, prompts ou fluxos A–D do `001`.
+**Rule §5.3:** this guide **points** to `doc/design/*`; do not copy matrices, prompts, or A–D flows from `001`.
 
 ---
 
-## 6. Dimensão de research (questão 3.3)
+## 6. Research dimension (question 3.3)
 
-### 6.1 Quanto research é apropriado por tipo de tarefa
+### 6.1 How much research is appropriate per task type
 
-| Tipo | Tempo de research | Output esperado | Sinal de excesso |
+| Type | Research time | Expected output | Signal of excess |
 |---|---|---|---|
-| **A** | 0 | nenhum | qualquer research |
-| **B** | < 5 min | impact check do GitNexus (1 query) | leste mais de 3 ficheiros |
-| **C** | 15-30 min | AS-IS document de 1 página | mais de 500 linhas de notes |
-| **D** | 1-3 horas | `knowledge.md` (≤ 1 página) + `codebase.md` (≤ 1 página) | mais de 5 god-nodes referenciados, mais de 10 ficheiros lidos |
-| **E** | 2-8 horas | `research.md` com recomendação clara, alternativas, e riscos | research sem conclusão acionável |
+| **A** | 0 | none | any research |
+| **B** | < 5 min | GitNexus impact check (1 query) | read more than 3 files |
+| **C** | 15-30 min | 1-page AS-IS document | more than 500 lines of notes |
+| **D** | 1-3 hours | `knowledge.md` (≤ 1 page) + `codebase.md` (≤ 1 page) | more than 5 god-nodes referenced, more than 10 files read |
+| **E** | 2-8 hours | `research.md` with clear recommendation, alternatives, and risks | research with no actionable conclusion |
 
-### 6.2 Anti-padrões de research
+### 6.2 Research anti-patterns
 
-- **Boil-the-ocean**: ler tudo o que é tangencialmente relevante. *Solução*: definir 3 perguntas concretas antes de começar; parar quando respondidas.
-- **Confirmation bias**: research conduzido para validar uma decisão já tomada. *Solução*: forçar listagem de pelo menos 2 alternativas, mesmo que descartadas.
-- **Research-without-output**: 2 horas a ler, zero linhas escritas. *Solução*: começar a escrever `research.md` em 30 min mesmo com lacunas.
+- **Boil-the-ocean**: reading everything tangentially relevant. *Solution*: define 3 concrete questions before starting; stop when answered.
+- **Confirmation bias**: research conducted to validate an already-made decision. *Solution*: force listing of at least 2 alternatives, even if discarded.
+- **Research-without-output**: 2 hours reading, zero lines written. *Solution*: start writing `research.md` in 30 min even with gaps.
 
-### 6.3 Hierarquia de fontes — confiabilidade decrescente
-
-```
-1. Specs vigentes (openspec/specs/)              ← Verdade do projecto
-2. Specs arquivados (openspec/changes/archive/)  ← Verdade histórica decidida
-3. Knowledge graph do teu vault (Graphify)       ← Verdade tua, curada
-4. GitNexus (código actual)                      ← Verdade do que está running
-5. Docs externos referenciados no project.md     ← Verdade de upstream
-6. Web search                                    ← Suspeito até prova em contrário
-7. Memória do LLM sem fonte                      ← Não fiável, sempre verificar
-```
-
-Regra: **uma afirmação no `research.md` ou `design.md` que não pode ser ancorada num dos níveis 1-5 deve ser flagged como `[ASSUMPTION]` para validação humana**.
-
-### 6.4 Evitar fontes duvidosas
-
-Para web search (quando inevitável, como Tipo E novo):
-
-- Prefere domínios primários: docs oficiais, ArXiv, sites do projecto open-source, GitHub do projecto, RFC.
-- Rejeita: SEO content farms (medium spam, generic tutorials sem autor identificável), respostas StackOverflow sem confirmação cruzada, posts > 2 anos para ferramentas em mudança rápida.
-- Confirma cada claim em **pelo menos duas fontes independentes** se for usado para decisão arquitectural.
-- Para papers: prefere versões publicadas em conferências peer-reviewed; preprints ArXiv precisam de leitura crítica.
-
-Template para validar uma fonte antes de a adicionar ao Graphify:
+### 6.3 Source hierarchy — decreasing reliability
 
 ```
-- [ ] Autor identificado e credível no domínio?
-- [ ] Data publicação < 2 anos (para tech rápida) ou clássico estabelecido?
-- [ ] Conteúdo é primário (não citação de citação)?
-- [ ] Pode ser validado experimentalmente neste projecto?
-- [ ] Aceitar para Graphify? Sim/Não/Com nota de cautela
+1. Current specs (openspec/specs/)              ← Project truth
+2. Archived specs (openspec/changes/archive/)  ← Decided historical truth
+3. Your vault knowledge graph (Graphify)       ← Your curated truth
+4. GitNexus (current code)                      ← Truth of what is running
+5. External docs referenced in project.md     ← Upstream truth
+6. Web search                                    ← Suspect until proven otherwise
+7. LLM memory without source                      ← Unreliable, always verify
 ```
 
-### 6.5 Anti-alucinação no research
+Rule: **a statement in `research.md` or `design.md` that cannot be anchored to one of levels 1-5 must be flagged as `[ASSUMPTION]` for human validation**.
 
-- Graphify tagga cada edge como `EXTRACTED`, `INFERRED` ou `AMBIGUOUS` — usar isto. No `research.md`, ao citar uma relação, marcar de qual tipo veio.
-- GitNexus retorna staleness — se index é antigo, reindexar antes de confiar no impact.
-- LLM deve ser instruído (via AGENTS.md) a recusar afirmações sem fonte: "If you cannot point to a source in this repo's knowledge graph, write `[NEEDS VERIFICATION]` instead of guessing."
+### 6.4 Avoid dubious sources
+
+For web search (when inevitable, as in new Type E):
+
+- Prefer primary domains: official docs, ArXiv, open-source project sites, project GitHub, RFC.
+- Reject: SEO content farms (medium spam, generic tutorials without identifiable author), StackOverflow answers without cross-confirmation, posts > 2 years old for rapidly changing tools.
+- Confirm each claim in **at least two independent sources** if used for architectural decision.
+- For papers: prefer peer-reviewed conference publications; ArXiv preprints require critical reading.
+
+Template to validate a source before adding to Graphify:
+
+```
+- [ ] Author identified and credible in the domain?
+- [ ] Publication date < 2 years (for fast tech) or established classic?
+- [ ] Content is primary (not citation of citation)?
+- [ ] Can be validated experimentally in this project?
+- [ ] Accept for Graphify? Yes/No/With caution note
+```
+
+### 6.5 Anti-hallucination in research
+
+- Graphify tags each edge as `EXTRACTED`, `INFERRED` or `AMBIGUOUS` — use this. In `research.md`, when citing a relationship, mark which type it came from.
+- GitNexus returns staleness — if index is old, reindex before trusting impact.
+- LLM must be instructed (via AGENTS.md) to refuse claims without source: "If you cannot point to a source in this repo's knowledge graph, write `[NEEDS VERIFICATION]` instead of guessing."
 
 ---
 
