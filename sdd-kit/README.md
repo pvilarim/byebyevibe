@@ -2,7 +2,7 @@
 
 **ByeByeVibe** is the public name of this project. This folder (`sdd-kit/`) is the versioned **install payload** — commands and paths stay `sdd-kit/*`.
 
-Versioned payload for reproducible SDD stack install (scripts, rules, skeletons), separate from the procedure guide `doc/sistema-sdd-pedro.md`.
+Versioned payload for reproducible SDD stack install (scripts, rules, skeletons), separate from the procedure guide `doc/byebyevibe-guide.md`.
 
 ## What this is (first contact)
 
@@ -18,7 +18,7 @@ Versioned payload for reproducible SDD stack install (scripts, rules, skeletons)
 | **Probity / TDD enforce** (optional) | **G2** | APP/HYBRID — `@nizos/probity` after C1 |
 | **SDD metrics** (on demand) | **G4** | Retrospectives: lead time, rework — calibrate as you go |
 
-Discovery / hero: hub root [`README.md`](../README.md) (EN). Full procedure: [`doc/sistema-sdd-pedro.md`](../doc/sistema-sdd-pedro.md) §2.0b. Didactic narrative (What / Why / Without it + optional add-ons glance): guide **§2.1** and the block after **§2.8**.
+Discovery / hero: hub root [`README.md`](../README.md) (EN). Full procedure: [`doc/byebyevibe-guide.md`](../doc/byebyevibe-guide.md) §2.0b. Didactic narrative (What / Why / Without it + optional add-ons glance): guide **§2.1** and the block after **§2.8**.
 
 ## Scenarios
 
@@ -26,7 +26,7 @@ Discovery / hero: hub root [`README.md`](../README.md) (EN). Full procedure: [`d
 |------|-----------|---------------|
 | **C1** | Greenfield install (first time) | `bash scripts/bootstrap-sdd.sh` → `bash sdd-kit/install.sh --profile <PROFILE>` |
 | **C2** | SDD upgrade (new guide/kit version) | `bash sdd-kit/upgrade.sh --from X --to Y --dry-run` → approval → `--apply` |
-| **C2b** | Outdated CLIs only | `doc/sistema-sdd-pedro.md` §2.9.4 — **do not** touch the kit |
+| **C2b** | Outdated CLIs only | `doc/byebyevibe-guide.md` §2.9.4 — **do not** touch the kit |
 | **C3** | Domain specs propagation | git/reference under `openspec/specs/` — **do not** run `install.sh` or `upgrade.sh` |
 | **C1-UI** | Optional UI module (post-C1) | `bash sdd-kit/install-ui-module.sh --detect` → `--apply [--yes]` — see guide §2.11 |
 | **G2** | Probity module (TDD enforce, post-C1) | `bash sdd-kit/install-probity-module.sh --detect` → `--apply [--yes]` — pin `@nizos/probity@1.10.0`; guide §2.16 |
@@ -80,7 +80,7 @@ sdd-kit/
 
 The kit ships `.github/workflows/sdd-gates.yml` (template under `templates/.github/workflows/`) — a GitHub Actions workflow that runs SDD gates on `push`/`pull_request`, fail-closed on `openspec validate` (pinned version = `min_openspec`). It only orchestrates existing commands; no new dependency.
 
-> `[MANUAL ACTION REQUIRED]` For the gate to **block merge in practice**, the operator must enable branch protection on the repository (Settings → Branches → require status check "SDD Gates"). See `doc/sistema-sdd-pedro.md` §2.12.
+> `[MANUAL ACTION REQUIRED]` For the gate to **block merge in practice**, the operator must enable branch protection on the repository (Settings → Branches → require status check "SDD Gates"). See `doc/byebyevibe-guide.md` §2.12.
 
 ## Post-apply review skills (manual install)
 
@@ -114,6 +114,6 @@ Same procedure as above, replacing `correctness-review` with `simplify-review`.
 
 ## Version
 
-`MANIFEST.yaml` `version` MUST match changelog §14 of `doc/sistema-sdd-pedro.md` and `openspec/project.md` Cross-references.
+`MANIFEST.yaml` `version` MUST match changelog §14 of `doc/byebyevibe-guide.md` and `openspec/project.md` Cross-references.
 
 See guide **§1.6** for the four-layer model (procedure / payload / specs / state).

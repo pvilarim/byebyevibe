@@ -48,7 +48,7 @@ Coding agents forget context, hallucinate APIs, and overwrite each other's `AGEN
 | **Session locks** | Safe parallelism across git worktrees | Concurrent agents overwrite each other |
 | **AGENTS.md** | Single curated agent entry point ([agents.md](https://agents.md/)) | Install order fights and overwrites agent config |
 
-Full didactic install path: guide [§2.1](./doc/sistema-sdd-pedro.md#21-order-matters) · first-contact [§2.0b](./doc/sistema-sdd-pedro.md#20b-first-contact--vibe-coder-quickstart).
+Full didactic install path: guide [§2.1](./doc/byebyevibe-guide.md#21-order-matters) · first-contact [§2.0b](./doc/byebyevibe-guide.md#20b-first-contact--vibe-coder-quickstart).
 
 ## User-friendly OpenSpec
 
@@ -134,7 +134,7 @@ We **compose** OpenSpec; we don't replace it.
 | Doc | Language | Role |
 |-----|----------|------|
 | This README | EN | Discovery / first contact |
-| [`doc/sistema-sdd-pedro.md`](./doc/sistema-sdd-pedro.md) | pt-BR | Canonical install & operations guide |
+| [`doc/byebyevibe-guide.md`](./doc/byebyevibe-guide.md) | pt-BR | Canonical install & operations guide |
 | [`doc/sdd-operator-day1.md`](./doc/sdd-operator-day1.md) | EN | Day-1 operator map (`/opsx:help`) |
 | [`sdd-kit/README.md`](./sdd-kit/README.md) | pt-BR (+ EN intro) | Kit scenarios & commands |
 | [`doc/avaliacoes/2026-07-26-sdd-discovery-positioning.md`](./doc/avaliacoes/2026-07-26-sdd-discovery-positioning.md) | EN | Market / SEO / backlog decisions |

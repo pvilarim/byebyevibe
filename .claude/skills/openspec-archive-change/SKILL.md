@@ -147,7 +147,7 @@ After a successful archive, if `scripts/sdd-metrics.sh` exists:
 bash scripts/sdd-metrics.sh --check-cadence
 ```
 
-- Exit **1** → include in the handoff ≤5 lines suggesting `bash scripts/sdd-metrics.sh` + playbook in `doc/sistema-sdd-pedro.md` §2.17 (1 insight → 1 adjustment).
+- Exit **1** → include in the handoff ≤5 lines suggesting `bash scripts/sdd-metrics.sh` + playbook in `doc/byebyevibe-guide.md` §2.17 (1 insight → 1 adjustment).
 - Exit **0** → omit the metrics block.
 - Script missing or unexpected failure → **SKIP** (never fail archive; never auto-run the full report).
 

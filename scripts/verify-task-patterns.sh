@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Validate Pattern: paths in active OpenSpec tasks.md — see doc/sistema-sdd-pedro.md §12.10
+# Validate Pattern: paths in active OpenSpec tasks.md — see doc/byebyevibe-guide.md §12.10
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -35,7 +35,7 @@ while IFS= read -r -d '' tasks_file; do
   while IFS= read -r pattern || [[ -n "$pattern" ]]; do
     [[ -z "$pattern" ]] && continue
     # Skip descriptive patterns (section refs without file extension path)
-    if [[ "$pattern" =~ ^doc/sistema-sdd-pedro\.md ]]; then
+    if [[ "$pattern" =~ ^doc/byebyevibe-guide\.md ]]; then
       continue
     fi
 

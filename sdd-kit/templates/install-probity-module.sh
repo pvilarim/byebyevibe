@@ -203,7 +203,7 @@ section = f"""## Probity Module
 | Plugin / hook | {status} | Claude Code: `/plugin install probity@probity` |
 
 Módulo opcional G2 (APP/HYBRID com testes). DOCS_SPECS sem test runner: SKIP.
-Operação: `doc/sistema-sdd-pedro.md` §2.16 · `doc/design/004-probity-module-install.md`.
+Operação: `doc/byebyevibe-guide.md` §2.16 · `doc/design/004-probity-module-install.md`.
 
 """
 marker = "## Probity Module"

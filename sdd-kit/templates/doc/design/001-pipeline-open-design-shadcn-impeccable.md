@@ -6,7 +6,7 @@
 >
 > - **Origin:** [pvilarim/topocnc-art](https://github.com/pvilarim/topocnc-art) repository, branch `import/site-metal-p5`, imported on 2026-06-27 into **spec-pedro** (`gitnexus-graphify-openspec`).
 > - **Status:** `[REFERENCE — NEEDS ADAPTATION]` — conceptual pipeline validated in the source project; paths and route examples reflect an APP monorepo with a public site and 3D configurator.
-> - **Next step:** incorporate this pipeline into the canonical guide `doc/sistema-sdd-pedro.md` (future §: design system / UI) and propagate via `sdd-kit/` for SDD installation in **any** target repository (APP, HYBRID, or DOCS_SPECS with an app).
+> - **Next step:** incorporate this pipeline into the canonical guide `doc/byebyevibe-guide.md` (future §: design system / UI) and propagate via `sdd-kit/` for SDD installation in **any** target repository (APP, HYBRID, or DOCS_SPECS with an app).
 > - Sections marked **[if applicable]** refer to a 3D configurator, CNC, or `/app` routes — omit in projects without that domain.
 
 Reference document for the workflow from **visual prototyping** through **integration and maintenance** in production code (shadcn/ui + Impeccable).
@@ -575,7 +575,7 @@ Scope: public site only.
 |----------|---------|
 | [000-impeccable-design-system-guia.md](./000-impeccable-design-system-guia.md) | Impeccable standalone |
 | `AGENTS.md` | Agent routing |
-| `doc/sistema-sdd-pedro.md` | Canonical SDD guide — **future home for this pipeline** |
+| `doc/byebyevibe-guide.md` | Canonical SDD guide — **future home for this pipeline** |
 | `openspec/project.md` | Project constitution |
 | [Open Design](https://github.com/nexu-io/open-design) | Skills, `od-figma-migration` |
 | [Pencil docs](https://docs.pencil.dev) | Installation, MCP |

@@ -386,7 +386,7 @@ collect_dod_files() {
   for p in \
     AGENTS.md CLAUDE.md README.md \
     openspec/project.md openspec/infra.md \
-    doc/sistema-sdd-pedro.md
+    doc/byebyevibe-guide.md
   do
     [[ -f "$p" ]] && paths+=("$p")
   done

@@ -107,7 +107,7 @@ Create Automations via UI, `/automate`, or [marketplace templates](https://curso
 **Hard exclusions (Propose factory):**
 
 - **`doc/curso/**`** — out of language scope (human decision). Never invent `translate-curso-*`. Treat residual PT under `doc/curso/` as **not** a pending slice.
-- Prefer **install-critical** slices first: canonical guide `doc/sistema-sdd-pedro.md` (mid-file section slices OK), then kit/hub install payloads still lacking a propose. Avoid low-value meta (Session Handoff stub chrome) while the guide still has residual PT.
+- Prefer **install-critical** slices first: canonical guide `doc/byebyevibe-guide.md` (mid-file section slices OK), then kit/hub install payloads still lacking a propose. Avoid low-value meta (Session Handoff stub chrome) while the guide still has residual PT.
 
 **Instructions (paste into Automation UI — keep in sync with this section):**
 
@@ -124,7 +124,7 @@ HARD EXCLUSIONS — never propose these surfaces:
 - openspec/changes/archive/**
 
 PRIORITY order when choosing a slice:
-1) doc/sistema-sdd-pedro.md (canonical install guide) — section-sized mid-file slices OK within LOC budget
+1) doc/byebyevibe-guide.md (canonical install guide) — section-sized mid-file slices OK within LOC budget
 2) Remaining install-critical kit/hub paths still without an owning translate-* propose
 3) Other in-scope residual PT (avaliacoes, design, specs, …)
 Skip low-value meta (e.g. only Session Handoff stub label tweaks) while the guide still has residual PT.
@@ -215,7 +215,7 @@ STOP with Session Handoff for /opsx:archive (§6).
 
 ### 5.2.1 Guide apply chain (Automation B-guide) — sequential `translate-guide-wave-*`
 
-**Purpose:** after each **guide** apply PR merges on `master`, automatically run `/opsx:apply` for the **next** pending `translate-guide-wave-N` (waves share `doc/sistema-sdd-pedro.md` — **never** parallelize guide applies).
+**Purpose:** after each **guide** apply PR merges on `master`, automatically run `/opsx:apply` for the **next** pending `translate-guide-wave-N` (waves share `doc/byebyevibe-guide.md` — **never** parallelize guide applies).
 
 **When to use:** guide waves **5–14** (and any future `translate-guide-wave-*` with open tasks). Propose factory (§5.1) already created the changes; this chain only runs **apply**.
 
@@ -268,7 +268,7 @@ APPLY:
 1. git checkout master && git pull origin master
 2. git checkout -b "cursor/apply-${CHANGE_ID}-ee2e"
 3. Read proposal.md, design.md, tasks.md, doc/i18n/GLOSSARY.md
-4. /opsx:apply ${CHANGE_ID} — PT→EN in-place ONLY on doc/sistema-sdd-pedro.md lines in SLICE
+4. /opsx:apply ${CHANGE_ID} — PT→EN in-place ONLY on doc/byebyevibe-guide.md lines in SLICE
 5. Forbidden: dual-file *.en.md / *-pt.md; edits outside SLICE; openspec/changes/archive/**
 
 GATES (must pass; use SLICE from script):
@@ -279,7 +279,7 @@ GATES (must pass; use SLICE from script):
 PR + MERGE:
 - git commit -m "docs(sdd): apply ${CHANGE_ID}"
 - git push -u origin "cursor/apply-${CHANGE_ID}-ee2e"
-- gh pr create --base master --title "docs(sdd): apply ${CHANGE_ID}" --body "Slice ${SLICE} of doc/sistema-sdd-pedro.md. Gate: ${GATE}"
+- gh pr create --base master --title "docs(sdd): apply ${CHANGE_ID}" --body "Slice ${SLICE} of doc/byebyevibe-guide.md. Gate: ${GATE}"
 - gh pr ready <number>
 - gh pr merge <number> --merge --delete-branch
 
@@ -505,7 +505,7 @@ Local apply locks apply to persistent local worktrees. Ephemeral Cloud/CI agents
 1. `doc/i18n/WAVES.md` — budgets, order, gates  
 2. `doc/i18n/WAVE-PROPOSAL-TEMPLATE.md` — propose shape  
 3. `.cursor/rules/015-session-phases.mdc` — one phase per session  
-4. `doc/sistema-sdd-pedro.md` §3.3 — parallel worktrees / coordination  
+4. `doc/byebyevibe-guide.md` §3.3 — parallel worktrees / coordination  
 5. `openspec/specs/sdd-docs-language/spec.md` — normative language capability  
 6. `scripts/archive-and-merge.sh` — local helper for archive branch + push  
 7. https://cursor.com/docs/cloud-agent/automations — product triggers/tools  

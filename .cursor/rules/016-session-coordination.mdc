@@ -8,6 +8,6 @@ alwaysApply: true
 - **Apply MUST** run `scripts/sdd-session-register.sh` and `scripts/sdd-session-check.sh` **before** editing files; **MUST** run `scripts/sdd-session-release.sh` when finishing or pausing.
 - **Safe parallelism:** concurrent apply only in **separate git worktrees** (locks per worktree root).
 - **Explore/propose** read-only: advisory — use `bash scripts/sdd-session-status.sh` if unsure.
-- **Operational procedure:** `doc/sistema-sdd-pedro.md` §3.3 · requirements: `openspec/specs/sdd-session-coordination/` (after archive).
+- **Operational procedure:** `doc/byebyevibe-guide.md` §3.3 · requirements: `openspec/specs/sdd-session-coordination/` (after archive).
 - **R11** in `AGENTS.md` — short pointer; detail in `openspec/infra.md` (Session Coordination).
 - **CI exception:** ephemeral runners (GitHub Actions, etc.) are exempt from R11 — `.sdd/runtime/` is gitignored and does not persist; `sdd-session-register/check` applies only to local machines with persistent state.

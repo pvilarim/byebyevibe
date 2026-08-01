@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Compare curated SDD files in the repo with staging copies or sdd-kit/templates/.
 # Usage: ./scripts/sdd-upgrade-diff.sh [STAGING_DIR] [REPO_ROOT]
-# See doc/sistema-sdd-pedro.md §2.9.5 and §12.9
+# See doc/byebyevibe-guide.md §2.9.5 and §12.9
 
 set -euo pipefail
 
@@ -11,7 +11,7 @@ cd "$REPO_ROOT"
 
 GUIDE_VERSION=""
 if [[ -f openspec/project.md ]]; then
-  GUIDE_VERSION="$(grep -oE 'sistema-sdd-pedro\.md[^v]*v[0-9]+\.[0-9]+\.[0-9]+' openspec/project.md 2>/dev/null | grep -oE 'v[0-9]+\.[0-9]+\.[0-9]+' | head -1 || true)"
+  GUIDE_VERSION="$(grep -oE 'byebyevibe-guide\.md[^v]*v[0-9]+\.[0-9]+\.[0-9]+' openspec/project.md 2>/dev/null | grep -oE 'v[0-9]+\.[0-9]+\.[0-9]+' | head -1 || true)"
 fi
 
 echo "=== SDD upgrade diff ==="

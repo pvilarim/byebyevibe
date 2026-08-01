@@ -80,7 +80,7 @@ Fail-closed: `openspec validate`, `verify-task-patterns.sh`, **OSV-Scanner** (wh
 | Renovate (`renovate.json`) | APP/HYBRID only | `test -f renovate.json` |
 | Renovate GitHub App | `[MANUAL ACTION]` | guide §2.13 |
 
-Operation: `doc/sistema-sdd-pedro.md` §2.13.
+Operation: `doc/byebyevibe-guide.md` §2.13.
 
 ## UI Development Module
 
@@ -102,7 +102,7 @@ Operation: `doc/sistema-sdd-pedro.md` §2.13.
 | `sdd-kit/install-probity-module.sh` | [NEEDS VERIFICATION] | `test -x sdd-kit/install-probity-module.sh` |
 
 Optional G2 module (APP/HYBRID with tests). DOCS_SPECS without test runner: SKIP.
-Operation: `doc/sistema-sdd-pedro.md` §2.16 · `doc/design/004-probity-module-install.md`.
+Operation: `doc/byebyevibe-guide.md` §2.16 · `doc/design/004-probity-module-install.md`.
 
 ## SDD Metrics (G4)
 
@@ -111,7 +111,7 @@ Operation: `doc/sistema-sdd-pedro.md` §2.16 · `doc/design/004-probity-module-i
 | `scripts/sdd-metrics.sh` | ❌ | `test -x scripts/sdd-metrics.sh` |
 | On-demand report (mode C) | ❌ | `bash scripts/sdd-metrics.sh --help` |
 
-Local script (git + `openspec/changes/archive/`) — do **not** adopt Apache DevLake. Operation: `doc/sistema-sdd-pedro.md` §2.17.
+Local script (git + `openspec/changes/archive/`) — do **not** adopt Apache DevLake. Operation: `doc/byebyevibe-guide.md` §2.17.
 
 ## Env vars (names only)
 

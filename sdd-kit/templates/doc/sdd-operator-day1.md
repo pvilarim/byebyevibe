@@ -2,7 +2,7 @@
 
 Short tutorial for the first operating day after C1 install. Source of truth narrated by `/opsx:help`. Artifacts are English (F7); chat may follow `chat_language`.
 
-Canonical install guide (depth): [`doc/sistema-sdd-pedro.md`](./sistema-sdd-pedro.md).
+Canonical install guide (depth): [`doc/byebyevibe-guide.md`](./byebyevibe-guide.md).
 
 ---
 
@@ -73,8 +73,8 @@ Do **not** invent a product file named `roadmap.md` as an SDD runtime artifact.
 
 | Pointer | What it is |
 |---------|------------|
-| Guide [§12.3](./sistema-sdd-pedro.md) | `design.md` template |
-| Guide [§12.10](./sistema-sdd-pedro.md) | `tasks.md` Pattern + Gate |
+| Guide [§12.3](./byebyevibe-guide.md) | `design.md` template |
+| Guide [§12.10](./byebyevibe-guide.md) | `tasks.md` Pattern + Gate |
 | [`openspec/changes/_template/`](../openspec/changes/_template/) | In-repo proposal template (when shipped) |
 
 ---
@@ -103,7 +103,7 @@ Structure the human prompt with:
 Distinguish:
 
 - **Feature I/O** — product inputs/outputs you are designing (prompt craft above)
-- **Control-plane I/O** — OpenSpec / GitNexus / Graphify tool boxes in guide [§4.3](./sistema-sdd-pedro.md)
+- **Control-plane I/O** — OpenSpec / GitNexus / Graphify tool boxes in guide [§4.3](./byebyevibe-guide.md)
 
 ### Confidence (explore)
 
@@ -136,7 +136,7 @@ Copy-paste:
 | `tasks.md` | Executable checklist (Pattern + Gate) | Always before apply |
 | `research.md` | Explore notes | Only if explore ran |
 
-Templates: guide [§12.3](./sistema-sdd-pedro.md) (`design.md`), [§12.10](./sistema-sdd-pedro.md) (`tasks.md`).
+Templates: guide [§12.3](./byebyevibe-guide.md) (`design.md`), [§12.10](./byebyevibe-guide.md) (`tasks.md`).
 
 ### Confidence (propose)
 

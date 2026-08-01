@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Bootstrap SDD — see doc/sistema-sdd-pedro.md §2 / §12.6
+# Bootstrap SDD — see doc/byebyevibe-guide.md §2 / §12.6
 # C1 order: OpenSpec → GitNexus → Graphify → sdd-kit/install.sh (MUST NOT change)
 set -euo pipefail
 

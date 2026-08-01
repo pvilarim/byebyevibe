@@ -11,8 +11,8 @@
 # The `gate:` field is documentary metadata only — the suggested verification
 # command for manual or CI use. It MUST NOT be executed via `eval` or any
 # equivalent by install.sh, upgrade.sh, or any other script.
-version: "1.6.1"
-guide_version: "1.6.1"
+version: "1.7.0"
+guide_version: "1.7.0"
 min_openspec: "1.3.1"
 profiles: [APP, DOCS_SPECS, HYBRID]
 
@@ -26,7 +26,7 @@ files:
 
   - path: scripts/verify-task-patterns.sh
     source: templates/scripts/verify-task-patterns.sh
-    sha256: "acfdcf85a2b629f866d29be76824b4f0e55430bacf1861146c24bec1010d5652"
+    sha256: "e33d5f5db75af0146af07310581b92e3cf677d95f826af19228c4e672f644d36"
     merge: COPY
     profiles: [DOCS_SPECS, HYBRID]
     gate: "test -x scripts/verify-task-patterns.sh"
@@ -47,7 +47,7 @@ files:
 
   - path: scripts/sdd-session-check.sh
     source: templates/scripts/sdd-session-check.sh
-    sha256: "fe4b98d3d4c980ced865dbcfbe7caf38064930a8b3c5ba1b2c345a17b9399d3a"
+    sha256: "bcf68d84c79882ae62d8d8344a377ab1a7c5b5ab73f069d50034e2eb2dbe1dea"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "bash scripts/sdd-session-check.sh --phase explore"
@@ -75,21 +75,21 @@ files:
 
   - path: scripts/sdd-upgrade-diff.sh
     source: templates/scripts/sdd-upgrade-diff.sh
-    sha256: "b4f0d627a8ca0a824bf2d850512aa6d33cf629e3ad8382785724aa2cf196a674"
+    sha256: "1cafb00d85938235463107312a635749a9bc6a5051f798e8ae006fe2a6a81dfb"
     merge: MERGE
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -x scripts/sdd-upgrade-diff.sh"
 
   - path: scripts/sdd-metrics.sh
     source: templates/scripts/sdd-metrics.sh
-    sha256: "81eaf25f64ef2299cd7865b23467abd9a6998ffe833e3bad6f9348094a26cdcc"
+    sha256: "2d6626d5547b44dc5d6dbbcc6d2ba3a908cfc84f65833feb55cdb3d7f84e6d25"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -x scripts/sdd-metrics.sh"
 
   - path: scripts/bootstrap-sdd.sh
     source: templates/scripts/bootstrap-sdd.sh
-    sha256: "b1020749b0991cb69fc79577ff3038e666e5acaeb3cfff7ba3899d194221c6ac"
+    sha256: "928664af5f34e1da32bf47a9409f75f604730f2cbbb3e16d1d5b43da847e623b"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -x scripts/bootstrap-sdd.sh"
@@ -124,7 +124,7 @@ files:
 
   - path: .cursor/rules/016-session-coordination.mdc
     source: templates/.cursor/rules/016-session-coordination.mdc
-    sha256: "c6d2cb6fa44a369330fb7dcdc7ee274f3485a3856bca1812268114152d6f774b"
+    sha256: "a3fb87bd0455c626456aeca74a8243125eb34c6bdcd5bf146edc66cb9669b8bd"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f .cursor/rules/016-session-coordination.mdc"
@@ -166,21 +166,21 @@ files:
 
   - path: CLAUDE.md
     source: templates/CLAUDE.md
-    sha256: "5440300f7edfbac8cd6103d06a8f6e31f2f1cf0c3395cf7f8e249b78ce6c7be2"
+    sha256: "dd1e64a1fd42794da836549c90d208270b684b8b2e5ffdd477f95da3e84790cb"
     merge: MERGE
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f CLAUDE.md"
 
   - path: AGENTS.md
     source: templates/AGENTS.core.md
-    sha256: "54584251c4066ded472d4145b843cadb9f5d29ce9b4a13def332a8318eeb04b3"
+    sha256: "3da6d2e016c38cd277b430b0f9b2f9fe2192233d64ea179d53afebf5603fc19c"
     merge: MERGE_PROFILE
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test $(wc -l < AGENTS.md) -le 150"
 
   - path: openspec/infra.md
     source: templates/openspec/infra.md
-    sha256: "4bf9088b5dad6f95cc641e49812465233a323e35d241367b22f303edd41ffeed"
+    sha256: "3b7c1a812a20f7a6fa3e000ea2d2f60d88cdd425045d79c28fa40f482f582d81"
     merge: MERGE
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f openspec/infra.md"
@@ -201,21 +201,21 @@ files:
 
   - path: doc/design/000-impeccable-design-system-guia.md
     source: templates/doc/design/000-impeccable-design-system-guia.md
-    sha256: "3eb95ae59ffa0ce6959df25722d9f06a375e9a3437bb61bb9829cdcfd5727dd0"
+    sha256: "8b1c48f4a4d4c0ae012fa43702eda723dd4f99323a0477cf8069a20d0079f972"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f doc/design/000-impeccable-design-system-guia.md"
 
   - path: doc/design/001-pipeline-open-design-shadcn-impeccable.md
     source: templates/doc/design/001-pipeline-open-design-shadcn-impeccable.md
-    sha256: "0901467ed29d596aa805ea0b031ae10d69e643a2fdde158a1b26e71a14b69ac0"
+    sha256: "afacd7b20b5ba405ebb1a22f374636dd714eb966fcf360e5ca9f8e1dbf19d662"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f doc/design/001-pipeline-open-design-shadcn-impeccable.md"
 
   - path: doc/design/002-ui-module-install.md
     source: templates/doc/design/002-ui-module-install.md
-    sha256: "43de3d61ac653f6bc9733e972c0245b9d70eb529a9e6f1f5c325592b2c254591"
+    sha256: "dede087ad8e8894c9e19df201e17d7630f2be187b571f5851c5c844a049bdc0b"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f doc/design/002-ui-module-install.md"
@@ -238,7 +238,7 @@ files:
   # enabling as default in consumer repos (see openspec/changes/add-probity-tdd-module/piloto-nota.md).
   - path: sdd-kit/install-probity-module.sh
     source: templates/install-probity-module.sh
-    sha256: "3d97fef16ffdcef73e132c53327c60b20f8e460f958d2d8c26ca77ada897c4fd"
+    sha256: "5dd5832aecaccb48f79be864adf1f5801eb008cec77deb3d74c4415ceb4b03da"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -x sdd-kit/install-probity-module.sh"
@@ -260,14 +260,14 @@ files:
   # Day-1 operator onboarding (/opsx:help) — kit-owned; not OpenSpec ALL_WORKFLOWS
   - path: .cursor/skills/openspec-help/SKILL.md
     source: templates/.cursor/skills/openspec-help/SKILL.md
-    sha256: "c6b2569c114b50095934e29c6092f6177040e4ea3369b7501220249cca985b6f"
+    sha256: "d3d69af9582ea2523459140dc261ce87a4f67438aae3f6801bdd4e1c3e54196e"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f .cursor/skills/openspec-help/SKILL.md && grep -q sdd-operator-day1 .cursor/skills/openspec-help/SKILL.md"
 
   - path: .claude/skills/openspec-help/SKILL.md
     source: templates/.claude/skills/openspec-help/SKILL.md
-    sha256: "c6b2569c114b50095934e29c6092f6177040e4ea3369b7501220249cca985b6f"
+    sha256: "d3d69af9582ea2523459140dc261ce87a4f67438aae3f6801bdd4e1c3e54196e"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f .claude/skills/openspec-help/SKILL.md && grep -q sdd-operator-day1 .claude/skills/openspec-help/SKILL.md"
@@ -288,7 +288,7 @@ files:
 
   - path: doc/sdd-operator-day1.md
     source: templates/doc/sdd-operator-day1.md
-    sha256: "4b1d0e1744d5b6a583bd67f5d6acd5c433f7fccd025171a04a178e8c9f7007de"
+    sha256: "fd0b8fdfe8cbf5526b01e81e438e872dfb3dabeba5ef086c8c52307064c781ea"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -s doc/sdd-operator-day1.md && grep -q '/opsx:help' doc/sdd-operator-day1.md"

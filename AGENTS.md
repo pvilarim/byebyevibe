@@ -51,24 +51,24 @@ For type D/E work, **ALWAYS** consult Graphify and GitNexus before writing code.
 | Change in progress | `openspec/changes/<id>/` |
 | Theory / relations between concepts | `graphify-out/GRAPH_REPORT.md` |
 | Workshop and transcripts | `doc/curso/aula-*.md` |
-| SDD install guide (v1.6.1) | `doc/sistema-sdd-pedro.md` |
-| GitHub Issues MCP (human operation) | `doc/sistema-sdd-pedro.md` §2.15 |
-| UI module (C1-UI) | `doc/sistema-sdd-pedro.md` §2.11 · `doc/design/002-ui-module-install.md` |
-| Probity module (G2) | `doc/sistema-sdd-pedro.md` §2.16 · `doc/design/004-probity-module-install.md` |
-| SDD metrics (G4, mode C) | `doc/sistema-sdd-pedro.md` §2.17 · `bash scripts/sdd-metrics.sh` |
+| SDD install guide (v1.7.0) | `doc/byebyevibe-guide.md` (renamed 2026-08 from `doc/sistema-sdd-pedro.md`; archives/pre-rename specs cite the old name — same file) |
+| GitHub Issues MCP (human operation) | `doc/byebyevibe-guide.md` §2.15 |
+| UI module (C1-UI) | `doc/byebyevibe-guide.md` §2.11 · `doc/design/002-ui-module-install.md` |
+| Probity module (G2) | `doc/byebyevibe-guide.md` §2.16 · `doc/design/004-probity-module-install.md` |
+| SDD metrics (G4, mode C) | `doc/byebyevibe-guide.md` §2.17 · `bash scripts/sdd-metrics.sh` |
 | Docs language / i18n (EN default, waves) | `doc/i18n/GLOSSARY.md` · `doc/i18n/WAVES.md` · `bash scripts/verify-i18n-wave.sh` |
 | Install kit (SDD payload) | `sdd-kit/` |
-| SDD upgrade (repo already installed) | `doc/sistema-sdd-pedro.md` §2.9 |
+| SDD upgrade (repo already installed) | `doc/byebyevibe-guide.md` §2.9 |
 | CDP scripts / transcripts | `doc/curso/scripts/AGENTS.md` |
 | TypeScript (when applicable) | `.cursor/rules/010-typescript.mdc` |
 | Python | `.cursor/rules/020-python.mdc` |
 | Supabase | `.cursor/rules/030-supabase.mdc` |
 | Legacy / AS-IS | Ask for patterns **without creating files**; then document in `AGENTS.md` |
-| Atomic tasks (Pattern, Gate) | `doc/sistema-sdd-pedro.md` §12.10 |
+| Atomic tasks (Pattern, Gate) | `doc/byebyevibe-guide.md` §12.10 |
 | Installed infra (MCP, CLIs, skills) | `openspec/infra.md` |
 | Install kit (versioned payload) | `sdd-kit/` |
-| CI gates (sdd-gates, operation) | `doc/sistema-sdd-pedro.md` §2.12 · `.github/workflows/sdd-gates.yml` |
-| Supply chain (Renovate + OSV) | `doc/sistema-sdd-pedro.md` §2.13 |
+| CI gates (sdd-gates, operation) | `doc/byebyevibe-guide.md` §2.12 · `.github/workflows/sdd-gates.yml` |
+| Supply chain (Renovate + OSV) | `doc/byebyevibe-guide.md` §2.13 |
 | Integration evaluations / discarded tools | `doc/avaliacoes/` |
 | Discovery / root README (EN) + vibe→agentic positioning | Public brand **ByeByeVibe** · `README.md` · `doc/avaliacoes/2026-07-26-sdd-discovery-positioning.md` (payload `sdd-kit/`) |
 | Inserting new SDD tools (methodology + gaps) | `openspec/changes/explore-oss-coverage-gaps/` |
@@ -86,7 +86,7 @@ For type D/E work, **ALWAYS** consult Graphify and GitNexus before writing code.
 | [`doc/design/002-ui-module-install.md`](./doc/design/002-ui-module-install.md) | C1-UI install (`install-ui-module.sh`) |
 | [`doc/design/003-ui-stack-adapters.md`](./doc/design/003-ui-stack-adapters.md) | Adapters tailwind-custom / other |
 
-> Integrated into the canonical guide `doc/sistema-sdd-pedro.md` §2.11 (v1.4.0).
+> Integrated into the canonical guide `doc/byebyevibe-guide.md` §2.11 (v1.4.0).
 
 ## Task Classification Protocol
 
