@@ -4,6 +4,7 @@
 | `npm test` / `pnpm test` | Tests |
 | `npm run lint` | Lint |
 | `npx openspec list` | OpenSpec changes |
+| `/opsx:help` | Day-1 operator tutorial (ByeByeVibe control plane) |
 | `npx gitnexus analyze --force` | Reindex code |
 | `graphify update .` | Update graph |
 | `bash scripts/sdd-session-status.sh` | Active SDD sessions (local worktree) |

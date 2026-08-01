@@ -341,6 +341,24 @@ PY
 
 inject_language_policy
 
+print_day1_operate_tip() {
+  # Day-1 operate reminder (pointers only — NEVER invokes help/onboard here)
+  echo ""
+  if $DRY_RUN; then
+    if [[ "$CHAT_LANG" == "pt-BR" ]]; then
+      echo "PLAN — Operar no dia 1: /opsx:help (mapa deste control plane) e depois /opsx:onboard (praticar um ciclo completo — OpenSpec upstream)."
+    else
+      echo "PLAN — Day-1 operate: /opsx:help (map this control plane) then /opsx:onboard (practice a full cycle — upstream OpenSpec)."
+    fi
+    return 0
+  fi
+  if [[ "$CHAT_LANG" == "pt-BR" ]]; then
+    echo "Operar no dia 1: /opsx:help (mapa deste control plane) e depois /opsx:onboard (praticar um ciclo completo — OpenSpec upstream)."
+  else
+    echo "Day-1 operate: /opsx:help (map this control plane) then /opsx:onboard (practice a full cycle — upstream OpenSpec)."
+  fi
+}
+
 print_optional_addons_teaser() {
   # Optional entry points (pointers only — NEVER invoked here):
   #   install-ui-module.sh · install-probity-module.sh · sdd-metrics.sh · guide §2.12
@@ -386,4 +404,5 @@ echo "  1. Edit openspec/project.md (Purpose, Stack — do not replace with temp
 echo "  2. Merge AGENTS.md if it already existed"
 echo "  3. bash sdd-kit/verify.sh"
 echo "  4. Checklist doc/sistema-sdd-pedro.md §2.8"
+print_day1_operate_tip
 print_optional_addons_teaser

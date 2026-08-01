@@ -15,6 +15,7 @@ See `./openspec/project.md` (stack, conventions, constraints). **Do not duplicat
 | `npx openspec new change "<id>"` | Create change (CLI) |
 | `npx openspec validate <id>` | Validate change |
 | `/opsx:propose` · `/opsx:apply` · `/opsx:archive` | Workflow Cursor/Claude |
+| `/opsx:help` | Day-1 operator tutorial (ByeByeVibe control plane) |
 | `npx gitnexus status` | Code index status |
 | `npx gitnexus analyze --force` | Reindex after changes |
 | `graphify update .` | Update graph (AST, no LLM) |

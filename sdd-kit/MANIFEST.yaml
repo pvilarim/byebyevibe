@@ -89,7 +89,7 @@ files:
 
   - path: scripts/bootstrap-sdd.sh
     source: templates/scripts/bootstrap-sdd.sh
-    sha256: "6bd3b612ca1287877716f488781e04e1f01dae956f7792bf330c81d4d8bbee66"
+    sha256: "3ff45fb2959a8d3514771c342facc2f50a8234c9018ad37e796abbe537160981"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -x scripts/bootstrap-sdd.sh"
@@ -173,7 +173,7 @@ files:
 
   - path: openspec/infra.md
     source: templates/openspec/infra.md
-    sha256: "e7091200592c39fc216d5625a83bea0603253845983c8b1f681a956802882978"
+    sha256: "8c91f35ef8ccd99eff515ec30927682b403c4acece8de7c704ba92e82e9b0f44"
     merge: MERGE
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f openspec/infra.md"
@@ -249,3 +249,39 @@ files:
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f doc/design/004-probity-module-install.md"
+
+  # Day-1 operator onboarding (/opsx:help) — kit-owned; not OpenSpec ALL_WORKFLOWS
+  - path: .cursor/skills/openspec-help/SKILL.md
+    source: templates/.cursor/skills/openspec-help/SKILL.md
+    sha256: "b08fc5fc1b46b871492cdb519e57e2883a85fae916ed8c05a0110ec2cfca1f78"
+    merge: COPY
+    profiles: [APP, DOCS_SPECS, HYBRID]
+    gate: "test -f .cursor/skills/openspec-help/SKILL.md && grep -q sdd-operator-day1 .cursor/skills/openspec-help/SKILL.md"
+
+  - path: .claude/skills/openspec-help/SKILL.md
+    source: templates/.claude/skills/openspec-help/SKILL.md
+    sha256: "b08fc5fc1b46b871492cdb519e57e2883a85fae916ed8c05a0110ec2cfca1f78"
+    merge: COPY
+    profiles: [APP, DOCS_SPECS, HYBRID]
+    gate: "test -f .claude/skills/openspec-help/SKILL.md && grep -q sdd-operator-day1 .claude/skills/openspec-help/SKILL.md"
+
+  - path: .cursor/commands/opsx-help.md
+    source: templates/.cursor/commands/opsx-help.md
+    sha256: "f50a9716f36aca8da212858ba9a3f5d2506d708ea5fd83e12b0205785ec354cc"
+    merge: COPY
+    profiles: [APP, DOCS_SPECS, HYBRID]
+    gate: "test -f .cursor/commands/opsx-help.md && grep -qE 'opsx:help|/opsx:help|openspec-help' .cursor/commands/opsx-help.md"
+
+  - path: .claude/commands/opsx/help.md
+    source: templates/.claude/commands/opsx/help.md
+    sha256: "681a7ae323cead90e0a118842b2d56a45478d4459faf1ed0ec546ec9d11999fc"
+    merge: COPY
+    profiles: [APP, DOCS_SPECS, HYBRID]
+    gate: "test -f .claude/commands/opsx/help.md && grep -qE 'opsx:help|/opsx:help|openspec-help' .claude/commands/opsx/help.md"
+
+  - path: doc/sdd-operator-day1.md
+    source: templates/doc/sdd-operator-day1.md
+    sha256: "1ae97a3a6bd935560d9b64242d838344bb4da13966ad5a0ecf35774e2c718c78"
+    merge: COPY
+    profiles: [APP, DOCS_SPECS, HYBRID]
+    gate: "test -s doc/sdd-operator-day1.md && grep -q '/opsx:help' doc/sdd-operator-day1.md"

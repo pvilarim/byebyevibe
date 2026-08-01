@@ -469,6 +469,8 @@ You should see the agent create `openspec/changes/add-user-input-validation/` wi
 
 If something fails: run `gitnexus status`, verify `mcp.json` is correct, and re-read AGENTS.md.
 
+**Day-1 operate (optional):** after the sanity check, run `/opsx:help` to walk the control-plane map (`doc/sdd-operator-day1.md`), then optionally `/opsx:onboard` (upstream OpenSpec) to practice a full cycle. See evaluation `doc/avaliacoes/2026-08-01-sdd-operator-onboarding.md`.
+
 ### 2.8 Post-installation verification (checklist)
 
 Use after every installation (human or AI):
@@ -494,6 +496,7 @@ Use after every installation (human or AI):
 - [ ] `bash scripts/verify-infra.sh` completes without error (or document ❌ pending items)
 - [ ] `.github/workflows/sdd-gates.yml` present (see §2.12 to configure branch protection manually)
 - [ ] `renovate.json` present if APP/HYBRID profile (see §2.13 to install the Renovate app)
+- [ ] *(optional, soft)* `/opsx:help` (or `doc/sdd-operator-day1.md`) — day-1 map; non-blocking; `verify.sh` MUST NOT fail solely for skipping it
 
 ### Optional add-ons at a glance
 

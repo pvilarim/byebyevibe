@@ -29,6 +29,7 @@
 | `.cursor/skills/openspec-propose/` | propose | [NEEDS VERIFICATION] |
 | `.cursor/skills/openspec-apply-change/` | apply | [NEEDS VERIFICATION] |
 | `.cursor/skills/openspec-archive-change/` | archive | [NEEDS VERIFICATION] |
+| `.cursor/skills/openspec-help/` (`/opsx:help`) | day-1 operate (mode C) | [NEEDS VERIFICATION] |
 
 ## Session Coordination
 
