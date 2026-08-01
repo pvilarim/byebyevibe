@@ -180,3 +180,4 @@ echo "  3. Language policy: use install.sh flags (--chat-lang, --docs-lang, --co
 echo "  4. Do NOT paste full gitnexus:start blocks into AGENTS.md"
 echo "  5. bash sdd-kit/verify.sh + checklist section 2.8 in the guide"
 echo "  6. Restart IDE; test /opsx:propose"
+echo "  7. Day-1 operate: /opsx:help (map) then /opsx:onboard (practice — upstream OpenSpec)"

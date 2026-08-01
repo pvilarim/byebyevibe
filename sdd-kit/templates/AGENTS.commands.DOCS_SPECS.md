@@ -3,6 +3,7 @@
 | `npx openspec list` | Active changes |
 | `npx openspec new change "<id>"` | New change (CLI) |
 | `/opsx:propose` · `/opsx:apply` · `/opsx:archive` | Workflow Cursor/Claude |
+| `/opsx:help` | Day-1 operator tutorial (ByeByeVibe control plane) |
 | `npx gitnexus status` | Index status |
 | `npx gitnexus analyze --force` | Reindex |
 | `graphify update .` | AST graph |

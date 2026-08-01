@@ -29,6 +29,7 @@ Historical record of tools, patterns, and ideas **evaluated** for the **OpenSpec
 
 | Date | Candidate | Decision | Document |
 |------|-----------|----------|----------|
+| 2026-08-01 | SDD operator day-1 onboarding — `/opsx:help` + day-1 doc + tip (Option A) | **Adopted** — complementary to upstream `/opsx:onboard` | [2026-08-01-sdd-operator-onboarding.md](./2026-08-01-sdd-operator-onboarding.md) · [explore research](../../openspec/changes/explore-sdd-operator-onboarding/research.md) |
 | 2026-07-26 | Positioning and discovery — ByeByeVibe (vibe → agentic); P10 adopted in docs | **Mixed** — P1–P4 + P10 Adopted; P11/P12 (i18n + root CHANGELOG) Deferred until public release; P5 / fame Deferred or Do not implement | [2026-07-26-sdd-discovery-positioning.md](./2026-07-26-sdd-discovery-positioning.md) · [explore research](../../openspec/changes/explore-public-release-surface/research.md) |
 | 2026-03-26 | [Headroom](https://github.com/chopratejas/headroom) — context compression for agents | **Discarded** | [2026-03-26-headroom-context-compression.md](./2026-03-26-headroom-context-compression.md) |
 | 2026-06-27 | SDD UI module (Impeccable + Open Design + Pencil + shadcn) — `add-sdd-ui-development-module` | **Adopted** | [2026-06-27-sdd-ui-development-module.md](./2026-06-27-sdd-ui-development-module.md) |

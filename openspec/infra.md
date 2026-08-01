@@ -29,6 +29,7 @@
 | `.cursor/skills/openspec-propose/` | propose | ✅ |
 | `.cursor/skills/openspec-apply-change/` | apply | ✅ |
 | `.cursor/skills/openspec-archive-change/` | archive | ✅ |
+| `.cursor/skills/openspec-help/` (`/opsx:help`) | day-1 operate (mode C) | ✅ |
 | `.claude/skills/openspec-*/` | all | ✅ (mirror) |
 | `.claude/skills/gitnexus/` | impact/debug | ✅ |
 | `.cursor/skills/simplify-review/` | review | ✅ |
