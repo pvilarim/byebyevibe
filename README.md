@@ -2,9 +2,6 @@
 
 **From vibe coding to shippable AI engineering.**
 
-> **Not another Next.js starter — the SDD control plane**  
-> **(OpenSpec + graphs + gates) your repo is missing.**
-
 **ByeByeVibe** is the public name of this project. The install payload lives in `sdd-kit/`.
 
 An **installable toolkit for AI-assisted development** on **Cursor** and **Claude Code** — the missing operating system between your coding agent and a maintainable repo. Specs, code & knowledge graphs, CI gates, and session discipline, packaged so you don't invent process from scratch.
@@ -18,6 +15,9 @@ An **installable toolkit for AI-assisted development** on **Cursor** and **Claud
 - **Team knowledge reused** — Graphify surfaces architecture and past decisions without blind grepping
 - **Enforced quality** — CI `sdd-gates` validates specs and task patterns (fail-closed)
 - **Versioned control plane** — `sdd-kit/` installs and upgrades rules, scripts, and gates with `MANIFEST.yaml`
+
+> **Not another Next.js starter — the SDD control plane**  
+> **(OpenSpec + graphs + gates) your repo is missing.**
 
 ## Get started (30 seconds)
 
