@@ -11,7 +11,7 @@ The distribution repository MUST include `sdd-kit/` at repository root with at m
 #### Scenario: Hub repository layout
 
 - **WHEN** an operator clones the SDD distribution hub (e.g. spec-pedro)
-- **THEN** `sdd-kit/MANIFEST.yaml` exists with `version` and `guide_version` fields matching `doc/sistema-sdd-pedro.md` header changelog entry
+- **THEN** `sdd-kit/MANIFEST.yaml` exists with `version` and `guide_version` fields matching `doc/byebyevibe-guide.md` header changelog entry
 
 #### Scenario: Manifest lists all curated SDD files
 
@@ -118,7 +118,7 @@ When `sdd-kit/verify.sh` runs in a repository where `sdd-kit/templates/` is pres
 
 ### Requirement: Guide documents project organization and scenarios
 
-`doc/sistema-sdd-pedro.md` MUST include section **§1.6** (or equivalent numbered section) documenting: four-layer model (procedure / payload / specs / workspace state), scenarios C1 (greenfield), C2 (SDD upgrade), C2b (CLI-only), C3 (spec propagation without SDD reinstall), and profile differences APP / DOCS_SPECS / HYBRID.
+`doc/byebyevibe-guide.md` MUST include section **§1.6** (or equivalent numbered section) documenting: four-layer model (procedure / payload / specs / workspace state), scenarios C1 (greenfield), C2 (SDD upgrade), C2b (CLI-only), C3 (spec propagation without SDD reinstall), and profile differences APP / DOCS_SPECS / HYBRID.
 
 #### Scenario: Human reads installation scenarios
 
@@ -132,12 +132,12 @@ When `sdd-kit/verify.sh` runs in a repository where `sdd-kit/templates/` is pres
 
 ### Requirement: Version alignment on release
 
-On each kit release, `MANIFEST.yaml` `version`, guide header version, guide changelog §14 entry, and `openspec/project.md` Cross-references MUST reference the same semantic version.
+On each kit release, `MANIFEST.yaml` `version`, guide header version, guide changelog §14 entry, and `openspec/project.md` Cross-references MUST reference the same semantic version. The canonical guide path is `doc/byebyevibe-guide.md` (renamed 2026-08 from `doc/sistema-sdd-pedro.md`; pre-rename artifacts cite the old name for the same document).
 
 #### Scenario: Version consistency check
 
-- **WHEN** `grep guide_version sdd-kit/MANIFEST.yaml` returns `1.3.0`
-- **THEN** `doc/sistema-sdd-pedro.md` changelog includes `1.3.0` and `openspec/project.md` references guia **v1.3.0**
+- **WHEN** `grep guide_version sdd-kit/MANIFEST.yaml` returns `1.7.0`
+- **THEN** `doc/byebyevibe-guide.md` changelog includes `1.7.0` and `openspec/project.md` references guide **v1.7.0**
 
 ### Requirement: Spec propagation is not SDD reinstall
 
