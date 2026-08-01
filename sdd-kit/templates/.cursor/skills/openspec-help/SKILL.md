@@ -22,7 +22,7 @@ On-demand tutorial for the ByeByeVibe **control plane**. Thin orchestration only
 
 1. **Read the canonical day-1 doc**
 
-   Read `doc/sdd-operator-day1.md` in full (or walk §0–§7 in order if the operator asks for a section).
+   Read `doc/sdd-operator-day1.md` in full (or walk §0–§8 in order if the operator asks for a section).
 
 2. **Narrate the outline (do not invent a second essay)**
 
@@ -37,13 +37,15 @@ On-demand tutorial for the ByeByeVibe **control plane**. Thin orchestration only
    | 4 | propose (+ artifact glossary / `design.md` + confidence) |
    | 5 | apply (+ gates / handoff + confidence) |
    | 6 | archive (+ specs/archive + confidence) |
-   | 7 | Next step (handoff / small change) |
+   | 7 | Skills — memory beyond specs (litmus test, lifecycle, agent-routed creation) |
+   | 8 | Next step (handoff / small change) |
 
 3. **Keep framing honest**
 
    - Chat is ephemeral; `openspec/` (+ graphs) is durable memory.
    - “Roadmap” → `openspec/changes/` + `openspec/specs/`; “milestones” → `tasks.md` sections — never invent `roadmap.md`.
    - Not every task needs explore (types A/B).
+   - Skills are memory over chat: create one only when repetition proves it (rule of three), never before development starts — and ask the agent to create it (see day-1 §7 and `sdd-skill-guidance`).
    - Point to guide `doc/sistema-sdd-pedro.md` for depth (§2.7–2.8, §4.3, §12.3, §12.10) — do not rewrite §3/§4 here.
 
 4. **Infra**
@@ -52,7 +54,7 @@ On-demand tutorial for the ByeByeVibe **control plane**. Thin orchestration only
 
 5. **Optional Session Handoff**
 
-   When narration finishes, you MAY offer a short handoff toward `/opsx:onboard` or `/opsx:propose` (see day-1 §7). Still name both help and onboard.
+   When narration finishes, you MAY offer a short handoff toward `/opsx:onboard` or `/opsx:propose` (see day-1 §8). Still name both help and onboard.
 
 ---
 

@@ -187,13 +187,36 @@ Before editing (local machines): `sdd-session-register` + `sdd-session-check`; o
 1. Are all tasks complete (or explicitly deferred with a follow-up change)?
 2. Do archived specs match what was applied?
 3. Is the archive folder path correct under `openspec/changes/archive/`?
-4. **Meta:** What must a new agent read, without this chat, to continue?
+4. Did anything in this change repeat a procedure or explanation from a previous change? (rule of three: 1st normal, 2nd note it, 3rd extract a skill — see §7)
+5. **Meta:** What must a new agent read, without this chat, to continue?
 
 **Objective check:** change appears under `openspec/changes/archive/`; `npx openspec list` no longer shows it as active.
 
 ---
 
-## 7. Next step — Session Handoff example
+## 7. Skills — memory beyond specs
+
+Skills are procedural memory the agent recalls automatically: a short trigger description charged to every session, with the full content loaded only when the topic comes up. They complement — never replace — the other memory layers:
+
+| Layer | Holds | Example |
+|-------|-------|---------|
+| Skill | How-to / procedural knowledge | "feasibility studies for Recife-PE follow these steps…" |
+| `openspec/specs/` | Required behavior (`WHEN` / `THEN`) | "the report MUST include zoning limits" |
+| [`openspec/project.md`](../openspec/project.md) | Constitution (purpose, stack, non-goals) | "artifacts are English; chat follows `chat_language`" |
+
+**When a skill helps — litmus test:** *would a competent generalist with internet access still get this wrong or do it differently than you want?* If yes (local law or norm, company thresholds, proprietary method, required output format), a skill pays for itself. If no (generic stack knowledge, "act as X" personas), it is pure token cost — skip it.
+
+**You do NOT need to write skills before starting development.** Good skills crystallize from repetition, not speculation. Work normally; when you notice yourself teaching the agent the same thing again — or the agent offers to save it — that is the moment.
+
+**Ask the agent to create it.** Never hand-write `SKILL.md`: say "create a skill for <topic>" and the agent produces the correct format, checks for an existing skill to extend first, and keeps the trigger description lean. If the skill contains volatile data (regulation values, market figures), it gets a "verified on YYYY-MM" marker — skills do not update themselves, so stale data must be corrected by you.
+
+**Lifecycle — create → measure → prune:** the rule of three governs extraction (1st time normal, 2nd time note it, 3rd time extract a skill — the archive confidence question in §6 asks exactly this). Skills that never fire or overlap a sibling should be merged or deleted, like dead code.
+
+Depth for agents: the `sdd-skill-guidance` skill (detection signals, standard suggestion message, creation hygiene).
+
+---
+
+## 8. Next step — Session Handoff example
 
 After this map, practice a full cycle with upstream onboard (optional but recommended):
 

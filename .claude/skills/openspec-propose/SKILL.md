@@ -126,6 +126,20 @@ When creating `tasks.md`, follow `doc/sistema-sdd-pedro.md` §12.10:
 
 ---
 
+## Skill suggestion (domain-density detection)
+
+During the conversation, watch for domain-density signals: the user cites a local law, norm, or technical table; states company-specific numbers or thresholds; **corrects you on a domain fact** (gold signal); re-explains or re-pastes previously provided material; or narrates a proprietary step-by-step method.
+
+On recognition, offer the standard three-part message (never create a skill unprompted):
+
+1. **Will:** "If we save this as a skill, future sessions recall it automatically whenever <topic> comes up."
+2. **Won't:** "It does not update itself — if the law/number/method changes, you must ask to update it, or it will keep asserting stale data."
+3. **Decide:** "Want me to create it? (yes / no / later)"
+
+Cap: at most **one suggestion per session** — offer only, the user decides. If accepted, load the `sdd-skill-guidance` skill for creation hygiene (search-before-create, description diet, task-based naming, "verified on YYYY-MM" marker).
+
+---
+
 ## Session Handoff
 
 This phase is complete. **Suggestion: open a new chat** for the next phase (clean context).

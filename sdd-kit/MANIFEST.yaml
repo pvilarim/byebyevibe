@@ -260,35 +260,50 @@ files:
   # Day-1 operator onboarding (/opsx:help) — kit-owned; not OpenSpec ALL_WORKFLOWS
   - path: .cursor/skills/openspec-help/SKILL.md
     source: templates/.cursor/skills/openspec-help/SKILL.md
-    sha256: "b08fc5fc1b46b871492cdb519e57e2883a85fae916ed8c05a0110ec2cfca1f78"
+    sha256: "8f7e9ea7ab2bbadfae1909c7cca4df3f57c42506c24c2221a5ae9f87b913c3af"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f .cursor/skills/openspec-help/SKILL.md && grep -q sdd-operator-day1 .cursor/skills/openspec-help/SKILL.md"
 
   - path: .claude/skills/openspec-help/SKILL.md
     source: templates/.claude/skills/openspec-help/SKILL.md
-    sha256: "b08fc5fc1b46b871492cdb519e57e2883a85fae916ed8c05a0110ec2cfca1f78"
+    sha256: "8f7e9ea7ab2bbadfae1909c7cca4df3f57c42506c24c2221a5ae9f87b913c3af"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f .claude/skills/openspec-help/SKILL.md && grep -q sdd-operator-day1 .claude/skills/openspec-help/SKILL.md"
 
   - path: .cursor/commands/opsx-help.md
     source: templates/.cursor/commands/opsx-help.md
-    sha256: "f50a9716f36aca8da212858ba9a3f5d2506d708ea5fd83e12b0205785ec354cc"
+    sha256: "dc87d6f716297b6df782dd1b773706e22e200d083d781f5bcda4cd47221e7100"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f .cursor/commands/opsx-help.md && grep -qE 'opsx:help|/opsx:help|openspec-help' .cursor/commands/opsx-help.md"
 
   - path: .claude/commands/opsx/help.md
     source: templates/.claude/commands/opsx/help.md
-    sha256: "681a7ae323cead90e0a118842b2d56a45478d4459faf1ed0ec546ec9d11999fc"
+    sha256: "b16e5234d9f60dbb580d7f45649985443c7e4659714332008dc91cb8e47f7027"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f .claude/commands/opsx/help.md && grep -qE 'opsx:help|/opsx:help|openspec-help' .claude/commands/opsx/help.md"
 
   - path: doc/sdd-operator-day1.md
     source: templates/doc/sdd-operator-day1.md
-    sha256: "1ae97a3a6bd935560d9b64242d838344bb4da13966ad5a0ecf35774e2c718c78"
+    sha256: "95ac68aed19ea6cf07366fc3e58a7530b0601becc2a342fc3e39e49a5e50a52a"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -s doc/sdd-operator-day1.md && grep -q '/opsx:help' doc/sdd-operator-day1.md"
+
+  # Skill lifecycle guidance (sdd-skill-guidance) — kit-owned; not OpenSpec ALL_WORKFLOWS
+  - path: .cursor/skills/sdd-skill-guidance/SKILL.md
+    source: templates/.cursor/skills/sdd-skill-guidance/SKILL.md
+    sha256: "0196614445d5da9d2b2ad19f3b7e4efea314ec5dfd8c98ac6f3edf1751859ac4"
+    merge: COPY
+    profiles: [APP, DOCS_SPECS, HYBRID]
+    gate: "test -f .cursor/skills/sdd-skill-guidance/SKILL.md && grep -q 'verified on' .cursor/skills/sdd-skill-guidance/SKILL.md"
+
+  - path: .claude/skills/sdd-skill-guidance/SKILL.md
+    source: templates/.claude/skills/sdd-skill-guidance/SKILL.md
+    sha256: "0196614445d5da9d2b2ad19f3b7e4efea314ec5dfd8c98ac6f3edf1751859ac4"
+    merge: COPY
+    profiles: [APP, DOCS_SPECS, HYBRID]
+    gate: "test -f .claude/skills/sdd-skill-guidance/SKILL.md && grep -q 'verified on' .claude/skills/sdd-skill-guidance/SKILL.md"

@@ -71,6 +71,10 @@ Archive a completed change in the experimental workflow.
 
    > Did this change establish a reusable pattern? If yes, promote it to `.cursor/skills/<domain>-pattern/SKILL.md` or add a note in `openspec/project.md` Cross-references before archiving.
 
+   And the repetition confidence question:
+
+   > Did anything in this change repeat a procedure or explanation from a previous change? Rule of three: 1st normal, 2nd note it, 3rd extract a skill (see `sdd-skill-guidance`).
+
    Do not block archive if the user declines.
 
 5. **Perform the archive**
