@@ -296,14 +296,14 @@ files:
   # Skill lifecycle guidance (sdd-skill-guidance) — kit-owned; not OpenSpec ALL_WORKFLOWS
   - path: .cursor/skills/sdd-skill-guidance/SKILL.md
     source: templates/.cursor/skills/sdd-skill-guidance/SKILL.md
-    sha256: "0196614445d5da9d2b2ad19f3b7e4efea314ec5dfd8c98ac6f3edf1751859ac4"
+    sha256: "9931eadd4a8da1c89034b09de5a20afd143c11b30a21e99bf868b72094208a7e"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f .cursor/skills/sdd-skill-guidance/SKILL.md && grep -q 'verified on' .cursor/skills/sdd-skill-guidance/SKILL.md"
 
   - path: .claude/skills/sdd-skill-guidance/SKILL.md
     source: templates/.claude/skills/sdd-skill-guidance/SKILL.md
-    sha256: "0196614445d5da9d2b2ad19f3b7e4efea314ec5dfd8c98ac6f3edf1751859ac4"
+    sha256: "9931eadd4a8da1c89034b09de5a20afd143c11b30a21e99bf868b72094208a7e"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f .claude/skills/sdd-skill-guidance/SKILL.md && grep -q 'verified on' .claude/skills/sdd-skill-guidance/SKILL.md"

@@ -65,21 +65,23 @@ Archive a completed change in the experimental workflow.
 
    If user chooses sync, use Task tool (subagent_type: "general-purpose", prompt: "Use Skill tool to invoke openspec-sync-specs for change '<name>'. Delta spec analysis: <include the analyzed delta spec summary>"). Proceed to archive regardless of choice.
 
-4b. **Pattern promotion checklist (optional, §12.10)**
+4b. **Consolidated closing assessment (§12.10)**
 
-   Before archiving, ask the operator:
+   Before archiving, run a single consolidated closing assessment: **self-assess** the three items below against evidence from the change — do NOT ask the operator three separate questions.
 
-   > Did this change establish a reusable pattern? If yes, promote it to `.cursor/skills/<domain>-pattern/SKILL.md` or add a note in `openspec/project.md` Cross-references before archiving.
+   1. **Reusable pattern** — did the change establish a procedure or template used more than once or likely to recur? Evidence: the change's own `tasks.md`/`design.md`. Promotion targets: a reusable skill (`.claude/skills/<domain>-pattern/SKILL.md`) or a note in `openspec/project.md` Cross-references.
+   2. **Repetition (rule of three)** — did anything repeat a procedure or explanation from a previous change? Evidence: scan `openspec/changes/archive/` directory names and, when suggestive, skim matching `proposal.md` files. Rule of three: 1st normal, 2nd note it, 3rd extract a skill (see `sdd-skill-guidance`).
+   3. **Tooling gap** — was anything done manually that a configured integration would have done (manual narration for an unconfigured tool during this change's sessions)? Suppress this item for integrations marked `declined` in `openspec/infra.md` (see `sdd-tooling-guidance`; how-to in `doc/tooling-install.md`).
 
-   And the repetition confidence question:
+   **Always print** the compact per-item verdict in the archive summary (step 6), e.g.:
 
-   > Did anything in this change repeat a procedure or explanation from a previous change? Rule of three: 1st normal, 2nd note it, 3rd extract a skill (see `sdd-skill-guidance`).
+   ```
+   Reusable pattern: no · Repetition: no · Tooling gap: no
+   ```
 
-   And the manual-work confidence question:
+   **Only when ≥1 item has a positive signal**, present ONE consolidated prompt using the **AskUserQuestion tool** with `multiSelect: true`, listing only the positively-signaled items plus a "none of these / proceed" option.
 
-   > Was anything in this change done manually that a configured integration would have done? If yes, consider the tooling cascade (see `sdd-tooling-guidance`) — status in `openspec/infra.md`, how-to in `doc/tooling-install.md`.
-
-   Do not block archive if the user declines.
+   The assessment never blocks the archive — proceed regardless of the operator's answer (or absence of a prompt).
 
 5. **Perform the archive**
 
@@ -105,6 +107,7 @@ Archive a completed change in the experimental workflow.
    - Schema that was used
    - Archive location
    - Whether specs were synced (if applicable)
+   - Closing assessment verdict (reusable pattern / repetition / tooling gap)
    - Note about any warnings (incomplete artifacts/tasks)
 
 **Output On Success**
@@ -116,6 +119,7 @@ Archive a completed change in the experimental workflow.
 **Schema:** <schema-name>
 **Archived to:** openspec/changes/archive/YYYY-MM-DD-<name>/
 **Specs:** ✓ Synced to main specs (or "No delta specs" or "Sync skipped")
+**Closing assessment:** Reusable pattern: no · Repetition: no · Tooling gap: no
 
 All artifacts complete. All tasks complete.
 ```
