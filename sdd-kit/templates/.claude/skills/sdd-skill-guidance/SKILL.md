@@ -52,7 +52,7 @@ When a suggestion is accepted (or the user asks for a skill directly):
 
 ## Lifecycle: create → measure → prune
 
-Skills need the same lifecycle as code. The rule of three governs extraction: **1st time normal, 2nd time note it, 3rd time extract a skill.** At archive time, the workflow asks: *"Did anything in this change repeat a procedure or explanation from a previous change?"* Answer honestly — that question is the cheapest harvest mechanism v1 has.
+Skills need the same lifecycle as code. The rule of three governs extraction: **1st time normal, 2nd time note it, 3rd time extract a skill.** At archive time, the workflow runs an agent-evaluated consolidated closing assessment: the agent itself checks whether anything in the closed change repeated a procedure or explanation from a previous change (scanning `openspec/changes/archive/` for similar prior changes), always prints the per-item verdict in the archive summary, and prompts the operator only on a positive signal — that assessment is the cheapest harvest mechanism v1 has.
 
 Pruning: if a skill never fires or its description overlaps a sibling, merge or delete it. (Automated load metrics, usage telemetry, and `/opsx:harvest` are **v2 — do not build them ad hoc**.)
 
