@@ -150,21 +150,25 @@ usage() {
   cat <<'EOF'
 Usage: install.sh --profile APP|DOCS_SPECS|HYBRID [--dry-run] [--repo PATH]
        [--chat-lang en|pt-BR] [--docs-lang en|pt-BR] [--code-lang en|pt-BR]
+       [--skip-preflight]
 
 Copies curated SDD files from sdd-kit/templates/ into the target repository.
 Does NOT run openspec init or install global CLIs — use scripts/bootstrap-sdd.sh first.
 
 Options:
-  --profile     Required. APP, DOCS_SPECS, or HYBRID
-  --dry-run     Print planned operations without writing files
-  --repo        Target repository root (default: current directory)
-  --chat-lang   Chat language: en or pt-BR (default: en)
-  --docs-lang   Documentation language: en or pt-BR (default: en)
-  --code-lang   Code prose language: en or pt-BR (default: en)
-  -h, --help    Show this help
+  --profile          Required. APP, DOCS_SPECS, or HYBRID
+  --dry-run          Print planned operations without writing files
+  --repo             Target repository root (default: current directory)
+  --chat-lang        Chat language: en or pt-BR (default: en)
+  --docs-lang        Documentation language: en or pt-BR (default: en)
+  --code-lang        Code prose language: en or pt-BR (default: en)
+  --skip-preflight   Skip repo-only phase-0 preflight (legacy/CI escape hatch)
+  -h, --help         Show this help
 EOF
   exit "${1:-0}"
 }
+
+SKIP_PREFLIGHT=false
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -174,6 +178,7 @@ while [[ $# -gt 0 ]]; do
     --chat-lang) CHAT_LANG="${2:-}"; LANG_FLAGS_PROVIDED=true; shift 2 ;;
     --docs-lang) DOCS_LANG="${2:-}"; LANG_FLAGS_PROVIDED=true; shift 2 ;;
     --code-lang) CODE_LANG="${2:-}"; LANG_FLAGS_PROVIDED=true; shift 2 ;;
+    --skip-preflight) SKIP_PREFLIGHT=true; shift ;;
     -h|--help) usage 0 ;;
     *) echo "Unknown option: $1" >&2; usage 2 ;;
   esac
@@ -184,6 +189,28 @@ done
 
 REPO_ROOT="$(cd "$REPO_ROOT" && pwd)"
 cd "$REPO_ROOT"
+
+# Repo-only preflight before template copy (never --host; bootstrap owns full host scan)
+if ! $SKIP_PREFLIGHT; then
+  PREFLIGHT_SCRIPT=""
+  if [[ -f "$REPO_ROOT/scripts/preflight-sdd.sh" ]]; then
+    PREFLIGHT_SCRIPT="$REPO_ROOT/scripts/preflight-sdd.sh"
+  elif [[ -f "$KIT_DIR/templates/scripts/preflight-sdd.sh" ]]; then
+    PREFLIGHT_SCRIPT="$KIT_DIR/templates/scripts/preflight-sdd.sh"
+  fi
+  if [[ -z "$PREFLIGHT_SCRIPT" ]]; then
+    echo "ERROR: preflight-sdd.sh not found for repo gate." >&2
+    echo "       Pass --skip-preflight to bypass, or ensure kit templates are present." >&2
+    exit 1
+  fi
+  echo "==> Phase 0 — repo preflight (preflight-sdd.sh --repo)..."
+  bash "$PREFLIGHT_SCRIPT" --repo --repo-root "$REPO_ROOT" --profile "$PROFILE" || {
+    echo "ERROR: repo preflight FAILED — aborting before template copy." >&2
+    exit 1
+  }
+else
+  echo "==> Phase 0 — repo preflight skipped (--skip-preflight)"
+fi
 
 apply_file() {
   local src="$1" dest="$2" merge="$3" sha256="${4:-}"

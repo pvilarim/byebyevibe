@@ -19,7 +19,7 @@ profiles: [APP, DOCS_SPECS, HYBRID]
 files:
   - path: scripts/verify-infra.sh
     source: templates/scripts/verify-infra.sh
-    sha256: "4704bd339fb9228383d491bf595ef8ebb4b86ac1c457bcdedc8355b5d1ccf79f"
+    sha256: "d9769e209a6773aeb5120e7455ac1efc3614b28bf270d8394751027208a08cd4"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -x scripts/verify-infra.sh"
@@ -89,10 +89,17 @@ files:
 
   - path: scripts/bootstrap-sdd.sh
     source: templates/scripts/bootstrap-sdd.sh
-    sha256: "3ff45fb2959a8d3514771c342facc2f50a8234c9018ad37e796abbe537160981"
+    sha256: "85e5ad4bef4dea226dcdaf8a2ac404f2c0a591128bedc45c6495d655bbd68aad"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -x scripts/bootstrap-sdd.sh"
+
+  - path: scripts/preflight-sdd.sh
+    source: templates/scripts/preflight-sdd.sh
+    sha256: "53e545e23ce76369908fe67f2ccd6bee7ffa2b9fe04d7573c922ef48341d688a"
+    merge: COPY
+    profiles: [APP, DOCS_SPECS, HYBRID]
+    gate: "test -x scripts/preflight-sdd.sh"
 
   - path: .github/workflows/sdd-gates.yml
     source: templates/.github/workflows/sdd-gates.yml
@@ -173,7 +180,7 @@ files:
 
   - path: openspec/infra.md
     source: templates/openspec/infra.md
-    sha256: "8c91f35ef8ccd99eff515ec30927682b403c4acece8de7c704ba92e82e9b0f44"
+    sha256: "4bf9088b5dad6f95cc641e49812465233a323e35d241367b22f303edd41ffeed"
     merge: MERGE
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f openspec/infra.md"

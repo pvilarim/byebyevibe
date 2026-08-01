@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 # Idempotent SDD infrastructure verification — see openspec/infra.md
+#
+# Ownership: this script updates SDD Stack / kit / mcp-list markers only.
+# MUST NOT write or clear preflight-* markers or the "## Preflight (last run)"
+# section — those are owned exclusively by scripts/preflight-sdd.sh.
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
