@@ -15,6 +15,7 @@ An **installable toolkit for AI-assisted development** on **Cursor** and **Claud
 - **Team knowledge reused** — Graphify surfaces architecture and past decisions without blind grepping
 - **Enforced quality** — CI `sdd-gates` validates specs and task patterns (fail-closed)
 - **Versioned control plane** — `sdd-kit/` installs and upgrades rules, scripts, and gates with `MANIFEST.yaml`
+- **Gap-aware** — notices when you keep re-teaching the same facts (offers a skill) or narrating manual steps (offers a CLI/MCP integration) — offer-only, never creates or installs anything unprompted
 
 > **Not another Next.js starter — the SDD control plane**  
 > **(OpenSpec + graphs + gates) your repo is missing.**
@@ -95,7 +96,9 @@ Install the core stack first (C1). Add these only when you need them:
 
 ## Calibrate as you go
 
-Built-in **SDD retrospectives** — `sdd-metrics.sh` turns your archive history into volume, lead-time, and rework signals. After every few shipped changes, a gentle cadence nudge asks you to run the report and make **one** process adjustment. The more you ship through the loop, the more signal you have to calibrate *your* workflow — measurable, not magic. (No ML / self-learning claims.)
+Built-in **SDD retrospectives** — `sdd-metrics.sh` turns your archive history into volume, lead-time, and rework signals. After every few shipped changes, a gentle cadence nudge asks you to run the report and make **one** process adjustment. The more you ship through the loop, the more signal you have to calibrate *your* workflow — measurable, not magic. (No ML claims.)
+
+The same posture covers memory and integrations: re-teach the agent the same domain facts and it offers to save a skill; watch it fall back to manual steps for the same external tool twice and it offers a CLI/MCP integration — `bash scripts/verify-infra.sh` reports which integrations are configured, missing, or declined. Everything is offer-only: nothing is created or installed without your decision.
 
 ```bash
 bash scripts/sdd-metrics.sh
@@ -119,20 +122,9 @@ If you need a vibe *template*, use one — then install this kit on top.
 - Brownfield repos that need agent discipline without a second orchestration framework
 - Hubs that distribute SDD payloads (`sdd-kit/`) to many consumer repos
 
-## Compare (summary)
-
-Stars are order-of-magnitude (~2026-07-26). Full table: [`doc/avaliacoes/2026-07-26-sdd-discovery-positioning.md`](./doc/avaliacoes/2026-07-26-sdd-discovery-positioning.md).
-
-| | Spec Kit | OpenSpec | BMAD | **ByeByeVibe** |
-|--|----------|----------|------|----------------|
-| Spec workflow | ●●●● | ●●●● (CLI we use) | ●●● | ●●●● |
-| Code + knowledge graphs | ○ | ○ | ○ | ●●●● |
-| Versioned install/upgrade kit | ●●● | ●● | ●●● | ●●●● |
-| CI / TDD / metrics | ●● | ● | ●● | ●●●● |
+## Stack & companions
 
 We **compose** OpenSpec; we don't replace it.
-
-## Stack & companions
 
 - [OpenSpec](https://github.com/Fission-AI/OpenSpec) · GitNexus · Graphify · [agents.md](https://agents.md/)
 - Install kit: [`sdd-kit/`](./sdd-kit/) · Constitution: [`openspec/project.md`](./openspec/project.md)
