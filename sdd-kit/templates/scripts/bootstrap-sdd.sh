@@ -7,11 +7,12 @@ QUIET=false
 SKIP_PREFLIGHT=false
 CHAT_LANG="${SDD_CHAT_LANG:-en}"
 REPO="."
+PROFILE_FLAG=""
 POSITIONAL=()
 
 usage() {
   cat <<'EOF'
-Usage: bootstrap-sdd.sh [REPO_PATH] [--quiet|-q] [--chat-lang en|pt-BR] [--skip-preflight]
+Usage: bootstrap-sdd.sh [REPO_PATH] [--quiet|-q] [--chat-lang en|pt-BR] [--profile APP|DOCS_SPECS|HYBRID] [--skip-preflight]
 
 Bootstraps OpenSpec, GitNexus, Graphify, then sdd-kit/install.sh.
 Didactic S-layer banners print only on a TTY when --quiet is unset.
@@ -20,6 +21,7 @@ Non-TTY (CI) omits banners even without --quiet. WARN/ERROR always print.
 Options:
   --quiet, -q         Suppress didactic banners (keep WARN/ERROR + phase markers)
   --chat-lang LANG    Banner language: en (default) or pt-BR (also SDD_CHAT_LANG)
+  --profile PROFILE   Skip auto-detection: APP, DOCS_SPECS, or HYBRID (passed to install.sh)
   --skip-preflight    Skip phase-0 preflight (legacy/CI escape hatch)
   -h, --help          Show this help
 EOF
@@ -30,6 +32,14 @@ while [[ $# -gt 0 ]]; do
   case "$1" in
     --quiet|-q) QUIET=true; shift ;;
     --skip-preflight) SKIP_PREFLIGHT=true; shift ;;
+    --profile)
+      PROFILE_FLAG="${2:-}"
+      case "$PROFILE_FLAG" in
+        APP|DOCS_SPECS|HYBRID) ;;
+        *) echo "ERROR: --profile must be APP, DOCS_SPECS, or HYBRID (got '${PROFILE_FLAG:-}')" >&2; usage 2 ;;
+      esac
+      shift 2
+      ;;
     --chat-lang)
       CHAT_LANG="${2:-}"
       [[ -n "$CHAT_LANG" ]] || { echo "ERROR: --chat-lang requires a value" >&2; usage 2; }
@@ -63,6 +73,10 @@ esac
 
 cd "$REPO"
 REPO="$(pwd)"
+
+# Profile hint MUST be snapshotted before `openspec init` creates openspec/ (D1)
+PRE_INIT_HAD_OPENSPEC=false
+[[ -d "$REPO/openspec" ]] && PRE_INIT_HAD_OPENSPEC=true
 
 # Phase 0 — Preflight (full --all) before OpenSpec unless --skip-preflight
 if ! $SKIP_PREFLIGHT; then
@@ -162,25 +176,33 @@ else
 fi
 
 banner graphify
-echo "==> Graphify..."
-if ! command -v uv &>/dev/null; then
-  curl -LsSf https://astral.sh/uv/install.sh | sh
+echo "==> Graphify (optional — does not abort bootstrap on failure)..."
+graphify_phase() {
+  if ! command -v uv &>/dev/null; then
+    curl -LsSf https://astral.sh/uv/install.sh | sh || return 1
+    export PATH="$HOME/.local/bin:$PATH"
+  fi
+  uv tool install graphifyy || return 1
+  graphify install || return 1
+  graphify install --platform cursor || return 1
+  graphify hook install || return 1
+  graphify update . || return 1
+}
+if ! graphify_phase; then
+  echo "WARN: Graphify phase failed — continuing to sdd-kit install (manual install: guide §2)"
 fi
-uv tool install graphifyy
-graphify install
-graphify install --platform cursor
-graphify hook install
-graphify update .
 
 banner kit
 echo ""
 echo "==> SDD Install Kit (payloads)..."
 if [[ -f "$REPO/sdd-kit/install.sh" ]]; then
-  # Profile: detect HYBRID when both package.json and openspec/ coexist; warn and default to APP
-  if [[ -f "$REPO/package.json" ]] && [[ -d "$REPO/openspec" ]]; then
+  # Profile: explicit --profile wins; else detect HYBRID from the pre-init snapshot (D1/D2)
+  if [[ -n "$PROFILE_FLAG" ]]; then
+    PROFILE="$PROFILE_FLAG"
+  elif [[ -f "$REPO/package.json" ]] && $PRE_INIT_HAD_OPENSPEC; then
     echo "WARN: package.json and openspec/ coexist — profile may be HYBRID." >&2
     echo "      Confirm: rerun with --profile HYBRID or DOCS_SPECS if not APP." >&2
-    echo "      Continuing with --profile APP by default (pass 'APP', 'DOCS_SPECS', or 'HYBRID' as 1st argument)." >&2
+    echo "      Continuing with --profile APP by default (rerun with --profile APP|DOCS_SPECS|HYBRID to override)." >&2
     PROFILE="APP"
   elif [[ -f "$REPO/package.json" ]]; then
     PROFILE="APP"

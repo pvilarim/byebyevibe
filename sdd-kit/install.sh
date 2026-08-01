@@ -185,6 +185,10 @@ while [[ $# -gt 0 ]]; do
 done
 
 [[ -n "$PROFILE" ]] || { echo "ERROR: --profile is required" >&2; usage 2; }
+case "$PROFILE" in
+  APP|DOCS_SPECS|HYBRID) ;;
+  *) echo "ERROR: invalid --profile '$PROFILE' (allowed: APP, DOCS_SPECS, HYBRID)" >&2; usage 2 ;;
+esac
 [[ -f "$MANIFEST" ]] || { echo "ERROR: MANIFEST not found: $MANIFEST" >&2; exit 1; }
 
 REPO_ROOT="$(cd "$REPO_ROOT" && pwd)"
@@ -332,9 +336,6 @@ echo ""
 while IFS=$'\t' read -r src dest merge sha256; do
   [[ -n "$src" ]] || continue
   apply_file "$src" "$dest" "$merge" "$sha256"
-  if [[ "$dest" == *.sh ]]; then
-    chmod +x "$REPO_ROOT/$dest" 2>/dev/null || true
-  fi
 done < <(python3 - "$MANIFEST" "$PROFILE" << 'PY'
 import sys, re
 manifest_path, profile = sys.argv[1:3]

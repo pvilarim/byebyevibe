@@ -171,6 +171,26 @@ PY
   fi
 fi
 
+# Hub drift gate: live scripts/ must match sdd-kit/templates/scripts/ (hub only — D8)
+if [[ -d "$REPO_ROOT/sdd-kit/templates/scripts" ]]; then
+  echo ""
+  echo "==> hub scripts↔templates parity (hub only)"
+  DRIFT=0
+  for tmpl in "$REPO_ROOT"/sdd-kit/templates/scripts/*.sh; do
+    live="$REPO_ROOT/scripts/$(basename "$tmpl")"
+    [[ -f "$live" ]] || continue
+    if ! diff -q "$live" "$tmpl" >/dev/null; then
+      echo "FAIL: drift: scripts/$(basename "$tmpl") differs from sdd-kit/templates/scripts/$(basename "$tmpl")" >&2
+      ((DRIFT++)) || true
+    fi
+  done
+  if [[ "$DRIFT" -eq 0 ]]; then
+    echo "OK: hub parity"
+  else
+    ((FAILURES+=DRIFT)) || true
+  fi
+fi
+
 # Language policy (sdd-language-policy) — consumer installs
 echo ""
 echo "==> language policy"
