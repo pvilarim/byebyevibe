@@ -165,10 +165,11 @@ THIS KIT         ●●●●    ●●           ●●●●        ●●●�
 ① README + evaluation + quickstart   ← done (`add-sdd-discovery-positioning`)
 ② Explore→propose public name (P10) ← done
 ③ Apply rename/rebrand (ByeByeVibe) ← done; slug `byebyevibe` (manual)
-④ EN policy + waves (+ root CHANGELOG.md) ← Deferred until public launch
+④ README discovery v2 (hybrid layout) ← done (`readme-discovery-v2`): value bullets, core tools What/Without it, `/opsx:help`, optional modules block
+⑤ EN policy + waves (+ root CHANGELOG.md) ← Deferred until public launch
    (research: openspec/changes/explore-public-release-surface/research.md · P11/P12)
-⑤ Explore GIF/asciinema (P5)
-⑥ Landing/Discord/one-liner — out of scope (D9)
+⑥ Explore GIF/asciinema (P5)
+⑦ Landing/Discord/one-liner — out of scope (D9)
 ```
 
 ## Risks by workflow phase
