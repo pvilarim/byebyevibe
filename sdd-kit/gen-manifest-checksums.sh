@@ -10,8 +10,25 @@ KIT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 MANIFEST="$KIT_DIR/MANIFEST.yaml"
 CHECK_ONLY=false
 
+usage() {
+  cat <<'EOF'
+Usage: gen-manifest-checksums.sh [--check]
+
+Regenerates sha256 fields in sdd-kit/MANIFEST.yaml from sdd-kit/templates/.
+
+Options:
+  --check     Verify checksums without writing (exits 1 if any mismatch or missing)
+  -h, --help  Show this help
+EOF
+  exit "${1:-0}"
+}
+
 for arg in "$@"; do
-  [[ "$arg" == "--check" ]] && CHECK_ONLY=true
+  case "$arg" in
+    --check) CHECK_ONLY=true ;;
+    -h|--help) usage 0 ;;
+    *) echo "ERROR: unknown argument: $arg" >&2; usage 2 ;;
+  esac
 done
 
 # Detect sha256 utility (Linux coreutils or macOS shasum)

@@ -277,12 +277,14 @@ run_apply() {
 
   copy_design_docs
   update_project_ui_stack "$stack"
-  update_infra_md "$stack" "pending"
   maybe_install_impeccable
 
-  if ! $DRY_RUN && $AUTO_YES && [[ "$(node_major_version)" -ge 24 ]]; then
-    update_infra_md "$stack" "✅"
+  # Impeccable status from ground truth: the installed skill directory (D7)
+  local impeccable_status="pending"
+  if [[ -d "$REPO_ROOT/.cursor/skills/impeccable" ]]; then
+    impeccable_status="✅"
   fi
+  update_infra_md "$stack" "$impeccable_status"
 
   echo ""
   echo "Done. Next steps:"

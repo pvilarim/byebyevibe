@@ -228,6 +228,8 @@ Order:
    (or rely on bootstrap; use --skip-preflight only for legacy/CI)
 1. bash scripts/bootstrap-sdd.sh  (or manual CLIs §2.2–2.4)
    Prefer --quiet for CI/agents when didactic TTY banners are noise.
+   Pass --profile APP|DOCS_SPECS|HYBRID to skip auto-detection (bootstrap
+   validates the value and forwards it to sdd-kit/install.sh).
 2. bash sdd-kit/install.sh --profile <PROFILE> [--dry-run first]
 3. Edit openspec/project.md (Purpose, Stack — do NOT replace with template)
 4. Merge AGENTS.md if it already existed (templates: sdd-kit/templates/AGENTS.core.md + commands)
@@ -335,6 +337,8 @@ CLAUDE.md                    # CREATED or MODIFIED — watch for conflict
 | **You’ll get** | `graphify-out/` + `GRAPH_REPORT.md` |
 
 Scenario: docs/concepts before reinventing.
+
+> **Bootstrap posture:** in `bootstrap-sdd.sh` the Graphify phase is WARN-and-continue — any failure (uv install, `uv tool install`, `graphify install`/`hook`/`update`) emits a WARN and bootstrap proceeds to `sdd-kit/install.sh`, same tolerance as GitNexus. If the phase warned, install manually with the commands below.
 
 ```bash
 # Install via uv (recommended — puts CLI on PATH automatically)

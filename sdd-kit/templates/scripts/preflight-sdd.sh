@@ -341,6 +341,7 @@ replace_between() {
 }
 
 stamp_infra() {
+  local mode="${1:-all}"
   local infra="$REPO_ROOT/openspec/infra.md"
   [[ -d "$REPO_ROOT/openspec" ]] || return 0
 
@@ -404,9 +405,12 @@ PY
   [[ -n "$mcp" ]] || mcp="—"
 
   replace_between "$infra" "preflight-timestamp" "$ts"
-  replace_between "$infra" "preflight-ides" "$ides"
   replace_between "$infra" "preflight-warns" "$warns"
-  replace_between "$infra" "preflight-mcp" "$mcp"
+  # Host-derived markers (IDE/MCP) belong to runs that executed host checks (D5)
+  if [[ "$mode" != "repo" ]]; then
+    replace_between "$infra" "preflight-ides" "$ides"
+    replace_between "$infra" "preflight-mcp" "$mcp"
+  fi
   log_human "Updated: openspec/infra.md Preflight stamp ($ts)"
 }
 
@@ -443,9 +447,9 @@ case "$MODE" in
     ;;
 esac
 
-# Stamp infra only when we ran host checks (IDE/MCP) or always on successful completion path
-# Spec: stamp when infra.md exists — stamp after checks regardless of FAIL so operators see last attempt
-stamp_infra
+# Stamp infra after checks regardless of FAIL so operators see last attempt.
+# Mode is passed through: --repo runs never overwrite host-derived markers (IDE/MCP).
+stamp_infra "$MODE"
 
 if $JSON; then
   emit_json

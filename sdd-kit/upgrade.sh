@@ -74,6 +74,13 @@ if $APPLY && [[ -z "$PROFILE" ]]; then
   exit 2
 fi
 
+if [[ -n "$PROFILE" ]]; then
+  case "$PROFILE" in
+    APP|DOCS_SPECS|HYBRID) ;;
+    *) echo "ERROR: invalid --profile '$PROFILE' (allowed: APP, DOCS_SPECS, HYBRID)" >&2; exit 2 ;;
+  esac
+fi
+
 $APPLY || DRY_RUN=true
 
 REPO_ROOT="$(cd "$REPO_ROOT" && pwd)"

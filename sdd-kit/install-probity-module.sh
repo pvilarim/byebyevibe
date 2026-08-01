@@ -181,24 +181,25 @@ copy_install_doc() {
 
 update_infra_md() {
   local status="${1:-SKIP}"
+  local pkg_status="${2:-$status}"
   local infra="$REPO_ROOT/openspec/infra.md"
   [[ -f "$infra" ]] || return 0
 
   if $DRY_RUN; then
-    echo "  PLAN update openspec/infra.md Probity Module section ($status)"
+    echo "  PLAN update openspec/infra.md Probity Module section (config=$status package=$pkg_status)"
     return 0
   fi
 
-  python3 - <<'PY' "$infra" "$status"
+  python3 - <<'PY' "$infra" "$status" "$pkg_status"
 import sys, re
-path, status = sys.argv[1:3]
+path, status, pkg_status = sys.argv[1:4]
 text = open(path).read()
 section = f"""## Probity Module
 
 | Componente | Estado | Verificar com |
 |------------|--------|---------------|
-| `@nizos/probity@1.10.0` | {status} | `test -f probity.config.ts` |
-| `probity.config.ts` | {status} | `grep -q enforceTdd probity.config.ts` |
+| `@nizos/probity@1.10.0` | {pkg_status} | `grep -q '@nizos/probity' package.json` |
+| `probity.config.ts` | {status} | `test -f probity.config.ts` |
 | Plugin / hook | {status} | Claude Code: `/plugin install probity@probity` |
 
 Módulo opcional G2 (APP/HYBRID com testes). DOCS_SPECS sem test runner: SKIP.
@@ -215,7 +216,7 @@ else:
         text += "\n" + section
 open(path, 'w').write(text)
 PY
-  echo "  UPDATE openspec/infra.md Probity Module ($status)"
+  echo "  UPDATE openspec/infra.md Probity Module (config=$status package=$pkg_status)"
 }
 
 npm_install_probity() {
@@ -276,10 +277,16 @@ run_apply() {
   if [[ ! -f "$REPO_ROOT/probity.config.ts" ]] && ! $DRY_RUN; then
     status="pending"
   fi
+  # Package row from ground truth: ✅ only when npm actually installed it (D6)
+  local pkg_status="pending"
+  if [[ -f "$REPO_ROOT/package.json" ]] && grep -q '@nizos/probity' "$REPO_ROOT/package.json" 2>/dev/null; then
+    pkg_status="✅"
+  fi
   if $DRY_RUN; then
     status="pending (dry-run)"
+    pkg_status="pending (dry-run)"
   fi
-  update_infra_md "$status"
+  update_infra_md "$status" "$pkg_status"
 
   echo ""
   echo "Done. Next steps:"

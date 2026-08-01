@@ -26,7 +26,7 @@ files:
 
   - path: scripts/verify-task-patterns.sh
     source: templates/scripts/verify-task-patterns.sh
-    sha256: "16006f809d34599bcc1c29f8e14369b5719dbb5cb63d2be2e75e68d05ba49b60"
+    sha256: "acfdcf85a2b629f866d29be76824b4f0e55430bacf1861146c24bec1010d5652"
     merge: COPY
     profiles: [DOCS_SPECS, HYBRID]
     gate: "test -x scripts/verify-task-patterns.sh"
@@ -89,14 +89,14 @@ files:
 
   - path: scripts/bootstrap-sdd.sh
     source: templates/scripts/bootstrap-sdd.sh
-    sha256: "85e5ad4bef4dea226dcdaf8a2ac404f2c0a591128bedc45c6495d655bbd68aad"
+    sha256: "b1020749b0991cb69fc79577ff3038e666e5acaeb3cfff7ba3899d194221c6ac"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -x scripts/bootstrap-sdd.sh"
 
   - path: scripts/preflight-sdd.sh
     source: templates/scripts/preflight-sdd.sh
-    sha256: "53e545e23ce76369908fe67f2ccd6bee7ffa2b9fe04d7573c922ef48341d688a"
+    sha256: "3d9b32be56dfc8258ebdfcb7d0258e70c5ffd7569fe3d988b62ae3a821c50b49"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -x scripts/preflight-sdd.sh"
@@ -194,7 +194,7 @@ files:
 
   - path: sdd-kit/install-ui-module.sh
     source: templates/install-ui-module.sh
-    sha256: "3dfb209172f76e1673336a2abd0f5cf25d975073ff0316876e289c02a2a2412a"
+    sha256: "f0949af9ad96fe003d96a3667e55da2ec641d4804864cc6383eb63a4050e8c09"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -x sdd-kit/install-ui-module.sh"
@@ -238,7 +238,7 @@ files:
   # enabling as default in consumer repos (see openspec/changes/add-probity-tdd-module/piloto-nota.md).
   - path: sdd-kit/install-probity-module.sh
     source: templates/install-probity-module.sh
-    sha256: "913568f6342a5dec8db68d1694d34fc0e710ed4ad5d32570a77a3c01fc3e10a9"
+    sha256: "3d97fef16ffdcef73e132c53327c60b20f8e460f958d2d8c26ca77ada897c4fd"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -x sdd-kit/install-probity-module.sh"
