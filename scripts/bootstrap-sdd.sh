@@ -4,22 +4,24 @@
 set -euo pipefail
 
 QUIET=false
+SKIP_PREFLIGHT=false
 CHAT_LANG="${SDD_CHAT_LANG:-en}"
 REPO="."
 POSITIONAL=()
 
 usage() {
   cat <<'EOF'
-Usage: bootstrap-sdd.sh [REPO_PATH] [--quiet|-q] [--chat-lang en|pt-BR]
+Usage: bootstrap-sdd.sh [REPO_PATH] [--quiet|-q] [--chat-lang en|pt-BR] [--skip-preflight]
 
 Bootstraps OpenSpec, GitNexus, Graphify, then sdd-kit/install.sh.
 Didactic S-layer banners print only on a TTY when --quiet is unset.
 Non-TTY (CI) omits banners even without --quiet. WARN/ERROR always print.
 
 Options:
-  --quiet, -q       Suppress didactic banners (keep WARN/ERROR + phase markers)
-  --chat-lang LANG  Banner language: en (default) or pt-BR (also SDD_CHAT_LANG)
-  -h, --help        Show this help
+  --quiet, -q         Suppress didactic banners (keep WARN/ERROR + phase markers)
+  --chat-lang LANG    Banner language: en (default) or pt-BR (also SDD_CHAT_LANG)
+  --skip-preflight    Skip phase-0 preflight (legacy/CI escape hatch)
+  -h, --help          Show this help
 EOF
   exit "${1:-0}"
 }
@@ -27,6 +29,7 @@ EOF
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --quiet|-q) QUIET=true; shift ;;
+    --skip-preflight) SKIP_PREFLIGHT=true; shift ;;
     --chat-lang)
       CHAT_LANG="${2:-}"
       [[ -n "$CHAT_LANG" ]] || { echo "ERROR: --chat-lang requires a value" >&2; usage 2; }
@@ -60,6 +63,29 @@ esac
 
 cd "$REPO"
 REPO="$(pwd)"
+
+# Phase 0 — Preflight (full --all) before OpenSpec unless --skip-preflight
+if ! $SKIP_PREFLIGHT; then
+  PREFLIGHT_SCRIPT=""
+  if [[ -f "$REPO/scripts/preflight-sdd.sh" ]]; then
+    PREFLIGHT_SCRIPT="$REPO/scripts/preflight-sdd.sh"
+  elif [[ -f "$REPO/sdd-kit/templates/scripts/preflight-sdd.sh" ]]; then
+    PREFLIGHT_SCRIPT="$REPO/sdd-kit/templates/scripts/preflight-sdd.sh"
+  fi
+  if [[ -z "$PREFLIGHT_SCRIPT" ]]; then
+    echo "ERROR: preflight-sdd.sh not found (tried scripts/ and sdd-kit/templates/scripts/)." >&2
+    echo "       Copy kit from hub, or pass --skip-preflight to bypass phase 0." >&2
+    exit 1
+  fi
+  echo "==> Phase 0 — Preflight ($PREFLIGHT_SCRIPT --all)..."
+  bash "$PREFLIGHT_SCRIPT" --all --repo-root "$REPO" || {
+    echo "ERROR: preflight FAILED — aborting bootstrap before OpenSpec install." >&2
+    echo "       Fix FAIL items, or re-run with --skip-preflight." >&2
+    exit 1
+  }
+else
+  echo "==> Phase 0 — Preflight skipped (--skip-preflight)"
+fi
 
 # Didactic banners: TTY only, and not when --quiet (D6)
 SHOW_BANNERS=false

@@ -196,6 +196,23 @@ if [[ -f "$REPO_ROOT/openspec/project.md" ]]; then
   fi
 fi
 
+# Soft WARN: phase-0 Preflight never stamped (non-blocking — do not increment FAILURES)
+echo ""
+echo "==> preflight stamp (soft)"
+INFRA_MD="$REPO_ROOT/openspec/infra.md"
+if [[ -f "$INFRA_MD" ]] && grep -q 'preflight-timestamp' "$INFRA_MD"; then
+  PF_TS="$(sed -n 's/.*<!-- preflight-timestamp -->\(.*\)<!-- \/preflight-timestamp -->.*/\1/p' "$INFRA_MD" | head -1)"
+  if [[ -z "$PF_TS" || "$PF_TS" == "—" || "$PF_TS" == "-" ]]; then
+    echo "WARN: Preflight timestamp is still a placeholder — run bash scripts/preflight-sdd.sh --all (non-blocking)" >&2
+  else
+    echo "OK: Preflight stamped ($PF_TS)"
+  fi
+elif [[ -f "$INFRA_MD" ]]; then
+  echo "WARN: openspec/infra.md missing Preflight markers — run bash scripts/preflight-sdd.sh --all (non-blocking)" >&2
+else
+  echo "INFO: openspec/infra.md absent — preflight soft check skipped"
+fi
+
 echo ""
 if [[ "$FAILURES" -eq 0 ]]; then
   echo "Summary: sdd-kit verification passed ✅"

@@ -4,6 +4,17 @@
 >
 > **Rule:** no secret values. Env vars list **names** and presence only (✅/❌).
 
+## Preflight (last run)
+
+> Updated only by `scripts/preflight-sdd.sh` — `verify-infra.sh` must not overwrite this section.
+
+| Field | Value |
+|-------|-------|
+| Timestamp | <!-- preflight-timestamp -->—<!-- /preflight-timestamp --> |
+| IDE(s) | <!-- preflight-ides -->—<!-- /preflight-ides --> |
+| WARN summary | <!-- preflight-warns -->—<!-- /preflight-warns --> |
+| MCP names (advisory) | <!-- preflight-mcp -->—<!-- /preflight-mcp --> |
+
 ## SDD Stack (repo)
 
 | Component | Version | Status | Verify with |

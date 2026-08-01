@@ -66,6 +66,16 @@ Second friction: the ecosystem moves fast. Versions in this document are from Ma
 
 ### 1.2 Recommended install tools
 
+Automated check of the tables above (phase 0 — before C1):
+
+```bash
+# Prefer expanded script after install; kit template works on hub / pre-expand
+bash scripts/preflight-sdd.sh --all
+# or: bash sdd-kit/templates/scripts/preflight-sdd.sh --all
+```
+
+Exit non-zero on FAIL (missing Git/Node≥20.19/npm/Python≥3.10, missing `sdd-kit/`, unwritable repo). WARN (uv, build tools, IDE, github-mcp) does not abort. Bootstrap runs this automatically unless `--skip-preflight`.
+
 ```bash
 # uv for Python (faster than pip, manages PATH automatically)
 curl -LsSf https://astral.sh/uv/install.sh | sh
@@ -179,17 +189,17 @@ bash sdd-kit/install.sh --profile DOCS_SPECS \
 
 Install in this specific order. **Do not reverse** — each step assumes the previous one is done.
 
-**Three pillars + kit (control plane):**
+**Phase 0 + three pillars + kit (control plane):**
 
 ```
-Intent (OpenSpec) → Code graph (GitNexus) → Knowledge graph (Graphify) → payloads (sdd-kit)
+0. Preflight → Intent (OpenSpec) → Code graph (GitNexus) → Knowledge graph (Graphify) → payloads (sdd-kit)
 ```
 
 ```
-1. OpenSpec    → 2. GitNexus    → 3. Graphify    → 3b. sdd-kit/install.sh    → 4. Curate AGENTS.md    → 5. Configure IDEs
+0. Preflight (scripts/preflight-sdd.sh --all) → 1. OpenSpec → 2. GitNexus → 3. Graphify → 3b. sdd-kit/install.sh → 4. Curate AGENTS.md → 5. Configure IDEs
 ```
 
-**Why this order (simple):** later tools assume earlier artifacts exist. Reversing risks overwrite of `AGENTS.md` / the `openspec/` skeleton. OpenSpec creates the playbook skeleton; GitNexus maps code after that skeleton exists; Graphify adds what the team already knows without fighting the code index; **sdd-kit** is the **toolbox** that wires the control plane into *this* repo — without it, every repo invents the process from scratch.
+**Why this order (simple):** phase 0 catches missing host/repo prerequisites before CLI installs. Later tools assume earlier artifacts exist. Reversing risks overwrite of `AGENTS.md` / the `openspec/` skeleton. OpenSpec creates the playbook skeleton; GitNexus maps code after that skeleton exists; Graphify adds what the team already knows without fighting the code index; **sdd-kit** is the **toolbox** that wires the control plane into *this* repo — without it, every repo invents the process from scratch.
 
 **Scenario:** You ask “add login.” Without OpenSpec, the AI already opens files. Without GitNexus, it edits the wrong place. Without Graphify, it ignores the auth decision you wrote last month. With all three (+ kit), it agrees on a plan, checks impact, and reuses what the team already knows.
 
@@ -201,7 +211,7 @@ Paste this prompt at the target repository root (replace `REPO_ROOT` and the pro
 
 ```
 Install the SDD system (OpenSpec + GitNexus + Graphify) in this repository following
-strictly the guide in doc/sistema-sdd-pedro.md v1.4.0 and the install kit in sdd-kit/.
+strictly the guide in doc/sistema-sdd-pedro.md v1.6.1 and the install kit in sdd-kit/.
 
 Repository profile: [APP | DOCS_SPECS | HYBRID]
 
@@ -214,6 +224,8 @@ Narrative (dual S↔T — mandatory):
   (term → plain-language picture).
 
 Order:
+0. Phase 0 — bash scripts/preflight-sdd.sh --all
+   (or rely on bootstrap; use --skip-preflight only for legacy/CI)
 1. bash scripts/bootstrap-sdd.sh  (or manual CLIs §2.2–2.4)
    Prefer --quiet for CI/agents when didactic TTY banners are noise.
 2. bash sdd-kit/install.sh --profile <PROFILE> [--dry-run first]
@@ -498,6 +510,7 @@ Use after every installation (human or AI):
 - [ ] `.github/workflows/sdd-gates.yml` present (see §2.12 to configure branch protection manually)
 - [ ] `renovate.json` present if APP/HYBRID profile (see §2.13 to install the Renovate app)
 - [ ] *(optional, soft)* `/opsx:help` (or `doc/sdd-operator-day1.md`) — day-1 map; non-blocking; `verify.sh` MUST NOT fail solely for skipping it
+- [ ] *(optional, soft)* Phase-0 Preflight run — `openspec/infra.md` `## Preflight (last run)` stamped (or `bash scripts/preflight-sdd.sh --all`); non-blocking; `verify.sh` MAY WARN if timestamp is still `—`
 
 ### Optional add-ons at a glance
 
