@@ -18,7 +18,7 @@
 
 ### Prerequisites
 
-1. C1 complete (`doc/sistema-sdd-pedro.md` §2.8)
+1. C1 complete (`doc/byebyevibe-guide.md` §2.8)
 2. Node.js **24+** in the dev environment **if** installing Impeccable (gate M3)
 3. Next.js + Tailwind (recommended) or stack documented in [`003-ui-stack-adapters.md`](./003-ui-stack-adapters.md)
 
@@ -123,7 +123,7 @@ In agent prompts: always qualify which `design` is meant.
 
 ## 6. Post C1-UI checklist
 
-See also `doc/sistema-sdd-pedro.md` §2.11.1.
+See also `doc/byebyevibe-guide.md` §2.11.1.
 
 - [ ] `bash sdd-kit/install-ui-module.sh --detect` reports correct stack
 - [ ] `doc/design/002-ui-module-install.md` and `003-ui-stack-adapters.md` present
@@ -139,7 +139,7 @@ See also `doc/sistema-sdd-pedro.md` §2.11.1.
 
 ## 7. References
 
-- Canonical guide: `doc/sistema-sdd-pedro.md` §2.11, §5.6
+- Canonical guide: `doc/byebyevibe-guide.md` §2.11, §5.6
 - Adapters without shadcn: [`003-ui-stack-adapters.md`](./003-ui-stack-adapters.md)
 - Evaluation: `doc/avaliacoes/2026-06-27-sdd-ui-development-module.md`
 - Spec: `openspec/specs/sdd-ui-module/spec.md` (after archive)

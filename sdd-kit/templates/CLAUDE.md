@@ -10,7 +10,7 @@ This file exists for compatibility with Claude Code’s lookup order; the source
 - Active specs: `./openspec/specs/`
 - Active proposals: `./openspec/changes/`
 - Knowledge graph: `./graphify-out/GRAPH_REPORT.md`
-- SDD install guide: `./doc/sistema-sdd-pedro.md` (v1.2)
+- SDD install guide: `./doc/byebyevibe-guide.md` (v1.2)
 - Code graph: GitNexus MCP
 
 ## Task protocol

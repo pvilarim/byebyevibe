@@ -20,7 +20,7 @@ If a surface exceeds the budget, split into multiple `translate-*-wave-N` change
 
 | Surface | ~LOC / N | Risk if one session |
 |---------|----------|---------------------|
-| `doc/sistema-sdd-pedro.md` | ~2847 | Critical — overflow |
+| `doc/byebyevibe-guide.md` | ~2847 | Critical — overflow |
 | Mirrored skills | ~2922 total | Critical if batched |
 | `doc/avaliacoes/` | ~523 | Medium |
 | `AGENTS.md` + rules prose | ~300 | Low–medium |
@@ -97,7 +97,7 @@ When `--dod` runs, scan these surfaces (exclude `openspec/changes/archive/`):
 - `AGENTS.md`, `CLAUDE.md`, `README.md`
 - `.cursor/rules/**/*.mdc`, `.cursor/skills/**/*.md`, `.cursor/commands/**/*.md`
 - `.claude/skills/**/*.md`, `.claude/commands/**/*.md`
-- `doc/sistema-sdd-pedro.md`, `doc/avaliacoes/**/*.md`, `doc/design/**/*.md`
+- `doc/byebyevibe-guide.md`, `doc/avaliacoes/**/*.md`, `doc/design/**/*.md`
 - _(excluded from G-DoD)_ `doc/curso/**` — out of language scope per human decision
 - `doc/i18n/**/*.md` (policy docs — EN; `GLOSSARY.md` exempt from G-PT/G-DoD because it stores legacy→EN rows)
 - `sdd-kit/README.md`, `sdd-kit/templates/**/*.{md,mdc}`

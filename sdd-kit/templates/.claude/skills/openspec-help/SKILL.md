@@ -48,7 +48,7 @@ On-demand tutorial for the ByeByeVibe **control plane**. Thin orchestration only
    - Not every task needs explore (types A/B).
    - Skills are memory over chat: create one only when repetition proves it (rule of three), never before development starts — and ask the agent to create it (see day-1 §7 and `sdd-skill-guidance`).
    - External tools follow the cascade (override → CLI → MCP → suggest → manual): CLI is the default, integrations are only ever suggested — never installed unprompted (see day-1 §8 and `sdd-tooling-guidance`).
-   - Point to guide `doc/sistema-sdd-pedro.md` for depth (§2.7–2.8, §4.3, §12.3, §12.10) — do not rewrite §3/§4 here.
+   - Point to guide `doc/byebyevibe-guide.md` for depth (§2.7–2.8, §4.3, §12.3, §12.10) — do not rewrite §3/§4 here.
 
 4. **Infra**
 

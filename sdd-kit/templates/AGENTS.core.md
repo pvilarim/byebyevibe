@@ -34,16 +34,16 @@ For type D/E work, **ALWAYS** consult Graphify and GitNexus before writing code.
 | Specs by capability | `openspec/specs/` |
 | Change in progress | `openspec/changes/<id>/` |
 | Theory / relations between concepts | `graphify-out/GRAPH_REPORT.md` |
-| SDD install guide | `doc/sistema-sdd-pedro.md` |
-| UI module (C1-UI) | `doc/sistema-sdd-pedro.md` §2.11 · `doc/design/002-ui-module-install.md` |
+| SDD install guide | `doc/byebyevibe-guide.md` |
+| UI module (C1-UI) | `doc/byebyevibe-guide.md` §2.11 · `doc/design/002-ui-module-install.md` |
 | Design pipeline / shadcn | `doc/design/001-pipeline-open-design-shadcn-impeccable.md` |
-| SDD upgrade (repo already installed) | `doc/sistema-sdd-pedro.md` §2.9 |
+| SDD upgrade (repo already installed) | `doc/byebyevibe-guide.md` §2.9 |
 | Install kit (versioned payload) | `sdd-kit/` |
 | Installed infra (MCP, CLIs, skills) | `openspec/infra.md` |
-| CI gates (sdd-gates, operation) | `doc/sistema-sdd-pedro.md` §2.12 · `.github/workflows/sdd-gates.yml` |
-| Supply chain (Renovate + OSV) | `doc/sistema-sdd-pedro.md` §2.13 |
-| GitHub Issues MCP (human operation) | `doc/sistema-sdd-pedro.md` §2.15 |
-| SDD metrics (G4, mode C) | `doc/sistema-sdd-pedro.md` §2.17 · `bash scripts/sdd-metrics.sh` |
+| CI gates (sdd-gates, operation) | `doc/byebyevibe-guide.md` §2.12 · `.github/workflows/sdd-gates.yml` |
+| Supply chain (Renovate + OSV) | `doc/byebyevibe-guide.md` §2.13 |
+| GitHub Issues MCP (human operation) | `doc/byebyevibe-guide.md` §2.15 |
+| SDD metrics (G4, mode C) | `doc/byebyevibe-guide.md` §2.17 · `bash scripts/sdd-metrics.sh` |
 | TypeScript (when applicable) | `.cursor/rules/010-typescript.mdc` |
 | Python | `.cursor/rules/020-python.mdc` |
 | Supabase | `.cursor/rules/030-supabase.mdc` |

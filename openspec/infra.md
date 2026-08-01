@@ -65,7 +65,7 @@ Always-on rule: `.cursor/rules/016-session-coordination.mdc`.
 
 | Artifact | Version | Status | Verify with |
 |----------|---------|--------|-------------|
-| `sdd-kit/MANIFEST.yaml` | <!-- kit-version -->1.6.1<!-- /kit-version --> | <!-- kit-status -->✅<!-- /kit-status --> | `grep version sdd-kit/MANIFEST.yaml` |
+| `sdd-kit/MANIFEST.yaml` | <!-- kit-version -->1.7.0<!-- /kit-version --> | <!-- kit-status -->✅<!-- /kit-status --> | `grep version sdd-kit/MANIFEST.yaml` |
 | `sdd-kit/install.sh` | — | <!-- kit-install-status -->✅<!-- /kit-install-status --> | `test -x sdd-kit/install.sh` |
 | `sdd-kit/install-ui-module.sh` | — | ✅ | `test -x sdd-kit/install-ui-module.sh` |
 | `sdd-kit/install-probity-module.sh` | — | ✅ | `test -x sdd-kit/install-probity-module.sh` |
@@ -82,7 +82,7 @@ Payload source: `sdd-kit/templates/` (do not extract scripts from markdown §12)
 | Template in kit | ✅ | `test -f sdd-kit/templates/.github/workflows/sdd-gates.yml` |
 | Branch protection (required check) | `[MANUAL ACTION]` — configure on GitHub | guide §2.12 |
 
-Fail-closed on `openspec validate --all --strict` (pinned `@fission-ai/openspec@1.3.1` = `min_openspec`), `verify-task-patterns.sh`, and **OSV-Scanner** when a lockfile is present. No skill/rule — automatic out-of-band. Operation: `doc/sistema-sdd-pedro.md` §2.12.
+Fail-closed on `openspec validate --all --strict` (pinned `@fission-ai/openspec@1.3.1` = `min_openspec`), `verify-task-patterns.sh`, and **OSV-Scanner** when a lockfile is present. No skill/rule — automatic out-of-band. Operation: `doc/byebyevibe-guide.md` §2.12.
 
 ## Supply Chain
 
@@ -93,7 +93,7 @@ Fail-closed on `openspec validate --all --strict` (pinned `@fission-ai/openspec@
 | Renovate (`renovate.json`) | SKIP — hub DOCS_SPECS | `test -f renovate.json` (APP/HYBRID after install) |
 | Renovate GitHub App | `[MANUAL ACTION]` — install on APP/HYBRID | guide §2.13 |
 
-OSV runs in the `SDD Gates` job when a lockfile exists at the repo root; explicit SKIP when none. Renovate: conservative preset via `sdd-kit/templates/renovate.json` (APP/HYBRID profiles). Operation: `doc/sistema-sdd-pedro.md` §2.13.
+OSV runs in the `SDD Gates` job when a lockfile exists at the repo root; explicit SKIP when none. Renovate: conservative preset via `sdd-kit/templates/renovate.json` (APP/HYBRID profiles). Operation: `doc/byebyevibe-guide.md` §2.13.
 
 ## UI Development Module
 
@@ -125,7 +125,7 @@ Optional G2 module (APP/HYBRID with tests). Mandatory APP pilot before default a
 | `scripts/sdd-metrics.sh` | ✅ | `test -x scripts/sdd-metrics.sh` |
 | On-demand report (mode C) | ✅ | `bash scripts/sdd-metrics.sh --help` |
 
-Local script (git + `openspec/changes/archive/`) — do **not** adopt Apache DevLake. Operation: `doc/sistema-sdd-pedro.md` §2.17.
+Local script (git + `openspec/changes/archive/`) — do **not** adopt Apache DevLake. Operation: `doc/byebyevibe-guide.md` §2.17.
 
 ## Docs language / i18n
 

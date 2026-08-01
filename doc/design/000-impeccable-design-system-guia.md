@@ -6,7 +6,7 @@
 >
 > - **Origin:** [pvilarim/topocnc-art](https://github.com/pvilarim/topocnc-art) repository, branch `import/site-metal-p5`, imported on 2026-06-27 into **spec-pedro** (`gitnexus-graphify-openspec`).
 > - **Status:** `[REFERENCE — NEEDS ADAPTATION]` — technical text preserved; path examples and 3D/CNC scope reflect the source project (TerraCNC / topocnc.art).
-> - **Next step:** integrate the pipeline (Open Design → Pencil/Figma → shadcn → Impeccable) into the canonical guide [`doc/sistema-sdd-pedro.md`](../sistema-sdd-pedro.md) and the install kit `sdd-kit/`, for distribution to any repository using the SDD stack (OpenSpec + GitNexus + Graphify).
+> - **Next step:** integrate the pipeline (Open Design → Pencil/Figma → shadcn → Impeccable) into the canonical guide [`doc/byebyevibe-guide.md`](../byebyevibe-guide.md) and the install kit `sdd-kit/`, for distribution to any repository using the SDD stack (OpenSpec + GitNexus + Graphify).
 > - Sections marked with **[if applicable]** apply only to projects with a Next.js app, 3D configurator, or CNC — not to this hub's **DOCS_SPECS** profile.
 
 Analysis document and future adoption plan. Consolidated in Jun/2026 from an evaluation of [Impeccable](https://github.com/pbakaus/impeccable) for an APP monorepo with shadcn/ui.
@@ -295,7 +295,7 @@ Do not change configurator /app or lib/parametric [if applicable].
 |----------|-------|
 | [AGENTS.md](../../AGENTS.md) | Global agent routing |
 | [openspec/project.md](../../openspec/project.md) | Project constitution (stack, profiles) |
-| [doc/sistema-sdd-pedro.md](../sistema-sdd-pedro.md) | Canonical SDD install guide — **future destination for this pipeline** |
+| [doc/byebyevibe-guide.md](../byebyevibe-guide.md) | Canonical SDD install guide — **future destination for this pipeline** |
 | [001-pipeline-open-design-shadcn-impeccable.md](./001-pipeline-open-design-shadcn-impeccable.md) | **Pipeline** OD → shadcn → Impeccable |
 
 ---

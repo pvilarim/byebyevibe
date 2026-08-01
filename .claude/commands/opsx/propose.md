@@ -111,7 +111,7 @@ After completing all artifacts, summarize:
 
 ## Enriched tasks (§12.10)
 
-When creating `tasks.md`, follow `doc/sistema-sdd-pedro.md` §12.10:
+When creating `tasks.md`, follow `doc/byebyevibe-guide.md` §12.10:
 
 - **Gate** (required): deterministic shell command per verifiable task; exit 0 = done
 - **Pattern** (recommended for code): repo-relative path to existing file; confirm it exists before finalize

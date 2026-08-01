@@ -14,7 +14,7 @@
 
 | Category | Examples | Why |
 |----------|----------|-----|
-| Paths / globs | `openspec/changes/`, `sdd-kit/install.sh`, `doc/sistema-sdd-pedro.md` | Breaks install and agents |
+| Paths / globs | `openspec/changes/`, `sdd-kit/install.sh`, `doc/byebyevibe-guide.md` | Breaks install and agents |
 | Change-ids / branches | `add-english-docs-policy`, `translate-guide-wave-1` | Links and `openspec validate` |
 | Slash commands / skills | `/opsx:apply`, `/opsx:propose`, `openspec-explore` | Skill discovery |
 | Shell / CI fences | `npx openspec validate`, `bash scripts/verify-i18n-wave.sh` | Executability |
@@ -52,7 +52,7 @@ Document wave-specific allowlist exceptions in that wave’s proposal when neede
 | worktree | worktree | do not translate |
 | perfil APP / DOCS_SPECS | APP / DOCS_SPECS profile | |
 | kit de instalação | install kit / sdd-kit | path `sdd-kit/` intact |
-| guia canónico | canonical guide | path may stay `doc/sistema-sdd-pedro.md` until a rename wave |
+| guia canónico | canonical guide | path may stay `doc/byebyevibe-guide.md` until a rename wave |
 | avaliação | evaluation | path `doc/avaliacoes/` until rename |
 | correcção manual | manual fix (out of kit) | from OSS research |
 | falha fechada / aberta | fail-closed / fail-open | |

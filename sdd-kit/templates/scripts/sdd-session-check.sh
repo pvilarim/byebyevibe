@@ -71,7 +71,7 @@ for session_file in "$SESSIONS_DIR"/*.json; do
   # Not provably stale (fresh heartbeat OR live PID) → treat as active conflict.
   # A stale heartbeat with a still-alive PID (long op without heartbeat) must
   # still block, so we do NOT gate this on age <= TTL.
-  echo "ERROR: apply session $other_id active (change=$other_change) on same worktree — wait or use a separate git worktree (see doc/sistema-sdd-pedro.md §3.3)" >&2
+  echo "ERROR: apply session $other_id active (change=$other_change) on same worktree — wait or use a separate git worktree (see doc/byebyevibe-guide.md §3.3)" >&2
   exit 1
 done
 

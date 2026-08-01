@@ -8,7 +8,7 @@ Repository of specs, technical documentation, and courses by Pedro Vilarim. It s
 
 - **Runtime**: Node.js 22.x, Python 3.13
 - **UI Framework**: Next.js 16+ (App Router), Tailwind CSS v3.4, shadcn/ui
-- **UI stack**: none (shadcn | tailwind-custom | other | none) — recorded after C1-UI; see `doc/sistema-sdd-pedro.md` §2.11
+- **UI stack**: none (shadcn | tailwind-custom | other | none) — recorded after C1-UI; see `doc/byebyevibe-guide.md` §2.11
 - **Backend**: Next.js Server Actions + Supabase
 - **Database**: Supabase (Postgres + pgvector + Auth)
 - **LLM**: Anthropic Claude (primary)
@@ -56,7 +56,8 @@ Repository of specs, technical documentation, and courses by Pedro Vilarim. It s
 - Active specs: `openspec/specs/`
 - In-progress changes: `openspec/changes/`
 - Course documentation: `doc/curso/` (5 lessons from Workshop IA 5/2026)
-- **SDD install guide:** `doc/sistema-sdd-pedro.md` **v1.6.1** — install §2 + `sdd-kit/install.sh`; upgrade §2.9 + `sdd-kit/upgrade.sh`; UI module §2.11 + `sdd-kit/install-ui-module.sh`; CI gates §2.12; Probity (G2) §2.16 + `sdd-kit/install-probity-module.sh`; SDD metrics (G4) §2.17 + `scripts/sdd-metrics.sh` (playbook + cadence `--check-cadence`)
+- Guide renamed 2026-08: `doc/sistema-sdd-pedro.md` → `doc/byebyevibe-guide.md` (kit v1.7.0); archives/pre-rename specs cite the old name.
+- **SDD install guide:** `doc/byebyevibe-guide.md` **v1.7.0** — install §2 + `sdd-kit/install.sh`; upgrade §2.9 + `sdd-kit/upgrade.sh`; UI module §2.11 + `sdd-kit/install-ui-module.sh`; CI gates §2.12; Probity (G2) §2.16 + `sdd-kit/install-probity-module.sh`; SDD metrics (G4) §2.17 + `scripts/sdd-metrics.sh` (playbook + cadence `--check-cadence`)
 - **Install kit:** `sdd-kit/` (MANIFEST v1.6.1) — versioned payloads for C1/C2/C1-UI/G2/G4 + workflow `sdd-gates`
 - **UI module (design system):** `doc/design/` — `002-ui-module-install.md`, `001-pipeline-open-design-shadcn-impeccable.md`
 - **Integration evaluations (historical):** `doc/avaliacoes/` — tools researched for the SDD stack

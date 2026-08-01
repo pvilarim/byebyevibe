@@ -11,7 +11,7 @@ json_escape() {
 
 emit_json() {
   local change_id="$1" wave="$2" slice_start="$3" slice_end="$4" incomplete="$5"
-  printf '{"change_id":"%s","wave":%s,"slice_start":%s,"slice_end":%s,"incomplete_tasks":%s,"gate":"bash scripts/verify-i18n-wave.sh --files doc/sistema-sdd-pedro.md --slice %s-%s"}\n' \
+  printf '{"change_id":"%s","wave":%s,"slice_start":%s,"slice_end":%s,"incomplete_tasks":%s,"gate":"bash scripts/verify-i18n-wave.sh --files doc/byebyevibe-guide.md --slice %s-%s"}\n' \
     "$(json_escape "$change_id")" "$wave" "$slice_start" "$slice_end" "$incomplete" "$slice_start" "$slice_end"
 }
 
@@ -46,7 +46,7 @@ for n in $(seq 2 99); do
     echo "WAVE=${n}"
     echo "SLICE=${slice_start}-${slice_end}"
     echo "INCOMPLETE_TASKS=${incomplete}"
-    echo "GATE=bash scripts/verify-i18n-wave.sh --files doc/sistema-sdd-pedro.md --slice ${slice_start}-${slice_end}"
+    echo "GATE=bash scripts/verify-i18n-wave.sh --files doc/byebyevibe-guide.md --slice ${slice_start}-${slice_end}"
   fi
   exit 0
 done

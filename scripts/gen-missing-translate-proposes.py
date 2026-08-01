@@ -116,16 +116,16 @@ def guide_proposal(n: int, start: int, end: int, label: str, prev: int | None) -
 
 ## Why
 
-`doc/sistema-sdd-pedro.md` (~2847 LOC) is the canonical install guide and the highest-priority uncovered in-scope surface (W3+ in `doc/i18n/WAVES.md`). Prior waves closed entry points, kit, skills, commands, design, and evaluations; no `translate-guide-*` propose exists yet. This change covers lines **{start}–{end}** ({label}, ~{loc} LOC) — within the ≤350–400 LOC mid-file slice budget. Apply is sequential per slice on the same file; proposes for disjoint slices may merge in parallel.
+`doc/byebyevibe-guide.md` (~2847 LOC) is the canonical install guide and the highest-priority uncovered in-scope surface (W3+ in `doc/i18n/WAVES.md`). Prior waves closed entry points, kit, skills, commands, design, and evaluations; no `translate-guide-*` propose exists yet. This change covers lines **{start}–{end}** ({label}, ~{loc} LOC) — within the ≤350–400 LOC mid-file slice budget. Apply is sequential per slice on the same file; proposes for disjoint slices may merge in parallel.
 
 ## What Changes
 
-- Replace Portuguese prose with glossary-canonical English **in-place** in `doc/sistema-sdd-pedro.md` for lines **{start}–{end}** only ({label})
+- Replace Portuguese prose with glossary-canonical English **in-place** in `doc/byebyevibe-guide.md` for lines **{start}–{end}** only ({label})
 - Do **not** edit lines outside this slice in the same apply session
 - Preserve freeze-list tokens (paths, change-ids, `/opsx:*`, package pins, URLs, `sdd-kit/` commands, profile codes C1–C3, fenced shell, brand **ByeByeVibe**) byte-stable
 - Map operator cues: `Acção`/`Acção` → Action, `[AÇÃO MANUAL]` → `[MANUAL ACTION]`, section anchors updated only when heading text is translated (keep link targets consistent — G-LINK)
 - Expand `doc/i18n/GLOSSARY.md` only if this wave introduces a new SDD term not already listed
-- Run `bash scripts/verify-i18n-wave.sh --files doc/sistema-sdd-pedro.md` before marking tasks done (whole-file gate; slice must leave zero PT in touched lines)
+- Run `bash scripts/verify-i18n-wave.sh --files doc/byebyevibe-guide.md` before marking tasks done (whole-file gate; slice must leave zero PT in touched lines)
 
 ## Capabilities
 
@@ -135,11 +135,11 @@ def guide_proposal(n: int, start: int, end: int, label: str, prev: int | None) -
 
 ### Modified Capabilities
 
-- `sdd-docs-language`: ADDED requirement — guide slice lines {start}–{end} of `doc/sistema-sdd-pedro.md` MUST be English after substitution; dual-file siblings forbidden; freeze-list tokens preserved.
+- `sdd-docs-language`: ADDED requirement — guide slice lines {start}–{end} of `doc/byebyevibe-guide.md` MUST be English after substitution; dual-file siblings forbidden; freeze-list tokens preserved.
 
 ## Impact
 
-- Files modified: `doc/sistema-sdd-pedro.md` (lines {start}–{end} only; optional `doc/i18n/GLOSSARY.md` if new terms)
+- Files modified: `doc/byebyevibe-guide.md` (lines {start}–{end} only; optional `doc/i18n/GLOSSARY.md` if new terms)
 {dep_block}
 - Risks: G-PT scans whole file — out-of-slice PT causes false FAIL until prior slices applied; accidental edits outside slice; broken anchor links after heading translation (G-LINK)
 - **Non-goals:** lines outside {start}–{end}; `doc/curso/`; `openspec/changes/archive/`; dual-file `*.en.md` / `*-pt.md`; global G-DoD; path renames; changing install semantics — language only
@@ -147,7 +147,7 @@ def guide_proposal(n: int, start: int, end: int, label: str, prev: int | None) -
 ## Required gates (before marking tasks done)
 
 ```bash
-bash scripts/verify-i18n-wave.sh --files doc/sistema-sdd-pedro.md
+bash scripts/verify-i18n-wave.sh --files doc/byebyevibe-guide.md
 ```
 
 Must pass: **G-INV**, **G-GLOSS**, **G-PT**, **G-LINK**, **G-OPENSPEC**.  
@@ -172,7 +172,7 @@ N/A: **G-MIRROR**, **G-MANIFEST**. **G-DoD** only after all guide slices + other
 
 Change: openspec/changes/{cid}/
 Read: proposal.md, design.md, tasks.md, doc/i18n/GLOSSARY.md, doc/i18n/WAVES.md, doc/i18n/CURSOR-AUTOMATIONS.md
-Gate: bash scripts/verify-i18n-wave.sh --files doc/sistema-sdd-pedro.md
+Gate: bash scripts/verify-i18n-wave.sh --files doc/byebyevibe-guide.md
 Infra: openspec/infra.md (assume ✅ — do not reinstall)
 ```
 """
@@ -211,7 +211,7 @@ def guide_design(
 - Layer-1 policy: `sdd-docs-language` / `doc/i18n/*`.
 - Target: `{path}` lines **{start}–{end}** ({label}, ~{loc} LOC).
 - {hub_note}
-- Canonical guide (`doc/sistema-sdd-pedro.md`) is covered by `translate-guide-wave-*` (separate track).
+- Canonical guide (`doc/byebyevibe-guide.md`) is covered by `translate-guide-wave-*` (separate track).
 
 ## Goals / Non-Goals
 
@@ -377,15 +377,15 @@ def main() -> None:
         write(base / "proposal.md", guide_proposal(n, start, end, label, prev))
         write(
             base / "design.md",
-            guide_design(cid, "doc/sistema-sdd-pedro.md", start, end, label, None, False),
+            guide_design(cid, "doc/byebyevibe-guide.md", start, end, label, None, False),
         )
         write(
             base / "tasks.md",
-            guide_tasks(cid, "doc/sistema-sdd-pedro.md", start, end, label, False),
+            guide_tasks(cid, "doc/byebyevibe-guide.md", start, end, label, False),
         )
         write(
             base / "specs/sdd-docs-language/spec.md",
-            spec_delta(cid, "doc/sistema-sdd-pedro.md", f"lines {start}–{end}"),
+            spec_delta(cid, "doc/byebyevibe-guide.md", f"lines {start}–{end}"),
         )
         created.append(cid)
 

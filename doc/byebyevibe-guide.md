@@ -2,7 +2,7 @@
 
 **GitNexus + Graphify + OpenSpec, integrated in Cursor and VS Code + Claude Code**
 
-> **Canonical install guide (v1.6.1)** — use in any Git repository, manually or via an AI agent. Payloads in `sdd-kit/`; procedure in this document.
+> **Canonical install guide (v1.7.0)** — use in any Git repository, manually or via an AI agent. Payloads in `sdd-kit/`; procedure in this document.
 
 ## How to use this document
 
@@ -106,7 +106,7 @@ The SDD stack is organized in **four layers** — do not confuse procedure with 
 
 | Layer | Artifact | Role |
 |--------|-----------|-------|
-| **Procedure** | `doc/sistema-sdd-pedro.md` | How to install/upgrade; scenarios C1–C3 |
+| **Procedure** | `doc/byebyevibe-guide.md` | How to install/upgrade; scenarios C1–C3 |
 | **Versioned payload** | `sdd-kit/templates/` + `MANIFEST.yaml` | Copyable files, shell gates |
 | **Normative requirements** | `openspec/specs/sdd-*` | What MUST exist after install |
 | **Workspace state** | `openspec/infra.md`, `project.md` | What is ✅ in this repo |
@@ -211,7 +211,7 @@ Paste this prompt at the target repository root (replace `REPO_ROOT` and the pro
 
 ```
 Install the SDD system (OpenSpec + GitNexus + Graphify) in this repository following
-strictly the guide in doc/sistema-sdd-pedro.md v1.6.1 and the install kit in sdd-kit/.
+strictly the guide in doc/byebyevibe-guide.md v1.7.0 and the install kit in sdd-kit/.
 
 Repository profile: [APP | DOCS_SPECS | HYBRID]
 
@@ -449,7 +449,7 @@ Include a table like this (adapt paths to the repo):
 | Concept relations / theory | `graphify-out/GRAPH_REPORT.md` |
 | Legacy: understand codebase | Ask for AS-IS patterns **without creating files**; then document |
 | TS/Python/DB conventions (open file) | `.cursor/rules/010-*.mdc`, etc. |
-| Full SDD guide (installation) | `doc/sistema-sdd-pedro.md` |
+| Full SDD guide (installation) | `doc/byebyevibe-guide.md` |
 ```
 
 #### 2.5.4 Nested `AGENTS.md` ([agents.md](https://agents.md/))
@@ -968,7 +968,7 @@ Before upgrading, record in the report (§12.8):
 
 ```bash
 # Guide version referenced in repo (if any)
-grep -E 'sistema-sdd-pedro\.md|Guia de instalação SDD' openspec/project.md || true
+grep -E 'byebyevibe-guide\.md|Guia de instalação SDD' openspec/project.md || true
 
 # Tool versions
 openspec --version 2>/dev/null || npx openspec --version
@@ -983,7 +983,7 @@ test -d .cursor/rules && ls .cursor/rules/*.mdc 2>/dev/null | wc -l
 
 | Field | Where to read |
 |-------|----------|
-| Guide version in repo | `openspec/project.md` → Cross-references (`doc/sistema-sdd-pedro.md` **vX.Y.Z**) |
+| Guide version in repo | `openspec/project.md` → Cross-references (`doc/byebyevibe-guide.md` **vX.Y.Z**) |
 | Target version | Header of this document or changelog §14 |
 | Profile | APP / DOCS_SPECS / HYBRID (§2.5.2) — infer from `package.json`, Commands in `AGENTS.md` |
 
@@ -995,7 +995,7 @@ Paste at target repo root (replace `TARGET_VERSION` and confirm guide path):
 
 ```
 Upgrade the existing SDD installation in this repository to guide
-doc/sistema-sdd-pedro.md TARGET_VERSION (e.g. v1.2.0).
+doc/byebyevibe-guide.md TARGET_VERSION (e.g. v1.2.0).
 
 This is NOT a new installation — follow §2.9 of the guide strictly.
 
@@ -2335,8 +2335,8 @@ Never assert facts without source 1–6. Type D/E: Graphify + GitNexus before co
 | Active change | `openspec/changes/<id>/` |
 | Graph | `graphify-out/GRAPH_REPORT.md` |
 | Installed infra | `openspec/infra.md` |
-| SDD guide | `doc/sistema-sdd-pedro.md` |
-| SDD upgrade | `doc/sistema-sdd-pedro.md` §2.9 |
+| SDD guide | `doc/byebyevibe-guide.md` |
+| SDD upgrade | `doc/byebyevibe-guide.md` §2.9 |
 | TS / Py / DB | `.cursor/rules/010-*.mdc`, `020-*.mdc`, `030-*.mdc` |
 
 ## Task protocol (A–E)
@@ -2781,8 +2781,8 @@ Atomic tasks with structured sub-bullets. **Decisions** live in `design.md` (§1
   - **Forbidden:** create `BaseRepository` (already exists in `src/core/`)
 
 - [ ] 2.4 Update guide §12.10
-  - **Pattern:** `doc/sistema-sdd-pedro.md` §12.3
-  - **Gate:** `grep -q '12.10' doc/sistema-sdd-pedro.md`
+  - **Pattern:** `doc/byebyevibe-guide.md` §12.3
+  - **Gate:** `grep -q '12.10' doc/byebyevibe-guide.md`
 ```
 
 | Sub-bullet | Mandatory | Notes |
@@ -2858,6 +2858,11 @@ bash scripts/verify-task-patterns.sh   # Pattern: paths exist; DOCS_SPECS withou
 ---
 
 ## Guide changelog
+
+### 1.7.0 (2026-08-01)
+
+- **Rename-only release** — Guide file renamed to `doc/byebyevibe-guide.md` from the legacy author-named path (project-named per EN docs policy; change `rename-guide-file`). Redirect stub kept at the old path; archives and pre-rename spec requirements cite the old name — both refer to this document. Content unchanged beyond path self-references.
+- **`sdd-kit/`** — All live references and template mirrors updated to the new path; MANIFEST **1.6.1 → 1.7.0**.
 
 ### 1.6.1 (2026-07-26)
 

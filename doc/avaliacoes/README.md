@@ -41,4 +41,4 @@ Historical record of tools, patterns, and ideas **evaluated** for the **OpenSpec
 
 These evaluations **do not replace** `openspec/specs/` (normative requirements). Adopting a candidate requires its own OpenSpec change; discarding is recorded here and in `openspec/project.md` (Non-goals), when applicable.
 
-See also: `doc/sistema-sdd-pedro.md` §5.5 · `openspec/project.md` (Cross-references / Non-goals)
+See also: `doc/byebyevibe-guide.md` §5.5 · `openspec/project.md` (Cross-references / Non-goals)

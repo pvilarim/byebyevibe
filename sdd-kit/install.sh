@@ -431,6 +431,6 @@ echo "Done. Next steps:"
 echo "  1. Edit openspec/project.md (Purpose, Stack — do not replace with template)"
 echo "  2. Merge AGENTS.md if it already existed"
 echo "  3. bash sdd-kit/verify.sh"
-echo "  4. Checklist doc/sistema-sdd-pedro.md §2.8"
+echo "  4. Checklist doc/byebyevibe-guide.md §2.8"
 print_day1_operate_tip
 print_optional_addons_teaser

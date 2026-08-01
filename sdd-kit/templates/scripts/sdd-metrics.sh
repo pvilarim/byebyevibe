@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # sdd-metrics.sh — relatório de eficácia SDD (G4), modo C (sob demanda)
 # Fontes: git + openspec/changes/ + openspec/changes/archive/
-# Sem rede, sem tokens, sem DevLake. Ver doc/sistema-sdd-pedro.md §2.17
+# Sem rede, sem tokens, sem DevLake. Ver doc/byebyevibe-guide.md §2.17
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -41,7 +41,7 @@ Metrics (proxies — see report notes):
   M4 Post-archive      Summary of corrective activity (M3 as primary proxy)
 
 Stamp: successful report (exit 0) writes .sdd/metrics-last-run (YYYY-MM-DD).
-Playbook: doc/sistema-sdd-pedro.md §2.17
+Playbook: doc/byebyevibe-guide.md §2.17
 
 Exit codes: 0 = report generated / cadence fresh; 1 = cadence nudge due;
             2 = invalid usage
@@ -143,7 +143,7 @@ emit_nudge() {
   cat <<EOF
 SDD metrics cadence nudge ($reason).
 Run: bash scripts/sdd-metrics.sh
-Then interpret with the playbook in doc/sistema-sdd-pedro.md §2.17 (1 insight → 1 adjustment).
+Then interpret with the playbook in doc/byebyevibe-guide.md §2.17 (1 insight → 1 adjustment).
 EOF
 }
 
