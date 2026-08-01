@@ -7,7 +7,17 @@
 
 **ByeByeVibe** is the public name of this project. The install payload lives in `sdd-kit/`.
 
-The missing operating system between your coding agent and a maintainable repo — specs, code & knowledge graphs, CI gates, and session discipline, packaged so you don't invent process from scratch.
+An **installable toolkit for AI-assisted development** on **Cursor** and **Claude Code** — the missing operating system between your coding agent and a maintainable repo. Specs, code & knowledge graphs, CI gates, and session discipline, packaged so you don't invent process from scratch.
+
+*Vibe coding until the first PR. After that, agentic engineering.*
+
+## Why install this
+
+- **Durable memory** — specs and decisions live in `openspec/`, not in chat history
+- **Impact before edits** — GitNexus maps your code so agents check blast radius first
+- **Team knowledge reused** — Graphify surfaces architecture and past decisions without blind grepping
+- **Enforced quality** — CI `sdd-gates` validates specs and task patterns (fail-closed)
+- **Versioned control plane** — `sdd-kit/` installs and upgrades rules, scripts, and gates with `MANIFEST.yaml`
 
 ## Get started (30 seconds)
 
@@ -21,15 +31,38 @@ bash sdd-kit/install.sh --profile APP --dry-run
 
 Profiles: `APP` · `DOCS_SPECS` · `HYBRID` — see [`sdd-kit/README.md`](./sdd-kit/README.md).
 
-### How the three tools fit
-
-**OpenSpec** captures intent (the playbook for a change). **GitNexus** maps your repo’s code so edits check impact first. **Graphify** maps what the team already knows so the AI doesn’t reinvent docs and decisions. **`sdd-kit/`** ships the control-plane payloads (rules, scripts, gates) into *this* repo. Full didactic path: guide [§2.1](./doc/sistema-sdd-pedro.md#21-order-matters).
-
-Full procedure: [`doc/sistema-sdd-pedro.md`](./doc/sistema-sdd-pedro.md) · first-contact §2.0b.
-
 ## The problem
 
 Coding agents forget context, hallucinate APIs, and overwrite each other's `AGENTS.md`. Chat-only “vibe coding” ships fast — until the repo becomes unmaintainable. Spec-driven development fixes that **if** the workflow, graphs, and gates are installed and governed.
+
+## Core tools
+
+| Tool | What it is | Without it |
+|------|------------|------------|
+| **OpenSpec** | Playbook for a change — think, agree, implement, archive (`/opsx:*`) | Chat turns into code; nobody remembers why |
+| **GitNexus** | Map of your repo's code + impact analysis | The AI edits by vibe and breaks the neighborhood |
+| **Graphify** | Knowledge graph — concepts, architecture, relations | The AI reinvents decisions you wrote last month |
+| **`sdd-kit/`** | Versioned install payload (rules, scripts, workflows, gates) | Every repo invents the process from scratch |
+| **CI `sdd-gates`** | Fail-closed validation (`openspec validate`, task patterns, OSV) | Specs become decoration |
+| **Session locks** | Safe parallelism across git worktrees | Concurrent agents overwrite each other |
+| **AGENTS.md** | Single curated agent entry point ([agents.md](https://agents.md/)) | Install order fights and overwrites agent config |
+
+Full didactic install path: guide [§2.1](./doc/sistema-sdd-pedro.md#21-order-matters) · first-contact [§2.0b](./doc/sistema-sdd-pedro.md#20b-first-contact--vibe-coder-quickstart).
+
+## User-friendly OpenSpec
+
+Discipline without ceremony — friendly onboarding, not theatre.
+
+| Entry | When to use |
+|-------|-------------|
+| **`/opsx:help`** | Day-1 operator map after install — files, phases, confidence (`doc/sdd-operator-day1.md`) |
+| **`/opsx:onboard`** | Learn by doing one full OpenSpec cycle (upstream; we don't fork it) |
+| **`/opsx:explore`** | Think before you build — research only, no code |
+| **`/opsx:propose` → `apply` → `archive`** | Spec-driven change lifecycle |
+
+Suggested order: **help** (map) → **onboard** (practice) → real changes.
+
+C1 install uses plain-language banners (What / Why / Without it) so operators understand each step — see guide §2.1–2.4.
 
 ## Demo — `/opsx` loop (text)
 
@@ -47,24 +80,26 @@ You:  /opsx:archive
 Agent: promotes specs · archives the change
 ```
 
-Same discipline in Cursor or Claude Code. Optional: after a few archives, run `bash scripts/sdd-metrics.sh` to **calibrate** lead time and rework — see below.
+Same discipline in Cursor or Claude Code.
 
-## What's included
+## Optional modules
 
-| Capability | What you get |
-|------------|----------------|
-| **OpenSpec** | Spec-driven changes: `/opsx:explore` → `propose` → `apply` → `archive` |
-| **GitNexus** | Code graph — impact analysis before you edit symbols |
-| **Graphify** | Knowledge graph — concepts & architecture without grepping blind |
-| **AGENTS.md** | Single curated agent entry point ([agents.md](https://agents.md/)) — anti-overwrite install order |
-| **CI gates** | `sdd-gates` — `openspec validate`, task patterns, OSV when lockfile present |
-| **UI module (optional)** | C1-UI — Impeccable / shadcn / design pipeline |
-| **Probity (optional)** | G2 — TDD enforce for APP/HYBRID |
-| **SDD metrics** | G4 — `sdd-metrics.sh`: volume, lead time, rework + cadence nudge |
+Install the core stack first (C1). Add these only when you need them:
 
-### Calibrate as you go
+| Module | Code | What you get |
+|--------|------|----------------|
+| **UI / design system** | C1-UI | Impeccable + shadcn + design pipeline — guide §2.11 |
+| **Probity (TDD enforce)** | G2 | `@nizos/probity` for APP/HYBRID — guide §2.16 |
+| **Post-apply reviews** | skills | `correctness-review` · `simplify-review` — on-demand, manual install |
+| **SDD metrics** | G4 | `sdd-metrics.sh` — volume, lead time, rework — guide §2.17 |
 
-Built-in **SDD retrospectives** — `sdd-metrics.sh` turns your archive history into volume, lead-time, and rework signals. After every few shipped changes, a gentle cadence nudge asks you to run the report and make **one** process adjustment. The more you ship through the loop, the more signal you have to calibrate *your* workflow — not magic, measurable. (No ML / self-learning claims.)
+## Calibrate as you go
+
+Built-in **SDD retrospectives** — `sdd-metrics.sh` turns your archive history into volume, lead-time, and rework signals. After every few shipped changes, a gentle cadence nudge asks you to run the report and make **one** process adjustment. The more you ship through the loop, the more signal you have to calibrate *your* workflow — measurable, not magic. (No ML / self-learning claims.)
+
+```bash
+bash scripts/sdd-metrics.sh
+```
 
 Details (pt-BR): guide §2.17.
 
@@ -76,11 +111,11 @@ Details (pt-BR): guide §2.17.
 | “Prompt → full app in 30s” | **No** — we upgrade how agents work *in* your repo |
 | Specs + graphs + gates + install/upgrade | **Yes** — the control plane |
 
-If you need a Camada B vibe *template*, use one — then install this kit on top.
+If you need a vibe *template*, use one — then install this kit on top.
 
 ## Who it's for
 
-- Solo / small teams on **Cursor** or **Claude Code** leaving chaotic vibe coding
+- Solo / small teams on **Cursor** or **Claude Code** leaving chaotic vibe coding for **agentic engineering**
 - Brownfield repos that need agent discipline without a second orchestration framework
 - Hubs that distribute SDD payloads (`sdd-kit/`) to many consumer repos
 
@@ -108,8 +143,9 @@ We **compose** OpenSpec; we don't replace it.
 |-----|----------|------|
 | This README | EN | Discovery / first contact |
 | [`doc/sistema-sdd-pedro.md`](./doc/sistema-sdd-pedro.md) | pt-BR | Canonical install & operations guide |
+| [`doc/sdd-operator-day1.md`](./doc/sdd-operator-day1.md) | EN | Day-1 operator map (`/opsx:help`) |
 | [`sdd-kit/README.md`](./sdd-kit/README.md) | pt-BR (+ EN intro) | Kit scenarios & commands |
-| [`doc/avaliacoes/2026-07-26-sdd-discovery-positioning.md`](./doc/avaliacoes/2026-07-26-sdd-discovery-positioning.md) | pt-BR | Market / SEO / backlog decisions |
+| [`doc/avaliacoes/2026-07-26-sdd-discovery-positioning.md`](./doc/avaliacoes/2026-07-26-sdd-discovery-positioning.md) | EN | Market / SEO / backlog decisions |
 
 ## [AÇÃO MANUAL NECESSÁRIA] — GitHub rename, About & topics
 
@@ -124,7 +160,7 @@ Settings are not in git. After merge, the operator should:
 
 > ByeByeVibe — Spec-Driven Development (SDD) install kit from vibe coding to shippable AI engineering. Control plane (OpenSpec + graphs + gates) for Cursor & Claude Code. Not a Next.js starter.
 
-**Topics:** `vibe-coding` · `spec-driven-development` · `context-engineering` · `claude-code` · `cursor`
+**Topics:** `vibe-coding` · `spec-driven-development` · `context-engineering` · `agentic-coding` · `claude-code` · `cursor`
 
 Full checklist: [evaluation doc](./doc/avaliacoes/2026-07-26-sdd-discovery-positioning.md).
 

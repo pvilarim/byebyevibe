@@ -137,15 +137,16 @@ Exact commands: `sdd-kit/README.md`.
 Coming from *vibe coding* and want the minimum path **without** reading the entire guide?
 
 1. Read the hero and demo in [`README.md`](../README.md) at the hub root (EN) — public brand **ByeByeVibe**; positioning “from vibe coding to shippable AI engineering”; **not** an app boilerplate (payload remains in `sdd-kit/`).
-2. Preview what the kit would install (without writing files):
+2. After install, run **`/opsx:help`** for the day-1 operator map (`doc/sdd-operator-day1.md`) — complements upstream `/opsx:onboard`.
+3. Preview what the kit would install (without writing files):
 
 ```bash
 bash sdd-kit/install.sh --profile DOCS_SPECS --dry-run
 # or, in an application repo: --profile APP
 ```
 
-3. If it makes sense, follow the full install: §2.1 → CLIs → `install.sh` (without `--dry-run`) → checklist §2.8.
-4. Friendly map C1/C2/C3/G*: [`sdd-kit/README.md`](../sdd-kit/README.md). Market analysis / backlog: [`doc/avaliacoes/2026-07-26-sdd-discovery-positioning.md`](../doc/avaliacoes/2026-07-26-sdd-discovery-positioning.md).
+4. If it makes sense, follow the full install: §2.1 → CLIs → `install.sh` (without `--dry-run`) → checklist §2.8.
+5. Friendly map C1/C2/C3/G*: [`sdd-kit/README.md`](../sdd-kit/README.md). Market analysis / backlog: [`doc/avaliacoes/2026-07-26-sdd-discovery-positioning.md`](../doc/avaliacoes/2026-07-26-sdd-discovery-positioning.md).
 
 This block **does not** replace procedure §2.1–§2.8 — it only reduces friction on first contact.
 
