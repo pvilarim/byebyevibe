@@ -136,7 +136,7 @@ On recognition, offer the standard three-part message (never create a skill unpr
 2. **Won't:** "It does not update itself — if the law/number/method changes, you must ask to update it, or it will keep asserting stale data."
 3. **Decide:** "Want me to create it? (yes / no / later)"
 
-Cap: at most **one suggestion per session** — offer only, the user decides. If accepted, load the `sdd-skill-guidance` skill for creation hygiene (search-before-create, description diet, task-based naming, "verified on YYYY-MM" marker).
+Cap: at most **one suggestion per session, shared across proactive mechanisms** — skill and tooling suggestions (`sdd-tooling-guidance`) draw from the same single slot, strongest signal wins; offer only, the user decides. If accepted, load the `sdd-skill-guidance` skill for creation hygiene (search-before-create, description diet, task-based naming, "verified on YYYY-MM" marker).
 
 ---
 

@@ -75,6 +75,10 @@ Archive a completed change in the experimental workflow.
 
    > Did anything in this change repeat a procedure or explanation from a previous change? Rule of three: 1st normal, 2nd note it, 3rd extract a skill (see `sdd-skill-guidance`).
 
+   And the manual-work confidence question:
+
+   > Was anything in this change done manually that a configured integration would have done? If yes, consider the tooling cascade (see `sdd-tooling-guidance`) — status in `openspec/infra.md`, how-to in `doc/tooling-install.md`.
+
    Do not block archive if the user declines.
 
 5. **Perform the archive**

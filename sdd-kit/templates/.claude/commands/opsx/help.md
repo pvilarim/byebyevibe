@@ -7,7 +7,7 @@ tags: [workflow, help, day-1, onboarding]
 
 Enter `/opsx:help` — day-1 operate map for the ByeByeVibe control plane.
 
-Follow the **openspec-help** skill stance: read and narrate `doc/sdd-operator-day1.md` (§0–§8). Thin orchestration only — do not invent a second essay in this command body.
+Follow the **openspec-help** skill stance: read and narrate `doc/sdd-operator-day1.md` (§0–§9). Thin orchestration only — do not invent a second essay in this command body.
 
 **Onboard vs Help (both first-class):**
 

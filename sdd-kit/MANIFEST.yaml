@@ -19,7 +19,7 @@ profiles: [APP, DOCS_SPECS, HYBRID]
 files:
   - path: scripts/verify-infra.sh
     source: templates/scripts/verify-infra.sh
-    sha256: "d9769e209a6773aeb5120e7455ac1efc3614b28bf270d8394751027208a08cd4"
+    sha256: "c267db5c97f996c67dea45a96a04e71cf1cafc975c8576e2021dfef47a57c52b"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -x scripts/verify-infra.sh"
@@ -260,35 +260,35 @@ files:
   # Day-1 operator onboarding (/opsx:help) — kit-owned; not OpenSpec ALL_WORKFLOWS
   - path: .cursor/skills/openspec-help/SKILL.md
     source: templates/.cursor/skills/openspec-help/SKILL.md
-    sha256: "8f7e9ea7ab2bbadfae1909c7cca4df3f57c42506c24c2221a5ae9f87b913c3af"
+    sha256: "c6b2569c114b50095934e29c6092f6177040e4ea3369b7501220249cca985b6f"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f .cursor/skills/openspec-help/SKILL.md && grep -q sdd-operator-day1 .cursor/skills/openspec-help/SKILL.md"
 
   - path: .claude/skills/openspec-help/SKILL.md
     source: templates/.claude/skills/openspec-help/SKILL.md
-    sha256: "8f7e9ea7ab2bbadfae1909c7cca4df3f57c42506c24c2221a5ae9f87b913c3af"
+    sha256: "c6b2569c114b50095934e29c6092f6177040e4ea3369b7501220249cca985b6f"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f .claude/skills/openspec-help/SKILL.md && grep -q sdd-operator-day1 .claude/skills/openspec-help/SKILL.md"
 
   - path: .cursor/commands/opsx-help.md
     source: templates/.cursor/commands/opsx-help.md
-    sha256: "dc87d6f716297b6df782dd1b773706e22e200d083d781f5bcda4cd47221e7100"
+    sha256: "aa2b9752d207f1d6f2386ae72c9b098f01ac3ef49ed9e65748427530a8c3de85"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f .cursor/commands/opsx-help.md && grep -qE 'opsx:help|/opsx:help|openspec-help' .cursor/commands/opsx-help.md"
 
   - path: .claude/commands/opsx/help.md
     source: templates/.claude/commands/opsx/help.md
-    sha256: "b16e5234d9f60dbb580d7f45649985443c7e4659714332008dc91cb8e47f7027"
+    sha256: "2349ec4a74ad7e400c02cd610246c0abec8870b2840ba1bbf9f496ca82a74ee2"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f .claude/commands/opsx/help.md && grep -qE 'opsx:help|/opsx:help|openspec-help' .claude/commands/opsx/help.md"
 
   - path: doc/sdd-operator-day1.md
     source: templates/doc/sdd-operator-day1.md
-    sha256: "95ac68aed19ea6cf07366fc3e58a7530b0601becc2a342fc3e39e49a5e50a52a"
+    sha256: "4b1d0e1744d5b6a583bd67f5d6acd5c433f7fccd025171a04a178e8c9f7007de"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -s doc/sdd-operator-day1.md && grep -q '/opsx:help' doc/sdd-operator-day1.md"
@@ -307,3 +307,25 @@ files:
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f .claude/skills/sdd-skill-guidance/SKILL.md && grep -q 'verified on' .claude/skills/sdd-skill-guidance/SKILL.md"
+
+  # Tooling guidance (sdd-tooling-guidance) — kit-owned; mirrors intentionally diverge (Claude Code harness tools vs Cursor degradation)
+  - path: .cursor/skills/sdd-tooling-guidance/SKILL.md
+    source: templates/.cursor/skills/sdd-tooling-guidance/SKILL.md
+    sha256: "6d756f263fb5abacc5cd566e1849b8ffa379c556e17a153c5528d1cbc5c57678"
+    merge: COPY
+    profiles: [APP, DOCS_SPECS, HYBRID]
+    gate: "test -f .cursor/skills/sdd-tooling-guidance/SKILL.md && grep -q 'declined' .cursor/skills/sdd-tooling-guidance/SKILL.md && ! grep -q 'SearchMcpRegistry' .cursor/skills/sdd-tooling-guidance/SKILL.md"
+
+  - path: .claude/skills/sdd-tooling-guidance/SKILL.md
+    source: templates/.claude/skills/sdd-tooling-guidance/SKILL.md
+    sha256: "cf613dface97d2cd1add104ccde7c226f015c36f0ebbc64221b249c8d7ce3884"
+    merge: COPY
+    profiles: [APP, DOCS_SPECS, HYBRID]
+    gate: "test -f .claude/skills/sdd-tooling-guidance/SKILL.md && grep -q 'declined' .claude/skills/sdd-tooling-guidance/SKILL.md && grep -q 'doc/tooling-install.md' .claude/skills/sdd-tooling-guidance/SKILL.md"
+
+  - path: doc/tooling-install.md
+    source: templates/doc/tooling-install.md
+    sha256: "4502044f8b06e25a2672e3c0de603ba874251e69055f0aae1d80d7461db0076d"
+    merge: COPY
+    profiles: [APP, DOCS_SPECS, HYBRID]
+    gate: "test -s doc/tooling-install.md && grep -q 'verified on' doc/tooling-install.md"

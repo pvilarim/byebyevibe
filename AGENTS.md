@@ -113,7 +113,7 @@ If ambiguous between two types, **ASK**. **NEVER** assume Type A by default.
 - **R7** — Type C/D/E tasks: reviewed OpenSpec proposal before code
 - **R8** — Cite sources in design.md, research.md, commits
 - **R9** — Commits with scope or OpenSpec change-id
-- **R10** — Known infra: read `openspec/infra.md` before installing MCP/CLIs/skills; ✅ = use directly
+- **R10** — Known infra: read `openspec/infra.md` before installing MCP/CLIs/skills; ✅ = use directly. External-tool actions resolve in this order: session operator override → configured CLI (default) → configured MCP (fallback) → suggest configuring (offer-only, capped) → manual instructions (see `sdd-tooling-guidance`)
 - **R11** — Local coordination: before apply, `sdd-session-register` + `sdd-session-check`; at end/pause, `sdd-session-release` (§3.3 SDD guide)
 
 ## Workflow
