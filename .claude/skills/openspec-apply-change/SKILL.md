@@ -198,6 +198,18 @@ bash scripts/sdd-session-release.sh
 - If a `Pattern` path does not exist: **pause**, report broken pointer, suggest updating `tasks.md`
 - **DOCS_SPECS:** do not implement APP `src/` code in this repo — pause and recommend an OpenSpec change in the APP repo
 
+## Tooling cascade (CLI → MCP → manual)
+
+When a task needs to act on an external tool (GitHub, Figma, SaaS API), resolve in this order:
+
+1. Session operator override ("use MCP first") — honored without debate, this session only
+2. Configured CLI (default)
+3. Configured MCP (fallback, or primary where only MCP delivers the capability)
+4. Suggest configuring — offer-only, under the shared one-per-session cap (skill + tooling)
+5. Manual instructions (last resort)
+
+Falling to manual narration for the **same tool a second time** in one session arms the suggestion. Check `openspec/infra.md` first — `declined` = do not re-suggest. Full guidance: `sdd-tooling-guidance` skill.
+
 ---
 
 ## Session Handoff

@@ -188,7 +188,8 @@ Before editing (local machines): `sdd-session-register` + `sdd-session-check`; o
 2. Do archived specs match what was applied?
 3. Is the archive folder path correct under `openspec/changes/archive/`?
 4. Did anything in this change repeat a procedure or explanation from a previous change? (rule of three: 1st normal, 2nd note it, 3rd extract a skill — see §7)
-5. **Meta:** What must a new agent read, without this chat, to continue?
+5. Was anything in this change done manually that a configured integration would have done? (repeated manual steps for the same tool are the signal — see §8)
+6. **Meta:** What must a new agent read, without this chat, to continue?
 
 **Objective check:** change appears under `openspec/changes/archive/`; `npx openspec list` no longer shows it as active.
 
@@ -216,7 +217,25 @@ Depth for agents: the `sdd-skill-guidance` skill (detection signals, standard su
 
 ---
 
-## 8. Next step — Session Handoff example
+## 8. Tooling — CLI → MCP → manual
+
+When the agent needs to act on an external tool (GitHub, Figma, a SaaS dashboard), it resolves the action in a fixed order — the **cascade**:
+
+1. **Your override** — say "use MCP first" and the agent obeys, for that session only (a new session returns to the default).
+2. **Configured CLI** — the default: no permanent context cost, scriptable, works in CI.
+3. **Configured MCP** — the fallback, **or the primary path when only MCP delivers the capability** (e.g. structured design context from Figma). The pedagogy: **key → CLI → MCP, unless only MCP delivers the capability** — decided per tool, not by dogma.
+4. **Suggestion** — if nothing is configured, the agent may *offer* to help you set it up (at most one proactive suggestion per session, shared with skill suggestions).
+5. **Manual instructions** — last resort: the agent narrates the dashboard steps for you.
+
+**Why CLI over MCP by default?** An active MCP charges its tool schemas to *every* session, whether used or not — for occasional use, a CLI + API key is cheaper. MCPs earn their cost when they deliver something a CLI cannot.
+
+**The agent never installs or configures anything unprompted** — no MCP, CLI, or key, no exceptions. Suggestions are offers; you run the steps. A "no" is recorded as `declined` in [`openspec/infra.md`](../openspec/infra.md) and never re-suggested.
+
+Where things live: integration **status** in [`openspec/infra.md`](../openspec/infra.md) (kept by `bash scripts/verify-infra.sh`, which also reports an advisory tooling gap-check); per-tool **install how-to** in [`doc/tooling-install.md`](./tooling-install.md). Depth for agents: the `sdd-tooling-guidance` skill.
+
+---
+
+## 9. Next step — Session Handoff example
 
 After this map, practice a full cycle with upstream onboard (optional but recommended):
 

@@ -26,6 +26,7 @@
 ## MCP Servers
 
 > Names only — dynamic auth is not committed. Confirm with `mcp_get_tools` in the session.
+> Per-tool install how-to: [`doc/tooling-install.md`](../doc/tooling-install.md) (status here, guidance there).
 
 | Server | Status | Verify with |
 |--------|--------|-------------|
@@ -148,4 +149,5 @@ Mode C for translation waves (not a blocking `sdd-gates` step by default). Capab
 - **R10** (`AGENTS.md`): read this manifest before installing/reinstalling MCP, CLIs, plugins, or skills.
 - **✅** = use directly; do **not** reinstall or web-search for setup.
 - **❌** or `[NEEDS VERIFICATION]` = run `bash scripts/verify-infra.sh` or ask the operator.
+- **`declined`** = durable refusal: the operator considered this integration and refused it. Do **not** re-suggest it — use the remaining cascade rungs (CLI/MCP if configured, else manual instructions). `verify-infra.sh` suppresses `declined` rows from the tooling gap-check.
 - **Stale:** if verification is >30 days old, treat as `[STALE >30d]` until re-verified.

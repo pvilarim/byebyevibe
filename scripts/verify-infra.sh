@@ -136,6 +136,60 @@ else
 fi
 [[ "$KIT_STATUS" == "fail" ]] && ((FAILURES++)) || true
 
+# --- Tooling gap-check (advisory) ---
+# Reports presence/absence only — never infers which integrations the project
+# should have (stack-inference is v2), and gaps NEVER cause a non-zero exit.
+# Rows marked `declined` in openspec/infra.md are suppressed (durable refusal).
+is_declined() {
+  [[ -f "$INFRA_FILE" ]] || return 1
+  grep -E "^\|.*${1}" "$INFRA_FILE" 2>/dev/null | grep -qi 'declined'
+}
+
+echo ""
+echo "==> Tooling gap-check (advisory — absence, not need)"
+
+for cfg in ".mcp.json" ".cursor/mcp.json"; do
+  if [[ -f "$REPO_ROOT/$cfg" ]]; then
+    echo "  MCP config: ${cfg} present"
+  else
+    echo "  MCP config: ${cfg} absent"
+  fi
+done
+
+if [[ -f "$INFRA_FILE" ]]; then
+  MANIFEST_CLIS="$(grep -oE '`npx (-y )?[A-Za-z0-9@/_.-]+' "$INFRA_FILE" | awk '{print $NF}' | sed 's|^@[^/]*/||' | sort -u || true)"
+  if command -v graphify &>/dev/null || grep -q 'graphify' "$INFRA_FILE"; then
+    MANIFEST_CLIS="$(printf '%s\ngraphify' "$MANIFEST_CLIS" | sort -u)"
+  fi
+  for cli in $MANIFEST_CLIS; do
+    if is_declined "$cli"; then
+      continue
+    fi
+    if command -v "$cli" &>/dev/null; then
+      echo "  CLI: ${cli} on PATH"
+    else
+      echo "  CLI: ${cli} not on PATH (npx fallback may apply)"
+    fi
+  done
+else
+  echo "  CLI check skipped: openspec/infra.md absent"
+fi
+
+if [[ -f "$ENV_EXAMPLE" ]]; then
+  while IFS= read -r line || [[ -n "$line" ]]; do
+    if [[ "$line" =~ ^[[:space:]]*#[[:space:]]*([A-Za-z_][A-Za-z0-9_]*)= ]]; then
+      echo "  Env key: ${BASH_REMATCH[1]} commented out in .env.example — considered and declined"
+    elif [[ "$line" =~ ^([A-Za-z_][A-Za-z0-9_]*)= ]]; then
+      key="${BASH_REMATCH[1]}"
+      if is_declined "$key"; then continue; fi
+      echo "  Env key: ${key} declared in .env.example"
+    fi
+  done < "$ENV_EXAMPLE"
+else
+  echo "  Env keys: .env.example absent — no keys declared"
+fi
+echo "  (gap-check is report-only; see doc/tooling-install.md for per-tool setup)"
+
 # --- Update infra.md timestamps and status markers ---
 if [[ -f "$INFRA_FILE" ]]; then
   sed -i "s|> Last verified: .* · Script:|> Last verified: ${TODAY} · Script:|" "$INFRA_FILE"
