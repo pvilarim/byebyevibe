@@ -73,6 +73,6 @@
 - [x] 6.2 Guide touch-ups in `doc/sistema-sdd-pedro.md` §2: document bootstrap `--profile` and Graphify WARN-and-continue posture (prose only, where §2 describes current behavior)
   - **Pattern:** `doc/sistema-sdd-pedro.md`
   - **Gate:** `grep -q 'bootstrap-sdd.sh --profile\|--profile.*bootstrap' doc/sistema-sdd-pedro.md`
-- [ ] 6.3 Full verification: kit verify + task patterns + strict OpenSpec validate
+- [x] 6.3 Full verification: kit verify + task patterns + strict OpenSpec validate
   - **Pattern:** `scripts/verify-task-patterns.sh`
   - **Gate:** `bash sdd-kit/verify.sh && bash scripts/verify-task-patterns.sh && OPENSPEC_TELEMETRY=0 npx --yes @fission-ai/openspec@1.3.1 validate fix-install-audit-findings --strict`

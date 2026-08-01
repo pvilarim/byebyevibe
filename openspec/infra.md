@@ -1,6 +1,6 @@
 # Workspace Infrastructure Manifest
 
-> Last verified: 2026-07-26 · Script: `scripts/verify-infra.sh`
+> Last verified: 2026-08-01 · Script: `scripts/verify-infra.sh`
 >
 > **Rule:** no secret values. Env vars list **names** and presence only (✅/❌).
 
@@ -19,9 +19,9 @@
 
 | Component | Version | Status | Verify with |
 |-----------|---------|--------|-------------|
-| OpenSpec | <!-- openspec-version -->—<!-- /openspec-version --> | <!-- openspec-status -->❌<!-- /openspec-status --> | `npx openspec list` |
+| OpenSpec | <!-- openspec-version -->1.3.1<!-- /openspec-version --> | <!-- openspec-status -->✅<!-- /openspec-status --> | `npx openspec list` |
 | GitNexus | <!-- gitnexus-version -->1.6.9<!-- /gitnexus-version --> | <!-- gitnexus-status -->✅<!-- /gitnexus-status --> | `npx gitnexus status` |
-| Graphify | <!-- graphify-version -->—<!-- /graphify-version --> | <!-- graphify-status -->❌<!-- /graphify-status --> | `test -f graphify-out/GRAPH_REPORT.md` |
+| Graphify | <!-- graphify-version -->graphify 0.9.31<!-- /graphify-version --> | <!-- graphify-status -->✅<!-- /graphify-status --> | `test -f graphify-out/GRAPH_REPORT.md` |
 
 ## MCP Servers
 
