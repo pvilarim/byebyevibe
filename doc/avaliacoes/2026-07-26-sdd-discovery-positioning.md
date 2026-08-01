@@ -159,13 +159,21 @@ THIS KIT         ●●●●    ●●           ●●●●        ●●●�
 | — | GitHub brand | **Do not implement** | D9 |
 | — | Private ops repo split | **Deferred — only if real pain** | F5 in research; after P11 |
 
+### README discovery v2 layout (`update-readme-discovery-v2`)
+
+**Decision:** Hybrid **conversion + pedagogy** — value bullets and anti-boilerplate above the fold (before Get started); didactic Core tools table (What / Without it); dedicated User-friendly OpenSpec section for `/opsx:help`; Optional modules block; Calibrate as you go (G4) with explicit anti-ML framing.
+
+**What changed vs v1:** Section order locked to 17-section outline; elevated Why install + anti-boilerplate; `/opsx:help` first-class in README; optional modules no longer buried in compare table only.
+
+**Unchanged deferred backlog:** P5 (GIF/asciinema), P11/P12 (i18n waves / root CHANGELOG) remain deferred per D9/D10.
+
 ### Post-apply roadmap (research §11 / design D10)
 
 ```
 ① README + evaluation + quickstart   ← done (`add-sdd-discovery-positioning`)
 ② Explore→propose public name (P10) ← done
 ③ Apply rename/rebrand (ByeByeVibe) ← done; slug `byebyevibe` (manual)
-④ README discovery v2 (hybrid layout) ← done (`readme-discovery-v2`): value bullets, core tools What/Without it, `/opsx:help`, optional modules block
+④ README discovery v2 (hybrid layout) ← done (`update-readme-discovery-v2`): value bullets, core tools What/Without it, `/opsx:help`, optional modules block
 ⑤ EN policy + waves (+ root CHANGELOG.md) ← Deferred until public launch
    (research: openspec/changes/explore-public-release-surface/research.md · P11/P12)
 ⑥ Explore GIF/asciinema (P5)
