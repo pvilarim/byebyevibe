@@ -29,6 +29,7 @@ Historical record of tools, patterns, and ideas **evaluated** for the **OpenSpec
 
 | Date | Candidate | Decision | Document |
 |------|-----------|----------|----------|
+| 2026-08-02 | [code-review-graph](https://github.com/tirth8205/code-review-graph) — local code graph MCP/CLI for token-efficient reviews | **Discarded** — frontal overlap with GitNexus core; GitHub Action (risk-scored PR review) deferred to G7 re-evaluation (Jan/2027) | [2026-08-02-code-review-graph.md](./2026-08-02-code-review-graph.md) |
 | 2026-08-01 | Tooling guidance — external-tool resolution cascade (CLI → MCP → manual), `sdd-tooling-guidance` skill + R10 + gap-check + day-1 §8 (v1) | **Adopted** — stack-inference, per-tool preferences, telemetry, preflight WARNs deferred to v2 | [2026-08-01-tooling-guidance.md](./2026-08-01-tooling-guidance.md) · [explore research](../../openspec/changes/explore-tooling-guidance/research.md) |
 | 2026-08-01 | Skill lifecycle guidance for novices — `sdd-skill-guidance` skill + day-1 §7 + detection clauses (v1 text-only) | **Adopted** — monitoring tooling deferred to v2 | [2026-08-01-skill-guidance.md](./2026-08-01-skill-guidance.md) · [explore research](../../openspec/changes/explore-skill-guidance/research.md) |
 | 2026-08-01 | SDD operator day-1 onboarding — `/opsx:help` + day-1 doc + tip (Option A) | **Adopted** — complementary to upstream `/opsx:onboard` | [2026-08-01-sdd-operator-onboarding.md](./2026-08-01-sdd-operator-onboarding.md) · [explore research](../../openspec/changes/explore-sdd-operator-onboarding/research.md) |
