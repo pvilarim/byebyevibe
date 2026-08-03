@@ -10,6 +10,8 @@ Canonical install guide (depth): [`doc/byebyevibe-guide.md`](./byebyevibe-guide.
 
 ByeByeVibe **composes** OpenSpec; it does not replace it. OpenSpec owns the change schema (`proposal` → `specs` → `design` → `tasks`) and upstream workflows. ByeByeVibe adds the control plane: Graphify, GitNexus, Session Handoff, kit skills, gates, and this day-1 map.
 
+**Install scope:** the CLIs (OpenSpec, GitNexus, Graphify) install **once per machine** and every project reuses them. Each project receives its own payload copy plus its own generated state (`openspec/`, `graphify-out/`, `.gitnexus/`). One command from the hub clone installs into any new project folder — full scope model in guide [§1.6](./byebyevibe-guide.md).
+
 | Command | Origin | Role |
 |---------|--------|------|
 | `/opsx:help` | ByeByeVibe / sdd-kit | Map this control plane (files, phases, confidence, handoff) |

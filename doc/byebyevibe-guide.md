@@ -2,7 +2,7 @@
 
 **GitNexus + Graphify + OpenSpec, integrated in Cursor and VS Code + Claude Code**
 
-> **Canonical install guide (v1.7.0)** — use in any Git repository, manually or via an AI agent. Payloads in `sdd-kit/`; procedure in this document.
+> **Canonical install guide (v1.8.0)** — use in any Git repository, manually or via an AI agent. Payloads in `sdd-kit/`; procedure in this document.
 
 ## How to use this document
 
@@ -19,7 +19,7 @@
 | **SDD metrics (G4)** | `bash scripts/sdd-metrics.sh` — §2.17 (mode C; no DevLake) |
 
 - **`AGENTS.md` pattern:** aligned with [agents.md](https://agents.md/) + TLC workshop (Context Engineering, on-demand loading).
-- **Guide version:** 1.6.1 — see [Guide changelog](#changelog-do-guia).
+- **Guide version:** 1.8.0 — see [Guide changelog](#changelog-do-guia).
 - **Versioned payload:** `sdd-kit/MANIFEST.yaml` — see §1.6 and `sdd-kit/README.md`.
 - **Does not replace** `openspec/project.md` (project constitution) or specs in `openspec/specs/`.
 
@@ -110,6 +110,26 @@ The SDD stack is organized in **four layers** — do not confuse procedure with 
 | **Versioned payload** | `sdd-kit/templates/` + `MANIFEST.yaml` | Copyable files, shell gates |
 | **Normative requirements** | `openspec/specs/sdd-*` | What MUST exist after install |
 | **Workspace state** | `openspec/infra.md`, `project.md` | What is ✅ in this repo |
+
+#### Install scope
+
+Not everything installs per project — the stack splits across three **install scopes**:
+
+| Scope | Installed by | Example artifacts |
+|-------|--------------|-------------------|
+| **Machine — once** | `bootstrap-sdd.sh` package installs | OpenSpec CLI, GitNexus CLI, Graphify CLI (`uv tool install graphifyy`), MCP config (`~/.cursor/mcp.json`) |
+| **Repo — copied payload** | `sdd-kit/install.sh` per project | `AGENTS.md`, `CLAUDE.md`, `.cursor/rules/`, skills, `scripts/`, CI workflow |
+| **Repo — generated state** | Each project's own tools | `openspec/` (specs + changes), `graphify-out/`, `.gitnexus/` — born inside each project, never shared between projects |
+
+**Hub → destination flow (canonical multi-project UX):** keep **one hub clone per machine**; install into any target project with one command:
+
+```bash
+bash <hub>/scripts/bootstrap-sdd.sh <target-repo> --profile <PROFILE>
+```
+
+Per-project reinstallation covers **only the repo-copied payload** — machine-level CLIs are **not reinstalled per project** (bootstrap skips package installs already present; CLI refresh is scenario C2b, §2.9.4).
+
+> This table is the canonical scope model. Other surfaces (kit README, day-1 doc, banners) summarize it in at most three sentences and link here — they do not duplicate it.
 
 #### Install scenarios
 
@@ -211,7 +231,7 @@ Paste this prompt at the target repository root (replace `REPO_ROOT` and the pro
 
 ```
 Install the SDD system (OpenSpec + GitNexus + Graphify) in this repository following
-strictly the guide in doc/byebyevibe-guide.md v1.7.0 and the install kit in sdd-kit/.
+strictly the guide in doc/byebyevibe-guide.md v1.8.0 and the install kit in sdd-kit/.
 
 Repository profile: [APP | DOCS_SPECS | HYBRID]
 
@@ -2858,6 +2878,15 @@ bash scripts/verify-task-patterns.sh   # Pattern: paths exist; DOCS_SPECS withou
 ---
 
 ## Guide changelog
+
+### 1.8.0 (2026-08-03)
+
+- **Install scope UX (change `clarify-install-scope-ux`)** — §1.6 gains the canonical **install-scope table** (machine-once / repo-copied / repo-generated) and the **hub → destination** one-command flow (`bash <hub>/scripts/bootstrap-sdd.sh <target-repo> --profile <PROFILE>`); other surfaces summarize and link, never duplicate.
+- **`scripts/bootstrap-sdd.sh`** — hub-mode resolution (preflight and `sdd-kit/install.sh --repo <target>` fall back to the script's own source repo when the target lacks them; target-local copies win); idempotent guard on package-manager installs (`command -v` skip notices with detected version; `min_openspec` staleness WARN pointing to C2b); third `Scope:` banner line per tool (en + pt-BR); didactic completion message (per-project state locations + next-project command) after the unconditional manual-steps block.
+- **`scripts/preflight-sdd.sh`** — new `--kit-root <path>` flag: hub-resolved `sdd-kit/` satisfies the repo gate for greenfield targets; the gate still FAILs when neither target nor source carries a kit.
+- **`sdd-kit/README.md`** — scenarios table gains a **Scope** column (C1 = machine + repo; C2b = machine; C2/C3/C1-UI/G2/G4 = repo) + one-line first-contact scope note linking to §1.6.
+- **`doc/sdd-operator-day1.md`** — §0 gains the machine-once vs per-project scope passage (no section renumbering; `/opsx:help` skill untouched).
+- **`sdd-kit/`** — templates mirrored (`bootstrap-sdd.sh`, `preflight-sdd.sh`, `sdd-operator-day1.md`), checksums regenerated; MANIFEST **1.7.0 → 1.8.0**. Also fixes the pre-existing guide header 1.6.1 vs MANIFEST 1.7.0 mismatch.
 
 ### 1.7.0 (2026-08-01)
 

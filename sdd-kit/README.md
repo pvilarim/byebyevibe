@@ -18,19 +18,21 @@ Versioned payload for reproducible SDD stack install (scripts, rules, skeletons)
 | **Probity / TDD enforce** (optional) | **G2** | APP/HYBRID — `@nizos/probity` after C1 |
 | **SDD metrics** (on demand) | **G4** | Retrospectives: lead time, rework — calibrate as you go |
 
+**Install scope in one line:** CLIs install once per machine; each repo receives its own payload copy — full scope model in [`doc/byebyevibe-guide.md`](../doc/byebyevibe-guide.md) §1.6.
+
 Discovery / hero: hub root [`README.md`](../README.md) (EN). Full procedure: [`doc/byebyevibe-guide.md`](../doc/byebyevibe-guide.md) §2.0b. Didactic narrative (What / Why / Without it + optional add-ons glance): guide **§2.1** and the block after **§2.8**.
 
 ## Scenarios
 
-| Code | Situation | Entry command |
-|------|-----------|---------------|
-| **C1** | Greenfield install (first time) | `bash scripts/bootstrap-sdd.sh` → `bash sdd-kit/install.sh --profile <PROFILE>` |
-| **C2** | SDD upgrade (new guide/kit version) | `bash sdd-kit/upgrade.sh --from X --to Y --dry-run` → approval → `--apply` |
-| **C2b** | Outdated CLIs only | `doc/byebyevibe-guide.md` §2.9.4 — **do not** touch the kit |
-| **C3** | Domain specs propagation | git/reference under `openspec/specs/` — **do not** run `install.sh` or `upgrade.sh` |
-| **C1-UI** | Optional UI module (post-C1) | `bash sdd-kit/install-ui-module.sh --detect` → `--apply [--yes]` — see guide §2.11 |
-| **G2** | Probity module (TDD enforce, post-C1) | `bash sdd-kit/install-probity-module.sh --detect` → `--apply [--yes]` — pin `@nizos/probity@1.10.0`; guide §2.16 |
-| **G4** | On-demand SDD metrics (mode C) | `bash scripts/sdd-metrics.sh` — guide §2.17; **not** Apache DevLake |
+| Code | Situation | Scope | Entry command |
+|------|-----------|-------|---------------|
+| **C1** | Greenfield install (first time) | machine + repo | `bash scripts/bootstrap-sdd.sh` → `bash sdd-kit/install.sh --profile <PROFILE>` |
+| **C2** | SDD upgrade (new guide/kit version) | repo | `bash sdd-kit/upgrade.sh --from X --to Y --dry-run` → approval → `--apply` |
+| **C2b** | Outdated CLIs only | machine | `doc/byebyevibe-guide.md` §2.9.4 — **do not** touch the kit |
+| **C3** | Domain specs propagation | repo | git/reference under `openspec/specs/` — **do not** run `install.sh` or `upgrade.sh` |
+| **C1-UI** | Optional UI module (post-C1) | repo | `bash sdd-kit/install-ui-module.sh --detect` → `--apply [--yes]` — see guide §2.11 |
+| **G2** | Probity module (TDD enforce, post-C1) | repo | `bash sdd-kit/install-probity-module.sh --detect` → `--apply [--yes]` — pin `@nizos/probity@1.10.0`; guide §2.16 |
+| **G4** | On-demand SDD metrics (mode C) | repo | `bash scripts/sdd-metrics.sh` — guide §2.17; **not** Apache DevLake |
 
 ## Profiles
 
