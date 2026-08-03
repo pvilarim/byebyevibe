@@ -11,6 +11,7 @@ MODE=""
 JSON=false
 PROFILE=""
 REPO_ROOT="."
+KIT_ROOT=""
 FAIL_COUNT=0
 WARN_COUNT=0
 SKIP_COUNT=0
@@ -24,7 +25,7 @@ MCP_NAMES=""
 usage() {
   cat <<'EOF'
 Usage: preflight-sdd.sh [--host|--repo|--all] [--json] [--profile APP|DOCS_SPECS|HYBRID]
-                        [--repo-root PATH]
+                        [--repo-root PATH] [--kit-root PATH]
 
 Phase-0 prerequisite checks before C1 (bootstrap / install).
 
@@ -37,6 +38,9 @@ Options:
   --json        Emit JSON summary on stdout (human lines still on stderr when useful)
   --profile     Severity wording for GitNexus build-tools WARN (APP|DOCS_SPECS|HYBRID)
   --repo-root   Repository root (default: .)
+  --kit-root    Source kit root (hub mode): when the target repo has no sdd-kit/,
+                the kit-presence check passes if PATH/sdd-kit is readable
+                (passed by bootstrap-sdd.sh hub-mode resolution)
   -h, --help    Show this help
 
 Exit: non-zero if any FAIL; zero on WARN/SKIP only.
@@ -58,6 +62,11 @@ while [[ $# -gt 0 ]]; do
     --repo-root)
       REPO_ROOT="${2:-}"
       [[ -n "$REPO_ROOT" ]] || { echo "ERROR: --repo-root requires a path" >&2; usage 2; }
+      shift 2
+      ;;
+    --kit-root)
+      KIT_ROOT="${2:-}"
+      [[ -n "$KIT_ROOT" ]] || { echo "ERROR: --kit-root requires a path" >&2; usage 2; }
       shift 2
       ;;
     -h|--help) usage 0 ;;
@@ -307,7 +316,13 @@ check_repo() {
   log_human "==> preflight repo ($REPO_ROOT)"
 
   if [[ ! -d "$REPO_ROOT/sdd-kit" ]]; then
-    record_check "sdd-kit" "FAIL" "sdd-kit/ missing under repo root — copy kit from hub"
+    # Hub-sourced greenfield mode: a provided --kit-root with a readable sdd-kit/
+    # satisfies the kit-presence check; target-local kit always wins when present.
+    if [[ -n "$KIT_ROOT" && -d "$KIT_ROOT/sdd-kit" && -r "$KIT_ROOT/sdd-kit" ]]; then
+      record_check "sdd-kit" "OK" "sdd-kit/ resolved from source kit root (hub mode): $KIT_ROOT"
+    else
+      record_check "sdd-kit" "FAIL" "sdd-kit/ missing under repo root — copy kit from hub or run bootstrap from a hub clone"
+    fi
   elif [[ ! -r "$REPO_ROOT/sdd-kit" ]]; then
     record_check "sdd-kit" "FAIL" "sdd-kit/ not readable"
   elif [[ ! -f "$REPO_ROOT/sdd-kit/MANIFEST.yaml" && ! -f "$REPO_ROOT/sdd-kit/install.sh" ]]; then

@@ -11,8 +11,8 @@
 # The `gate:` field is documentary metadata only — the suggested verification
 # command for manual or CI use. It MUST NOT be executed via `eval` or any
 # equivalent by install.sh, upgrade.sh, or any other script.
-version: "1.7.0"
-guide_version: "1.7.0"
+version: "1.8.0"
+guide_version: "1.8.0"
 min_openspec: "1.3.1"
 profiles: [APP, DOCS_SPECS, HYBRID]
 
@@ -89,14 +89,14 @@ files:
 
   - path: scripts/bootstrap-sdd.sh
     source: templates/scripts/bootstrap-sdd.sh
-    sha256: "928664af5f34e1da32bf47a9409f75f604730f2cbbb3e16d1d5b43da847e623b"
+    sha256: "41f25fbedfafe3c9d529dae20fef19054704d4f24586e84f1396f8a32cdca7f5"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -x scripts/bootstrap-sdd.sh"
 
   - path: scripts/preflight-sdd.sh
     source: templates/scripts/preflight-sdd.sh
-    sha256: "3d9b32be56dfc8258ebdfcb7d0258e70c5ffd7569fe3d988b62ae3a821c50b49"
+    sha256: "8fe0a5fd0018afaed178d0e82cd4fc656c136fdd679ae4b1f90e29cf8350a19c"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -x scripts/preflight-sdd.sh"
@@ -288,7 +288,7 @@ files:
 
   - path: doc/sdd-operator-day1.md
     source: templates/doc/sdd-operator-day1.md
-    sha256: "fd0b8fdfe8cbf5526b01e81e438e872dfb3dabeba5ef086c8c52307064c781ea"
+    sha256: "2780a3d3b9f4203cfb2c8e9e54b7a6b9c72fbbff96ad2b3594ccec60d90b1984"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -s doc/sdd-operator-day1.md && grep -q '/opsx:help' doc/sdd-operator-day1.md"
