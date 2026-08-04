@@ -8,6 +8,7 @@ AI-agent-driven greenfield installs (C1) are only ever told to clone the full hu
 - Guide §2.0 (AI-assisted installation prompt) is updated so agents default to a **lightweight, no-full-clone fetch** of that minimal footprint for genuine greenfield targets, reserving a full hub clone for operators who explicitly want the persistent multi-project hub→destination workflow already documented by `clarify-install-scope-ux`.
 - The guide documents one concrete lightweight-fetch recipe as the primary method (with at most one fallback noted), chosen for reliability when executed by an AI agent without additional global tool installs.
 - `sdd-kit/README.md` and/or the root `README.md` gain, at most, a short pointer to the new guide subsection — no duplication of the fetch recipe or the footprint table.
+- `doc/sdd-operator-day1.md` §0 gets a one-sentence softening so it no longer presents a full hub clone as the only greenfield acquisition method, since that would now contradict §2.0a — no new section, no renumbering.
 
 Out of scope: any change to `install.sh` / `bootstrap-sdd.sh` internal path-resolution logic (traced and confirmed to already work correctly with a footprint-only fetch, provided the documented invocation paths are used — see design.md); reworking `clarify-install-scope-ux` (already implemented, addresses the separate multi-project-reuse scenario); any change to per-project generated state (`openspec/`, `graphify-out/`, `.gitnexus/`) layout.
 
@@ -23,7 +24,7 @@ _None._
 
 ## Impact
 
-- **Docs (hub):** `doc/byebyevibe-guide.md` (§1.6 and/or new subsection near §2.0/§2.0b), `sdd-kit/README.md` (pointer only), `README.md` (pointer only, if warranted).
+- **Docs (hub):** `doc/byebyevibe-guide.md` (§1.6 and new §2.0a subsection), `sdd-kit/README.md` (pointer only), `README.md` (pointer only, if warranted), `doc/sdd-operator-day1.md` §0 (one-sentence update, mirrored to `sdd-kit/templates/doc/sdd-operator-day1.md`).
 - **No script changes.** `sdd-kit/install.sh` and `scripts/bootstrap-sdd.sh`/`preflight-sdd.sh` already resolve correctly against the minimal footprint when invoked via their documented (repo-root-relative) paths — confirmed by tracing the conditional branches, not assumed.
 - **No new dependencies; no CI workflow changes.**
 - **Language policy (F7):** versioned guide prose in English, per existing convention.
