@@ -2,7 +2,7 @@
 
 **GitNexus + Graphify + OpenSpec, integrated in Cursor and VS Code + Claude Code**
 
-> **Canonical install guide (v1.8.0)** — use in any Git repository, manually or via an AI agent. Payloads in `sdd-kit/`; procedure in this document.
+> **Canonical install guide (v1.8.1)** — use in any Git repository, manually or via an AI agent. Payloads in `sdd-kit/`; procedure in this document.
 
 ## How to use this document
 
@@ -19,7 +19,7 @@
 | **SDD metrics (G4)** | `bash scripts/sdd-metrics.sh` — §2.17 (mode C; no DevLake) |
 
 - **`AGENTS.md` pattern:** aligned with [agents.md](https://agents.md/) + TLC workshop (Context Engineering, on-demand loading).
-- **Guide version:** 1.8.0 — see [Guide changelog](#changelog-do-guia).
+- **Guide version:** 1.8.1 — see [Guide changelog](#changelog-do-guia).
 - **Versioned payload:** `sdd-kit/MANIFEST.yaml` — see §1.6 and `sdd-kit/README.md`.
 - **Does not replace** `openspec/project.md` (project constitution) or specs in `openspec/specs/`.
 
@@ -158,6 +158,37 @@ Per-project reinstallation covers **only the repo-copied payload** — machine-l
 
 Exact commands: `sdd-kit/README.md`.
 
+#### Minimal install-fetch footprint (C1)
+
+For a genuine greenfield install (C1 — no `sdd-kit/` yet in the target repo), fetching the **whole hub repository is not required**. The minimal install-fetch footprint — the exact set of paths `sdd-kit/install.sh` and the `scripts/bootstrap-sdd.sh`/`scripts/preflight-sdd.sh` orchestrators read during C1 — is exactly:
+
+- `sdd-kit/` (whole subtree — every `MANIFEST.yaml` entry sources from `templates/...` inside it)
+- `scripts/bootstrap-sdd.sh`
+- `scripts/preflight-sdd.sh`
+
+No other repository path — including hub-only `doc/`, hub-only `openspec/` (this hub's own specs/changes history), or root `.cursor/`/`.claude/` (this hub's own IDE config) — is read by `install.sh` or by the bootstrap/preflight scripts during C1.
+
+#### Lightweight fetch recipe (no full clone, C1 greenfield only)
+
+> Applies **only** when `sdd-kit/` is not already present in the target repository (C1). Do **not** use this for C2 (upgrade — use `sdd-kit/upgrade.sh --dry-run`/`--apply`) or C3 (spec propagation — must not run `install.sh`/`upgrade.sh`).
+
+Fetch just the minimal footprint above with a partial clone + non-cone sparse-checkout (git ≥2.40, already a hard prerequisite — §1.1), copy it into the target repo root, then discard the temporary clone:
+
+```bash
+TMPDIR=$(mktemp -d)
+git clone --filter=blob:none --depth 1 --no-checkout --sparse <hub-repo-url> "$TMPDIR"
+git -C "$TMPDIR" sparse-checkout set --no-cone /sdd-kit/ /scripts/bootstrap-sdd.sh /scripts/preflight-sdd.sh
+git -C "$TMPDIR" checkout
+cp -R "$TMPDIR"/sdd-kit ./sdd-kit
+mkdir -p ./scripts
+cp "$TMPDIR"/scripts/bootstrap-sdd.sh "$TMPDIR"/scripts/preflight-sdd.sh ./scripts/
+rm -rf "$TMPDIR"
+```
+
+Fallback (only if the remote rejects `--filter=blob:none`, e.g. `uploadpack.allowFilter` disabled): drop `--filter=blob:none` and keep the rest (`--depth 1 --no-checkout --sparse` + the same `sparse-checkout set --no-cone`) — still no full history, still no unrelated top-level directories.
+
+Nothing is written to the target repo until the final `cp` step, so it is safe to rerun from scratch if interrupted. After the copy, the existing documented command runs unmodified: `bash scripts/bootstrap-sdd.sh --profile <PROFILE>`.
+
 ---
 
 ## 2. Installation step by step (question 1)
@@ -231,9 +262,13 @@ Paste this prompt at the target repository root (replace `REPO_ROOT` and the pro
 
 ```
 Install the SDD system (OpenSpec + GitNexus + Graphify) in this repository following
-strictly the guide in doc/byebyevibe-guide.md v1.8.0 and the install kit in sdd-kit/.
+strictly the guide in doc/byebyevibe-guide.md v1.8.1 and the install kit in sdd-kit/.
 
 Repository profile: [APP | DOCS_SPECS | HYBRID]
+
+Acquiring the SDD system files (skip if `sdd-kit/` already exists in this repo):
+- **Default — genuine greenfield target:** use the lightweight fetch recipe (guide §1.6 "Lightweight fetch recipe") — a partial clone + sparse-checkout that pulls only `sdd-kit/` + `scripts/bootstrap-sdd.sh` + `scripts/preflight-sdd.sh`, no full hub clone.
+- **Only if the operator explicitly wants the persistent multi-project hub→destination workflow:** clone the full hub once per machine and reuse it across projects (guide §1.6 "Hub → destination flow").
 
 Narrative (dual S↔T — mandatory):
 - Before EACH install step, explain the S layer in simple language:
@@ -2878,6 +2913,11 @@ bash scripts/verify-task-patterns.sh   # Pattern: paths exist; DOCS_SPECS withou
 ---
 
 ## Guide changelog
+
+### 1.8.1 (2026-08-05)
+
+- **Lightweight install-fetch (change `add-lightweight-install-fetch`)** — §1.6 gains the **minimal install-fetch footprint** statement (`sdd-kit/` + `scripts/bootstrap-sdd.sh` + `scripts/preflight-sdd.sh`; no other hub path is read by `install.sh`/bootstrap/preflight during C1) and a **lightweight fetch recipe** (partial clone + non-cone `sparse-checkout`, no full hub clone) scoped to genuine C1 greenfield installs only. §2.0 AI-assisted install prompt now names the lightweight fetch as the default acquisition method, reserving a full hub clone for the persistent multi-project hub→destination workflow. `sdd-kit/README.md` gains a one-line pointer (no duplication). No script changes — `install.sh`/`bootstrap-sdd.sh`/`preflight-sdd.sh` already resolve correctly against the minimal footprint.
+- **`sdd-kit/`** — no template content changed; MANIFEST **1.8.0 → 1.8.1** (docs-only release, checksums unchanged).
 
 ### 1.8.0 (2026-08-03)
 

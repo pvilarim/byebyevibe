@@ -20,6 +20,8 @@ Versioned payload for reproducible SDD stack install (scripts, rules, skeletons)
 
 **Install scope in one line:** CLIs install once per machine; each repo receives its own payload copy — full scope model in [`doc/byebyevibe-guide.md`](../doc/byebyevibe-guide.md) §1.6.
 
+**Lightweight fetch (C1, no full hub clone):** see [`doc/byebyevibe-guide.md`](../doc/byebyevibe-guide.md) §1.6 "Lightweight fetch recipe" for greenfield installs.
+
 Discovery / hero: hub root [`README.md`](../README.md) (EN). Full procedure: [`doc/byebyevibe-guide.md`](../doc/byebyevibe-guide.md) §2.0b. Didactic narrative (What / Why / Without it + optional add-ons glance): guide **§2.1** and the block after **§2.8**.
 
 ## Scenarios
