@@ -11,15 +11,15 @@
 # The `gate:` field is documentary metadata only — the suggested verification
 # command for manual or CI use. It MUST NOT be executed via `eval` or any
 # equivalent by install.sh, upgrade.sh, or any other script.
-version: "1.8.1"
-guide_version: "1.8.1"
+version: "1.8.2"
+guide_version: "1.8.2"
 min_openspec: "1.3.1"
 profiles: [APP, DOCS_SPECS, HYBRID]
 
 files:
   - path: scripts/verify-infra.sh
     source: templates/scripts/verify-infra.sh
-    sha256: "c267db5c97f996c67dea45a96a04e71cf1cafc975c8576e2021dfef47a57c52b"
+    sha256: "199a61ab38851b055633443742ee34d43d92131dc35e71b7d86d54ba059a7ce6"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -x scripts/verify-infra.sh"
@@ -180,7 +180,7 @@ files:
 
   - path: openspec/infra.md
     source: templates/openspec/infra.md
-    sha256: "3b7c1a812a20f7a6fa3e000ea2d2f60d88cdd425045d79c28fa40f482f582d81"
+    sha256: "029615ef1842f93490f84645f6e7c27fe75efcdf6d9f020cc17d8c7a6bcc5a46"
     merge: MERGE
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f openspec/infra.md"

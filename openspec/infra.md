@@ -19,8 +19,8 @@
 
 | Component | Version | Status | Verify with |
 |-----------|---------|--------|-------------|
-| OpenSpec | <!-- openspec-version -->1.3.1<!-- /openspec-version --> | <!-- openspec-status -->✅<!-- /openspec-status --> | `npx openspec list` |
-| GitNexus | <!-- gitnexus-version -->1.6.9<!-- /gitnexus-version --> | <!-- gitnexus-status -->✅<!-- /gitnexus-status --> | `npx gitnexus status` |
+| OpenSpec | <!-- openspec-version -->1.3.1<!-- /openspec-version --> | <!-- openspec-status -->✅<!-- /openspec-status --> | `openspec list` |
+| GitNexus | <!-- gitnexus-version -->1.6.9<!-- /gitnexus-version --> | <!-- gitnexus-status -->✅<!-- /gitnexus-status --> | `gitnexus status` |
 | Graphify | <!-- graphify-version -->graphify 0.9.31<!-- /graphify-version --> | <!-- graphify-status -->✅<!-- /graphify-status --> | `test -f graphify-out/GRAPH_REPORT.md` |
 
 ## MCP Servers
