@@ -57,8 +57,8 @@ Repository of specs, technical documentation, and courses by Pedro Vilarim. It s
 - In-progress changes: `openspec/changes/`
 - Course documentation: `doc/curso/` (5 lessons from Workshop IA 5/2026)
 - Guide renamed 2026-08: `doc/sistema-sdd-pedro.md` → `doc/byebyevibe-guide.md` (kit v1.7.0); archives/pre-rename specs cite the old name.
-- **SDD install guide:** `doc/byebyevibe-guide.md` **v1.8.1** — install §2 + `sdd-kit/install.sh`; upgrade §2.9 + `sdd-kit/upgrade.sh`; UI module §2.11 + `sdd-kit/install-ui-module.sh`; CI gates §2.12; Probity (G2) §2.16 + `sdd-kit/install-probity-module.sh`; SDD metrics (G4) §2.17 + `scripts/sdd-metrics.sh` (playbook + cadence `--check-cadence`)
-- **Install kit:** `sdd-kit/` (MANIFEST v1.8.1) — versioned payloads for C1/C2/C1-UI/G2/G4 + workflow `sdd-gates`
+- **SDD install guide:** `doc/byebyevibe-guide.md` **v1.8.2** — install §2 + `sdd-kit/install.sh`; upgrade §2.9 + `sdd-kit/upgrade.sh`; UI module §2.11 + `sdd-kit/install-ui-module.sh`; CI gates §2.12; Probity (G2) §2.16 + `sdd-kit/install-probity-module.sh`; SDD metrics (G4) §2.17 + `scripts/sdd-metrics.sh` (playbook + cadence `--check-cadence`)
+- **Install kit:** `sdd-kit/` (MANIFEST v1.8.2) — versioned payloads for C1/C2/C1-UI/G2/G4 + workflow `sdd-gates`
 - **UI module (design system):** `doc/design/` — `002-ui-module-install.md`, `001-pipeline-open-design-shadcn-impeccable.md`
 - **Integration evaluations (historical):** `doc/avaliacoes/` — tools researched for the SDD stack
 - **Discovery / positioning (hub):** public brand **ByeByeVibe** — `README.md` (EN) — from vibe coding to shippable AI engineering; payload in `sdd-kit/`; analysis and backlog in `doc/avaliacoes/2026-07-26-sdd-discovery-positioning.md`; first-contact in guide §2.0b

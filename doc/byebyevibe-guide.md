@@ -2,7 +2,7 @@
 
 **GitNexus + Graphify + OpenSpec, integrated in Cursor and VS Code + Claude Code**
 
-> **Canonical install guide (v1.8.1)** — use in any Git repository, manually or via an AI agent. Payloads in `sdd-kit/`; procedure in this document.
+> **Canonical install guide (v1.8.2)** — use in any Git repository, manually or via an AI agent. Payloads in `sdd-kit/`; procedure in this document.
 
 ## How to use this document
 
@@ -19,7 +19,7 @@
 | **SDD metrics (G4)** | `bash scripts/sdd-metrics.sh` — §2.17 (mode C; no DevLake) |
 
 - **`AGENTS.md` pattern:** aligned with [agents.md](https://agents.md/) + TLC workshop (Context Engineering, on-demand loading).
-- **Guide version:** 1.8.1 — see [Guide changelog](#changelog-do-guia).
+- **Guide version:** 1.8.2 — see [Guide changelog](#changelog-do-guia).
 - **Versioned payload:** `sdd-kit/MANIFEST.yaml` — see §1.6 and `sdd-kit/README.md`.
 - **Does not replace** `openspec/project.md` (project constitution) or specs in `openspec/specs/`.
 
@@ -262,7 +262,7 @@ Paste this prompt at the target repository root (replace `REPO_ROOT` and the pro
 
 ```
 Install the SDD system (OpenSpec + GitNexus + Graphify) in this repository following
-strictly the guide in doc/byebyevibe-guide.md v1.8.1 and the install kit in sdd-kit/.
+strictly the guide in doc/byebyevibe-guide.md v1.8.2 and the install kit in sdd-kit/.
 
 Repository profile: [APP | DOCS_SPECS | HYBRID]
 
@@ -2913,6 +2913,11 @@ bash scripts/verify-task-patterns.sh   # Pattern: paths exist; DOCS_SPECS withou
 ---
 
 ## Guide changelog
+
+### 1.8.2 (2026-08-05)
+
+- **verify-infra in ephemeral environments (change `fix-verify-infra-ephemeral-env`)** — `scripts/verify-infra.sh` now gates manifest writes on interactivity: `openspec/infra.md` markers are updated only when stdout is a TTY or the new `--write` flag is passed (operator cron/scripted runs, bootstrap post-install). Non-interactive runs without `--write` (CI runners, remote agent sandboxes) are **report-only**: findings printed with a notice naming `--write`, file left byte-identical, exit 0 (advisory — the posture CI already imposed externally via its restore step). OpenSpec/GitNexus presence checks switch from bare `npx` (registry fall-through; resolves to the abandoned `openspec@0.0.0`, triggers `gitnexus` downloads) to `PATH` lookup (`command -v`), matching the Graphify check; detail (`openspec --version`, `gitnexus status` index freshness) is collected by direct invocation only when the binary is present. "Verify with" column for the OpenSpec/GitNexus rows in `openspec/infra.md` (live + template) updated from `npx …` to direct invocations (`openspec list`, `gitnexus status`) to match what the check now measures.
+- **`sdd-kit/`** — templates `scripts/verify-infra.sh` and `openspec/infra.md` mirrored; MANIFEST **1.8.1 → 1.8.2** (checksums regenerated for the two changed templates).
 
 ### 1.8.1 (2026-08-05)
 

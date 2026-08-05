@@ -1,9 +1,17 @@
 #!/usr/bin/env bash
 # Idempotent SDD infrastructure verification — see openspec/infra.md
 #
+# Usage: verify-infra.sh [--write]
+#
 # Ownership: this script updates SDD Stack / kit / mcp-list markers only.
 # MUST NOT write or clear preflight-* markers or the "## Preflight (last run)"
 # section — those are owned exclusively by scripts/preflight-sdd.sh.
+#
+# Write gating: openspec/infra.md is committed and describes the operator's
+# canonical workspace. Markers are updated only when stdout is a TTY
+# (operator at a terminal) or --write is passed (operator cron/scripted run,
+# bootstrap post-install). Any other run — CI, remote agent sandbox — is
+# report-only: findings printed, file left byte-identical, exit 0 (advisory).
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -11,6 +19,19 @@ cd "$REPO_ROOT"
 INFRA_FILE="$REPO_ROOT/openspec/infra.md"
 TODAY="$(date +%Y-%m-%d)"
 FAILURES=0
+
+WRITE_MODE=0
+for arg in "$@"; do
+  case "$arg" in
+    --write) WRITE_MODE=1 ;;
+    *)
+      echo "Unknown argument: $arg" >&2
+      echo "Usage: verify-infra.sh [--write]" >&2
+      exit 2
+      ;;
+  esac
+done
+[[ -t 1 ]] && WRITE_MODE=1
 
 mark_ok() { echo "ok"; }
 mark_fail() { echo "fail"; ((FAILURES++)) || true; }
@@ -28,11 +49,13 @@ replace_between() {
 echo "==> verify-infra.sh ($TODAY)"
 
 # --- OpenSpec ---
+# Presence is a PATH question (command -v) — never resolved through the npm
+# registry. Detail (version) is collected only when the binary is present.
 OPENSPEC_STATUS="fail"
 OPENSPEC_VERSION="—"
-if npx openspec list &>/dev/null; then
+if command -v openspec &>/dev/null; then
   OPENSPEC_STATUS="ok"
-  OPENSPEC_VERSION="$(npx openspec --version 2>/dev/null || echo "—")"
+  OPENSPEC_VERSION="$(openspec --version 2>/dev/null || echo "—")"
 fi
 echo "OpenSpec: $(to_emoji "$OPENSPEC_STATUS") ${OPENSPEC_VERSION}"
 [[ "$OPENSPEC_STATUS" == "fail" ]] && ((FAILURES++)) || true
@@ -40,11 +63,11 @@ echo "OpenSpec: $(to_emoji "$OPENSPEC_STATUS") ${OPENSPEC_VERSION}"
 # --- GitNexus ---
 GITNEXUS_STATUS="fail"
 GITNEXUS_VERSION="—"
-if GN_OUT="$(npx gitnexus status 2>&1)"; then
-  if echo "$GN_OUT" | grep -qi "up-to-date"; then
+if command -v gitnexus &>/dev/null; then
+  if GN_OUT="$(gitnexus status 2>&1)" && echo "$GN_OUT" | grep -qi "up-to-date"; then
     GITNEXUS_STATUS="ok"
   fi
-  GITNEXUS_VERSION="$(npx gitnexus --version 2>/dev/null | head -1 || echo "—")"
+  GITNEXUS_VERSION="$(gitnexus --version 2>/dev/null | head -1 || echo "—")"
 fi
 echo "GitNexus: $(to_emoji "$GITNEXUS_STATUS") ${GITNEXUS_VERSION}"
 [[ "$GITNEXUS_STATUS" == "fail" ]] && ((FAILURES++)) || true
@@ -191,6 +214,19 @@ fi
 echo "  (gap-check is report-only; see doc/tooling-install.md for per-tool setup)"
 
 # --- Update infra.md timestamps and status markers ---
+if [[ "$WRITE_MODE" -eq 0 ]]; then
+  echo ""
+  echo "Report-only run (stdout is not a TTY and --write was not passed):"
+  echo "openspec/infra.md left unchanged. Pass --write to update the manifest."
+  echo ""
+  if [[ "$FAILURES" -eq 0 ]]; then
+    echo "Summary: all core SDD checks passed ✅"
+  else
+    echo "Summary: ${FAILURES} check(s) failed ❌ (advisory — manifest not updated)"
+  fi
+  exit 0
+fi
+
 if [[ -f "$INFRA_FILE" ]]; then
   sed -i "s|> Last verified: .* · Script:|> Last verified: ${TODAY} · Script:|" "$INFRA_FILE"
   replace_between "$INFRA_FILE" "openspec-version" "$OPENSPEC_VERSION"
