@@ -146,9 +146,7 @@ detect_profile_hint() {
     echo "$PROFILE"
     return
   fi
-  if [[ -f "$REPO_ROOT/package.json" ]] && [[ -d "$REPO_ROOT/openspec" ]]; then
-    echo "HYBRID"
-  elif [[ -f "$REPO_ROOT/package.json" ]]; then
+  if [[ -f "$REPO_ROOT/package.json" ]]; then
     echo "APP"
   else
     echo "DOCS_SPECS"
@@ -337,12 +335,9 @@ check_repo() {
     record_check "writable" "FAIL" "repo root not writable"
   fi
 
-  # Ambiguous HYBRID hint — WARN not FAIL
-  if [[ -z "$PROFILE" ]] && [[ -f "$REPO_ROOT/package.json" ]] && [[ -d "$REPO_ROOT/openspec" ]]; then
-    record_check "profile-hint" "WARN" "package.json and openspec/ coexist — possible HYBRID profile; confirm before install"
-  else
-    record_check "profile-hint" "OK" "profile hint: ${EFFECTIVE_PROFILE}"
-  fi
+  # HYBRID is retired as a deprecated alias of APP — package.json + openspec/
+  # coexistence is the normal post-install state of every APP repo (no hint).
+  record_check "profile-hint" "OK" "profile hint: ${EFFECTIVE_PROFILE}"
 }
 
 # --- infra.md Preflight stamp ---

@@ -19,7 +19,7 @@
 | **SDD metrics (G4)** | `bash scripts/sdd-metrics.sh` — §2.17 (mode C; no DevLake) |
 
 - **`AGENTS.md` pattern:** aligned with [agents.md](https://agents.md/) + TLC workshop (Context Engineering, on-demand loading).
-- **Guide version:** 1.8.2 — see [Guide changelog](#changelog-do-guia).
+- **Guide version:** 1.9.0 — see [Guide changelog](#changelog-do-guia).
 - **Versioned payload:** `sdd-kit/MANIFEST.yaml` — see §1.6 and `sdd-kit/README.md`.
 - **Does not replace** `openspec/project.md` (project constitution) or specs in `openspec/specs/`.
 
@@ -135,7 +135,7 @@ Per-project reinstallation covers **only the repo-copied payload** — machine-l
 
 | Code | Situation | Entry command |
 |--------|----------|-------------------|
-| **C1** | Greenfield install (first-time SDD) | `bootstrap-sdd.sh` → `bash sdd-kit/install.sh --profile APP\|DOCS_SPECS\|HYBRID` |
+| **C1** | Greenfield install (first-time SDD) | `bootstrap-sdd.sh` → `bash sdd-kit/install.sh --profile APP\|DOCS_SPECS` (`HYBRID` deprecated alias — see below) |
 | **C2** | SDD upgrade (new guide/kit version) | `bash sdd-kit/upgrade.sh --from X --to Y --dry-run` → approval → `--apply` |
 | **C2b** | Outdated CLIs only | §2.9.4 — **without** touching curated kit |
 | **C3** | Domain spec propagation | Reference in `openspec/specs/<domain>/` — **do not** run `install.sh` |
@@ -145,11 +145,24 @@ Per-project reinstallation covers **only the repo-copied payload** — machine-l
 
 #### Repository profiles
 
-| Profile | What changes in `install.sh` |
-|--------|---------------------------|
-| **APP** | Commands §12.2a; rules TS/Supabase |
-| **DOCS_SPECS** | Commands §12.2b; `verify-task-patterns.sh` |
-| **HYBRID** | APP commands + optional rules |
+Every install answers one plain question: **will this repository hold application code?**
+
+- **Yes → `APP`.** Command table §12.2a; TS/Supabase rule files.
+- **No, docs/specs only → `DOCS_SPECS`.** Command table §12.2b.
+
+Whichever you answer, three things stay true:
+
+1. **Every profile installs the complete framework.** OpenSpec, GitNexus, Graphify, session coordination, and skills are not profile-gated — profiles only adjust the `AGENTS.md` command table and a few stack-specific rule files (e.g. the TS/Supabase rules that ship with APP).
+2. **This hub's `doc/` and `openspec/` content is ByeByeVibe's own development history.** The target project never receives it, never needs it, and grows its own `openspec/` state from day one (specs, changes, `project.md`) — regardless of which profile you picked.
+3. **This question is independent of the language question.** The three language axes (`chat_language`, `docs_language`, `code_language` — §2.1.1) are a separate install step; answering APP or DOCS_SPECS here does not set or imply any language.
+
+**`HYBRID` is deprecated (kit 1.9.0).** It used to name repositories mixing `package.json` with `openspec/`, but the one file that ever distinguished it from APP — `scripts/verify-task-patterns.sh` — now ships to every profile, so HYBRID's payload is byte-identical to APP's. `--profile HYBRID` still works everywhere it used to (`install.sh`, `upgrade.sh`, `bootstrap-sdd.sh`): it prints a one-line deprecation notice and proceeds as APP. Answer APP or DOCS_SPECS directly for new installs.
+
+| Profile | `--profile` | Commands table | Notes |
+|---------|-------------|-----------------|-------|
+| **APP** | `APP` | §12.2a | TS/Supabase rule files |
+| **DOCS_SPECS** | `DOCS_SPECS` | §12.2b | — |
+| ~~HYBRID~~ | `HYBRID` | (→ APP) | Deprecated alias since kit 1.9.0 — normalizes to APP with a deprecation notice |
 
 #### Hub vs consumer
 
@@ -262,9 +275,14 @@ Paste this prompt at the target repository root (replace `REPO_ROOT` and the pro
 
 ```
 Install the SDD system (OpenSpec + GitNexus + Graphify) in this repository following
-strictly the guide in doc/byebyevibe-guide.md v1.8.2 and the install kit in sdd-kit/.
+strictly the guide in doc/byebyevibe-guide.md v1.9.0 and the install kit in sdd-kit/.
 
-Repository profile: [APP | DOCS_SPECS | HYBRID]
+Repository profile: [APP | DOCS_SPECS] — if unset, ask the operator "Will this repository
+hold application code?" (yes → APP; no, docs/specs only → DOCS_SPECS) using the canonical
+dialog copy in guide §1.6 "Repository profiles" (every profile installs the complete
+framework; this hub's docs/specs are its own development history and are never copied to
+the target project; the profile question is separate from the language question). Do not
+offer `HYBRID` as a dialog option — it is a deprecated alias of APP (kit 1.9.0).
 
 Acquiring the SDD system files (skip if `sdd-kit/` already exists in this repo):
 - **Default — genuine greenfield target:** use the lightweight fetch recipe (guide §1.6 "Lightweight fetch recipe") — a partial clone + sparse-checkout that pulls only `sdd-kit/` + `scripts/bootstrap-sdd.sh` + `scripts/preflight-sdd.sh`, no full hub clone.
@@ -283,8 +301,9 @@ Order:
    (or rely on bootstrap; use --skip-preflight only for legacy/CI)
 1. bash scripts/bootstrap-sdd.sh  (or manual CLIs §2.2–2.4)
    Prefer --quiet for CI/agents when didactic TTY banners are noise.
-   Pass --profile APP|DOCS_SPECS|HYBRID to skip auto-detection (bootstrap
-   validates the value and forwards it to sdd-kit/install.sh).
+   Pass --profile APP|DOCS_SPECS to skip auto-detection (bootstrap validates
+   the value and forwards it to sdd-kit/install.sh; --profile HYBRID still
+   works as a deprecated alias of APP).
 2. bash sdd-kit/install.sh --profile <PROFILE> [--dry-run first]
 3. Edit openspec/project.md (Purpose, Stack — do NOT replace with template)
 4. Merge AGENTS.md if it already existed (templates: sdd-kit/templates/AGENTS.core.md + commands)
@@ -2913,6 +2932,13 @@ bash scripts/verify-task-patterns.sh   # Pattern: paths exist; DOCS_SPECS withou
 ---
 
 ## Guide changelog
+
+### 1.9.0 (2026-08-05)
+
+- **Simplify install profiles (change `simplify-install-profiles`)** — `scripts/verify-task-patterns.sh` now ships to **all** profiles (MANIFEST `profiles: [APP, DOCS_SPECS, HYBRID]`); it gains profile-aware exit semantics — fail-closed in DOCS_SPECS (unchanged), **report-only** in APP/UNKNOWN (broken local `Pattern:` paths print WARN, exit 0, summary names the mode) — so the C2 upgrade cannot redden existing APP consumers' CI. Profile detection hardened: `openspec/project.md` marker → AGENTS.md `12.2b`/`12.2a` command-table markers → legacy string greps (pre-1.9.0) → UNKNOWN (report-only). `sdd-gates.yml`'s task-patterns SKIP message no longer names DOCS_SPECS/HYBRID as the only profiles.
+- **`HYBRID` retired as a deprecated alias of APP** — `install.sh`, `upgrade.sh`, and `bootstrap-sdd.sh` still accept `--profile HYBRID`, print a one-line deprecation notice, and proceed as APP; invalid values still abort. The bootstrap ambiguous-HYBRID warning and the preflight HYBRID hint are removed — `package.json` + `openspec/` coexistence is the normal post-install state of every APP repo and no longer produces a profile-hint WARN.
+- **§1.6 profile block rewritten** around the lay question "Will this repository hold application code?" (yes → APP; no, docs/specs only → DOCS_SPECS), with three mandatory statements: every profile installs the complete framework; the hub's `doc/`/`openspec/` content is ByeByeVibe's own development history and is never copied to target projects; the profile question is independent of the language axes. `sdd-kit/README.md`'s profiles table reduced to APP/DOCS_SPECS + a deprecation line linking to §1.6. `install.sh` usage/help and the §2.0 AI-assisted install prompt gain the same lay-language decision copy (en + pt-BR).
+- **`sdd-kit/`** — templates mirrored (`bootstrap-sdd.sh`, `preflight-sdd.sh`, `verify-task-patterns.sh`, `.github/workflows/sdd-gates.yml`), checksums regenerated; MANIFEST **1.8.2 → 1.9.0**.
 
 ### 1.8.2 (2026-08-05)
 

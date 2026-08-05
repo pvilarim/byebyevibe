@@ -155,8 +155,15 @@ Usage: install.sh --profile APP|DOCS_SPECS|HYBRID [--dry-run] [--repo PATH]
 Copies curated SDD files from sdd-kit/templates/ into the target repository.
 Does NOT run openspec init or install global CLIs — use scripts/bootstrap-sdd.sh first.
 
+Profile decision (en): Will this repository hold application code?
+  yes -> APP · no, docs/specs only -> DOCS_SPECS · every profile installs the
+  complete framework. HYBRID is a deprecated alias of APP (kit 1.9.0).
+Decisão de perfil (pt-BR): Este repositório terá código de aplicação?
+  sim -> APP · não, só docs/specs -> DOCS_SPECS · todo perfil instala o
+  framework completo. HYBRID é um alias descontinuado de APP (kit 1.9.0).
+
 Options:
-  --profile          Required. APP, DOCS_SPECS, or HYBRID
+  --profile          Required. APP, DOCS_SPECS, or HYBRID (deprecated alias of APP)
   --dry-run          Print planned operations without writing files
   --repo             Target repository root (default: current directory)
   --chat-lang        Chat language: en or pt-BR (default: en)
@@ -186,7 +193,11 @@ done
 
 [[ -n "$PROFILE" ]] || { echo "ERROR: --profile is required" >&2; usage 2; }
 case "$PROFILE" in
-  APP|DOCS_SPECS|HYBRID) ;;
+  APP|DOCS_SPECS) ;;
+  HYBRID)
+    echo "DEPRECATED: --profile HYBRID is deprecated — equivalent to APP since kit 1.9.0; installing APP" >&2
+    PROFILE="APP"
+    ;;
   *) echo "ERROR: invalid --profile '$PROFILE' (allowed: APP, DOCS_SPECS, HYBRID)" >&2; usage 2 ;;
 esac
 [[ -f "$MANIFEST" ]] || { echo "ERROR: MANIFEST not found: $MANIFEST" >&2; exit 1; }

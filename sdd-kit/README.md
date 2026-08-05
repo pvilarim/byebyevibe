@@ -38,11 +38,14 @@ Discovery / hero: hub root [`README.md`](../README.md) (EN). Full procedure: [`d
 
 ## Profiles
 
+Two active profiles — pick by answering "will this repository hold application code?" Full decision copy: guide §1.6.
+
 | Profile | `--profile` | What changes |
 |---------|-------------|--------------|
 | APP | `APP` | Commands 12.2a; TS/Supabase rules |
-| DOCS_SPECS | `DOCS_SPECS` | Commands 12.2b; `verify-task-patterns.sh` |
-| HYBRID | `HYBRID` | APP commands + optional rules |
+| DOCS_SPECS | `DOCS_SPECS` | Commands 12.2b |
+
+`HYBRID` is deprecated (kit 1.9.0) — `--profile HYBRID` still works but normalizes to APP with a one-line notice.
 
 ## Quick commands
 
