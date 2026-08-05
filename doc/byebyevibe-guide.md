@@ -2,7 +2,7 @@
 
 **GitNexus + Graphify + OpenSpec, integrated in Cursor and VS Code + Claude Code**
 
-> **Canonical install guide (v1.8.2)** — use in any Git repository, manually or via an AI agent. Payloads in `sdd-kit/`; procedure in this document.
+> **Canonical install guide (v1.10.0)** — use in any Git repository, manually or via an AI agent. Payloads in `sdd-kit/`; procedure in this document.
 
 ## How to use this document
 
@@ -19,7 +19,7 @@
 | **SDD metrics (G4)** | `bash scripts/sdd-metrics.sh` — §2.17 (mode C; no DevLake) |
 
 - **`AGENTS.md` pattern:** aligned with [agents.md](https://agents.md/) + TLC workshop (Context Engineering, on-demand loading).
-- **Guide version:** 1.9.0 — see [Guide changelog](#changelog-do-guia).
+- **Guide version:** 1.10.0 — see [Guide changelog](#changelog-do-guia).
 - **Versioned payload:** `sdd-kit/MANIFEST.yaml` — see §1.6 and `sdd-kit/README.md`.
 - **Does not replace** `openspec/project.md` (project constitution) or specs in `openspec/specs/`.
 
@@ -2932,6 +2932,13 @@ bash scripts/verify-task-patterns.sh   # Pattern: paths exist; DOCS_SPECS withou
 ---
 
 ## Guide changelog
+
+### 1.10.0 (2026-08-05)
+
+- **Version-sync gate (change `sync-sdd-kit-readme`)** — `sdd-kit/verify.sh` gains a fail-closed `version sync` block that compares each version string declared in prose against its authority field in `sdd-kit/MANIFEST.yaml`: the `sdd-kit/README.md` H1 against `version:`, and both guide header claims (the `Canonical install guide (vX.Y.Z)` blockquote and the `**Guide version:**` line) against `guide_version:`. Each comparison is independent; a mismatch prints a `FAIL` naming the file, the declared value and the authority value, and reddens `bash sdd-kit/verify.sh`. Degradation per file: absent file → INFO skip; claim line missing or token unparseable → WARN, exit code unchanged — so consumer repos (which receive neither the kit README nor the guide) are unaffected. Enforcement is fail-closed locally; in CI it surfaces through the existing `continue-on-error: true` verify.sh step (advisory, by operator decision).
+- **`sdd-kit/README.md` currency pass** — H1 corrected from the stale `v1.6.1`; `APP/HYBRID` Probity references reduced to `APP` (they contradicted the file's own deprecation line); the dead "planned for v1.5.0" promise replaced with the current factual status; Structure block gains `gen-manifest-checksums.sh` and names `.claude/`/`.cursor/` in the `templates/` mirror; new section documents the skills and the `/opsx:help` command the kit installs automatically (vs. the manually installed review skills); CI-gate section names OSV-Scanner and `renovate.json`; Quick commands gain the hub→destination `bootstrap-sdd.sh` form and the report-only conditions of `verify-infra.sh` (1.8.2 `--write`) and `verify-task-patterns.sh` (1.9.0 profile-aware).
+- **Root README congruence** — first `sdd-kit/` mention is now a link to the folder; `HYBRID` dropped from the profiles line and the Probity module row; Docs-table language cell for `sdd-kit/README.md` corrected to `EN`.
+- **`sdd-kit/`** — MANIFEST **1.9.0 → 1.10.0** (`version` and `guide_version`); no template content changed, so checksums are unchanged and a C2 upgrade delivers no file diff.
 
 ### 1.9.0 (2026-08-05)
 
