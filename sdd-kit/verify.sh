@@ -20,12 +20,55 @@ run_check() {
   fi
 }
 
+# Compare one version string declared in prose against its MANIFEST authority.
+# Degrades per design D3: file absent -> INFO skip; claim missing or unparseable -> WARN;
+# mismatch -> FAIL (increments FAILURES). Each call is independent of the others.
+check_version_claim() {
+  local file="$1" claim_re="$2" label="$3" auth_field="$4" auth_val="$5"
+  local path="$REPO_ROOT/$file"
+  local line declared
+
+  if [[ ! -f "$path" ]]; then
+    echo "INFO: $file absent — $label version check skipped"
+    return 0
+  fi
+
+  line="$(grep -m1 -E "$claim_re" "$path" || true)"
+  if [[ -z "$line" ]]; then
+    echo "WARN: $file has no $label line — no version claim to check" >&2
+    return 0
+  fi
+
+  declared="$(printf '%s\n' "$line" | grep -oE 'v?[0-9]+\.[0-9]+\.[0-9]+' | head -1 || true)"
+  declared="${declared#v}"
+  if [[ -z "$declared" ]]; then
+    echo "WARN: $file $label declares no MAJOR.MINOR.PATCH token — not checked" >&2
+    return 0
+  fi
+
+  if [[ -z "$auth_val" || "$auth_val" == "?" ]]; then
+    echo "WARN: MANIFEST $auth_field unreadable — $file $label not checked" >&2
+    return 0
+  fi
+
+  if [[ "$declared" == "$auth_val" ]]; then
+    echo "OK: $file $label declares $declared (= MANIFEST $auth_field)"
+  else
+    echo "FAIL: $file $label declares $declared but MANIFEST $auth_field is $auth_val" >&2
+    ((FAILURES++)) || true
+  fi
+}
+
 echo "=== sdd-kit/verify.sh ==="
 echo "Repo: $REPO_ROOT"
 
+KIT_VER=""
+GUIDE_VER=""
 if [[ -f "$REPO_ROOT/sdd-kit/MANIFEST.yaml" ]]; then
   KIT_VER="$(grep -E '^version:' "$REPO_ROOT/sdd-kit/MANIFEST.yaml" | head -1 | sed 's/.*"\(.*\)".*/\1/' || echo '?')"
+  GUIDE_VER="$(grep -E '^guide_version:' "$REPO_ROOT/sdd-kit/MANIFEST.yaml" | head -1 | sed 's/.*"\(.*\)".*/\1/' || echo '?')"
   echo "Kit version: $KIT_VER"
+  echo "Guide version: $GUIDE_VER"
 else
   echo "WARN: sdd-kit/MANIFEST.yaml not found in repo"
 fi
@@ -90,6 +133,22 @@ elif [[ -f "$REPO_ROOT/sdd-kit/templates/scripts/sdd-metrics.sh" ]]; then
   echo "OK: sdd-metrics template present in kit (not yet copied to scripts/)"
 else
   echo "INFO: sdd-metrics.sh absent (report-only)"
+fi
+
+# Version sync: every declared version string must match its MANIFEST authority
+# (sdd-post-install-verification). Guarded per file, not per hub, because a consumer
+# may hold sdd-kit/README.md without holding templates/.
+echo ""
+echo "==> version sync"
+if [[ -f "$REPO_ROOT/sdd-kit/MANIFEST.yaml" ]]; then
+  check_version_claim "sdd-kit/README.md" '^# ' \
+    "heading" "version" "$KIT_VER"
+  check_version_claim "doc/byebyevibe-guide.md" 'Canonical install guide' \
+    "canonical-guide header" "guide_version" "$GUIDE_VER"
+  check_version_claim "doc/byebyevibe-guide.md" '\*\*Guide version:\*\*' \
+    "'Guide version' line" "guide_version" "$GUIDE_VER"
+else
+  echo "INFO: sdd-kit/MANIFEST.yaml absent — version sync checks skipped"
 fi
 
 # Kit integrity parity check (hub only — skipped in consumer repos without templates/)

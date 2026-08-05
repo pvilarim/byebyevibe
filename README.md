@@ -2,7 +2,7 @@
 
 **From vibe coding to shippable AI engineering.**
 
-**ByeByeVibe** is the public name of this project. The install payload lives in `sdd-kit/`.
+**ByeByeVibe** is the public name of this project. The install payload lives in [`sdd-kit/`](./sdd-kit/).
 
 An **installable toolkit for AI-assisted development** on **Cursor** and **Claude Code** — the missing operating system between your coding agent and a maintainable repo. Specs, code & knowledge graphs, CI gates, and session discipline, packaged so you don't invent process from scratch.
 
@@ -32,7 +32,7 @@ bash sdd-kit/install.sh --profile DOCS_SPECS --dry-run
 bash sdd-kit/install.sh --profile APP --dry-run
 ```
 
-Profiles: `APP` · `DOCS_SPECS` · `HYBRID` — see [`sdd-kit/README.md`](./sdd-kit/README.md).
+Profiles: `APP` · `DOCS_SPECS` — see [`sdd-kit/README.md`](./sdd-kit/README.md).
 
 ## The problem
 
@@ -92,7 +92,7 @@ Install the core stack first (C1). Add these only when you need them:
 | Module | Code | What you get |
 |--------|------|----------------|
 | **UI / design system** | C1-UI | Impeccable + shadcn + design pipeline — guide §2.11 |
-| **Probity (TDD enforce)** | G2 | `@nizos/probity` for APP/HYBRID — guide §2.16 |
+| **Probity (TDD enforce)** | G2 | `@nizos/probity` for APP — guide §2.16 |
 | **Post-apply reviews** | skills | `correctness-review` · `simplify-review` — on-demand, manual install |
 | **SDD metrics** | G4 | `sdd-metrics.sh` — volume, lead time, rework — guide §2.17 |
 
@@ -138,7 +138,7 @@ We **compose** OpenSpec; we don't replace it.
 | This README | EN | Discovery / first contact |
 | [`doc/byebyevibe-guide.md`](./doc/byebyevibe-guide.md) | pt-BR | Canonical install & operations guide |
 | [`doc/sdd-operator-day1.md`](./doc/sdd-operator-day1.md) | EN | Day-1 operator map (`/opsx:help`) |
-| [`sdd-kit/README.md`](./sdd-kit/README.md) | pt-BR (+ EN intro) | Kit scenarios & commands |
+| [`sdd-kit/README.md`](./sdd-kit/README.md) | EN | Kit scenarios & commands |
 | [`doc/avaliacoes/2026-07-26-sdd-discovery-positioning.md`](./doc/avaliacoes/2026-07-26-sdd-discovery-positioning.md) | EN | Market / SEO / backlog decisions |
 
 ## [MANUAL ACTION REQUIRED] — GitHub rename, About & topics
