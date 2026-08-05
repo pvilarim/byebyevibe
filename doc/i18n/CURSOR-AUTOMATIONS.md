@@ -404,7 +404,7 @@ ARCHIVE:
 4. Optional: bash scripts/sdd-metrics.sh --check-cadence (advisory; never fail archive)
 
 PR:
-- Branch: cursor/archive-${CHANGE_ID}-<short-suffix>
+- Branch: cursor/archive-${CHANGE_ID}-e452
 - Title: chore(openspec): archive ${CHANGE_ID}
 - Body: archive path + validate command + "one archive PR per change-id"
 - Mark ready for review (not draft)
