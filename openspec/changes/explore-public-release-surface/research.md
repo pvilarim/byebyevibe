@@ -2,7 +2,7 @@
 
 | Field | Value |
 |-------|-------|
-| **Date** | 2026-07-26 (updated 2026-07-26 — EN default + full pt-BR substitution) |
+| **Date** | 2026-07-26 (updated 2026-07-26 — EN default + full pt-BR substitution; updated 2026-08-05 — F3/F4 pickup dependency analysis) |
 | **Change** | `explore-public-release-surface` (type E — exploration) |
 | **Status** | **Ready for propose** — EN = canonical repo language; pt-BR in artifacts = legacy to **substitute** (not permanent bilingual); migration only via policy+waves |
 | **Trigger** | Operator requests EN policy / waves propose (public launch or preparation) |
@@ -44,7 +44,7 @@ On a **public** GitHub repo, **it is not possible** to have versioned folders in
 | F2 | Policy **EN = default** + safe **full pt-BR substitution** waves | **Ready for propose** — see § Safe i18n methodology; `add-english-docs-policy` + waves until residual PT ≈ 0 | Operator requests propose / launch |
 | F7 | Chat pt-BR vs EN artifacts | **Adopted** — chat MAY pt-BR; **MUST NOT** create/edit docs/skills/specs/templates in PT after policy | — |
 | F3 | Root `CHANGELOG.md` (EN, thin) | **Deferred** — future change `add-root-changelog` | Launch / public repo |
-| F4 | GitHub Releases mirroring kit versions | **Deferred** — optional together with F3 | Launch / public repo |
+| F4 | GitHub Releases mirroring kit versions | **Deferred** — optional together with F3 | **Reopened 2026-08-05** — issue #350; see § F3/F4 pickup |
 | F5 | Private ops repo (guide/evaluations/archive) | **Deferred — only if real pain** after F2 | If public surface still feels like “noise” |
 | F6 | `.gitignore` of specs/changes/docs | **Discarded** as privacy strategy | New proposal only with strong justification |
 
@@ -253,6 +253,86 @@ Paths with PT names (`doc/sistema-sdd-pedro.md`, `doc/avaliacoes/`) may **keep t
 | `sdd-kit/MANIFEST.yaml` `version` | ✅ aligned with guide |
 | Root `CHANGELOG.md` | ❌ does not exist |
 | GitHub Releases as product changelog | not adopted as process |
+
+## F3/F4 pickup — dependency analysis (2026-08-05)
+
+F4 was reopened as issue #350 ("Assemble GitHub Release flow"), authored as the third of a
+3-issue chain: #348 (fail-closed CI gate) → #349 (automated PR review pipeline) → #350. The
+chain order was a **proposed** sequence, not a derived one. Question explored: does #350 carry
+a real technical dependency on #349?
+
+### D-REL-1 — #349 does **not** block #350
+
+**No input of #350 is produced by #349.** Every input the release flow reads already exists:
+
+| Input needed by #350 | Origin | Produced by #349? |
+|----------------------|--------|-------------------|
+| Tags `kit-v*` / `guide-v*` | nothing exists yet (`git tag -l` empty) | no |
+| Version numbers | `sdd-kit/MANIFEST.yaml` → `version:` / `guide_version:` | no — exists |
+| Release-notes body | `doc/byebyevibe-guide.md` → `### X.Y.Z (YYYY-MM-DD)` + bullets | no — exists, already machine-parseable |
+| Pre-tag repo-state guard | `scripts/verify-release-readiness.sh` | no — **#348 built exactly this** |
+| Kit tarball | `git archive` from the tagged commit | no |
+| `permissions: contents: write` | new workflow file | no |
+
+`#349` produces LLM review comments on pull requests plus one real static/executed check. A
+release is cut from a commit **already on the default branch** — release tooling has nothing to
+query there, and should not re-run PR review.
+
+The chain's stated rationale ("only tag a commit that passed automated review") is a **policy**
+claim, not an interface one. Its enforcement point is **branch protection on the default
+branch**, not the release script: if the review is a required status check, every commit on
+`master` satisfies it by construction.
+
+### D-REL-2 — the substantive prerequisite is #348's unfinished manual step
+
+Issue #348 is closed (PR #352 merged, all `add-release-readiness-gate` code tasks `[x]`), but its
+guarantee is **not in effect**. `openspec/changes/add-release-readiness-gate/tasks.md` task 6.1
+remains open:
+
+> `[ ] 6.1 [MANUAL ACTION REQUIRED]` After merge, add `Release readiness (blocking)` as a
+> required status check under GitHub Settings → Branches for the default branch.
+
+Observable evidence that it is still pending: on PR #352 the `SDD Gates` run was created at
+`23:31:31Z` and the PR merged at `23:31:58Z` — 27 seconds. A run with `setup-node`,
+`setup-python` and `npx openspec` cannot complete in that window, so the merge landed with CI
+still in flight, i.e. no required status check gating it. (Inference from run/merge timestamps —
+branch-protection settings were not directly readable from this session.)
+
+**Consequence:** the one prerequisite of #350 with technical substance is a repository-settings
+change, not #349. #349 contributes nothing mechanical to #350 and is fully parallelizable.
+
+### D-REL-3 — the only coupling to #349 is conditional on one trigger choice
+
+#350 requires "a recorded decision on how much of this is automated". Only the most automated
+option is coupled:
+
+| Trigger model | Depends on #349? |
+|---------------|------------------|
+| Fully manual | no |
+| Push of a matching tag fires the release workflow | no |
+| MANIFEST version bump landing on the default branch fires the release | **yes** — auto-releasing from a merge requires the merge to be trustworthy |
+
+Choosing manual or tag-triggered removes #349 from the critical path entirely. This decision can
+be taken in the #350 proposal without waiting for #349's design.
+
+### D-REL-4 — real cost of running #349 and #350 in parallel
+
+One, and it is mechanical: both will touch `sdd-kit/MANIFEST.yaml` (`version:`, `guide_version:`,
+regenerated checksums) and insert a new entry at the top of `## Guide changelog`. Every kit change
+collides there. That is an argument for **serializing the merges** (either order), not evidence of
+a dependency.
+
+### D-REL-5 — the two-axis tagging premise is unsupported by history
+
+#350 proposes mirroring MANIFEST's two version axes into two tag namespaces (`kit-vX.Y.Z` from
+`version:`, `guide-vX.Y.Z` from `guide_version:`). The two fields have been **identical in every
+recorded commit** of `sdd-kit/MANIFEST.yaml` (1.6.1 → 1.11.0, no divergence), and
+`## Guide changelog` carries one entry per release covering kit and guide together.
+
+If the axes never diverge, `kit-v1.11.0` and `guide-v1.11.0` always name the same commit with the
+same notes — two tags, one release, duplicated body. **To resolve in the #350 proposal:** adopt a
+single tag axis until the versions actually diverge, or justify why they will and how the
+single-list changelog would be split to feed two release bodies.
 
 ## Non-goals of this explore
 
