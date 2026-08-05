@@ -11,8 +11,8 @@
 # The `gate:` field is documentary metadata only — the suggested verification
 # command for manual or CI use. It MUST NOT be executed via `eval` or any
 # equivalent by install.sh, upgrade.sh, or any other script.
-version: "1.10.0"
-guide_version: "1.10.0"
+version: "1.11.0"
+guide_version: "1.11.0"
 min_openspec: "1.3.1"
 profiles: [APP, DOCS_SPECS, HYBRID]
 
@@ -30,6 +30,13 @@ files:
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -x scripts/verify-task-patterns.sh"
+
+  - path: scripts/verify-release-readiness.sh
+    source: templates/scripts/verify-release-readiness.sh
+    sha256: "d1a11443c6180df7c8858ca813533c04c9453ce4f7c99b652dcac957acace425"
+    merge: COPY
+    profiles: [APP, DOCS_SPECS, HYBRID]
+    gate: "test -x scripts/verify-release-readiness.sh"
 
   - path: scripts/sdd-session-lib.sh
     source: templates/scripts/sdd-session-lib.sh
@@ -103,7 +110,7 @@ files:
 
   - path: .github/workflows/sdd-gates.yml
     source: templates/.github/workflows/sdd-gates.yml
-    sha256: "6b84582c6d60eb23603711cad332b6c9042213cc09640eed0281bc8927abc5f6"
+    sha256: "f745616c620fb7125cf9adbc9fac1146f1133337d9963f4779067bad5198eda5"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f .github/workflows/sdd-gates.yml"
