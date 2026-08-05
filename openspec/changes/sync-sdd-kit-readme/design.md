@@ -67,7 +67,19 @@ Rationale: the visible string is what a reader believes. A marker-based gate wou
 
 ### D2 — FAIL, not WARN
 
-A WARN would have been ignored for three releases, which is empirically what happened to the prose rule. The invariant is cheap to satisfy (edit one string in the same commit as the bump) and the check is a string comparison between two files that always travel together, so a false positive is close to impossible.
+A WARN would have been ignored for three releases, which is empirically what happened to the prose rule at kit README:124. The invariant is cheap to satisfy (edit one string in the same commit as the bump) and the check is a string comparison between files that always travel together, so a false positive is close to impossible.
+
+**Reach of that FAIL, stated precisely.** `sdd-gates.yml` runs `bash sdd-kit/verify.sh` in a step marked `continue-on-error: true` ("sdd-kit verify (report-only)"), because `verify-infra.sh` FAILs on knowledge CLIs that are absent from any runner. So the gate's actual enforcement is:
+
+```
+ surface                          effect of a version mismatch
+ ────────────────────────────────────────────────────────────────
+ local `bash sdd-kit/verify.sh`   exit 1  ← fail-closed
+ CI sdd-gates                     FAIL line in log, step green, merge unblocked
+ branch protection                unaffected (verify.sh is not a required check)
+```
+
+That is strictly better than the status quo (nothing at all) and it catches the release ritual at the moment the operator runs `verify.sh`, which §2.8 requires. It is *not* server-side enforcement. Promoting it to blocking is a live option — see Open Questions.
 
 ### D3 — Degrade, don't fail, when a claim is absent or unparseable
 
@@ -129,4 +141,16 @@ Order matters within the commit: bump `MANIFEST.yaml`, the kit README H1, and bo
 
 ## Open Questions
 
-None blocking. One deferred: whether guide §14's latest entry should also be gated (rejected here as heuristic — see Non-Goals). If header drift recurs on the *guide* side, that is the change to write.
+**Q1 — Should the version-sync check also be a blocking CI step?** (operator decision)
+
+As designed, the check is fail-closed locally and advisory in CI, because its only CI carrier is the `continue-on-error: true` verify.sh step (see D2). Since the defect being fixed is *"the release ritual forgot to update a string"*, and the release ritual ends in a PR, server-side enforcement is where it would actually bite.
+
+Making it blocking means a new dedicated step in `sdd-gates.yml` that runs only the version comparison — not the whole of `verify.sh`, whose report-only status is load-bearing for `verify-infra.sh`. Consequences:
+
+- `sdd-kit/templates/.github/workflows/sdd-gates.yml` changes → it **is** a MANIFEST-tracked template → `gen-manifest-checksums.sh` must run, and the C2 upgrade delivers a real file diff to consumers (this change would otherwise deliver none).
+- Consumer risk is low: consumers receive neither `sdd-kit/README.md` nor the guide, so per D3 the check degrades to INFO skip and cannot redden their CI. Hub-style DOCS_SPECS distributors that *do* carry the kit README get the enforcement they presumably want.
+- Cost: the shell logic would live in two places (verify.sh and the workflow) unless extracted into a small `scripts/verify-version-sync.sh` that both call — which is a third template and a wider change.
+
+Deferred to the operator because it converts a docs-hygiene change into a consumer-facing CI change, and because it is cleanly addable later without rework.
+
+**Q2 — Deferred, non-blocking.** Whether guide §14's latest changelog entry should be gated (rejected here as heuristic — see Non-Goals). If drift recurs in §14 specifically, that is the change to write.

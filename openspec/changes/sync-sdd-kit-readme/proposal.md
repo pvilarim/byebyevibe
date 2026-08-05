@@ -30,6 +30,6 @@ The drift is not confined to the kit README. The guide carries two version claim
 ## Impact
 
 - **Files:** `sdd-kit/README.md`, `sdd-kit/verify.sh`, `sdd-kit/MANIFEST.yaml` (version fields only), `README.md`, `doc/byebyevibe-guide.md` (both header version claims + §14 changelog entry), `openspec/infra.md` (kit-version marker).
-- **Behavior:** `bash sdd-kit/verify.sh` acquires one new failure mode on the hub. CI `sdd-gates` does not invoke `verify.sh`, so the gate does not change CI outcomes for consumers.
+- **Behavior:** `bash sdd-kit/verify.sh` acquires one new failure mode on the hub. `sdd-gates.yml` **does** invoke `verify.sh`, in its `sdd-kit verify (report-only)` step carrying `continue-on-error: true` — so a version mismatch surfaces as a FAIL line in the CI log and in local runs, but does not block merge. Enforcement strength is therefore: fail-closed locally and in `openspec/changes` review, advisory in CI. Whether to promote it to a blocking CI step is left as an open question in `design.md`.
 - **Consumers:** none affected — no template under `sdd-kit/templates/` changes, so a C2 upgrade delivers no file diffs beyond the MANIFEST version. Consumer repos that do carry `sdd-kit/README.md` (hub-style DOCS_SPECS distributors) inherit the gate on their next kit copy.
 - **Risk:** low. The failure mode is a string comparison between two files in the same commit.
