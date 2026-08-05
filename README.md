@@ -139,7 +139,7 @@ We **compose** OpenSpec; we don't replace it.
 | [`sdd-kit/README.md`](./sdd-kit/README.md) | pt-BR (+ EN intro) | Kit scenarios & commands |
 | [`doc/avaliacoes/2026-07-26-sdd-discovery-positioning.md`](./doc/avaliacoes/2026-07-26-sdd-discovery-positioning.md) | EN | Market / SEO / backlog decisions |
 
-## [AÇÃO MANUAL NECESSÁRIA] — GitHub rename, About & topics
+## [MANUAL ACTION REQUIRED] — GitHub rename, About & topics
 
 Settings are not in git. After merge, the operator should:
 
@@ -153,8 +153,6 @@ Settings are not in git. After merge, the operator should:
 > ByeByeVibe — Spec-Driven Development (SDD) install kit from vibe coding to shippable AI engineering. Control plane (OpenSpec + graphs + gates) for Cursor & Claude Code. Not a Next.js starter.
 
 **Topics:** `vibe-coding` · `spec-driven-development` · `context-engineering` · `agentic-coding` · `claude-code` · `cursor`
-
-Full checklist: [evaluation doc](./doc/avaliacoes/2026-07-26-sdd-discovery-positioning.md).
 
 ## Maintainer
 
