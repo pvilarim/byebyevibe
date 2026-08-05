@@ -3,9 +3,7 @@
 ## Purpose
 
 Normative requirements for phase-0 host/repo/operator prerequisite checks before C1 install: CLI modes (`--host`, `--repo`, `--all`), FAIL/WARN/SKIP semantics, GitNexus build-tools WARN with escape paths, IDE detection advisory, github-mcp advisory, and exclusive ownership of the `openspec/infra.md` Preflight section.
-
 ## Requirements
-
 ### Requirement: Preflight CLI with host, repo, and all modes
 
 The distribution MUST provide `scripts/preflight-sdd.sh` (shipped from `sdd-kit/templates/scripts/preflight-sdd.sh`) that supports `--host`, `--repo`, and `--all` modes, plus optional `--json` output. When no mode flag is passed, the script MUST default to `--all`. The script MUST classify each check as FAIL, WARN, or SKIP and MUST exit non-zero if any FAIL occurred.
@@ -41,12 +39,17 @@ In `--host` or `--all` mode, preflight MUST FAIL when Git, Node (minimum 20.19.0
 
 ### Requirement: Repo prerequisite gate
 
-In `--repo` or `--all` mode, preflight MUST FAIL when `sdd-kit/` is absent/unreadable under the repo root or when the repo root is not writable. Profile hints (e.g. coexistence of `package.json` and `openspec/` suggesting HYBRID) MUST be WARN when ambiguous, not FAIL.
+In `--repo` or `--all` mode, preflight MUST FAIL when `sdd-kit/` is absent/unreadable under the repo root or when the repo root is not writable — except in hub-sourced greenfield mode: when the caller provides a source kit root (e.g. a `--kit-root <path>` flag passed by `bootstrap-sdd.sh` hub-mode resolution) whose `sdd-kit/` is present and readable, the kit-presence check MUST pass against that source root instead of the target repo root. The repo-root writability check always applies to the target. When neither the target nor a provided source root carries a readable `sdd-kit/`, the gate MUST FAIL as before. Profile hints (e.g. coexistence of `package.json` and `openspec/` suggesting HYBRID) MUST be WARN when ambiguous, not FAIL.
 
 #### Scenario: Missing sdd-kit fails repo gate
 
-- **WHEN** `bash scripts/preflight-sdd.sh --repo` runs in a directory without `sdd-kit/`
+- **WHEN** `bash scripts/preflight-sdd.sh --repo` runs in a directory without `sdd-kit/` and no source kit root is provided
 - **THEN** the script reports FAIL and exits non-zero
+
+#### Scenario: Hub-resolved kit satisfies the gate
+
+- **WHEN** preflight runs against a greenfield target with a source kit root argument pointing to a hub clone containing `sdd-kit/`
+- **THEN** the kit-presence check passes and the remaining target checks (writability, profile hints) still run against the target
 
 #### Scenario: Ambiguous HYBRID hint warns
 
@@ -108,3 +111,4 @@ When `openspec/infra.md` exists (or is created by install templates), `scripts/p
 
 - **WHEN** `bash scripts/preflight-sdd.sh --all` stamped `preflight-ides` with detected IDEs, and later `bash scripts/preflight-sdd.sh --repo` runs (e.g. invoked by `sdd-kit/install.sh`)
 - **THEN** the `preflight-ides` and `preflight-mcp` marker values from the `--all` run remain unchanged, while `preflight-timestamp` reflects the repo-mode run
+
