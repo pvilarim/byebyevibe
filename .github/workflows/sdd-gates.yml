@@ -39,14 +39,15 @@ jobs:
         run: npx --yes @fission-ai/openspec@1.3.1 validate --all --strict --no-interactive
 
       # D3 — gate estrutural bloqueante: paths de `Pattern:` nos changes activos.
-      # Ausente em consumidores perfil APP (MANIFEST: profiles DOCS_SPECS/HYBRID) → SKIP.
+      # Script agora esperado em todos os perfis (MANIFEST 1.9.0+); exit semantics
+      # profile-aware ficam dentro do próprio script (fail-closed DOCS_SPECS, report-only APP).
       - name: Task patterns (blocking)
         timeout-minutes: 3
         run: |
           if [[ -f scripts/verify-task-patterns.sh ]]; then
             bash scripts/verify-task-patterns.sh
           else
-            echo "SKIP: scripts/verify-task-patterns.sh not found — install via sdd-kit if profile is DOCS_SPECS/HYBRID"
+            echo "SKIP: scripts/verify-task-patterns.sh not found — reinstall via sdd-kit (bash sdd-kit/install.sh)"
           fi
 
       # G8 — OSV-Scanner bloqueante quando lockfile na raiz (fail-closed).

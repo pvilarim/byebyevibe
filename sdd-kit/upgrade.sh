@@ -76,7 +76,11 @@ fi
 
 if [[ -n "$PROFILE" ]]; then
   case "$PROFILE" in
-    APP|DOCS_SPECS|HYBRID) ;;
+    APP|DOCS_SPECS) ;;
+    HYBRID)
+      echo "DEPRECATED: --profile HYBRID is deprecated — equivalent to APP since kit 1.9.0; using APP" >&2
+      PROFILE="APP"
+      ;;
     *) echo "ERROR: invalid --profile '$PROFILE' (allowed: APP, DOCS_SPECS, HYBRID)" >&2; exit 2 ;;
   esac
 fi

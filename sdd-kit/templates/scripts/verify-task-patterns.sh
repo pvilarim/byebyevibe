@@ -9,14 +9,27 @@ FAILURES=0
 WARNINGS=0
 PROFILE="UNKNOWN"
 
-if grep -q 'DOCS_SPECS' "$REPO_ROOT/openspec/project.md" 2>/dev/null \
-  || grep -q 'DOCS_SPECS' "$REPO_ROOT/AGENTS.md" 2>/dev/null; then
+# Profile detection order (D2): project.md marker -> AGENTS.md structural
+# markers -> legacy string greps (pre-1.9.0 installs) -> UNKNOWN (report-only).
+if grep -q 'DOCS_SPECS' "$REPO_ROOT/openspec/project.md" 2>/dev/null; then
   PROFILE="DOCS_SPECS"
-elif grep -q 'perfil APP\|12\.2a' "$REPO_ROOT/AGENTS.md" 2>/dev/null; then
+elif grep -qi 'APP profile' "$REPO_ROOT/openspec/project.md" 2>/dev/null; then
+  PROFILE="APP"
+elif grep -q '12.2b' "$REPO_ROOT/AGENTS.md" 2>/dev/null; then
+  PROFILE="DOCS_SPECS"
+elif grep -q '12.2a' "$REPO_ROOT/AGENTS.md" 2>/dev/null; then
+  PROFILE="APP"
+elif grep -q 'DOCS_SPECS' "$REPO_ROOT/AGENTS.md" 2>/dev/null; then
+  PROFILE="DOCS_SPECS"
+elif grep -q 'perfil APP' "$REPO_ROOT/AGENTS.md" 2>/dev/null; then
   PROFILE="APP"
 fi
 
-echo "==> verify-task-patterns.sh (profile: ${PROFILE})"
+if [[ "$PROFILE" == "DOCS_SPECS" ]]; then
+  echo "==> verify-task-patterns.sh (profile: ${PROFILE} — fail-closed)"
+else
+  echo "==> verify-task-patterns.sh (profile: ${PROFILE} — report-only, enforcement is a future change)"
+fi
 
 extract_pattern_paths() {
   local file="$1"
@@ -74,19 +87,27 @@ while IFS= read -r -d '' tasks_file; do
       else
         echo "  OK   $local_path"
       fi
-    else
+    elif [[ "$PROFILE" == "DOCS_SPECS" ]]; then
       echo "  FAIL missing: $local_path (from Pattern: $pattern)"
       ((FAILURES++)) || true
+    else
+      echo "  WARN missing: $local_path (from Pattern: $pattern) — report-only (${PROFILE} profile)"
+      ((WARNINGS++)) || true
     fi
   done < <(extract_pattern_paths "$tasks_file")
 done < <(find "$REPO_ROOT/openspec/changes" -mindepth 2 -maxdepth 2 -name 'tasks.md' \
   ! -path '*/archive/*' -print0 2>/dev/null)
 
 echo ""
-if [[ "$FAILURES" -eq 0 ]]; then
-  echo "Summary: all verifiable Pattern paths OK ✅ (${WARNINGS} skipped/warnings)"
-  exit 0
+if [[ "$PROFILE" == "DOCS_SPECS" ]]; then
+  if [[ "$FAILURES" -eq 0 ]]; then
+    echo "Summary: all verifiable Pattern paths OK ✅ (${WARNINGS} skipped/warnings)"
+    exit 0
+  else
+    echo "Summary: ${FAILURES} Pattern check(s) failed ❌ (DOCS_SPECS profile — fail-closed)"
+    exit 1
+  fi
 else
-  echo "Summary: ${FAILURES} Pattern check(s) failed ❌"
-  exit 1
+  echo "Summary: report-only (${PROFILE} profile) — enforcement is a future change (${WARNINGS} WARN/SKIP)"
+  exit 0
 fi

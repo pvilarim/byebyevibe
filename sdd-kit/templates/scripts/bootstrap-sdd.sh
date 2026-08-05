@@ -35,7 +35,11 @@ while [[ $# -gt 0 ]]; do
     --profile)
       PROFILE_FLAG="${2:-}"
       case "$PROFILE_FLAG" in
-        APP|DOCS_SPECS|HYBRID) ;;
+        APP|DOCS_SPECS) ;;
+        HYBRID)
+          echo "DEPRECATED: --profile HYBRID is deprecated — equivalent to APP since kit 1.9.0; using APP" >&2
+          PROFILE_FLAG="APP"
+          ;;
         *) echo "ERROR: --profile must be APP, DOCS_SPECS, or HYBRID (got '${PROFILE_FLAG:-}')" >&2; usage 2 ;;
       esac
       shift 2
@@ -77,10 +81,6 @@ SOURCE_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 cd "$REPO"
 REPO="$(pwd)"
-
-# Profile hint MUST be snapshotted before `openspec init` creates openspec/ (D1)
-PRE_INIT_HAD_OPENSPEC=false
-[[ -d "$REPO/openspec" ]] && PRE_INIT_HAD_OPENSPEC=true
 
 # Phase 0 — Preflight (full --all) before OpenSpec unless --skip-preflight
 if ! $SKIP_PREFLIGHT; then
@@ -297,11 +297,6 @@ if [[ -n "$KIT_INSTALL" ]]; then
   # Profile: explicit --profile wins; else detect HYBRID from the pre-init snapshot (D1/D2)
   if [[ -n "$PROFILE_FLAG" ]]; then
     PROFILE="$PROFILE_FLAG"
-  elif [[ -f "$REPO/package.json" ]] && $PRE_INIT_HAD_OPENSPEC; then
-    echo "WARN: package.json and openspec/ coexist — profile may be HYBRID." >&2
-    echo "      Confirm: rerun with --profile HYBRID or DOCS_SPECS if not APP." >&2
-    echo "      Continuing with --profile APP by default (rerun with --profile APP|DOCS_SPECS|HYBRID to override)." >&2
-    PROFILE="APP"
   elif [[ -f "$REPO/package.json" ]]; then
     PROFILE="APP"
   else

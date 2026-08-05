@@ -11,8 +11,8 @@
 # The `gate:` field is documentary metadata only — the suggested verification
 # command for manual or CI use. It MUST NOT be executed via `eval` or any
 # equivalent by install.sh, upgrade.sh, or any other script.
-version: "1.8.2"
-guide_version: "1.8.2"
+version: "1.9.0"
+guide_version: "1.9.0"
 min_openspec: "1.3.1"
 profiles: [APP, DOCS_SPECS, HYBRID]
 
@@ -26,9 +26,9 @@ files:
 
   - path: scripts/verify-task-patterns.sh
     source: templates/scripts/verify-task-patterns.sh
-    sha256: "e33d5f5db75af0146af07310581b92e3cf677d95f826af19228c4e672f644d36"
+    sha256: "5b14e9088e01e45727c0877b61c5e5a5a522d006e922b9307514b93cf5305c9a"
     merge: COPY
-    profiles: [DOCS_SPECS, HYBRID]
+    profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -x scripts/verify-task-patterns.sh"
 
   - path: scripts/sdd-session-lib.sh
@@ -89,21 +89,21 @@ files:
 
   - path: scripts/bootstrap-sdd.sh
     source: templates/scripts/bootstrap-sdd.sh
-    sha256: "41f25fbedfafe3c9d529dae20fef19054704d4f24586e84f1396f8a32cdca7f5"
+    sha256: "ad797d92adbcb402fa7723f419c986db199980f5a9553f8637b2f97e4b546786"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -x scripts/bootstrap-sdd.sh"
 
   - path: scripts/preflight-sdd.sh
     source: templates/scripts/preflight-sdd.sh
-    sha256: "8fe0a5fd0018afaed178d0e82cd4fc656c136fdd679ae4b1f90e29cf8350a19c"
+    sha256: "f96cffa7dfd3ba407282c02371135cd4fe2bbcda53359fdf365f72eb5eb49dfc"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -x scripts/preflight-sdd.sh"
 
   - path: .github/workflows/sdd-gates.yml
     source: templates/.github/workflows/sdd-gates.yml
-    sha256: "f10bbd6e583c200224e94becd8ac748f317681a301ff83f76222e1a6177c9e43"
+    sha256: "6b84582c6d60eb23603711cad332b6c9042213cc09640eed0281bc8927abc5f6"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f .github/workflows/sdd-gates.yml"
