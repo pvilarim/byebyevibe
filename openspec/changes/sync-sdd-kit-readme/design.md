@@ -141,7 +141,7 @@ Order matters within the commit: bump `MANIFEST.yaml`, the kit README H1, and bo
 
 ## Open Questions
 
-**Q1 — Should the version-sync check also be a blocking CI step?** (operator decision)
+**Q1 — Should the version-sync check also be a blocking CI step?** — **RESOLVED: no. Keep it advisory in CI** (operator decision, 2026-08-05). The gate stays fail-closed locally and report-only in CI; this change ships zero file diff to consumers and regenerates no checksums. Revisit only if header drift recurs *after* the local gate exists — that would be evidence the local gate is insufficient rather than merely unenforced. Rationale for the alternative is kept below for that revisit.
 
 As designed, the check is fail-closed locally and advisory in CI, because its only CI carrier is the `continue-on-error: true` verify.sh step (see D2). Since the defect being fixed is *"the release ritual forgot to update a string"*, and the release ritual ends in a PR, server-side enforcement is where it would actually bite.
 
