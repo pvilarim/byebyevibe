@@ -103,7 +103,7 @@ files:
 
   - path: .github/workflows/sdd-gates.yml
     source: templates/.github/workflows/sdd-gates.yml
-    sha256: "b93c6359fcfec221e2c31a2b8bd7dc6422e3be0771138d231b978bdc9833b9e4"
+    sha256: "f10bbd6e583c200224e94becd8ac748f317681a301ff83f76222e1a6177c9e43"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f .github/workflows/sdd-gates.yml"

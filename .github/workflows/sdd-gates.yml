@@ -55,7 +55,8 @@ jobs:
           hashFiles('package-lock.json', 'pnpm-lock.yaml', 'yarn.lock',
                     'poetry.lock', 'Pipfile.lock', 'Cargo.lock', 'go.sum',
                     'Gemfile.lock', 'composer.lock') == ''
-        run: echo "SKIP: no lockfile at repo root — OSV-Scanner not applicable"
+        run: |
+          echo "SKIP: no lockfile at repo root — OSV-Scanner not applicable"
 
       - name: OSV-Scanner (blocking)
         if: >-
