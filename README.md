@@ -6,6 +6,8 @@
 
 An **installable toolkit for AI-assisted development** on **Cursor** and **Claude Code** — the missing operating system between your coding agent and a maintainable repo. Specs, code & knowledge graphs, CI gates, and session discipline, packaged so you don't invent process from scratch.
 
+[OpenSpec](https://github.com/Fission-AI/OpenSpec) · [GitNexus](https://github.com/abhigyanpatwari/GitNexus) · [Graphify](https://github.com/Graphify-Labs/graphify) — see [Core tools](#core-tools) for what each one does.
+
 *Vibe coding until the first PR. After that, agentic engineering.*
 
 ## Why install this
@@ -126,7 +128,7 @@ If you need a vibe *template*, use one — then install this kit on top.
 
 We **compose** OpenSpec; we don't replace it.
 
-- [OpenSpec](https://github.com/Fission-AI/OpenSpec) · GitNexus · Graphify · [agents.md](https://agents.md/)
+- [OpenSpec](https://github.com/Fission-AI/OpenSpec) · [GitNexus](https://github.com/abhigyanpatwari/GitNexus) · [Graphify](https://github.com/Graphify-Labs/graphify) · [agents.md](https://agents.md/)
 - Install kit: [`sdd-kit/`](./sdd-kit/) · Constitution: [`openspec/project.md`](./openspec/project.md)
 
 ## Docs
