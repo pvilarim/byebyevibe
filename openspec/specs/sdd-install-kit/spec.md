@@ -118,7 +118,7 @@ When `sdd-kit/verify.sh` runs in a repository where `sdd-kit/templates/` is pres
 
 ### Requirement: Guide documents project organization and scenarios
 
-`doc/byebyevibe-guide.md` MUST include section **§1.6** (or equivalent numbered section) documenting: four-layer model (procedure / payload / specs / workspace state), scenarios C1 (greenfield), C2 (SDD upgrade), C2b (CLI-only), C3 (spec propagation without SDD reinstall), and profile differences APP / DOCS_SPECS / HYBRID. §1.6 MUST also include a canonical **install-scope table** distinguishing: machine scope (CLIs and MCP config, installed once per machine), repo-copied scope (payload applied by `install.sh` per project), and repo-generated scope (`openspec/`, `graphify-out/`, `.gitnexus/` — born inside each project, never shared between projects). §1.6 MUST document the **hub→destination flow** as the canonical multi-project UX: one hub clone per machine, and installation into any target project via `bash <hub>/scripts/bootstrap-sdd.sh <target-repo> --profile <PROFILE>`. §1.6 MUST state that per-project reinstallation covers only the repo-copied payload — machine-level CLIs are never reinstalled per project. Other surfaces (kit README, day-1 doc, banners) MUST NOT duplicate the scope table; a short summary of at most three sentences plus a link to §1.6 is permitted.
+`doc/byebyevibe-guide.md` MUST include section **§1.6** (or equivalent numbered section) documenting: four-layer model (procedure / payload / specs / workspace state), scenarios C1 (greenfield), C2 (SDD upgrade), C2b (CLI-only), C3 (spec propagation without SDD reinstall), and the profile model with **two active profiles** (APP, DOCS_SPECS) plus HYBRID as a deprecated alias of APP. The profile block MUST be written as canonical lay-language decision copy framed by the question "Will this repository hold application code?" and MUST state: (1) every profile installs the complete framework — profiles only adjust the AGENTS.md command table and a few stack-specific rule files; (2) the hub's `doc/` and `openspec/` content is ByeByeVibe's own development history — target projects never receive it, never need it, and grow their own `openspec/` state; (3) the profile question is independent of the language-axes question (`sdd-language-policy`). §1.6 MUST also include a canonical **install-scope table** distinguishing: machine scope (CLIs and MCP config, installed once per machine), repo-copied scope (payload applied by `install.sh` per project), and repo-generated scope (`openspec/`, `graphify-out/`, `.gitnexus/` — born inside each project, never shared between projects). §1.6 MUST document the **hub→destination flow** as the canonical multi-project UX: one hub clone per machine, and installation into any target project via `bash <hub>/scripts/bootstrap-sdd.sh <target-repo> --profile <PROFILE>`. §1.6 MUST state that per-project reinstallation covers only the repo-copied payload — machine-level CLIs are never reinstalled per project. Other surfaces (kit README, day-1 doc, banners) MUST NOT duplicate the scope table or the full profile copy; a short summary of at most three sentences plus a link to §1.6 is permitted.
 
 #### Scenario: Human reads installation scenarios
 
@@ -139,6 +139,16 @@ When `sdd-kit/verify.sh` runs in a repository where `sdd-kit/templates/` is pres
 
 - **WHEN** any other canonical surface (kit README, day-1 doc) mentions install scope
 - **THEN** it links to guide §1.6 with at most a three-sentence summary, without duplicating the full table
+
+#### Scenario: Lay operator answers the profile question
+
+- **WHEN** a first-time operator with no SDD vocabulary reads the §1.6 profile block
+- **THEN** the copy lets them choose by answering whether the repository will hold application code, and tells them the complete framework installs either way
+
+#### Scenario: Hub content clarified at decision time
+
+- **WHEN** an operator browsing the hub's specs wonders whether their project must receive them
+- **THEN** the §1.6 profile copy states the hub's docs/specs are ByeByeVibe's own development history and are never copied to target projects
 
 ### Requirement: Version alignment on release
 
@@ -175,20 +185,6 @@ Repositories with profile DOCS_SPECS that act as SDD distribution hubs MUST comm
 
 - **WHEN** spec-pedro archives this change
 - **THEN** `sdd-kit/` remains in git for C2 upgrades by other repos
-
-### Requirement: bootstrap-sdd.sh emits warning in ambiguous HYBRID repo
-
-`bootstrap-sdd.sh` MUST capture the profile hint (presence of `package.json` and `openspec/`) **before** running `openspec init`, so that the directory created by `openspec init` itself cannot trigger the ambiguity warning. When `package.json` and `openspec/` coexisted before `openspec init`, the script MUST emit a warning (stderr) requesting explicit profile confirmation before continuing with the default profile (APP). It MUST NOT exit with an error — the warning is informational. The warning's recovery instruction MUST reference a real, supported invocation (the `--profile` flag), not a positional argument.
-
-#### Scenario: Repo with package.json and openspec/ coexisting
-
-- **WHEN** the operator runs `bash scripts/bootstrap-sdd.sh` in a repo that already has both `package.json` and `openspec/` before bootstrap starts
-- **THEN** the script prints a stderr warning that the profile may be HYBRID, instructs the operator to rerun with `--profile HYBRID|DOCS_SPECS` if APP is wrong, and continues installation with APP profile
-
-#### Scenario: APP repo without openspec/ receives no warning
-
-- **WHEN** the operator runs `bash scripts/bootstrap-sdd.sh` in a repo that has `package.json` but not `openspec/` at bootstrap start
-- **THEN** the script continues with APP profile without any HYBRID warning, even though `openspec init` creates `openspec/` during the same run
 
 ### Requirement: upgrade.sh classify label aligned with MANIFEST merge strategy
 
@@ -272,6 +268,20 @@ The header printed by `upgrade.sh` at the start of the output MUST reflect the e
 
 - **WHEN** `bash sdd-kit/gen-manifest-checksums.sh` has been run after adding the template
 - **THEN** the MANIFEST entry for `sdd-metrics.sh` includes a `sha256:` field matching the template file digest
+
+### Requirement: Task pattern verifier distributed to all profiles
+
+`sdd-kit/MANIFEST.yaml` MUST register `scripts/verify-task-patterns.sh` with `profiles: [APP, DOCS_SPECS, HYBRID]` so every install receives the verifier. Kit `version` MUST be bumped to at least **1.9.0** when this entry changes. The `sdd-gates.yml` template's task-patterns step message MUST NOT describe the script as DOCS_SPECS/HYBRID-only.
+
+#### Scenario: APP install receives the verifier
+
+- **WHEN** `bash sdd-kit/install.sh --profile APP` runs in a consumer repository
+- **THEN** `scripts/verify-task-patterns.sh` is copied and executable after install
+
+#### Scenario: Workflow message reflects universal distribution
+
+- **WHEN** an operator reads the task-patterns step in the shipped `sdd-gates.yml`
+- **THEN** the absent-script message points to reinstalling via sdd-kit without naming DOCS_SPECS/HYBRID as the only profiles
 
 ### Requirement: Kit README includes discovery positioning for newcomers
 
@@ -461,12 +471,17 @@ Kit templates `sdd-kit/templates/AGENTS.commands.DOCS_SPECS.md` and `sdd-kit/tem
 
 ### Requirement: bootstrap-sdd.sh accepts an explicit profile flag
 
-`bootstrap-sdd.sh` MUST accept `--profile APP|DOCS_SPECS|HYBRID`. When supplied, the flag value MUST override profile auto-detection and be passed through to `sdd-kit/install.sh`. An invalid value MUST abort with a non-zero exit before any install phase runs.
+`bootstrap-sdd.sh` MUST accept `--profile APP|DOCS_SPECS|HYBRID`. When supplied, the flag value MUST override profile auto-detection and be passed through to `sdd-kit/install.sh`, with `HYBRID` normalized to `APP` alongside a one-line deprecation notice (either in bootstrap or in `install.sh` — exactly one surface prints it). An invalid value MUST abort with a non-zero exit before any install phase runs.
 
 #### Scenario: Explicit profile overrides detection
 
-- **WHEN** the operator runs `bash scripts/bootstrap-sdd.sh --profile HYBRID` in a repo with `package.json`
-- **THEN** `sdd-kit/install.sh` is invoked with `--profile HYBRID` and no ambiguity warning is emitted
+- **WHEN** the operator runs `bash scripts/bootstrap-sdd.sh --profile DOCS_SPECS` in a repo with `package.json`
+- **THEN** `sdd-kit/install.sh` is invoked with `--profile DOCS_SPECS` and no auto-detection applies
+
+#### Scenario: HYBRID flag still works as APP
+
+- **WHEN** the operator runs `bash scripts/bootstrap-sdd.sh --profile HYBRID`
+- **THEN** the install completes as an APP-profile install with a single deprecation notice
 
 #### Scenario: Invalid profile aborts early
 
@@ -489,7 +504,7 @@ The Graphify phase of `bootstrap-sdd.sh` (uv install, `uv tool install`, `graphi
 
 ### Requirement: install.sh and upgrade.sh reject invalid profile values
 
-`sdd-kit/install.sh` MUST validate `--profile` against `APP|DOCS_SPECS|HYBRID` at argument parsing time and abort with a non-zero exit and an error naming the allowed values when the value is invalid — including when `--skip-preflight` is passed. `sdd-kit/upgrade.sh` MUST apply the same validation whenever `--profile` is supplied. A run that would select zero MANIFEST entries due to an unrecognized profile MUST NOT report success.
+`sdd-kit/install.sh` MUST validate `--profile` at argument parsing time and abort with a non-zero exit and an error naming the allowed values when the value is invalid — including when `--skip-preflight` is passed. `APP` and `DOCS_SPECS` are the active profiles. `HYBRID` MUST remain accepted as a **deprecated alias**: it is normalized to `APP` at parsing time with a one-line deprecation notice naming kit 1.9.0, and the run proceeds exactly as `--profile APP`. `sdd-kit/upgrade.sh` MUST apply the same validation and normalization whenever `--profile` is supplied. A run that would select zero MANIFEST entries due to an unrecognized profile MUST NOT report success.
 
 #### Scenario: install.sh rejects invalid profile with preflight skipped
 
@@ -498,8 +513,13 @@ The Graphify phase of `bootstrap-sdd.sh` (uv install, `uv tool install`, `graphi
 
 #### Scenario: upgrade.sh apply rejects invalid profile
 
-- **WHEN** the operator runs `bash sdd-kit/upgrade.sh --from 1.0.0 --to 1.6.1 --apply --profile FOO`
+- **WHEN** the operator runs `bash sdd-kit/upgrade.sh --from 1.0.0 --to 1.9.0 --apply --profile FOO`
 - **THEN** the script exits non-zero with an error naming the allowed profiles, and applies no files
+
+#### Scenario: HYBRID normalizes to APP with deprecation notice
+
+- **WHEN** the operator runs `bash sdd-kit/install.sh --profile HYBRID`
+- **THEN** the script prints a deprecation notice, proceeds with the APP profile, and exits as a successful APP install
 
 ### Requirement: install.sh dry-run performs no filesystem writes
 
