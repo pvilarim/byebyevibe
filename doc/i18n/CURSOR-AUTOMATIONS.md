@@ -313,7 +313,7 @@ STOP with one line:
 | Pull request merged | Base: `master` · Title contains: `apply translate-` |
 | Label (alternative) | Label added: `sdd-i18n-apply-ready` on merged PR |
 
-**Branch naming (agent):** `cursor/archive-<change-id>-<suffix>`
+**Branch naming (agent):** `cursor/archive-<change-id>-e452` — the suffix MUST be the fixed literal `e452`, matching `scripts/archive-and-merge.sh`. Do **not** use a per-run random suffix: the dedupe guard below looks the branch up by name, so a fresh suffix each run defeats it and opens a duplicate PR (see §5.3.1).
 
 **PR title:** `chore(openspec): archive translate-<surface>-wave-N`
 
@@ -323,10 +323,15 @@ STOP with one line:
 
 #### 5.3.1 Stale archive PRs — close, do not merge
 
-Parallel Cloud Agent runs often open **duplicate** archive PRs for the same change-id. Before Automation C runs:
+Repeated Cloud Agent runs open **duplicate** archive PRs for the same change-id. Root cause (confirmed 2026-08-05 against PRs #202–#223): the runs are **serial, ~5 minutes apart**, not parallel — each one passed the old `--search`-based dedupe because the GitHub search index had not yet listed the PR the previous run created. The 5-minute cadence outran the index. Fixed by looking the branch up with `--head` and pinning the branch suffix (§5.3, §5.3.2).
+
+Before Automation C runs:
 
 ```bash
-# Example: list open archive PRs for one change
+# List open archive PRs for one change — --head is immediately consistent
+gh pr list --head "cursor/archive-translate-guide-wave-2-e452" --state open
+
+# Broader sweep (search index may lag by minutes — treat empty as inconclusive)
 gh pr list --state open --search "archive translate-guide-wave-2"
 ```
 
@@ -339,7 +344,24 @@ gh pr list --state open --search "archive translate-guide-wave-2"
 Bulk-close stale duplicates (operator, after verifying master):
 
 ```bash
-gh pr close 17 52 53 56 65 178 180 202 203 204 205 206 207 208 209 210 211 212 213 214 215 216 217 218 219 220 221 222 223
+# Historical backlog — CLOSED 2026-08-05, kept for provenance. Do not re-run.
+# 28 PRs, each verified line-by-line against master before closing.
+# gh pr close 52 53 56 65 178 180 202 203 204 205 206 207 208 209 210 211 \
+#             212 213 214 215 216 217 218 219 220 221 222 223
+```
+
+> **#17 is deliberately NOT in that list.** An earlier revision of this section listed it. `#17` (`archive add-sdd-ui-development-module`) is the one archive PR in the batch that also carries **live-spec deltas that never landed on `master`**: `openspec/infra.md` really does have a `## UI Development Module` section and the guide really does have `§2.11.1`, but no requirement in `openspec/specs/**` mandates either. Verify before closing it — see change `sync-ui-module-spec-requirements`.
+
+**Verify before closing, every time.** The archive-move check alone is not sufficient — an archive PR can have its move already on `master` while its `openspec/specs/**` deltas never landed (`#17` is exactly that). For each candidate:
+
+```bash
+# 1. archive move already on master?  (mind the DATE prefix — it may differ from the PR's)
+git ls-tree origin/master --name-only openspec/changes/archive/ | grep -i "<change-id>"
+
+# 2. every requirement the PR adds under openspec/specs/** already on master?
+#    Compare requirement BODIES, not headings: headings get reworded, and the
+#    translate-* waves rewrote many bodies from pt-BR to English.
+git show origin/master:openspec/specs/<capability>/spec.md | grep -c "<distinctive phrase>"
 ```
 
 #### 5.3.2 Instructions (paste into Automation C)
@@ -360,7 +382,11 @@ PRE-FLIGHT — DEDUPE (mandatory; exit 0 with message, no PR):
    → Report "SKIP: ${CHANGE_ID} already archived on master" and STOP.
 
 2. Duplicate open archive PR?
-   OPEN=$(gh pr list --state open --search "archive ${CHANGE_ID}" --json number -q 'length')
+   Look the branch up by name — NOT via --search. The GitHub search index is
+   eventually consistent, so a just-created PR is often still invisible to
+   --search minutes later; a repeating trigger then opens a duplicate every run.
+   --head resolves the ref directly and is immediately consistent.
+   OPEN=$(gh pr list --head "cursor/archive-${CHANGE_ID}-e452" --state open --json number -q 'length')
    If OPEN > 0 → Report "SKIP: archive PR already open for ${CHANGE_ID}" and STOP.
 
 3. Tasks complete?

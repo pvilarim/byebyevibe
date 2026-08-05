@@ -1,4 +1,10 @@
 #!/usr/bin/env bash
+# SPENT 2026-08-05 — every PR below is already closed; this is now a no-op that
+# prints "Skip ... (state=CLOSED)" for each. Kept for provenance only.
+# Root cause of the duplicates (search-index lag vs a ~5-min trigger) and the
+# verify-before-closing procedure: doc/i18n/CURSOR-AUTOMATIONS.md §5.3.1.
+# Note this list never included #17 — that PR carries unlanded spec deltas.
+#
 # REMINDER 2026-08-01 — close stale duplicate archive PRs (already on master).
 # See doc/i18n/CURSOR-AUTOMATIONS.md §5.3.1
 set -euo pipefail
