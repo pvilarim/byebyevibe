@@ -25,5 +25,5 @@
   - **Gate:** `diff -q scripts/verify-infra.sh sdd-kit/templates/scripts/verify-infra.sh && grep -qE '^version: "1\.8\.2"' sdd-kit/MANIFEST.yaml && grep -qE '^guide_version: "1\.8\.2"' sdd-kit/MANIFEST.yaml && grep -q '1.8.2' doc/byebyevibe-guide.md && grep -q '1.8.2' openspec/project.md && grep -q 'fix-verify-infra-ephemeral-env' doc/byebyevibe-guide.md`
   - **Forbidden:** bumping the version without the changelog entry, or regenerating checksums before the template mirror is byte-identical
 
-- [ ] 2.2 Final consistency pass: strict OpenSpec validation, task-pattern verification, and full kit verification — which, with 1.1 in place, must now pass in this non-interactive environment without dirtying the working tree
+- [x] 2.2 Final consistency pass: strict OpenSpec validation, task-pattern verification, and full kit verification — which, with 1.1 in place, must now pass in this non-interactive environment without dirtying the working tree
   - **Gate:** `npx --yes @fission-ai/openspec@1.3.1 validate --all --strict && bash scripts/verify-task-patterns.sh && bash sdd-kit/verify.sh && git diff --quiet -- openspec/infra.md`
