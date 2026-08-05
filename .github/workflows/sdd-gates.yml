@@ -70,6 +70,13 @@ jobs:
             --recursive
             ./
 
+      # add-release-readiness-gate (issue #348) — repo-state checks (version-sync,
+      # kit-integrity, hub scripts<->templates parity) promoted to blocking, split
+      # out from verify-infra.sh's environment-dependent CLI-presence checks below.
+      - name: Release readiness (blocking)
+        timeout-minutes: 3
+        run: bash scripts/verify-release-readiness.sh
+
       # D4 — report-only: verify.sh orquestra verify-infra.sh, que marca FAIL
       # para CLIs de conhecimento (GitNexus/Graphify) ausentes no runner e muta
       # openspec/infra.md. O resultado é reportado sem bloquear o merge; a

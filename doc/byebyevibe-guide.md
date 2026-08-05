@@ -2,7 +2,7 @@
 
 **GitNexus + Graphify + OpenSpec, integrated in Cursor and VS Code + Claude Code**
 
-> **Canonical install guide (v1.10.0)** — use in any Git repository, manually or via an AI agent. Payloads in `sdd-kit/`; procedure in this document.
+> **Canonical install guide (v1.11.0)** — use in any Git repository, manually or via an AI agent. Payloads in `sdd-kit/`; procedure in this document.
 
 ## How to use this document
 
@@ -19,7 +19,7 @@
 | **SDD metrics (G4)** | `bash scripts/sdd-metrics.sh` — §2.17 (mode C; no DevLake) |
 
 - **`AGENTS.md` pattern:** aligned with [agents.md](https://agents.md/) + TLC workshop (Context Engineering, on-demand loading).
-- **Guide version:** 1.10.0 — see [Guide changelog](#changelog-do-guia).
+- **Guide version:** 1.11.0 — see [Guide changelog](#changelog-do-guia).
 - **Versioned payload:** `sdd-kit/MANIFEST.yaml` — see §1.6 and `sdd-kit/README.md`.
 - **Does not replace** `openspec/project.md` (project constitution) or specs in `openspec/specs/`.
 
@@ -651,9 +651,10 @@ Fail-closed enforcement of SDD gates on the server (gap G1 — `add-sdd-ci-gates
 | OpenSpec validate | `npx --yes @fission-ai/openspec@1.3.1 validate --all --strict --no-interactive` | **Blocking** (fail-closed) |
 | Task patterns | `bash scripts/verify-task-patterns.sh` | Blocking (SKIP if absent — APP profile) |
 | OSV-Scanner | `google/osv-scanner-action` (SHA-pinned) | Blocking (SKIP if no lockfile at repo root) |
-| sdd-kit verify | `bash sdd-kit/verify.sh` | Report-only (`continue-on-error`) — includes `verify-infra.sh`, which checks for knowledge CLIs missing on the runner |
+| Release readiness | `bash scripts/verify-release-readiness.sh` | **Blocking** (fail-closed) — version-sync + kit-integrity + hub scripts↔templates parity; independent of `verify-infra.sh`, never affected by missing knowledge CLIs |
+| sdd-kit verify | `bash sdd-kit/verify.sh` | Report-only (`continue-on-error`) — includes `verify-infra.sh` (knowledge CLIs missing on the runner) and re-runs `verify-release-readiness.sh` internally for the local one-shot summary; that re-run does not affect this step's report-only status |
 
-**How to read the output:** in the Actions tab (or PR check), the red step indicates which gate failed. `OpenSpec validate` lists `✗ change/<id>` — reproduce locally with `npx openspec validate <id> --strict` and fix the artifact. `Task patterns` lists `FAIL missing: <path>` — fix the `Pattern:` in `tasks.md`. The `sdd-kit verify` step may show a warning without blocking (expected: GitNexus/Graphify are not on the runner).
+**How to read the output:** in the Actions tab (or PR check), the red step indicates which gate failed. `OpenSpec validate` lists `✗ change/<id>` — reproduce locally with `npx openspec validate <id> --strict` and fix the artifact. `Task patterns` lists `FAIL missing: <path>` — fix the `Pattern:` in `tasks.md`. `Release readiness` lists `FAIL: <file> <label> declares X but MANIFEST <field> is Y` for a version-sync mismatch, or `FAIL: sha256 mismatch: <path>` for a stale template checksum — reproduce locally with `bash scripts/verify-release-readiness.sh`. The `sdd-kit verify` step may show a warning without blocking (expected: GitNexus/Graphify are not on the runner).
 
 **Unblock merge:** fix the failed artifact and push — the check re-runs. **Do not** work around by editing the workflow in the same PR; if the gate is wrong, open a dedicated change.
 
@@ -2932,6 +2933,12 @@ bash scripts/verify-task-patterns.sh   # Pattern: paths exist; DOCS_SPECS withou
 ---
 
 ## Guide changelog
+
+### 1.11.0 (2026-08-05)
+
+- **Release-readiness gate (change `add-release-readiness-gate`, issue #348)** — version-sync, kit-integrity (template checksum parity), and hub scripts↔templates parity are extracted from `sdd-kit/verify.sh` into a standalone `scripts/verify-release-readiness.sh` with its own exit code. `.github/workflows/sdd-gates.yml` (hub + kit template) gains a new `Release readiness (blocking)` step that runs this script directly, with no `continue-on-error` — a version-sync mismatch or a stale template checksum now reliably fails the PR check instead of riding along inside the report-only `sdd-kit verify` step. `sdd-kit/verify.sh` calls the extracted script in place of the inlined logic; its own console output and exit-code contribution for these checks are unchanged. `verify-infra.sh`'s CLI-presence checks (GitNexus/Graphify) remain untouched and report-only — the new step never invokes them and cannot inherit their environment-dependent false positives. §2.12's step table documents the new step alongside the existing four.
+- `[MANUAL ACTION REQUIRED]` — merging this change does **not** by itself block anything: the new step only actually gates merges once an operator adds `Release readiness (blocking)` (part of the `SDD Gates` check) as a required status check under GitHub Settings → Branches, the same follow-up already pending for the original gate.
+- **`sdd-kit/`** — new tracked template `scripts/verify-release-readiness.sh`; `.github/workflows/sdd-gates.yml` template gains the new step; MANIFEST **1.10.0 → 1.11.0** (checksums regenerated for both).
 
 ### 1.10.0 (2026-08-05)
 
