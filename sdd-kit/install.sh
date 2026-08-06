@@ -108,10 +108,13 @@ inject_language_policy() {
 
   local tmp
   tmp="$(mktemp)"
-  python3 - "$project_md" "$tmp" "$CHAT_LANG" "$DOCS_LANG" "$CODE_LANG" <<'PY'
+  # $SDD_PYTHON unquoted by convention: "py -3" is two words (design D1)
+  $SDD_PYTHON - "$project_md" "$tmp" "$CHAT_LANG" "$DOCS_LANG" "$CODE_LANG" <<'PY'
 import re, sys
 path, out, chat, docs, code = sys.argv[1:6]
-text = open(path).read()
+# newline="" on read AND write: default text mode would normalise the whole
+# file's line endings just to edit one block (design D4)
+text = open(path, newline="").read()
 block = f"""## Language policy
 
 <!-- SDD_LANGUAGE_POLICY_START -->
@@ -140,7 +143,7 @@ elif re.search(r"^## Constraints", text, re.MULTILINE):
     text = re.sub(r"^## Constraints", block + "\n\n## Constraints", text, count=1, flags=re.MULTILINE)
 else:
     text = text.rstrip() + "\n\n" + block + "\n"
-open(out, "w").write(text)
+open(out, "w", newline="").write(text)
 PY
   mv "$tmp" "$project_md"
   echo "  UPDATE openspec/project.md Language policy"
@@ -219,19 +222,53 @@ if ! $SKIP_PREFLIGHT; then
     exit 1
   fi
   echo "==> Phase 0 — repo preflight (preflight-sdd.sh --repo)..."
-  bash "$PREFLIGHT_SCRIPT" --repo --repo-root "$REPO_ROOT" --profile "$PROFILE" || {
+  # Capture stdout: preflight --repo emits exactly one machine-readable line,
+  # SDD_PYTHON=<candidate> (human output is on stderr). A child's `export`
+  # cannot reach this parent — the stdout line is the transport (design D3).
+  SDD_PYTHON_LINE="$(bash "$PREFLIGHT_SCRIPT" --repo --repo-root "$REPO_ROOT" --profile "$PROFILE")" || {
     echo "ERROR: repo preflight FAILED — aborting before template copy." >&2
     exit 1
   }
+  SDD_PYTHON="${SDD_PYTHON_LINE#SDD_PYTHON=}"
+  if [[ -z "$SDD_PYTHON" || "$SDD_PYTHON" == "$SDD_PYTHON_LINE" && "$SDD_PYTHON_LINE" != SDD_PYTHON=* ]]; then
+    echo "ERROR: preflight did not report a usable Python interpreter (SDD_PYTHON) — aborting before template copy." >&2
+    exit 1
+  fi
+  export SDD_PYTHON
 else
   echo "==> Phase 0 — repo preflight skipped (--skip-preflight)"
+  # Same resolution inline (SDD_PYTHON from the environment is trusted as-is).
+  if [[ -z "${SDD_PYTHON:-}" ]]; then
+    for _cand in "python3" "python" "py -3"; do
+      # deliberate word split ("py -3" is two words) — do not quote
+      if $_cand -c 'import sys; raise SystemExit(0 if sys.version_info >= (3, 8) else 1)' 2>/dev/null; then
+        SDD_PYTHON="$_cand"
+        break
+      fi
+    done
+  fi
+  if [[ -z "${SDD_PYTHON:-}" ]]; then
+    echo "ERROR: no usable Python interpreter (tried: python3, python, py -3; kit minimum 3.8)." >&2
+    exit 1
+  fi
+  export SDD_PYTHON
 fi
 
 apply_file() {
   local src="$1" dest="$2" merge="$3" sha256="${4:-}"
   local src_path="$KIT_DIR/$src"
   local dest_path
-  dest_path="$(realpath --no-symlinks "$REPO_ROOT/$dest")"
+  # -m: canonicalise a destination whose parent does not exist YET — a
+  # greenfield repo lacks the directories this install creates (e.g. .github/),
+  # and mkdir -p deliberately stays AFTER the guard (design D6). `..` is still
+  # resolved, so the prefix check below keeps catching escapes.
+  if $REALPATH_M; then
+    dest_path="$(realpath -m --no-symlinks "$REPO_ROOT/$dest")"
+  else
+    # macOS realpath has no -m; lexical fallback via the resolved interpreter
+    # ($SDD_PYTHON unquoted by convention: "py -3" is two words)
+    dest_path="$($SDD_PYTHON -c 'import posixpath,sys; print(posixpath.normpath(sys.argv[1]))' "$REPO_ROOT/$dest")"
+  fi
   [[ "$dest_path" == "$REPO_ROOT"/* ]] || {
     echo "ERROR: path traversal blocked: $dest" >&2
     exit 1
@@ -344,10 +381,23 @@ echo ""
 resolve_language_policy
 echo ""
 
+# Probe GNU `realpath -m` once (macOS fallback lives in apply_file, design D6)
+if realpath -m --no-symlinks / >/dev/null 2>&1; then
+  REALPATH_M=true
+else
+  REALPATH_M=false
+fi
+
+# Counter, not exit status: process substitution does not propagate its exit
+# code, so an interpreter failure would otherwise be a silent zero-file
+# "success" (design D5). tr strips the CR Python emits on Windows stdout,
+# which read -r would otherwise leave glued to the last field (design D4).
+APPLIED_COUNT=0
 while IFS=$'\t' read -r src dest merge sha256; do
   [[ -n "$src" ]] || continue
   apply_file "$src" "$dest" "$merge" "$sha256"
-done < <(python3 - "$MANIFEST" "$PROFILE" << 'PY'
+  APPLIED_COUNT=$((APPLIED_COUNT + 1))
+done < <($SDD_PYTHON - "$MANIFEST" "$PROFILE" << 'PY' | tr -d '\r'
 import sys, re
 manifest_path, profile = sys.argv[1:3]
 text = open(manifest_path).read()
@@ -377,6 +427,11 @@ for e in entries:
     print(f"{e['source']}\t{e['path']}\t{e.get('merge','COPY')}\t{e.get('sha256','')}")
 PY
 )
+
+if [[ "$APPLIED_COUNT" -eq 0 ]]; then
+  echo "ERROR: no templates applied — the MANIFEST parse produced an empty list (unusable interpreter or malformed MANIFEST). Nothing was installed." >&2
+  exit 1
+fi
 
 inject_language_policy
 

@@ -9,6 +9,15 @@ REPO_ROOT="${2:-.}"
 STAGING_DIR="${1:-}"
 cd "$REPO_ROOT"
 
+# SDD_PYTHON: env value trusted as-is; else resolve by capability (kit floor 3.8).
+# Unquoted expansions are deliberate — "py -3" is two words (fix-install-python-boundary D1/D3).
+if [[ -z "${SDD_PYTHON:-}" ]]; then
+  for _cand in "python3" "python" "py -3"; do
+    if $_cand -c 'import sys; raise SystemExit(0 if sys.version_info >= (3, 8) else 1)' 2>/dev/null; then SDD_PYTHON="$_cand"; break; fi
+  done
+fi
+[[ -n "${SDD_PYTHON:-}" ]] || { echo "ERROR: no usable Python interpreter (tried: python3, python, py -3; kit minimum 3.8)." >&2; exit 1; }
+
 GUIDE_VERSION=""
 if [[ -f openspec/project.md ]]; then
   GUIDE_VERSION="$(grep -oE 'byebyevibe-guide\.md[^v]*v[0-9]+\.[0-9]+\.[0-9]+' openspec/project.md 2>/dev/null | grep -oE 'v[0-9]+\.[0-9]+\.[0-9]+' | head -1 || true)"
@@ -26,7 +35,7 @@ MANIFEST="sdd-kit/MANIFEST.yaml"
 if [[ -f "$MANIFEST" ]]; then
   while IFS=$'\t' read -r dest src; do
     [[ -n "$dest" ]] && CURATED_DESTS+=("$dest") && CURATED_SOURCES+=("${src:-$dest}")
-  done < <(python3 - <<'PY' "$MANIFEST"
+  done < <($SDD_PYTHON - <<'PY' "$MANIFEST" | tr -d '\r'
 import sys, re
 text = open(sys.argv[1]).read()
 entries, block = [], None

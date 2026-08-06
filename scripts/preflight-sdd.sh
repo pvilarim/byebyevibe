@@ -30,7 +30,7 @@ Usage: preflight-sdd.sh [--host|--repo|--all] [--json] [--profile APP|DOCS_SPECS
 Phase-0 prerequisite checks before C1 (bootstrap / install).
 
 Modes (default: --all when none given):
-  --host        Host tools: git, node≥20.19, npm, python≥3.10; WARN for uv, build tools, IDE, MCP
+  --host        Host tools: git, node≥20.19, npm, Python≥3.8 (kit floor; Graphify 3.10 is WARN); WARN for uv, build tools, IDE, MCP
   --repo        Repo gate: sdd-kit/ readable, repo writable; WARN for ambiguous HYBRID hints
   --all         Host + repo (default)
 
@@ -93,6 +93,35 @@ cd "$REPO_ROOT"
 log_human() {
   # Always human-facing lines to stderr so --json keeps stdout clean
   echo "$@" >&2
+}
+
+# --- Python resolution (fix-install-python-boundary, design D1/D3) ---
+# Resolve a usable interpreter by capability, not by the name `python3`
+# (the CPython Windows installer never creates python3.exe). Candidates are
+# NAMES, never paths; "py -3" is two words, so every expansion of
+# $SDD_PYTHON is deliberately unquoted — do not "fix" the quoting.
+# SDD_PYTHON from the environment is trusted as-is (no re-probing).
+SDD_PYTHON="${SDD_PYTHON:-}"
+SDD_PYTHON_VERSION=""
+resolve_python() {
+  if [[ -n "$SDD_PYTHON" ]]; then
+    SDD_PYTHON_VERSION="${SDD_PYTHON_VERSION:-(env override)}"
+    return 0
+  fi
+  local c v
+  for c in "python3" "python" "py -3"; do
+    # Probe by execution (command -v cannot probe a two-word candidate and
+    # succeeds for the Windows Store alias stub, which is not a Python).
+    v="$($c -c 'import sys; print("%d.%d.%d" % sys.version_info[:3])' 2>/dev/null)" || true
+    [[ -n "$v" ]] || continue
+    # Kit floor 3.8 — the kit's own scripts; Graphify's 3.10 is checked separately.
+    if $c -c 'import sys; raise SystemExit(0 if sys.version_info >= (3, 8) else 1)' 2>/dev/null; then
+      SDD_PYTHON="$c"
+      SDD_PYTHON_VERSION="$v"
+      return 0
+    fi
+  done
+  return 1
 }
 
 record_check() {
@@ -185,17 +214,14 @@ check_host() {
     record_check "npm" "FAIL" "npm not found on PATH"
   fi
 
-  # Python ≥ 3.10
-  if command -v python3 &>/dev/null; then
-    local py_ver
-    py_ver="$(python3 -c 'import sys; print("%d.%d.%d" % sys.version_info[:3])' 2>/dev/null || echo "0.0.0")"
-    if version_ge "$py_ver" "3.10.0"; then
-      record_check "python3" "OK" "python3 ${py_ver}"
-    else
-      record_check "python3" "FAIL" "python3 ${py_ver} < minimum 3.10"
+  # Python — kit floor 3.8 (resolved by capability; Graphify's 3.10 is advisory)
+  if resolve_python; then
+    record_check "python" "OK" "${SDD_PYTHON} ${SDD_PYTHON_VERSION} (resolved)"
+    if [[ "$SDD_PYTHON_VERSION" != "(env override)" ]] && ! version_ge "$SDD_PYTHON_VERSION" "3.10.0"; then
+      record_check "python-graphify" "WARN" "Python ${SDD_PYTHON_VERSION} meets the kit floor (3.8) but Graphify requires 3.10 — defer Graphify (guide §2.9.4) or upgrade Python"
     fi
   else
-    record_check "python3" "FAIL" "python3 not found on PATH (required for Graphify)"
+    record_check "python" "FAIL" "no usable Python interpreter (tried: python3, python, py -3; kit minimum 3.8)"
   fi
 
   # uv — WARN (bootstrap may install later)
@@ -281,8 +307,9 @@ check_host() {
   # MCP names advisory (names only from ~/.cursor/mcp.json)
   MCP_NAMES=""
   local mcp_json="${HOME}/.cursor/mcp.json"
-  if [[ -r "$mcp_json" ]] && command -v python3 &>/dev/null; then
-    MCP_NAMES="$(python3 - <<'PY' "$mcp_json"
+  if [[ -r "$mcp_json" ]] && resolve_python; then
+    # unquoted by convention: "py -3" is two words
+    MCP_NAMES="$($SDD_PYTHON - <<'PY' "$mcp_json"
 import json, sys
 try:
     with open(sys.argv[1]) as f:
@@ -338,6 +365,14 @@ check_repo() {
   # HYBRID is retired as a deprecated alias of APP — package.json + openspec/
   # coexistence is the normal post-install state of every APP repo (no hint).
   record_check "profile-hint" "OK" "profile hint: ${EFFECTIVE_PROFILE}"
+
+  # Runtime the install path executes (scoped: NOT the host scan — install.sh
+  # runs preflight in repo mode only and copies templates via this interpreter).
+  if resolve_python; then
+    record_check "python" "OK" "${SDD_PYTHON} ${SDD_PYTHON_VERSION} (resolved — install runtime)"
+  else
+    record_check "python" "FAIL" "no usable Python interpreter (tried: python3, python, py -3; kit minimum 3.8) — install.sh cannot run"
+  fi
 }
 
 # --- infra.md Preflight stamp ---
@@ -361,7 +396,12 @@ stamp_infra() {
   fi
 
   if ! grep -q '## Preflight (last run)' "$infra"; then
-    python3 - "$infra" <<'PY'
+    if [[ -z "$SDD_PYTHON" ]]; then
+      log_human "WARN: no usable Python — skipping Preflight section creation in openspec/infra.md"
+      return 0
+    fi
+    # unquoted by convention: "py -3" is two words
+    $SDD_PYTHON - "$infra" <<'PY'
 import sys
 from pathlib import Path
 path = Path(sys.argv[1])
@@ -425,7 +465,12 @@ PY
 }
 
 emit_json() {
-  python3 - <<'PY' "${CHECK_RECORDS[@]}"
+  if [[ -z "$SDD_PYTHON" ]]; then
+    log_human "WARN: no usable Python — cannot emit JSON summary"
+    return 0
+  fi
+  # unquoted by convention: "py -3" is two words
+  $SDD_PYTHON - <<'PY' "${CHECK_RECORDS[@]}"
 import json, sys
 records = []
 overall = "ok"
@@ -470,6 +515,11 @@ log_human "Summary: FAIL=$FAIL_COUNT WARN=$WARN_COUNT SKIP=$SKIP_COUNT"
 if [[ "$FAIL_COUNT" -gt 0 ]]; then
   log_human "Preflight FAILED — fix FAIL items before C1 (or use --skip-preflight on bootstrap/install)"
   exit 1
+fi
+# Machine channel (design D3): a --repo caller (install.sh) captures stdout to
+# learn the resolved interpreter — exactly one line, human output is on stderr.
+if [[ "$MODE" == "repo" ]] && ! $JSON && [[ -n "$SDD_PYTHON" ]]; then
+  echo "SDD_PYTHON=${SDD_PYTHON}"
 fi
 log_human "Preflight passed (WARN/SKIP allowed)"
 exit 0

@@ -2,7 +2,7 @@
 
 **GitNexus + Graphify + OpenSpec, integrated in Cursor and VS Code + Claude Code**
 
-> **Canonical install guide (v1.13.0)** — use in any Git repository, manually or via an AI agent. Payloads in `sdd-kit/`; procedure in this document.
+> **Canonical install guide (v1.14.0)** — use in any Git repository, manually or via an AI agent. Payloads in `sdd-kit/`; procedure in this document.
 
 ## How to use this document
 
@@ -19,7 +19,7 @@
 | **SDD metrics (G4)** | `bash scripts/sdd-metrics.sh` — §2.17 (mode C; no DevLake) |
 
 - **`AGENTS.md` pattern:** aligned with [agents.md](https://agents.md/) + TLC workshop (Context Engineering, on-demand loading).
-- **Guide version:** 1.13.0 — see [Guide changelog](#guide-changelog).
+- **Guide version:** 1.14.0 — see [Guide changelog](#guide-changelog).
 - **Versioned payload:** `sdd-kit/MANIFEST.yaml` — see §1.6 and `sdd-kit/README.md`.
 - **Does not replace** `openspec/project.md` (project constitution) or specs in `openspec/specs/`.
 
@@ -58,9 +58,9 @@ Second friction: the ecosystem moves fast. Versions in this document are from Ma
 
 | Component | Minimum version | Notes |
 |---|---|---|
-| OS | macOS 13+, Ubuntu 22.04+, Windows 11 + WSL2 | Native Windows works but WSL2 avoids 80% of issues |
+| OS | macOS 13+, Ubuntu 22.04+, Windows 11 (native Git Bash or WSL2) | Native Windows is supported from kit 1.14.0: the installer resolves `python3`/`python`/`py -3` by capability. Before 1.14.0 no release could complete a C1 greenfield install on native Windows |
 | Node.js | 20.19.0+ | Required for OpenSpec and GitNexus |
-| Python | 3.10+ | Required for Graphify |
+| Python | 3.8+ for the installer itself (`install.sh` and kit scripts — the kit floor); 3.10+ only for Graphify | Two distinct floors: the kit's own scripts need only 3.8, resolved as `python3` → `python` → `py -3`; Graphify's 3.10 is a WARN, not a blocker, since §2.9.4 permits deferring Graphify |
 | Git | 2.40+ | Required for auto-rebuild hooks |
 | Build tools | `python3 make g++` (Linux), Xcode CLT (macOS) | GitNexus needs these for tree-sitter; you can skip with `GITNEXUS_SKIP_OPTIONAL_GRAMMARS=1` |
 
@@ -3088,6 +3088,20 @@ bash scripts/verify-task-patterns.sh   # Pattern: paths exist; DOCS_SPECS withou
 ---
 
 ## Guide changelog
+
+### 1.14.0 (2026-08-06)
+
+**Change `fix-install-python-boundary`** — repairs the Python↔shell boundary that made the installer unusable outside the hub. Stated plainly: **no released version could complete a C1 greenfield install on native Windows**, and the `realpath` defect affected **every platform** in a repository without `.github/` — it survived undetected because the hub and CI already carry that directory. On Windows, checksum verification (`gen-manifest-checksums.sh --check`, and through it `verify-release-readiness.sh` kit-integrity) could not pass at all: Python's native `\` path separator makes GNU `sha256sum` escape its output line, so every digest read back as `\<hash>`.
+
+- **Interpreter resolved by capability, not name** — `python3` → `python` → `py -3`, accepting the first whose `sys.version_info` meets the kit floor (**3.8**, now distinct from Graphify's 3.10, which becomes a WARN per §2.9.4). The CPython Windows installer never creates `python3.exe`; the old check reported `python3 0.0.0 < minimum 3.10` on hosts with a working Python. Preflight `--repo` emits one machine-readable `SDD_PYTHON=<candidate>` line on stdout; `install.sh` captures and exports it; standalone kit scripts honour `SDD_PYTHON` from the environment or resolve inline.
+- **Boundary normalisation, per site class** — `read`-loop feeds get `| tr -d '\r'` (Python translates `\n` → `\r\n` on Windows stdout, leaving an invisible `\r` on the last parsed field, which made the template integrity check fail printing two identical-looking hashes). File-rewriting blocks instead use `newline=""` on read **and** write, so stamping four lines no longer rewrites a whole file's line endings.
+- **Traversal guard fixed for greenfield** — `realpath -m --no-symlinks` (with a `posixpath.normpath` fallback where `-m` is unsupported) canonicalises destinations whose parent does not exist yet; `..` is still resolved and escapes are still blocked. Previously `.github/workflows/sdd-gates.yml` aborted every genuine greenfield install on every platform.
+- **BEHAVIOUR CHANGE: silent no-op installs now abort.** An unusable interpreter used to yield a zero-file install that printed `Done. Next steps:` and exited 0 (process substitution hides the feed's exit status from `set -euo pipefail`). The template loop now counts applied entries and exits non-zero at zero.
+- **Checksum reading hardened and non-vacuous** — MANIFEST-integrity tooling joins paths with `/` explicitly, rejects any digest that is not bare 64-hex, and fails when entries carrying `sha256:` fields produced zero comparisons. The release-readiness gate once **passed vacuously** on a host whose interpreter was broken — its subprocess produced nothing and the gate reported success; v1.13.0 was cut on that green and was protected only by the server-side re-run of every guard (`sdd-release-flow`). A failed helper is now FAIL, never a pass; legitimate subject-absent skips (consumer repos, sha256-less entries) are preserved.
+- **CI greenfield smoke test** — `sdd-gates` now installs into an empty repository under `runner.temp` and asserts the file count and the exact path that used to abort. Every prior gate ran against the hub, which is why this class shipped.
+- **v1.13.0 is not withdrawn** — these defects predate it; it raised exposure by making Release download the default acquisition path, which is why this release follows it within a day.
+
+No template payload semantics changed for consumers beyond the scripts named above; a C2 upgrade delivers the fixed scripts through the normal flow.
 
 ### 1.13.0 (2026-08-06)
 

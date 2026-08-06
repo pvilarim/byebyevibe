@@ -41,8 +41,17 @@ else
   exit 1
 fi
 
+# SDD_PYTHON: env value trusted as-is; else resolve by capability (kit floor 3.8).
+# Unquoted expansions are deliberate — "py -3" is two words (fix-install-python-boundary D1/D3).
+if [[ -z "${SDD_PYTHON:-}" ]]; then
+  for _cand in "python3" "python" "py -3"; do
+    if $_cand -c 'import sys; raise SystemExit(0 if sys.version_info >= (3, 8) else 1)' 2>/dev/null; then SDD_PYTHON="$_cand"; break; fi
+  done
+fi
+[[ -n "${SDD_PYTHON:-}" ]] || { echo "ERROR: no usable Python interpreter (tried: python3, python, py -3; kit minimum 3.8)." >&2; exit 1; }
+
 # Single Python invocation processes the entire MANIFEST (avoids heredoc-in-loop issues)
-python3 - "$MANIFEST" "$KIT_DIR" "$SHA256_CMD" "$CHECK_ONLY" << 'PY'
+$SDD_PYTHON - "$MANIFEST" "$KIT_DIR" "$SHA256_CMD" "$CHECK_ONLY" << 'PY'
 import sys, re, subprocess, os
 
 manifest_path = sys.argv[1]
@@ -64,12 +73,21 @@ def compute_hash(filepath):
     result = subprocess.run(sha256_cmd + [filepath], capture_output=True, text=True)
     if result.returncode != 0:
         return None
-    return result.stdout.split()[0]
+    token = result.stdout.split()[0] if result.stdout.split() else ""
+    # GNU sha256sum escapes the whole line (leading backslash) when the
+    # filename contains a backslash — never accept anything but bare hex,
+    # or the escape prefix silently corrupts every comparison.
+    if not re.fullmatch(r"[0-9a-f]{64}", token):
+        return None
+    return token
 
 new_text = text
 
+compared = 0
 for src in sources:
-    template_path = os.path.join(kit_dir, src)
+    # Join with "/" explicitly: a native-separator join puts a backslash in the
+    # path on Windows, and sha256sum then escapes its whole output line.
+    template_path = kit_dir.rstrip("/") + "/" + src
     if not os.path.isfile(template_path):
         print(f"MISSING: {src} (template file not found)", file=sys.stderr)
         missing += 1
@@ -89,6 +107,7 @@ for src in sources:
         )
         if m:
             existing = m.group(1)
+            compared += 1
             if existing != actual_hash:
                 print(f"FAIL: sha256 mismatch for {src}", file=sys.stderr)
                 print(f"  manifest: {existing}", file=sys.stderr)
@@ -114,7 +133,13 @@ if check_only:
     if errors > 0 or missing > 0:
         print(f"\nCHECK FAILED: {errors} mismatch(es), {missing} missing, {warnings} warning(s)", file=sys.stderr)
         sys.exit(1)
-    print(f"All checksums OK ({len(sources)} entries, {warnings} warning(s)).")
+    # Non-vacuity: sources carrying sha256 fields were selected, yet the loop
+    # compared 0 of them — the machinery failed; never record that as green.
+    # (A MANIFEST with no sha256 fields at all stays WARN-and-proceed above.)
+    if sources and warnings < len(sources) and compared == 0:
+        print(f"\nCHECK FAILED: compared 0 of {len(sources)} entries — checker machinery failed (nothing to verify is only legitimate when no sha256 fields exist)", file=sys.stderr)
+        sys.exit(1)
+    print(f"All checksums OK ({len(sources)} entries, {compared} compared, {warnings} warning(s)).")
     sys.exit(0)
 
 if not check_only:
