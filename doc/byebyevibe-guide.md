@@ -1110,6 +1110,7 @@ If your regeneration mismatches the published `.sha256`, compare your `git --ver
 | `FAIL: release notes` | no `### <version> (` section, or the section has no body | Add the changelog entry to `## Guide changelog` **before** cutting |
 | `FAIL: release readiness` | version-sync mismatch or stale template checksum | `bash scripts/verify-release-readiness.sh`; regenerate with `bash sdd-kit/gen-manifest-checksums.sh` |
 | `FAIL: tag exists` | the version was already cut | Bump to the next version — a published version is never re-cut |
+| `FAIL: push: could not push v<version>` | credential without permission to create tags, a `v*` tag ruleset that does not list you as a bypass actor, or a network failure | Fix the cause and rerun the same command. The local tag is removed automatically, so the retry is a clean rerun — and nothing was published, since the workflow only fires on a tag that reached the remote |
 | Workflow red at `Guard — tag version equals MANIFEST version` | hand-pushed tag whose number is not the MANIFEST's | Delete the tag (no Release exists yet) and cut with `cut-release.sh` |
 | Workflow red at `Guard — gh CLI present` | `gh` no longer preinstalled on `ubuntu-latest` | Fall back to the Releases REST API with `GITHUB_TOKEN` — still no third-party Action |
 | Published Release missing an asset | not reachable — publication is draft-first | A leftover *draft* is replaced by re-running the workflow |

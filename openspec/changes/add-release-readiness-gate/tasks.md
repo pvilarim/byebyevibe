@@ -44,5 +44,5 @@
 
 ## 6. Manual follow-up (outside apply)
 
-- [ ] 6.1 [MANUAL ACTION REQUIRED] After merge, add `Release readiness (blocking)` as a required status check under GitHub Settings → Branches for the default branch.
+- [x] 6.1 [MANUAL ACTION REQUIRED] After merge, add `Release readiness (blocking)` as a required status check under GitHub Settings → Branches for the default branch.
   - **Gate:** — (GitHub repository setting, not a repo file; verify by inspecting branch protection rules)

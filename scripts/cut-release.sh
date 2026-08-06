@@ -205,7 +205,20 @@ fi
 # changelog body, and an immutable tag message would drift from any later
 # changelog edit. Notes live in the Release body alone.
 git tag -a "$TAG" -m "$TAG"
-git push origin "$TAG"
+
+# A failed push must not leave the local tag behind: precondition 9 would then
+# refuse the retry with "local tag exists", pointing at the orphan rather than
+# at the real cause (observed on the 1.12.0 cut — a credential without tag-push
+# permission). Removing it restores the pre-cut state, so a retry is a clean
+# rerun once the cause is fixed. Nothing was published: the Release is created
+# by the workflow, which only fires on a tag that actually reached the remote.
+if ! git push origin "$TAG"; then
+  git tag -d "$TAG" >/dev/null 2>&1 || true
+  echo "" >&2
+  echo "FAIL: push: could not push $TAG to origin — the local tag was removed, so this cut can be retried unchanged once the cause is fixed." >&2
+  echo "  Usual causes: no permission to create tags with this credential; a v* tag ruleset that does not list you as a bypass actor; or a network failure." >&2
+  exit 1
+fi
 
 echo ""
 echo "Pushed tag: $TAG"
