@@ -2,7 +2,7 @@
 
 **GitNexus + Graphify + OpenSpec, integrated in Cursor and VS Code + Claude Code**
 
-> **Canonical install guide (v1.11.0)** — use in any Git repository, manually or via an AI agent. Payloads in `sdd-kit/`; procedure in this document.
+> **Canonical install guide (v1.12.0)** — use in any Git repository, manually or via an AI agent. Payloads in `sdd-kit/`; procedure in this document.
 
 ## How to use this document
 
@@ -19,7 +19,7 @@
 | **SDD metrics (G4)** | `bash scripts/sdd-metrics.sh` — §2.17 (mode C; no DevLake) |
 
 - **`AGENTS.md` pattern:** aligned with [agents.md](https://agents.md/) + TLC workshop (Context Engineering, on-demand loading).
-- **Guide version:** 1.11.0 — see [Guide changelog](#changelog-do-guia).
+- **Guide version:** 1.12.0 — see [Guide changelog](#guide-changelog).
 - **Versioned payload:** `sdd-kit/MANIFEST.yaml` — see §1.6 and `sdd-kit/README.md`.
 - **Does not replace** `openspec/project.md` (project constitution) or specs in `openspec/specs/`.
 
@@ -36,7 +36,7 @@ Second friction: the ecosystem moves fast. Versions in this document are from Ma
 ## Table of contents
 
 1. [Prerequisites](#1-prerequisites-question-6) — includes §1.6 (organization and scenarios C1–C3)
-2. [Installation step by step](#2-passo-a-passo-de-instalação-questão-1) — includes §2.0 (AI), §2.0b (first contact / vibe coder), §2.5 (AGENTS.md), §2.8 (verification), §2.9 (upgrade), §2.12 (CI gates), §2.13 (supply chain), §2.16 (Probity), §2.17 (SDD metrics)
+2. [Installation step by step](#2-passo-a-passo-de-instalação-questão-1) — includes §2.0 (AI), §2.0b (first contact / vibe coder), §2.5 (AGENTS.md), §2.8 (verification), §2.9 (upgrade), §2.12 (CI gates), §2.13 (supply chain), §2.16 (Probity), §2.17 (SDD metrics), §2.18 (release flow)
 3. [Task classification and pipelines](#3-classificação-de-tarefas-e-pipelines-questões-2-3-31)
 4. [Master table: tool × responsibility × I/O](#4-tabela-mestre-questão-3)
 5. [Documents and cross-references](#5-documentos-e-referências-cruzadas-questão-32) — includes §5.5 (integration evaluations)
@@ -48,7 +48,7 @@ Second friction: the ecosystem moves fast. Versions in this document are from Ma
 11. [Code protocols](#11-protocolos-de-código-questão-7)
 12. [Annexes: complete templates](#12-anexos-templates-completos)
 13. [Workshop alignment ↔ agents.md](#13-alinhamento-workshop--agentsmd)
-14. [Guide changelog](#changelog-do-guia)
+14. [Guide changelog](#guide-changelog)
 
 ---
 
@@ -202,6 +202,8 @@ Fallback (only if the remote rejects `--filter=blob:none`, e.g. `uploadpack.allo
 
 Nothing is written to the target repo until the final `cp` step, so it is safe to rerun from scratch if interrupted. After the copy, the existing documented command runs unmodified: `bash scripts/bootstrap-sdd.sh --profile <PROFILE>`.
 
+**Released versions — download the kit tarball instead.** For any version that has a GitHub Release (§2.18), `byebyevibe-kit-<version>.tar.gz` carries exactly this footprint under a single `byebyevibe-kit-<version>/` prefix; download it, verify it against the published `.sha256` sidecar (`sha256sum -c`), extract it, and copy `sdd-kit/` and the two `scripts/` files into the target repo root — the recipe above is then unnecessary. The recipe remains the path for installing from unreleased `master`, and for any version predating the first Release.
+
 ---
 
 ## 2. Installation step by step (question 1)
@@ -287,6 +289,7 @@ offer `HYBRID` as a dialog option — it is a deprecated alias of APP (kit 1.9.0
 Acquiring the SDD system files (skip if `sdd-kit/` already exists in this repo):
 - **Default — genuine greenfield target:** use the lightweight fetch recipe (guide §1.6 "Lightweight fetch recipe") — a partial clone + sparse-checkout that pulls only `sdd-kit/` + `scripts/bootstrap-sdd.sh` + `scripts/preflight-sdd.sh`, no full hub clone.
 - **Only if the operator explicitly wants the persistent multi-project hub→destination workflow:** clone the full hub once per machine and reuse it across projects (guide §1.6 "Hub → destination flow").
+- **Alternative, only if the operator asks for a specific released version:** download that version's `byebyevibe-kit-<version>.tar.gz` from the GitHub Release, verify it against the `.sha256` sidecar, and copy the extracted `sdd-kit/` + `scripts/bootstrap-sdd.sh` + `scripts/preflight-sdd.sh` into the repo root (guide §2.18). This is NOT the default — the lightweight fetch recipe above stays the default acquisition path.
 
 Narrative (dual S↔T — mandatory):
 - Before EACH install step, explain the S layer in simple language:
@@ -1016,6 +1019,104 @@ rm -f .sdd/metrics-last-run
 ```
 
 Local stamp in `.sdd/metrics-last-run` (gitignored); no hooks; no services. **Apache DevLake remains out of scope** — re-evaluate only if team/DORA justifies (see `doc/avaliacoes/2026-07-25-oss-coverage-gaps-tooling.md`).
+
+### 2.18 Release flow (cut-release) — operation
+
+Cutting a release of this hub (gap F4 — `add-github-release-flow`, issue #350). A release is **one annotated git tag**; pushing it fires `.github/workflows/release.yml`, which extracts the notes from this guide's `## Guide changelog`, builds the kit tarball, and publishes the GitHub Release. Nothing is hand-copied and nothing is hand-uploaded.
+
+**This hub only.** Consumer repositories install the kit; they do not release it. Neither script ships in `sdd-kit/templates/`, and the §12.2a/§12.2b command tables do not carry them.
+
+#### One tag axis, and the lockstep invariant
+
+A release is identified by exactly one tag, `v<MAJOR>.<MINOR>.<PATCH>`, whose version is `sdd-kit/MANIFEST.yaml` `version:`. There is no `kit-v*`/`guide-v*` split: the two MANIFEST fields have been identical in every recorded release and `## Guide changelog` carries one entry per release covering kit and guide together, so a second axis would produce two tags on the same commit with the same extracted body.
+
+The cost of one axis is that it cannot name two versions. `cut-release.sh` therefore **refuses to tag any commit where `version:` differs from `guide_version:`** — the divergence stops the cut with both fields and both values in the message, rather than silently under-describing the release. Splitting the axis later is its own OpenSpec change, and it must answer the question this one does not: how a single changelog list becomes two release bodies.
+
+#### Command
+
+```bash
+bash scripts/cut-release.sh <version> [--dry-run]
+```
+
+Always run `--dry-run` first. It evaluates **every** precondition, reports each outcome, and exits without creating or pushing anything — even when all of them pass. Without the flag, the first failed precondition aborts and leaves the repository untouched.
+
+#### Preconditions and their failure messages
+
+| # | Check | Message when it fails |
+|---|-------|------------------------|
+| 1 | Remote reachable — `git fetch origin master --tags` is the script's first action | `FAIL: remote fetch: cannot reach 'origin' — refusing to proceed on stale refs` |
+| 2 | Clean working tree | `FAIL: working tree: uncommitted or untracked changes present` |
+| 3 | On `master` | `FAIL: branch: HEAD is on '<branch>'; releases are cut from 'master' only` |
+| 4 | `HEAD` equals the freshly fetched `origin/master` exactly | `FAIL: remote sync: HEAD <sha> differs from origin/master <sha> (behind, ahead or diverged)` |
+| 5 | `version:` equals `guide_version:` | `FAIL: MANIFEST lockstep: version: "X" != guide_version: "Y" — …` |
+| 6 | Both equal the requested version | `FAIL: requested version: <v> does not match MANIFEST version: "X" / guide_version: "Y"` |
+| 7 | The changelog section resolves to non-empty text | `FAIL: release notes: scripts/release-notes.sh <v> failed or produced no output — …` |
+| 8 | `bash scripts/verify-release-readiness.sh` exits 0 | `FAIL: release readiness: … exited non-zero (its output is above)` |
+| 9 | Tag `v<version>` absent locally **and** on the remote | `FAIL: tag exists: … — a published version is never re-cut (design D10)` |
+
+Check 4 requires *equality*, not merely "not behind": tagging a commit the remote has never seen strands a remote tag that must be deleted by hand before a retry, because check 9 refuses to reuse an existing tag name.
+
+#### Server-side guards
+
+`cut-release.sh` is convenience, **not security** — any collaborator with write access can push a tag with plain `git tag && git push`. `.github/workflows/release.yml` therefore re-derives every fact from the tagged commit, in order, failing the run before any Release exists:
+
+| # | Guard | What it stops |
+|---|-------|----------------|
+| 1 | Tag name matches `^v[0-9]+\.[0-9]+\.[0-9]+$` | `v2-wip`, `v1.2`, `vendor-snapshot` — the trigger glob is `v*` |
+| 2 | `$GITHUB_SHA^{commit}` is an ancestor of `origin/master` | a tag on a side branch or an orphan commit |
+| 3 | The tag's version equals `sdd-kit/MANIFEST.yaml` `version:` **at the tagged commit** | a mislabeled hand-pushed tag — `v1.11.0` at the 1.12.0 tip passes readiness, ancestry and extraction, and dies here |
+| 4 | `bash scripts/verify-release-readiness.sh` at the tagged commit | a version-sync mismatch or a stale template checksum |
+| 5 | Notes extraction as its own step, asserted with `test -s notes.md` | an empty-bodied Release from a missing or misspelled changelog section |
+
+Guard 5 stands alone on purpose: bash does not propagate a process substitution's exit status, so feeding the extractor straight into `gh release create` would publish an empty body when extraction fails.
+
+Publication is **draft-first**: the Release is created as a draft, both assets are uploaded into it, and only then is it flipped published. Consumers never see a partial Release, and a re-run after an upload flake replaces the leftover draft instead of colliding with a published one.
+
+#### Yank policy — a bad release is superseded, never re-cut
+
+Published versions are **immutable**. Deleting and re-tagging a published version with different bytes would silently invalidate every `.sha256` already downloaded. Withdraw a bad release by publishing a **new patch version** whose changelog entry says what was wrong (optionally editing the bad Release's description to point forward). The bad version's tag and assets stay in place, so existing downloads remain verifiable.
+
+Delete-and-retag is permitted **only** for a version that never finished publishing — a draft, or a tag whose workflow failed before publication.
+
+#### The tarball, and regenerating it yourself
+
+Each Release carries `byebyevibe-kit-<version>.tar.gz` plus a `.sha256` sidecar. The archive holds exactly the §1.6 **minimal install-fetch footprint** — `sdd-kit/`, `scripts/bootstrap-sdd.sh`, `scripts/preflight-sdd.sh` — under a single `byebyevibe-kit-<version>/` prefix, which is what makes it a real replacement for the §1.6 lightweight fetch recipe.
+
+The workflow builds it with exactly this command; run it against the same tag to regenerate and compare:
+
+```bash
+git archive --format=tar --prefix="byebyevibe-kit-${VERSION}/" "v${VERSION}" \
+    sdd-kit scripts/bootstrap-sdd.sh scripts/preflight-sdd.sh \
+  | gzip -n > "byebyevibe-kit-${VERSION}.tar.gz"
+sha256sum -c "byebyevibe-kit-${VERSION}.tar.gz.sha256"
+```
+
+`git archive` zeroes uid/gid, takes every entry's mtime from the commit, and emits entries in tree order; `gzip -n` suppresses the filename and timestamp in the gzip header — the one place wall-clock time would otherwise leak in. Piping explicitly instead of using `--format=tar.gz` avoids depending on git's per-repo/per-user `tar.tgz.command`.
+
+**Caveat — byte-identity is parameterized by the builder's git version.** The published guarantee is: *byte-identical when regenerated from the same tag with the same git version*. Across git major versions the file contents are identical but the tar envelope may differ (pax header emission rules have changed historically). That is why every Release body ends with a footer naming the builder:
+
+```
+Built with git X.Y.Z on ubuntu-latest
+```
+
+If your regeneration mismatches the published `.sha256`, compare your `git --version` against that footer before suspecting tampering. The guarantee that holds unconditionally is content-level: every byte in the archive comes from the tagged tree.
+
+#### Troubleshooting
+
+| Symptom | Likely cause | Action |
+|---------|--------------|--------|
+| `FAIL: MANIFEST lockstep` | `version:` and `guide_version:` diverged | Align both fields in one commit; do not tag around it |
+| `FAIL: remote sync` | local `master` behind, ahead or diverged | `git pull --ff-only origin master`, or push your commits first |
+| `FAIL: release notes` | no `### <version> (` section, or the section has no body | Add the changelog entry to `## Guide changelog` **before** cutting |
+| `FAIL: release readiness` | version-sync mismatch or stale template checksum | `bash scripts/verify-release-readiness.sh`; regenerate with `bash sdd-kit/gen-manifest-checksums.sh` |
+| `FAIL: tag exists` | the version was already cut | Bump to the next version — a published version is never re-cut |
+| Workflow red at `Guard — tag version equals MANIFEST version` | hand-pushed tag whose number is not the MANIFEST's | Delete the tag (no Release exists yet) and cut with `cut-release.sh` |
+| Workflow red at `Guard — gh CLI present` | `gh` no longer preinstalled on `ubuntu-latest` | Fall back to the Releases REST API with `GITHUB_TOKEN` — still no third-party Action |
+| Published Release missing an asset | not reachable — publication is draft-first | A leftover *draft* is replaced by re-running the workflow |
+
+`[MANUAL ACTION REQUIRED]` **Tag ruleset** — the server-side guards bound what a stray tag can publish, but only a ruleset controls **who** may create one: GitHub → Settings → Rules → Rulesets → target tags `v*` → restrict creation to repository admins. The tag-side counterpart of §2.12's branch protection.
+
+**Rollback:** before the first cut, reverting the commit suffices — the workflow holds no state and nothing depends on a Release existing. After a cut, the yank policy above governs: "delete the tag and the Release" applies only to a version that never finished publishing.
 
 ### 2.9 Upgrading an existing installation
 
@@ -2933,6 +3034,17 @@ bash scripts/verify-task-patterns.sh   # Pattern: paths exist; DOCS_SPECS withou
 ---
 
 ## Guide changelog
+
+### 1.12.0 (2026-08-06)
+
+- **Release flow (change `add-github-release-flow`, issue #350)** — the hub gains a documented, guarded way to cut a release. `scripts/release-notes.sh <version> [source-file]` extracts one `### <version> (` section of this changelog verbatim, anchored on the version (not the date shape, so the legacy `1.0.0` entry still extracts) and prefix-safe (`1.1.0` can never be satisfied by `1.11.0`); it exits non-zero on an absent or empty-bodied section. `scripts/cut-release.sh <version> [--dry-run]` fetches `origin master --tags` first and then verifies nine preconditions — clean tree, on `master`, `HEAD` exactly equal to the fetched `origin/master`, `version:` = `guide_version:` = the requested version, non-empty extracted notes, `verify-release-readiness.sh` green, and the tag absent locally and remotely — aborting with a message naming the failed check and leaving the repository untouched. `--dry-run` reports every precondition and creates nothing.
+- **Single tag axis (design D1)** — a release is exactly one annotated tag `v<MAJOR>.<MINOR>.<PATCH>`, taken from `sdd-kit/MANIFEST.yaml` `version:`. The `kit-v*`/`guide-v*` two-axis convention the issue proposed is **not** adopted: the two MANIFEST fields have been identical in every recorded release (1.6.1 → 1.11.0) and this changelog is a single list, so a second axis would emit two tags on one commit carrying the same body. The cost — one tag cannot name two versions — is converted into a hard stop: the cut refuses any commit where `version:` and `guide_version:` differ, naming both fields and values. Splitting the axis is a future change that must also say how one changelog list becomes two release bodies.
+- **`.github/workflows/release.yml`** — the repository's first and only write-scoped workflow (`permissions: contents: write`), separate from `sdd-gates.yml` (which stays `contents: read` on every push and PR). It fires on `push` of a `v*` tag and re-derives every fact server-side, trusting nothing about the tag's provenance: tag shape `^v[0-9]+\.[0-9]+\.[0-9]+$`; ancestry of `$GITHUB_SHA^{commit}` against `origin/master`; tag version equal to `MANIFEST` `version:` **at the tagged commit** (the guard that kills a mislabeled hand-pushed tag); `verify-release-readiness.sh`; and notes extraction as its own blocking step asserted with `test -s notes.md` — never inlined into the publish command, where a process substitution's swallowed exit status would publish an empty body. No new third-party Action: the Release is created with the runner's preinstalled `gh`, whose presence is asserted and which receives the token explicitly via `GH_TOKEN` (it is not ambient).
+- **Release tarball** — each Release attaches `byebyevibe-kit-<version>.tar.gz` plus a `.sha256` sidecar, holding exactly §1.6's minimal install-fetch footprint (`sdd-kit/` + `scripts/bootstrap-sdd.sh` + `scripts/preflight-sdd.sh`) under one prefix, built with `git archive … | gzip -n` from the tagged commit. §1.6 and the §2.0 install prompt now name it as an alternative for released versions; the sparse-checkout recipe stays the **default** acquisition path and the only route for unreleased `master`. Byte-identity is claimed only for the same tag under the same git version — the Release body records `Built with git X.Y.Z on ubuntu-latest` so a mismatched regeneration can be told apart from tampering; content identity holds unconditionally.
+- **Publication and yank policy (design D10)** — publication is draft-first (draft → upload both assets → `--draft=false`), so consumers never see a partial Release and a re-run after an upload flake replaces the leftover draft instead of colliding with a published one. Published versions are **immutable**: a bad release is withdrawn by publishing a new patch version that says what was wrong, never by deleting and re-cutting the same number, which would silently invalidate every `.sha256` already downloaded.
+- **§2.18 (new)** — full operation: the single-axis decision and lockstep invariant, the command, the precondition table with each named failure message, the five server-side guards, the yank policy, the verbatim regeneration command with its git-version caveat, a troubleshooting table, and a `[MANUAL ACTION REQUIRED]` for the `v*` tag ruleset (the tag-side counterpart of §2.12's branch protection). Hub `AGENTS.md` gains the `cut-release.sh` command row; the §12.2a/§12.2b consumer command templates deliberately do **not** — consumers install the kit, they do not release it. The guide header's dead `#changelog-do-guia` anchor is fixed to `#guide-changelog`.
+- **`sdd-kit/`** — MANIFEST **1.11.0 → 1.12.0** (`version` and `guide_version`, lockstep per D9). Both release scripts are hub-only and ship in neither `sdd-kit/templates/` nor the MANIFEST; no template content changed, so checksums are unchanged and a C2 upgrade delivers no file diff — the same shape as the 1.10.0 release.
+- **First release is 1.12.0.** Tags for 1.0.0 – 1.11.0 are deliberately not backfilled: those commits were never gated by `verify-release-readiness.sh`, so tagging them would assert a guarantee that was not in force.
 
 ### 1.11.0 (2026-08-05)
 

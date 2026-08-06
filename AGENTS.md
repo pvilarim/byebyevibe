@@ -26,6 +26,7 @@ See `./openspec/project.md` (stack, conventions, constraints). **Do not duplicat
 | `bash scripts/verify-i18n-wave.sh` | Per-wave i18n gates / global DoD (`doc/i18n/`) |
 | `bash sdd-kit/install-probity-module.sh --detect` | Probity G2 — detect test runner / applicability |
 | `npx --yes @fission-ai/openspec@1.3.1 validate --all --strict` | Local CI gate (same command as workflow `sdd-gates`) |
+| `bash scripts/cut-release.sh <version>` | Cut a hub release — guarded tag `v<version>` (`--dry-run` first) — §2.18 |
 
 Note: there is no `npm run dev` at the root — specs and documentation repo (DOCS_SPECS profile).
 
