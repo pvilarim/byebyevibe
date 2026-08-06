@@ -48,6 +48,29 @@ These two obligations MUST be satisfied by different means. Deleting carriage re
 - **WHEN** a kit script rewrites a file that legitimately contains carriage returns in its content
 - **THEN** those carriage returns survive the rewrite
 
+### Requirement: Checksum verification reads what the hashing tool wrote
+
+Where a kit script builds a filesystem path and hands it to an external hashing tool, the path MUST be constructed so the tool echoes it back unmodified. A path assembled with the host's native separator is not interchangeable with one a POSIX tool will print verbatim: GNU checksum tools escape any output line whose filename contains a backslash by prefixing the entire line, which silently corrupts the field a caller reads.
+
+A caller MUST NOT assume the first whitespace-delimited token of a checksum tool's output is the digest. It MUST either parse the escaped form or construct paths that cannot trigger escaping, and MUST reject a digest that is not a bare hexadecimal string of the expected length rather than comparing it as-is.
+
+A verification pass that completed without comparing any entry MUST fail. Reporting success for a check that examined nothing is worse than reporting failure, because it converts an unverified state into a recorded green.
+
+#### Scenario: Digest is read correctly on a host with a native backslash separator
+
+- **WHEN** the checksum checker runs on a host whose path separator is a backslash, against templates whose recorded digests are correct
+- **THEN** every entry verifies, and no entry is reported as mismatched
+
+#### Scenario: An escaped checksum line is not mistaken for a digest
+
+- **WHEN** the hashing tool escapes its output line because the filename it was given contains a backslash
+- **THEN** the caller does not compare the escape prefix as part of the digest, and does not report a mismatch for a file whose bytes match
+
+#### Scenario: A checker that compared nothing fails
+
+- **WHEN** the checksum checker completes having compared zero entries
+- **THEN** it exits non-zero, rather than reporting that all checksums are correct
+
 ### Requirement: An empty template list aborts the install
 
 `sdd-kit/install.sh` MUST verify that the profile-filtered template list it consumed was non-empty, and MUST exit non-zero when it was not. It MUST NOT report completion, and MUST NOT print its next-steps guidance, after applying zero files.
