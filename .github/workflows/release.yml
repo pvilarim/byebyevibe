@@ -116,6 +116,27 @@ jobs:
           sha256sum "byebyevibe-kit-${VERSION}.tar.gz" > "byebyevibe-kit-${VERSION}.tar.gz.sha256"
           cat "byebyevibe-kit-${VERSION}.tar.gz.sha256"
 
+      # D1 — the stable-named pair. `releases/latest/download/<asset>` needs the
+      # asset *name*, so a version-stamped filename is unusable by a downloader
+      # that does not yet know the version. The copy is made from the file built
+      # above with `cp`, never a second `git archive`: a rebuild is a second
+      # chance to differ. The sidecar is computed against the stable filename so
+      # `sha256sum -c` succeeds on a file downloaded under that name. No
+      # `-latest` suffix — the same asset is also reachable pinned per tag,
+      # where that claim would be false.
+      - name: Build stable-named kit tarball
+        run: |
+          set -euo pipefail
+          cp "byebyevibe-kit-${VERSION}.tar.gz" byebyevibe-kit.tar.gz
+          sha256sum byebyevibe-kit.tar.gz > byebyevibe-kit.tar.gz.sha256
+          # The one place the spec's "MUST be byte-identical" claim is held
+          # mechanically rather than asserted in prose.
+          if ! cmp -s "byebyevibe-kit-${VERSION}.tar.gz" byebyevibe-kit.tar.gz; then
+            echo "FAIL: stable-named archive differs from byebyevibe-kit-${VERSION}.tar.gz" >&2
+            exit 1
+          fi
+          cat byebyevibe-kit.tar.gz.sha256
+
       # D11 — D5's byte-identity guarantee is parameterized by the builder's git
       # version, which the runner image changes over time. Recording it lets a
       # downloader whose regeneration mismatches distinguish tar-envelope drift
@@ -138,6 +159,11 @@ jobs:
       # A leftover *draft* from a failed run is deleted and replaced; a leftover
       # *published* Release is not touched — published versions are immutable
       # and are superseded by a new patch version, never re-cut.
+      #
+      # All four assets — the version-stamped pair and the stable-named
+      # byebyevibe-kit.tar.gz pair — attach in this single create call, so the
+      # draft is complete before it is flipped published. A second upload step
+      # would reopen the partial-release window this draft-first shape closed.
       - name: Publish Release (draft-first)
         env:
           GH_TOKEN: ${{ github.token }}
@@ -154,6 +180,8 @@ jobs:
             --title "$TAG" \
             --notes-file notes.md \
             "byebyevibe-kit-${VERSION}.tar.gz" \
-            "byebyevibe-kit-${VERSION}.tar.gz.sha256"
+            "byebyevibe-kit-${VERSION}.tar.gz.sha256" \
+            byebyevibe-kit.tar.gz \
+            byebyevibe-kit.tar.gz.sha256
           gh release edit "$TAG" --draft=false
           echo "Published Release $TAG"
