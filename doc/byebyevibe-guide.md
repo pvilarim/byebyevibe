@@ -2,7 +2,7 @@
 
 **GitNexus + Graphify + OpenSpec, integrated in Cursor and VS Code + Claude Code**
 
-> **Canonical install guide (v1.12.0)** — use in any Git repository, manually or via an AI agent. Payloads in `sdd-kit/`; procedure in this document.
+> **Canonical install guide (v1.13.0)** — use in any Git repository, manually or via an AI agent. Payloads in `sdd-kit/`; procedure in this document.
 
 ## How to use this document
 
@@ -19,7 +19,7 @@
 | **SDD metrics (G4)** | `bash scripts/sdd-metrics.sh` — §2.17 (mode C; no DevLake) |
 
 - **`AGENTS.md` pattern:** aligned with [agents.md](https://agents.md/) + TLC workshop (Context Engineering, on-demand loading).
-- **Guide version:** 1.12.0 — see [Guide changelog](#guide-changelog).
+- **Guide version:** 1.13.0 — see [Guide changelog](#guide-changelog).
 - **Versioned payload:** `sdd-kit/MANIFEST.yaml` — see §1.6 and `sdd-kit/README.md`.
 - **Does not replace** `openspec/project.md` (project constitution) or specs in `openspec/specs/`.
 
@@ -181,9 +181,45 @@ For a genuine greenfield install (C1 — no `sdd-kit/` yet in the target repo), 
 
 No other repository path — including hub-only `doc/`, hub-only `openspec/` (this hub's own specs/changes history), or root `.cursor/`/`.claude/` (this hub's own IDE config) — is read by `install.sh` or by the bootstrap/preflight scripts during C1.
 
-#### Lightweight fetch recipe (no full clone, C1 greenfield only)
+#### Release download (default, C1 greenfield)
 
 > Applies **only** when `sdd-kit/` is not already present in the target repository (C1). Do **not** use this for C2 (upgrade — use `sdd-kit/upgrade.sh --dry-run`/`--apply`) or C3 (spec propagation — must not run `install.sh`/`upgrade.sh`).
+
+This is the default way to acquire the kit. The latest published GitHub Release (§2.18) carries exactly the minimal footprint above, under a single `byebyevibe-kit-<version>/` prefix. **You do not need to know the current version:** GitHub's `releases/latest/download/` path resolves the tag server-side in one redirect, unauthenticated — which is why every Release also publishes the archive under a version-less filename.
+
+Run from the target repository root. On Windows, run this in **Git Bash**: `curl`, `sha256sum` and `tar` all ship with Git for Windows, whereas PowerShell's `Get-FileHash` prints a different format and offers no mode that verifies a file against a `.sha256` sidecar.
+
+```bash
+TMPDIR=$(mktemp -d)
+# -f is mandatory. Without it, curl writes GitHub's 404 HTML page into the
+# output file and still exits 0 — the missing asset then resurfaces much later
+# as a bogus "not in gzip format" error pointing at nothing useful. A request
+# for an absent asset redirects exactly like a present one and only 404s at the
+# object host, so this is the actual failure mode, not a hypothetical one.
+curl -fsSL -o "$TMPDIR/byebyevibe-kit.tar.gz" \
+  https://github.com/pvilarim/byebyevibe/releases/latest/download/byebyevibe-kit.tar.gz
+curl -fsSL -o "$TMPDIR/byebyevibe-kit.tar.gz.sha256" \
+  https://github.com/pvilarim/byebyevibe/releases/latest/download/byebyevibe-kit.tar.gz.sha256
+( cd "$TMPDIR" && sha256sum -c byebyevibe-kit.tar.gz.sha256 )   # verify BEFORE extracting
+tar xzf "$TMPDIR/byebyevibe-kit.tar.gz" -C "$TMPDIR"
+cp -R "$TMPDIR"/byebyevibe-kit-*/sdd-kit ./sdd-kit
+mkdir -p ./scripts
+cp "$TMPDIR"/byebyevibe-kit-*/scripts/bootstrap-sdd.sh \
+   "$TMPDIR"/byebyevibe-kit-*/scripts/preflight-sdd.sh ./scripts/
+rm -rf "$TMPDIR"
+```
+
+Verification precedes extraction deliberately: a checksum checked after the archive is already unpacked verifies nothing worth having. If the verification step fails, stop — do not extract.
+
+Nothing is written to the target repo until the `cp` steps, so it is safe to rerun from scratch if interrupted. After the copy, the existing documented command runs unmodified: `bash scripts/bootstrap-sdd.sh --profile <PROFILE>`.
+
+**Pinning a version.** To install a specific release rather than the latest, swap the `latest/download` path segment for `download/v<version>` and use the version-stamped asset names `byebyevibe-kit-<version>.tar.gz` and its sidecar. Those are the same bytes (§2.18); the version-less names exist only so the URL above can be written without knowing the version.
+
+#### Lightweight fetch recipe (unreleased `master`, no full clone, C1 greenfield only)
+
+> Applies **only** when `sdd-kit/` is not already present in the target repository (C1). Do **not** use this for C2 (upgrade — use `sdd-kit/upgrade.sh --dry-run`/`--apply`) or C3 (spec propagation — must not run `install.sh`/`upgrade.sh`).
+
+**This is not the default — use the Release download above unless you specifically need unreleased `master`.** This recipe is the path for exactly two cases: developing against the hub's current `master` ahead of the next cut, and installing a repository state that predates the first published Release. No Release covers either, which is why the recipe stays.
 
 Fetch just the minimal footprint above with a partial clone + non-cone sparse-checkout (git ≥2.40, already a hard prerequisite — §1.1), copy it into the target repo root, then discard the temporary clone:
 
@@ -202,7 +238,7 @@ Fallback (only if the remote rejects `--filter=blob:none`, e.g. `uploadpack.allo
 
 Nothing is written to the target repo until the final `cp` step, so it is safe to rerun from scratch if interrupted. After the copy, the existing documented command runs unmodified: `bash scripts/bootstrap-sdd.sh --profile <PROFILE>`.
 
-**Released versions — download the kit tarball instead.** For any version that has a GitHub Release (§2.18), `byebyevibe-kit-<version>.tar.gz` carries exactly this footprint under a single `byebyevibe-kit-<version>/` prefix; download it, verify it against the published `.sha256` sidecar (`sha256sum -c`), extract it, and copy `sdd-kit/` and the two `scripts/` files into the target repo root — the recipe above is then unnecessary. The recipe remains the path for installing from unreleased `master`, and for any version predating the first Release.
+**Released versions:** see **Release download** above — that is the default path, and it supersedes this recipe for any state a Release covers.
 
 ---
 
@@ -287,9 +323,9 @@ the target project; the profile question is separate from the language question)
 offer `HYBRID` as a dialog option — it is a deprecated alias of APP (kit 1.9.0).
 
 Acquiring the SDD system files (skip if `sdd-kit/` already exists in this repo):
-- **Default — genuine greenfield target:** use the lightweight fetch recipe (guide §1.6 "Lightweight fetch recipe") — a partial clone + sparse-checkout that pulls only `sdd-kit/` + `scripts/bootstrap-sdd.sh` + `scripts/preflight-sdd.sh`, no full hub clone.
+- **Default — genuine greenfield target:** download the latest published GitHub Release (guide §1.6 "Release download"). Do NOT ask the operator for a version number and do NOT look one up — the `releases/latest/download/byebyevibe-kit.tar.gz` URL resolves the current release on its own. Fetch the archive and its `.sha256` sidecar with `curl -fsSL` (the `-f` is mandatory), verify the archive against the sidecar BEFORE extracting it, stop if verification fails, then copy the extracted `sdd-kit/` + `scripts/bootstrap-sdd.sh` + `scripts/preflight-sdd.sh` into the repo root. Only if the operator asks for a specific version, use that release's version-stamped assets instead (guide §2.18); the bytes are the same.
+- **Only if the target must track unreleased `master`** (developing against the hub ahead of the next cut, or a state predating the first Release): use the lightweight fetch recipe (guide §1.6 "Lightweight fetch recipe") — a partial clone + sparse-checkout that pulls only `sdd-kit/` + `scripts/bootstrap-sdd.sh` + `scripts/preflight-sdd.sh`, without cloning the whole hub.
 - **Only if the operator explicitly wants the persistent multi-project hub→destination workflow:** clone the full hub once per machine and reuse it across projects (guide §1.6 "Hub → destination flow").
-- **Alternative, only if the operator asks for a specific released version:** download that version's `byebyevibe-kit-<version>.tar.gz` from the GitHub Release, verify it against the `.sha256` sidecar, and copy the extracted `sdd-kit/` + `scripts/bootstrap-sdd.sh` + `scripts/preflight-sdd.sh` into the repo root (guide §2.18). This is NOT the default — the lightweight fetch recipe above stays the default acquisition path.
 
 Narrative (dual S↔T — mandatory):
 - Before EACH install step, explain the S layer in simple language:
@@ -1040,6 +1076,12 @@ bash scripts/cut-release.sh <version> [--dry-run]
 
 Always run `--dry-run` first. It evaluates **every** precondition, reports each outcome, and exits without creating or pushing anything — even when all of them pass. Without the flag, the first failed precondition aborts and leaves the repository untouched.
 
+#### Merging a `sdd-kit/` change without cutting a release
+
+**Since kit 1.13.0 this has a cost it did not have before.** §1.6 now installs from the latest published Release by default, so merging a change under `sdd-kit/` and not cutting one hands every new installer an **older kit than `master`** — silently, with no error anywhere. Before the default flipped, every install came from `master` and a stale release harmed nobody; now the debt runs the other way. If you merge kit changes, cut.
+
+This is deliberately **not** enforced by a gate. A check that failed whenever `sdd-kit/` sat ahead of the last published tag would fire on every legitimate in-progress branch — which is worse than the problem it guards. It is stated here instead, next to the procedure, on the assumption that an operator merging a kit change reads this section. If the omission turns out to bite in practice, a *warning* (not a gate) in `verify-release-readiness.sh` is the natural follow-up, and it deserves the evidence of having actually happened first.
+
 #### Preconditions and their failure messages
 
 | # | Check | Message when it fails |
@@ -1070,7 +1112,7 @@ Check 4 requires *equality*, not merely "not behind": tagging a commit the remot
 
 Guard 5 stands alone on purpose: bash does not propagate a process substitution's exit status, so feeding the extractor straight into `gh release create` would publish an empty body when extraction fails.
 
-Publication is **draft-first**: the Release is created as a draft, both assets are uploaded into it, and only then is it flipped published. Consumers never see a partial Release, and a re-run after an upload flake replaces the leftover draft instead of colliding with a published one.
+Publication is **draft-first**: the Release is created as a draft, all four assets are uploaded into it in a single `gh release create` call, and only then is it flipped published. Consumers never see a partial Release, and a re-run after an upload flake replaces the leftover draft instead of colliding with a published one.
 
 #### Yank policy — a bad release is superseded, never re-cut
 
@@ -1080,7 +1122,18 @@ Delete-and-retag is permitted **only** for a version that never finished publish
 
 #### The tarball, and regenerating it yourself
 
-Each Release carries `byebyevibe-kit-<version>.tar.gz` plus a `.sha256` sidecar. The archive holds exactly the §1.6 **minimal install-fetch footprint** — `sdd-kit/`, `scripts/bootstrap-sdd.sh`, `scripts/preflight-sdd.sh` — under a single `byebyevibe-kit-<version>/` prefix, which is what makes it a real replacement for the §1.6 lightweight fetch recipe.
+Each Release carries **four assets — two archives that are the same bytes, plus one `.sha256` sidecar each**:
+
+| Asset | Purpose |
+|-------|---------|
+| `byebyevibe-kit-<version>.tar.gz` + `.sha256` | **Citation and archival.** The version-stamped name is what the regeneration command below reproduces, what `v1.12.0` already published under, and what identifies a downloaded file without extracting it |
+| `byebyevibe-kit.tar.gz` + `.sha256` | **Acquisition.** The version-less name is the only thing that makes `releases/latest/download/<asset>` usable, since naming a version-stamped asset requires already knowing the version — which is what the downloader is trying to find out. This is what §1.6's default recipe fetches |
+
+The two archives are **byte-identical**, produced by copying one file rather than building twice; the workflow asserts it with `cmp -s` and fails the run if they ever diverge. There is no "which one do I trust" question — trust either. They differ only in filename, and each sidecar is computed against its own filename so `sha256sum -c` succeeds on a file downloaded under either name. The stable name carries no `-latest` suffix on purpose: the same asset is also reachable pinned to a tag (`releases/download/v<version>/byebyevibe-kit.tar.gz`), where such a claim would be false.
+
+Losing the version from the stable *filename* costs nothing in practice: the archive's top-level prefix is still `byebyevibe-kit-<version>/`, and the `sdd-kit/MANIFEST.yaml` inside declares the version authoritatively.
+
+The archive holds exactly the §1.6 **minimal install-fetch footprint** — `sdd-kit/`, `scripts/bootstrap-sdd.sh`, `scripts/preflight-sdd.sh` — under that single prefix, which is what makes it a real replacement for the §1.6 lightweight fetch recipe.
 
 The workflow builds it with exactly this command; run it against the same tag to regenerate and compare:
 
@@ -3035,6 +3088,15 @@ bash scripts/verify-task-patterns.sh   # Pattern: paths exist; DOCS_SPECS withou
 ---
 
 ## Guide changelog
+
+### 1.13.0 (2026-08-06)
+
+- **Install default inverts (change `switch-install-default-to-release`)** — acquiring the kit now means downloading the **latest published GitHub Release**, in both §1.6 and the §2.0 AI-assisted install prompt. `add-github-release-flow` built the machinery and cut `v1.12.0` but deliberately left the default alone, because inverting it needed a spec delta plus a release that actually exists; both conditions are now met. The cost of leaving it was not hypothetical: the first merge touching `sdd-kit/` would have handed every new install code that never passed `verify-release-readiness.sh`, carries no published checksum, has no changelog entry, and cannot be named by a version in a bug report.
+- **Stable-named asset pair** — each Release now attaches `byebyevibe-kit.tar.gz` and `byebyevibe-kit.tar.gz.sha256` alongside the version-stamped pair, making four assets. A version-less filename was required, not merely convenient: GitHub's stable shortcut is `releases/latest/download/<asset-name>`, so it needs the asset *name*, and a version-stamped name can only be written by someone who already knows the version — which is exactly what the downloader is trying to discover. The stable copy is made from the built file with `cp` (never a second `git archive` — a rebuild is a second chance to differ), its sidecar is computed against the stable filename so `sha256sum -c` succeeds on a file downloaded under it, and the workflow asserts `cmp -s` against the version-stamped archive and fails the run on divergence. No `-latest` suffix: the same asset is reachable pinned per tag, where that claim would be false. The version-stamped pair is retained as the citable, archival artifact §2.18's regeneration command reproduces by name.
+- **Checksum verification is a step, not a suggestion** — §1.6's recipe downloads both files and runs `sha256sum -c` **before** extracting; a checksum checked after unpacking verifies nothing worth having. `curl -fsSL`'s `-f` is load-bearing and the guide says why inline: without it curl writes GitHub's 404 HTML page into the output file and exits 0, and the missing asset resurfaces much later as a bogus gzip-format error. A request for an absent asset redirects identically to a present one and only 404s at the object host, so this is the real failure mode. On Windows the recipe belongs in Git Bash — `curl`, `sha256sum` and `tar` all ship with Git for Windows, while `Get-FileHash` cannot verify against a sidecar. **No new prerequisite:** `gh` is deliberately not required, which would have added an authenticated CLI to §1.1 to save one line.
+- **Sparse-checkout recipe retained, re-scoped** — the lightweight fetch recipe is not removed; it moves below the release recipe and is labelled the path for **unreleased `master`** (developing against the hub ahead of the next cut, or a state predating the first Release). No Release covers either, so it remains the only route to them. §2.0's three options reorder to match: Release first, lightweight fetch second, full hub clone third, each non-default option keeping its explicit selecting condition.
+- **Releases become load-bearing (§2.18)** — the consequence that makes this more than a text edit. Before it, merging a `sdd-kit/` change without cutting a release harmed nobody, since every install came from `master`; after it, the same omission silently hands every new installer an **older kit than `master`**. §2.18 states this next to the cut procedure. It is deliberately not enforced by a gate — a check firing whenever `sdd-kit/` sits ahead of the last tag would redden every legitimate in-progress branch, which is worse than the problem.
+- **`sdd-kit/`** — MANIFEST **1.12.0 → 1.13.0** (`version` and `guide_version`, lockstep). **No template bytes changed**, so checksums are unchanged and a C2 upgrade delivers no file diff; the tarball's *contents* are identical to 1.12.0's. Only the asset inventory grows.
 
 ### 1.12.0 (2026-08-06)
 
