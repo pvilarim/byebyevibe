@@ -6,7 +6,9 @@ Every kit script that invokes Python MUST obtain its interpreter from a single r
 
 Resolution MUST validate the **version**, not the presence of the name: a candidate is accepted only if executing it yields a parseable `sys.version_info`. Presence alone is insufficient evidence, because `python` may be Python 2 and, on Windows, an installed-looking `python3` may be an application-execution alias that is not an interpreter at all.
 
-The kit's floor MUST be declared independently of the floor any bundled or optional integration requires. The kit MUST NOT refuse to run on an interpreter that satisfies its own floor merely because a separate component declares a higher one.
+The kit's floor is **Python 3.8**, declared in the install guide's prerequisites table and enforced by the resolver's version probe — those two sites and this requirement MUST agree on the number. The floor MUST be declared independently of the floor any bundled or optional integration requires. The kit MUST NOT refuse to run on an interpreter that satisfies its own floor merely because a separate component declares a higher one.
+
+Because one accepted candidate (`py -3`) is a two-word command, resolution MUST yield candidate names (never resolved filesystem paths), and call sites MUST expand the result in a way that preserves word splitting. The resolved command MUST reach every consumer: a check that certifies an interpreter and then executes a different, hardcoded name has verified nothing. Scripts invoked outside the install flow MUST honour an externally supplied resolution when one is provided — treating it as trusted rather than re-probing it — and otherwise resolve by the same candidate order.
 
 When no candidate satisfies the floor, the failure message MUST name every candidate that was tried and the floor that was required, so an operator with a working Python under a different name can tell that the problem is the name and not the absence of Python.
 
@@ -17,8 +19,13 @@ When no candidate satisfies the floor, the failure message MUST name every candi
 
 #### Scenario: A name that is not an interpreter is rejected
 
-- **WHEN** a candidate command exists on PATH but does not yield a parseable `sys.version_info` when executed
-- **THEN** resolution rejects that candidate and continues to the next one, rather than treating its existence as success
+- **WHEN** a candidate command exists on PATH but does not yield a parseable `sys.version_info` when executed, and a later candidate does
+- **THEN** the reported resolution names the later candidate and its version, so the rejection of the earlier one is observable in which command was selected
+
+#### Scenario: The certified interpreter is the executed interpreter
+
+- **WHEN** resolution selects a candidate other than `python3` and the script proceeds past its runtime check
+- **THEN** every subsequent Python invocation in that script uses the selected candidate, and no invocation of the literal name `python3` remains on the executed path
 
 #### Scenario: Failure names the candidates and the floor
 
@@ -50,11 +57,11 @@ These two obligations MUST be satisfied by different means. Deleting carriage re
 
 ### Requirement: Checksum verification reads what the hashing tool wrote
 
-Where a kit script builds a filesystem path and hands it to an external hashing tool, the path MUST be constructed so the tool echoes it back unmodified. A path assembled with the host's native separator is not interchangeable with one a POSIX tool will print verbatim: GNU checksum tools escape any output line whose filename contains a backslash by prefixing the entire line, which silently corrupts the field a caller reads.
+Where the kit's MANIFEST-integrity tooling builds a filesystem path **in a language whose native path separator is not `/`** and hands it to an external hashing tool, the path MUST be constructed with `/` separators so the tool echoes it back unmodified. A path assembled with the host's native separator is not interchangeable: GNU checksum tools escape any output line whose filename contains a backslash by prefixing the entire line, which silently corrupts the field a caller reads. Shell call sites that pass a shell-constructed POSIX path directly as an argument (the `sha256sum "$file" | cut` pattern in the install and upgrade integrity checks) do not build paths in such a language and are not subject to this requirement.
 
-A caller MUST NOT assume the first whitespace-delimited token of a checksum tool's output is the digest. It MUST either parse the escaped form or construct paths that cannot trigger escaping, and MUST reject a digest that is not a bare hexadecimal string of the expected length rather than comparing it as-is.
+A caller subject to this requirement MUST NOT assume the first whitespace-delimited token of the tool's output is the digest. It MUST either parse the escaped form or construct paths that cannot trigger escaping, and MUST reject a digest that is not a bare hexadecimal string of the expected length rather than comparing it as-is.
 
-A verification pass that completed without comparing any entry MUST fail. Reporting success for a check that examined nothing is worse than reporting failure, because it converts an unverified state into a recorded green.
+A verification pass that **selected entries for comparison** and then compared none of them MUST fail. Reporting success for a check that examined nothing it set out to examine converts an unverified state into a recorded green. This does not disturb the deliberate lenient paths that already exist and are preserved by this change: an entry without a `sha256:` field remains WARN-and-proceed per the existing integrity requirements, and a check whose **subject is legitimately absent in context** (for example the hub-parity check in a consumer repository) remains a recorded skip — the distinction is between "there was nothing applicable to check" and "there was, and the checker's own machinery failed to check it"; only the latter MUST fail.
 
 #### Scenario: Digest is read correctly on a host with a native backslash separator
 
@@ -68,8 +75,13 @@ A verification pass that completed without comparing any entry MUST fail. Report
 
 #### Scenario: A checker that compared nothing fails
 
-- **WHEN** the checksum checker completes having compared zero entries
+- **WHEN** the checksum checker runs against a MANIFEST that carries `sha256:` fields, and its comparison machinery produces zero comparisons
 - **THEN** it exits non-zero, rather than reporting that all checksums are correct
+
+#### Scenario: Legitimately empty subjects still skip
+
+- **WHEN** a check's subject is absent in context — no `sha256:` fields exist, or the parity subject does not apply in a consumer repository
+- **THEN** the existing WARN-and-proceed or skip behaviour is preserved, and the non-vacuity rule does not convert it into a failure
 
 ### Requirement: An empty template list aborts the install
 

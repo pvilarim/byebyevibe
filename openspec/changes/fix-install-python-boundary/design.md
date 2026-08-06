@@ -63,21 +63,31 @@ Probe candidates in order `python3`, `python`, `py -3`, accepting the first whos
 
 Measured: with `python3` removed from PATH, the probe resolved `python` 3.13. `py -3 - <<'PY'` accepts a script on stdin with `argv` intact, so the launcher is usable as a drop-in and not merely as a version query.
 
+The calling convention is part of the decision, because `py -3` is a **two-word command**: the resolver stores candidate *names* (never resolved filesystem paths, which on Windows contain spaces), every call site expands the variable **unquoted** (`$SDD_PYTHON - <<'PY'`), and the probe executes the candidate to read `sys.version_info` rather than using `command -v`, which cannot probe a two-word candidate at all. A later "shellcheck cleanup" that quotes the expansion breaks the `py -3` rung; this is called out so a reviewer treats the unquoted expansion as deliberate.
+
 *Alternative rejected:* asking the operator to create a `python3` shim. That is what a human had to do to get past this, and expecting it of every Windows adopter is the defect, not the remedy.
 
 ### D2 — The floor is the kit's own, and it is not Graphify's
 
-No embedded snippet uses syntax above 3.6: no `match`/`case`, no walrus, no PEP 604 unions, no `removeprefix`. Imports are `json, sys, re, os, shutil, uuid, subprocess, datetime, pathlib`. Set the kit's floor at **3.8** — comfortably above what the code needs, comfortably below anything a maintained system ships, and old enough that `sys.stdout.reconfigure` (3.7+) is available if a call site wants it.
+The kit's real syntax ceiling is **3.7**, not 3.6 as first surveyed: `gen-manifest-checksums.sh:64` and `verify-release-readiness.sh:133` use `subprocess.run(capture_output=, text=)`, both 3.7+. A second review confirmed nothing higher exists — no `match`/`case`, no walrus, no PEP 604 unions, no `removeprefix`. Imports are `json, sys, re, os, shutil, uuid, subprocess, datetime, pathlib`. Set the kit's floor at **3.8** — above the measured ceiling with margin, comfortably below anything a maintained system ships. The floor is **declared in guide §1.1's prerequisites table and enforced by the resolver's version probe** — one authoritative statement, one enforcement point, so the number cannot drift without a documentation change that a reviewer sees.
 
 Graphify's 3.10 stays where it belongs: a Graphify prerequisite. Guide §2.9.4 already permits deferring GitNexus/Graphify, and an operator who does that must not be blocked by a floor that exists for a component they are not installing.
 
 *Alternative rejected:* keeping a single 3.10 floor for simplicity. It refuses hosts the installer can demonstrably run on, which is the user-visible bug.
 
-### D3 — The runtime check goes into the gate that already exists
+### D3 — The runtime check goes into the gate that already exists, and the result travels over stdout
 
-`install.sh:222` already calls `preflight-sdd.sh --repo` and already aborts on non-zero. Extend repo mode to verify the interpreter and export the resolved command. One decision point, one FAIL path, one abort message — all specified already in `sdd-install-preflight`.
+`install.sh:222` already calls `preflight-sdd.sh --repo` and already aborts on non-zero. Extend repo mode to verify the interpreter there. One decision point, one FAIL path, one abort message — all specified already in `sdd-install-preflight`.
 
-*Alternative rejected:* a `require_python` helper inlined in each script. Thirteen dual-maintained scripts means thirteen copies to drift. *Also rejected:* a sourced `lib/python.sh`, because `templates/scripts/*` are distributed standalone into consumer repositories and would need fragile relative-path resolution to find it.
+The transport needs to be explicit, because the naive version does not work: preflight runs as a **child process** of `install.sh`, and a child's `export` dies with the child. An adversarial review found the first draft of this design resting on exactly that hole — preflight would certify the interpreter and `install.sh` would go on calling a `python3` that does not exist. The mechanism is therefore:
+
+1. Preflight's human-readable output already goes to stderr (`log_human`), so **stdout is free as a machine channel**. In `--repo` mode, after resolving, preflight prints exactly one line to stdout: `SDD_PYTHON=<candidate>`.
+2. `install.sh` captures it: `SDD_PYTHON="$(bash "$PREFLIGHT_SCRIPT" --repo …)"` keeps the existing `|| abort` shape, parses the line, and **exports** `SDD_PYTHON` for everything else it spawns.
+3. Every Python call site in `install.sh` uses `$SDD_PYTHON` (unquoted, per D1's convention) instead of the literal `python3`.
+
+Scripts that never run under install (`upgrade.sh`, `gen-manifest-checksums.sh`, `verify-release-readiness.sh`, `sdd-upgrade-diff.sh`, `verify-infra.sh`, and preflight's own later call sites) honour `SDD_PYTHON` from the environment when set — set means **trusted as-is**, no re-probing, which is also what lets a test force a broken interpreter to prove the fail path — and otherwise run the same short candidate cascade inline with a loud failure. The cascade is ~6 identical lines; what stays singular is the *gating decision* (abort before any write), which lives only in preflight/install. Preflight itself must use the resolved command at **all four** of its own call sites, not only in the check — a script that certifies `python` works and then crashes executing `python3` under `set -e` fails the operator after telling them everything is fine.
+
+*Alternative rejected:* a `require_python` helper duplicated as the full check in each of the 13 dual-maintained scripts — the drift risk stands, and the 6-line cascade with a single trusted override is the compromise. *Also rejected:* a sourced `lib/python.sh`, because `templates/scripts/*` are distributed standalone into consumer repositories and would need fragile relative-path resolution to find it. *Also rejected:* writing the resolution to a file — it leaves state behind and races concurrent runs; the stdout line exists exactly as long as the pipe does.
 
 ### D4 — Newline normalisation differs by site class, deliberately
 
@@ -89,6 +99,8 @@ These two fixes are **not** interchangeable, and using the wrong one silently co
 | Rewrites a file's contents | `open(..., newline='')` on **both** read and write | `tr` would delete carriage returns from file content. A CRLF file would be silently converted |
 
 Reading with `newline=''` matters as much as writing with it. `open(path).read()` in default text mode converts `\r\n` to `\n`, so writing back — even without translation — normalises the whole file. That is exactly D4 observed in the wild: a four-line update to `openspec/infra.md` produced a 153-line diff because the file was rewritten LF-to-CRLF end to end.
+
+The file-rewriting site list is **two files, not three**: `install.sh:111` (language policy) and `verify-infra.sh:246` (infra.md markers). The stamp-creation block in `preflight-sdd.sh:364` was initially attributed here too, but adversarial review against the actual code showed it already reads with `read_bytes()`, detects the dominant newline, and writes with `write_bytes()` — it preserves endings by construction and has no text-mode `open()` to annotate. It stays out of scope: rewriting correct code to satisfy a pattern check is churn with regression risk and no behaviour change. (Its `python3` *invocation* still needs the resolved interpreter per D3 — that is a different, real defect at the same line.) The 153-line diff observed in the wild came from `verify-infra.sh:246`.
 
 *Alternative rejected:* `sys.stdout.reconfigure(newline='\n')` in every emitting block. It works (measured), but it must be remembered at each of the sites and is invisible to a shell-side reviewer. The `tr` filter sits where the corruption enters and is self-documenting at the call site.
 
@@ -114,7 +126,7 @@ The guard exists to reject destinations that escape the repository root. Measure
 
 ### D7 — CI installs into an empty repository
 
-Add a greenfield install job to `sdd-gates`: create an empty repo, copy the footprint, run `install.sh`, assert a non-trivial file count and that `.github/workflows/sdd-gates.yml` exists. The last assertion is not incidental — that exact path is what D3 aborts on, and its parent directory is the one a greenfield repo lacks.
+Add a greenfield install job to `sdd-gates`: create an empty repo under `${{ runner.temp }}`, copy the footprint, run `install.sh`, assert a non-trivial file count and that `.github/workflows/sdd-gates.yml` exists. The last assertion is not incidental — that exact path is what D3 aborts on, and its parent directory is the one a greenfield repo lacks. (`runner.temp` is hygiene, not necessity: GitHub reads workflows only from the pushed ref, never from files a job writes to disk, and `install.sh` makes no git calls, so a zero-commit target is safe — both confirmed by review.)
 
 The hub cannot substitute for this. Every gate today runs against a repository that already has `.github/workflows/`, which is precisely why a defect fatal to every genuine greenfield install survived undetected.
 
@@ -130,6 +142,10 @@ The hub cannot substitute for this. Every gate today runs against a repository t
 
 **Floor divergence between the kit and Graphify invites confusion** → Two numbers where there was one. Mitigation: state both in §1.1 with their reason attached, so the difference reads as deliberate rather than as an inconsistency someone should "fix".
 
+**`realpath -m` is a GNU coreutils flag** → Present under Git Bash and on Linux CI; absent from stock macOS `realpath`, and guide §1.1 declares macOS supported. Mitigation: probe `-m` support once at startup and fall back to lexical normalisation via the resolved interpreter (`posixpath.normpath` — deliberately `posixpath`, not `os.path`, for the D-checksum reason), keeping the same prefix check. The spec mandates the behaviour, not the flag.
+
+**Unquoted `$SDD_PYTHON` reads as a bug to future maintainers** → It is load-bearing for the `py -3` rung (D1). Mitigation: a one-line comment at each expansion site naming the convention, so a cleanup pass has to argue with the comment first.
+
 ## Migration Plan
 
 No consumer migration is required: a C2 upgrade replaces the affected scripts through the normal `upgrade.sh` flow, and no template that consumers author is touched. Operators who created a local `python3` shim to work around D5 can keep it — the cascade prefers `python3` when it is real, and the shim is real.
@@ -139,5 +155,6 @@ Rollback is the ordinary path: these are script fixes, so reverting the commit a
 ## Open Questions
 
 - Should the greenfield smoke test force the `python`/`py -3` rungs, or is exercising the default rung sufficient for now? Forcing them is more honest and costs a PATH manipulation.
-- Does `verify-release-readiness.sh` — itself a Python call site — run early enough in any flow to precede interpreter resolution? Not investigated. If it does, it needs the resolved command too, and the ordering must be explicit.
 - Is 3.8 the right floor, or should it track the oldest Python still receiving security support? A fixed number is simpler to reason about; a moving one is more defensible. This change assumes fixed.
+
+(Resolved during review: `verify-release-readiness.sh` **does** run outside any flow that resolves the interpreter — `cut-release.sh` invokes it directly — so it gets the standalone fallback cascade per D3, and honours `SDD_PYTHON` when set. The earlier open question about its ordering is closed by that mechanism.)

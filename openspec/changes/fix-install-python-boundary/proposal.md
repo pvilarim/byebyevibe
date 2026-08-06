@@ -52,6 +52,6 @@ None. This change repairs behaviour that existing capabilities already claim.
 
 **Docs.** Guide §1.1 (prerequisites and the native-Windows claim), and a changelog entry stating plainly that no released version could complete a C1 greenfield install on native Windows, and that the `realpath` defect affected every platform.
 
-**Version.** 1.14.0 rather than 1.13.1: the change adds normative requirements to three capabilities, and `install.sh` will abort where it previously reported success. A patch release is for fixing without changing the contract; here the contract grows.
+**Version.** 1.14.0 rather than 1.13.1: the change adds normative requirements to four capabilities, and `install.sh` will abort where it previously reported success. A patch release is for fixing without changing the contract; here the contract grows.
 
 **Not yanking v1.13.0.** These defects predate it and `sdd-release-flow` reserves withdrawal for content that was wrong when published. The urgency comes from exposure, not from regression.
