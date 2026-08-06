@@ -20,6 +20,15 @@ INFRA_FILE="$REPO_ROOT/openspec/infra.md"
 TODAY="$(date +%Y-%m-%d)"
 FAILURES=0
 
+# SDD_PYTHON: env value trusted as-is; else resolve by capability (kit floor
+# 3.8). Soft here — this script degrades gracefully without Python.
+# Unquoted expansions are deliberate — "py -3" is two words (fix-install-python-boundary D1/D3).
+if [[ -z "${SDD_PYTHON:-}" ]]; then
+  for _cand in "python3" "python" "py -3"; do
+    if $_cand -c 'import sys; raise SystemExit(0 if sys.version_info >= (3, 8) else 1)' 2>/dev/null; then SDD_PYTHON="$_cand"; break; fi
+  done
+fi
+
 WRITE_MODE=0
 for arg in "$@"; do
   case "$arg" in
@@ -87,8 +96,8 @@ echo "Graphify report: $(to_emoji "$GRAPHIFY_STATUS") ${GRAPHIFY_VERSION}"
 # --- MCP (names only) ---
 MCP_LIST="[NEEDS VERIFICATION]"
 MCP_JSON="${HOME}/.cursor/mcp.json"
-if [[ -r "$MCP_JSON" ]] && command -v python3 &>/dev/null; then
-  MCP_LIST="$(python3 - <<'PY' "$MCP_JSON"
+if [[ -r "$MCP_JSON" && -n "${SDD_PYTHON:-}" ]]; then
+  MCP_LIST="$($SDD_PYTHON - <<'PY' "$MCP_JSON"
 import json, sys
 try:
     with open(sys.argv[1]) as f:
@@ -242,11 +251,14 @@ if [[ -f "$INFRA_FILE" ]]; then
     replace_between "$INFRA_FILE" "kit-install-status" "$(to_emoji "$KIT_STATUS")"
     replace_between "$INFRA_FILE" "kit-verify-status" "$(to_emoji "$KIT_STATUS")"
   fi
-  if [[ -n "$ENV_LINES" && "$ENV_LINES" != *"no .env.example"* ]]; then
-    python3 - <<PY "$INFRA_FILE" "$ENV_LINES"
+  if [[ -n "$ENV_LINES" && "$ENV_LINES" != *"no .env.example"* && -n "${SDD_PYTHON:-}" ]]; then
+    $SDD_PYTHON - <<PY "$INFRA_FILE" "$ENV_LINES"
 import re, sys
 path, rows = sys.argv[1], sys.argv[2].strip()
-text = open(path).read()
+# newline="" on read AND write: default text mode would rewrite every line
+# ending in the file just to swap one table (design D4 — the observed
+# 153-line diff for a 4-line change came from exactly this block)
+text = open(path, newline="").read()
 block = "| Variable | Present | Verify with |\n|----------|----------|---------------|\n" + rows.replace("\\n", "\n")
 text = re.sub(
     r"(\| Variable \| Present \| Verify with \|\n\|[-| ]+\|\n)(.*?)(\n## Agent rule)",
@@ -255,7 +267,7 @@ text = re.sub(
     count=1,
     flags=re.DOTALL,
 )
-open(path, "w").write(text)
+open(path, "w", newline="").write(text)
 PY
   fi
   echo ""

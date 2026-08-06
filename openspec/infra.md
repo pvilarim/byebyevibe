@@ -10,9 +10,9 @@
 
 | Field | Value |
 |-------|-------|
-| Timestamp | <!-- preflight-timestamp -->—<!-- /preflight-timestamp --> |
+| Timestamp | <!-- preflight-timestamp -->2026-08-06T18:12:07Z<!-- /preflight-timestamp --> |
 | IDE(s) | <!-- preflight-ides -->—<!-- /preflight-ides --> |
-| WARN summary | <!-- preflight-warns -->—<!-- /preflight-warns --> |
+| WARN summary | <!-- preflight-warns -->none<!-- /preflight-warns --> |
 | MCP names (advisory) | <!-- preflight-mcp -->—<!-- /preflight-mcp --> |
 
 ## SDD Stack (repo)

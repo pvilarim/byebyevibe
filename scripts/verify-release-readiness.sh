@@ -13,6 +13,15 @@ cd "$REPO_ROOT"
 
 FAILURES=0
 
+# SDD_PYTHON: env value trusted as-is; else resolve by capability (kit floor 3.8).
+# Unquoted expansions are deliberate — "py -3" is two words (fix-install-python-boundary D1/D3).
+if [[ -z "${SDD_PYTHON:-}" ]]; then
+  for _cand in "python3" "python" "py -3"; do
+    if $_cand -c 'import sys; raise SystemExit(0 if sys.version_info >= (3, 8) else 1)' 2>/dev/null; then SDD_PYTHON="$_cand"; break; fi
+  done
+fi
+[[ -n "${SDD_PYTHON:-}" ]] || { echo "ERROR: no usable Python interpreter (tried: python3, python, py -3; kit minimum 3.8)." >&2; exit 1; }
+
 # Compare one version string declared in prose against its MANIFEST authority.
 # Degrades per design D3: file absent -> INFO skip; claim missing or unparseable -> WARN;
 # mismatch -> FAIL (increments FAILURES). Each call is independent of the others.
@@ -90,7 +99,10 @@ if [[ -d "$REPO_ROOT/sdd-kit/templates" ]] && [[ -f "$REPO_ROOT/sdd-kit/MANIFEST
   if ! command -v sha256sum &>/dev/null && ! command -v shasum &>/dev/null; then
     echo "WARN: sha256sum/shasum not available — kit-integrity check skipped"
   else
-    KIT_INTEGRITY_RESULT="$(python3 - "$REPO_ROOT/sdd-kit/MANIFEST.yaml" "$REPO_ROOT/sdd-kit" << 'PY'
+    # $SDD_PYTHON unquoted by convention ("py -3" is two words); rc captured so
+    # a failed helper can never be recorded as a green check (non-vacuity).
+    KIT_INTEGRITY_RC=0
+    KIT_INTEGRITY_RESULT="$($SDD_PYTHON - "$REPO_ROOT/sdd-kit/MANIFEST.yaml" "$REPO_ROOT/sdd-kit" << 'PY'
 import sys, re, subprocess, os
 
 manifest_path = sys.argv[1]
@@ -110,9 +122,12 @@ sources = re.findall(r"^\s{4}source:\s+\"?([^\"'\n]+)\"?\s*$", text, re.MULTILIN
 
 errors   = 0
 warnings = 0
+compared = 0
 
 for src in sources:
-    template_path = os.path.join(kit_dir, src)
+    # Join with "/" explicitly: a native-separator join puts a backslash in the
+    # path on Windows, and sha256sum then escapes its whole output line.
+    template_path = kit_dir.rstrip("/") + "/" + src
     # Find sha256 for this source in MANIFEST
     m = re.search(
         r"    source:\s*\"?" + re.escape(src) + r"\"?\n    sha256:\s*\"?([a-f0-9]+)\"?",
@@ -131,7 +146,13 @@ for src in sources:
         continue
 
     result = subprocess.run(sha256_cmd + [template_path], capture_output=True, text=True)
-    actual = result.stdout.split()[0] if result.returncode == 0 else ""
+    actual = result.stdout.split()[0] if result.returncode == 0 and result.stdout.split() else ""
+    # Bare 64-hex only: GNU sha256sum escapes its whole output line (leading
+    # backslash) when the filename contains one — never compare that token.
+    if actual and not re.fullmatch(r"[0-9a-f]{64}", actual):
+        print(f"WARN: unreadable digest for {src} (escaped output?)")
+        warnings += 1
+        continue
 
     if not actual:
         print(f"WARN: could not hash {src}")
@@ -141,13 +162,25 @@ for src in sources:
         print(f"  expected: {expected}")
         print(f"  actual:   {actual}")
         errors += 1
+    else:
+        compared += 1
 
-print(f"entries={len(sources)} errors={errors} warnings={warnings}")
-sys.exit(errors)
+# Non-vacuity: entries with sha256 fields were selected; comparing none of
+# them is machinery failure, never a pass ("compared 0" must fail loudly).
+if sources and warnings < len(sources) and compared == 0 and errors == 0:
+    print(f"FAIL: compared 0 of {len(sources)} entries — kit-integrity checked nothing")
+    errors += 1
+
+print(f"entries={len(sources)} errors={errors} compared={compared} warnings={warnings}")
+sys.exit(1 if errors else 0)
 PY
-    )" || true
+    )" || KIT_INTEGRITY_RC=$?
 
-    if echo "$KIT_INTEGRITY_RESULT" | grep -q "^FAIL:"; then
+    if [[ "$KIT_INTEGRITY_RC" -ne 0 && -z "$KIT_INTEGRITY_RESULT" ]]; then
+      # Helper produced nothing: the python interpreter itself failed to run.
+      echo "FAIL: kit-integrity — python interpreter failed (SDD_PYTHON=${SDD_PYTHON}); check produced no result" >&2
+      ((FAILURES++)) || true
+    elif echo "$KIT_INTEGRITY_RESULT" | grep -q "^FAIL:"; then
       echo "$KIT_INTEGRITY_RESULT"
       echo "FAIL: kit-integrity" >&2
       ((FAILURES++)) || true

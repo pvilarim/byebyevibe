@@ -11,15 +11,15 @@
 # The `gate:` field is documentary metadata only — the suggested verification
 # command for manual or CI use. It MUST NOT be executed via `eval` or any
 # equivalent by install.sh, upgrade.sh, or any other script.
-version: "1.13.0"
-guide_version: "1.13.0"
+version: "1.14.0"
+guide_version: "1.14.0"
 min_openspec: "1.3.1"
 profiles: [APP, DOCS_SPECS, HYBRID]
 
 files:
   - path: scripts/verify-infra.sh
     source: templates/scripts/verify-infra.sh
-    sha256: "199a61ab38851b055633443742ee34d43d92131dc35e71b7d86d54ba059a7ce6"
+    sha256: "968f65f430d47b9a75dea2c2546051de8626c6361e273cea28cddb6ba3d6dec1"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -x scripts/verify-infra.sh"
@@ -33,7 +33,7 @@ files:
 
   - path: scripts/verify-release-readiness.sh
     source: templates/scripts/verify-release-readiness.sh
-    sha256: "d1a11443c6180df7c8858ca813533c04c9453ce4f7c99b652dcac957acace425"
+    sha256: "7d45957908dba7fb763eac856b5f12d0ea023b9bf1a5955f12ad5b1f8820bd0b"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -x scripts/verify-release-readiness.sh"
@@ -82,7 +82,7 @@ files:
 
   - path: scripts/sdd-upgrade-diff.sh
     source: templates/scripts/sdd-upgrade-diff.sh
-    sha256: "1cafb00d85938235463107312a635749a9bc6a5051f798e8ae006fe2a6a81dfb"
+    sha256: "d9fe0b34da5fef542c8b8e10e5ab02b8e399d5149b8d66d9f4e819aff7e04cfd"
     merge: MERGE
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -x scripts/sdd-upgrade-diff.sh"
@@ -103,14 +103,14 @@ files:
 
   - path: scripts/preflight-sdd.sh
     source: templates/scripts/preflight-sdd.sh
-    sha256: "f96cffa7dfd3ba407282c02371135cd4fe2bbcda53359fdf365f72eb5eb49dfc"
+    sha256: "3e9ceb3873278c9ffe9e786b6b6d999ebc9443e646b15a03aecfa34444ac8254"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -x scripts/preflight-sdd.sh"
 
   - path: .github/workflows/sdd-gates.yml
     source: templates/.github/workflows/sdd-gates.yml
-    sha256: "f745616c620fb7125cf9adbc9fac1146f1133337d9963f4779067bad5198eda5"
+    sha256: "bbd1960c7f6cec244f54233837a8f83dc8998264271639de2ae9931a119cfec5"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f .github/workflows/sdd-gates.yml"

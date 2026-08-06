@@ -6,6 +6,15 @@ set -euo pipefail
 KIT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 MANIFEST="$KIT_DIR/MANIFEST.yaml"
 
+# SDD_PYTHON: env value trusted as-is; else resolve by capability (kit floor 3.8).
+# Unquoted expansions are deliberate — "py -3" is two words (fix-install-python-boundary D1/D3).
+if [[ -z "${SDD_PYTHON:-}" ]]; then
+  for _cand in "python3" "python" "py -3"; do
+    if $_cand -c 'import sys; raise SystemExit(0 if sys.version_info >= (3, 8) else 1)' 2>/dev/null; then SDD_PYTHON="$_cand"; break; fi
+  done
+fi
+[[ -n "${SDD_PYTHON:-}" ]] || { echo "ERROR: no usable Python interpreter (tried: python3, python, py -3; kit minimum 3.8)." >&2; exit 1; }
+
 # _sha256 <file> — returns lowercase hex sha256 digest, or empty string if unavailable
 _sha256() {
   if command -v sha256sum &>/dev/null; then
@@ -129,7 +138,7 @@ echo "--- File classification ---"
 while IFS=$'\t' read -r src dest merge label; do
   [[ -n "$dest" ]] || continue
   classify "$dest" "$merge" "$src" "$label"
-done < <(python3 - <<'PY' "$MANIFEST" "$PROFILE"
+done < <($SDD_PYTHON - <<'PY' "$MANIFEST" "$PROFILE" | tr -d '\r'
 import sys, re
 manifest_path = sys.argv[1]
 profile = sys.argv[2] if len(sys.argv) > 2 else ""
@@ -258,7 +267,7 @@ if $APPLY; then
     cp "$KIT_DIR/$src" "$REPO_ROOT/$dest"
     [[ "$dest" == *.sh ]] && chmod +x "$REPO_ROOT/$dest"
     echo "  APPLIED $dest"
-  done < <(python3 - "$MANIFEST" "$PROFILE" << 'PY'
+  done < <($SDD_PYTHON - "$MANIFEST" "$PROFILE" << 'PY' | tr -d '\r'
 import sys, re
 manifest_path = sys.argv[1]
 profile = sys.argv[2]

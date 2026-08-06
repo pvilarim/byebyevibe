@@ -77,6 +77,30 @@ jobs:
         timeout-minutes: 3
         run: bash scripts/verify-release-readiness.sh
 
+      # fix-install-python-boundary (design D7) — greenfield C1 smoke test.
+      # Every other gate runs against the hub, which already carries
+      # .github/workflows/ — exactly why a defect fatal to every genuine
+      # greenfield install (realpath on a missing parent) survived undetected.
+      # The target is an empty repo under runner.temp: not the hub checkout,
+      # not pre-seeded with .github/.
+      - name: Greenfield install smoke test (blocking)
+        timeout-minutes: 3
+        run: |
+          set -euo pipefail
+          T="${{ runner.temp }}/greenfield"
+          rm -rf "$T"; mkdir -p "$T"
+          cp -R sdd-kit "$T/"
+          mkdir -p "$T/scripts"
+          cp scripts/bootstrap-sdd.sh scripts/preflight-sdd.sh "$T/scripts/"
+          cd "$T"
+          git init -q .
+          bash sdd-kit/install.sh --profile DOCS_SPECS
+          # Exit code alone did not catch the realpath defect — assert files:
+          test -f .github/workflows/sdd-gates.yml   # the exact path that aborted pre-fix
+          count=$(find . -type f -not -path "./.git/*" -not -path "./sdd-kit/*" | wc -l)
+          echo "greenfield files installed: $count"
+          test "$count" -ge 20
+
       # D4 — report-only: verify.sh orquestra verify-infra.sh, que marca FAIL
       # para CLIs de conhecimento (GitNexus/Graphify) ausentes no runner e muta
       # openspec/infra.md. O resultado é reportado sem bloquear o merge; a
