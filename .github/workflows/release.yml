@@ -1,0 +1,159 @@
+# Release — publishes the GitHub Release for a pushed `v<MAJOR>.<MINOR>.<PATCH>` tag.
+# Origin: openspec/changes/add-github-release-flow/ (design D2, D5–D11).
+# Separate file from sdd-gates.yml (D7): that workflow declares `contents: read`
+# and runs on every push and pull request; this is the repository's only
+# write-scoped workflow and fires on nothing but a `v*` tag push.
+#
+# Every guard below re-derives its facts from the tagged commit. None of them
+# trusts that scripts/cut-release.sh ran — any collaborator with write access
+# can push a tag by hand (D8).
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+# D7/D11 — the narrowest scope that can create a Release; no secrets.
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          fetch-depth: 0
+
+      # D8 #1 — the trigger glob `v*` also matches `vendor-snapshot`, `v2-wip`,
+      # `v1.2`. The only write-scoped workflow in the repository never proceeds
+      # on a non-release tag.
+      - name: Guard — tag shape
+        run: |
+          set -euo pipefail
+          TAG="${GITHUB_REF_NAME}"
+          if ! printf '%s' "$TAG" | grep -qE '^v[0-9]+\.[0-9]+\.[0-9]+$'; then
+            {
+              echo "FAIL: tag '$TAG' is not a release tag."
+              echo 'Expected shape: ^v[0-9]+\.[0-9]+\.[0-9]+$'
+            } >&2
+            exit 1
+          fi
+          echo "VERSION=${TAG#v}" >> "$GITHUB_ENV"
+          echo "OK: tag shape $TAG"
+
+      # D8 #2 — ancestry. For an annotated tag push GITHUB_SHA names the *tag
+      # object*, not the commit; `merge-base --is-ancestor` happens to peel tag
+      # objects, but the intent is pinned explicitly with `^{commit}` rather
+      # than left to implicit peeling surviving actions/checkout changes.
+      - name: Guard — tagged commit is an ancestor of master
+        run: |
+          set -euo pipefail
+          COMMIT="$(git rev-parse "${GITHUB_SHA}^{commit}")"
+          git fetch --no-tags origin +refs/heads/master:refs/remotes/origin/master
+          if ! git merge-base --is-ancestor "$COMMIT" refs/remotes/origin/master; then
+            echo "FAIL: tagged commit $COMMIT is not an ancestor of origin/master" >&2
+            exit 1
+          fi
+          echo "OK: $COMMIT is an ancestor of origin/master"
+
+      # D8 #3 — the guard that stops a mislabeled hand-pushed tag. Without it a
+      # `v1.11.0` pushed at the 1.12.0 tip passes readiness, ancestry and
+      # extraction, and publishes a Release whose label, notes and tarball
+      # contents disagree.
+      - name: Guard — tag version equals MANIFEST version
+        run: |
+          set -euo pipefail
+          MANIFEST_VERSION="$(grep -E '^version:' sdd-kit/MANIFEST.yaml | head -1 | sed 's/.*"\(.*\)".*/\1/')"
+          if [ "$MANIFEST_VERSION" != "$VERSION" ]; then
+            echo "FAIL: tag v$VERSION disagrees with sdd-kit/MANIFEST.yaml version: \"$MANIFEST_VERSION\" at the tagged commit" >&2
+            exit 1
+          fi
+          echo "OK: tag version $VERSION equals MANIFEST version:"
+
+      # D8 #4 — run against the tagged commit, so master advancing with a
+      # breaking commit cannot poison an in-flight release.
+      - name: Guard — release readiness
+        run: bash scripts/verify-release-readiness.sh
+
+      # D6 — gh is preinstalled on ubuntu-latest; assert it before the build
+      # steps so an absent CLI surfaces as a named precondition rather than a
+      # confusing `gh: not found` at the publish step.
+      - name: Guard — gh CLI present
+        run: |
+          set -euo pipefail
+          if ! command -v gh >/dev/null 2>&1; then
+            echo "FAIL: gh CLI not found on the runner — the Release cannot be created (design D6)" >&2
+            exit 1
+          fi
+          gh --version
+
+      # D8 #5 — extraction is its own blocking step, writing to a file whose
+      # non-emptiness is asserted. It must NEVER be inlined into the publish
+      # command via process substitution: bash does not propagate a process
+      # substitution's exit status, so feeding `--notes-file` from one would
+      # silently publish an empty-bodied Release when extraction fails.
+      - name: Extract release notes
+        run: |
+          set -euo pipefail
+          bash scripts/release-notes.sh "$VERSION" > notes.md
+          test -s notes.md
+          echo "OK: notes.md extracted ($(wc -l < notes.md) lines)"
+
+      # D5 — the exact command documented verbatim in guide §2.18. `git archive`
+      # zeroes uid/gid and takes every mtime from the commit; `gzip -n` drops the
+      # filename and timestamp from the gzip header, the one place wall-clock
+      # time would otherwise leak in. Piping explicitly instead of using
+      # `--format=tar.gz` avoids depending on git's configurable tar.tgz.command.
+      - name: Build kit tarball
+        run: |
+          set -euo pipefail
+          git archive --format=tar --prefix="byebyevibe-kit-${VERSION}/" "v${VERSION}" \
+              sdd-kit scripts/bootstrap-sdd.sh scripts/preflight-sdd.sh \
+            | gzip -n > "byebyevibe-kit-${VERSION}.tar.gz"
+          sha256sum "byebyevibe-kit-${VERSION}.tar.gz" > "byebyevibe-kit-${VERSION}.tar.gz.sha256"
+          cat "byebyevibe-kit-${VERSION}.tar.gz.sha256"
+
+      # D11 — D5's byte-identity guarantee is parameterized by the builder's git
+      # version, which the runner image changes over time. Recording it lets a
+      # downloader whose regeneration mismatches distinguish tar-envelope drift
+      # across git majors from tampering.
+      - name: Append git-version footer to the notes
+        run: |
+          set -euo pipefail
+          GIT_VERSION="$(git --version | grep -oE '[0-9]+(\.[0-9]+)+' | head -1)"
+          {
+            echo ""
+            echo "---"
+            echo ""
+            echo "Built with git ${GIT_VERSION} on ubuntu-latest"
+          } >> notes.md
+
+      # D10 — draft-first. `gh release create` with assets is not atomic: it
+      # creates the (public) Release first and then uploads, so an upload flake
+      # would leave a public Release with no tarball and wedge the retry path
+      # with HTTP 422. The Release becomes visible only once both assets attach.
+      # A leftover *draft* from a failed run is deleted and replaced; a leftover
+      # *published* Release is not touched — published versions are immutable
+      # and are superseded by a new patch version, never re-cut.
+      - name: Publish Release (draft-first)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          TAG="v${VERSION}"
+          if gh release view "$TAG" --json isDraft --jq .isDraft 2>/dev/null | grep -qx true; then
+            echo "Leftover draft Release for $TAG from a previous run — deleting it."
+            gh release delete "$TAG" --yes
+          fi
+          gh release create "$TAG" \
+            --verify-tag \
+            --draft \
+            --title "$TAG" \
+            --notes-file notes.md \
+            "byebyevibe-kit-${VERSION}.tar.gz" \
+            "byebyevibe-kit-${VERSION}.tar.gz.sha256"
+          gh release edit "$TAG" --draft=false
+          echo "Published Release $TAG"
