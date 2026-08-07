@@ -71,3 +71,4 @@ Repository of specs, technical documentation, and courses by Pedro Vilarim. It s
 - We do not use an external vector DB — Supabase pgvector
 - We do not duplicate rules between AGENTS.md and openspec/project.md — always point, never copy
 - We do not integrate Headroom or automatic context compression into the SDD pipeline — evaluated and discarded (see `doc/avaliacoes/2026-03-26-headroom-context-compression.md`)
+- We do not integrate implicit cross-session agent memory (LLM-inferred facts/personas recalled into context) — memory lives in reviewed, versioned artifacts; TencentDB Agent Memory evaluated and discarded (see `doc/avaliacoes/2026-08-07-tencentdb-agent-memory.md`)
