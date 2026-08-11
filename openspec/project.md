@@ -72,3 +72,4 @@ Repository of specs, technical documentation, and courses by Pedro Vilarim. It s
 - We do not duplicate rules between AGENTS.md and openspec/project.md — always point, never copy
 - We do not integrate Headroom or automatic context compression into the SDD pipeline — evaluated and discarded (see `doc/avaliacoes/2026-03-26-headroom-context-compression.md`)
 - We do not integrate implicit cross-session agent memory (LLM-inferred facts/personas recalled into context) — memory lives in reviewed, versioned artifacts; TencentDB Agent Memory evaluated and discarded (see `doc/avaliacoes/2026-08-07-tencentdb-agent-memory.md`)
+- We do not install a second constitutional layer for agents (user-global system prompt, `~/.claude/CLAUDE.md`, or a rival "done" artifact) — `AGENTS.md` + `openspec/specs/` are the single source of agent authority; LifeOS evaluated and discarded as a runtime, its verification doctrine deferred as a pattern (see `doc/avaliacoes/2026-08-11-lifeos.md`)
