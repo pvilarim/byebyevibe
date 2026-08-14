@@ -1,5 +1,31 @@
 # Delta — sdd-ci-gates
 
+## MODIFIED Requirements
+
+### Requirement: verify-infra.sh runs report-only in CI
+
+The step that runs `sdd-kit/verify.sh` **against the hub checkout** in the CI workflow MUST be configured with `continue-on-error: true`. `sdd-kit/verify.sh` internally invokes `scripts/verify-infra.sh`, which reports FAIL for knowledge CLIs (GitNexus, Graphify) absent on ephemeral runners; making the hub-checkout step blocking would produce false negatives that would block legitimate merges. The fail-closed policy MUST apply to the `openspec validate`, `verify-task-patterns.sh`, **and OSV-Scanner when a lockfile is present** steps — the hub-checkout `sdd-kit verify` step MUST NOT block merge. This report-only mandate is scoped to the hub-checkout step: the consumer install smoke test MAY assert `sdd-kit/verify.sh` exit 0 as a blocking condition inside its temporary consumer repository, because `verify-infra.sh`'s advisory exit semantics make that exit code independent of the runner's knowledge CLIs.
+
+#### Scenario: Runner without GitNexus/Graphify installed
+
+- **WHEN** the `sdd-kit verify (report-only)` step runs against the hub checkout on a runner where GitNexus and Graphify are not installed
+- **THEN** the step reports WARN/FAIL internally but the workflow continues and the overall job result is not affected by this step alone
+
+#### Scenario: openspec validate fails in the same run
+
+- **WHEN** `openspec validate --all --strict` fails with non-zero exit
+- **THEN** the workflow ends in failure (fail-closed) regardless of the report-only step result
+
+#### Scenario: OSV-Scanner fails with vulnerable lockfile
+
+- **WHEN** OSV-Scanner runs (lockfile present) and reports a vulnerability
+- **THEN** the workflow ends in failure (fail-closed) regardless of the report-only `sdd-kit verify` step result
+
+#### Scenario: Consumer smoke verify assertion stays blocking
+
+- **WHEN** the consumer install smoke test's `bash sdd-kit/verify.sh` assertion fails inside the temporary consumer repository
+- **THEN** the job fails — the report-only mandate does not extend to the smoke test
+
 ## ADDED Requirements
 
 ### Requirement: CI exercises a consumer APP install end to end
@@ -17,7 +43,12 @@ The test MUST cover two variations:
 
 **Hub-mode (no kit in the target):** run the hub checkout's `install.sh --repo <temp>` against a second temp repository that has no `sdd-kit/`, and assert entries applied and `project.md` with the policy block — this variation reproduces the `--kit-root` asymmetry that silently produced zero-payload installs.
 
-The job MUST provision, with pinned versions where available, the tools the assertions legitimately require (the OpenSpec CLI the workflow already pins; the knowledge CLIs that `verify.sh` checks). The job MUST NOT fabricate artifacts (e.g. a fake graph report) to make a verification pass, and every step of the smoke test MUST use constructs portable per the workflow's Linux runner without misrepresenting other platforms.
+The job MUST provision the tools the assertions legitimately require (the OpenSpec CLI the workflow already pins) and MUST NOT provision tools that cannot change any assertion's outcome: `verify-infra.sh` is advisory by design (exits 0 without a TTY or `--write`), so the knowledge CLIs (GitNexus, Graphify) buy no gate strength and stay out of the job — a workflow comment MUST state this so the narrowing is not later "fixed" into flakiness. The job MUST NOT fabricate artifacts (e.g. a fake graph report) to make a verification pass.
+
+#### Scenario: The job carries no knowledge-CLI provisioning
+
+- **WHEN** the consumer smoke test job definition is read
+- **THEN** it installs no GitNexus or Graphify, and a comment states why their absence does not weaken the `verify.sh` assertion
 
 #### Scenario: Full-payload APP install passes
 

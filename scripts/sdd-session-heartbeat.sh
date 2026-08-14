@@ -21,7 +21,9 @@ if [[ ! -f "$SESSION_FILE" ]]; then
 fi
 
 NOW="$(sdd_session_now_iso)"
-python3 - <<'PY' "$SESSION_FILE" "$NOW"
+# $SDD_PYTHON is resolved and exported by sdd-session-lib.sh (sourced above);
+# unquoted by convention because "py -3" is two words.
+$SDD_PYTHON - <<'PY' "$SESSION_FILE" "$NOW"
 import json, sys
 path, now = sys.argv[1], sys.argv[2]
 with open(path) as f:

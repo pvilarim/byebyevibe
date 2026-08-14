@@ -24,7 +24,7 @@ FAILURES=0
 # 3.8). Soft here — this script degrades gracefully without Python.
 # Unquoted expansions are deliberate — "py -3" is two words (fix-install-python-boundary D1/D3).
 if [[ -z "${SDD_PYTHON:-}" ]]; then
-  for _cand in "python3" "python" "py -3"; do
+  for _cand in "python3" "python3.14" "python3.13" "python" "py -3" "/usr/bin/python3"; do
     if $_cand -c 'import sys; raise SystemExit(0 if sys.version_info >= (3, 8) else 1)' 2>/dev/null; then SDD_PYTHON="$_cand"; break; fi
   done
 fi
@@ -52,7 +52,11 @@ to_emoji() {
 replace_between() {
   local file="$1" marker="$2" value="$3"
   [[ -f "$file" ]] || return
-  sed -i "s|<!-- ${marker} -->.*<!-- /${marker} -->|<!-- ${marker} -->${value}<!-- /${marker} -->|" "$file"
+  # Temp file + mv, never in-place editing: GNU sed takes an optional suffix where
+  # BSD/macOS requires one, so no single in-place form is correct on both. No probe needed.
+  local _tmp
+  _tmp="$(mktemp)"
+  sed "s|<!-- ${marker} -->.*<!-- /${marker} -->|<!-- ${marker} -->${value}<!-- /${marker} -->|" "$file" > "$_tmp" && mv "$_tmp" "$file"
 }
 
 echo "==> verify-infra.sh ($TODAY)"
@@ -237,7 +241,9 @@ if [[ "$WRITE_MODE" -eq 0 ]]; then
 fi
 
 if [[ -f "$INFRA_FILE" ]]; then
-  sed -i "s|> Last verified: .* · Script:|> Last verified: ${TODAY} · Script:|" "$INFRA_FILE"
+  # Temp file + mv, never in-place editing (portable on GNU and BSD alike, no probe).
+  INFRA_TMP="$(mktemp)"
+  sed "s|> Last verified: .* · Script:|> Last verified: ${TODAY} · Script:|" "$INFRA_FILE" > "$INFRA_TMP" && mv "$INFRA_TMP" "$INFRA_FILE"
   replace_between "$INFRA_FILE" "openspec-version" "$OPENSPEC_VERSION"
   replace_between "$INFRA_FILE" "openspec-status" "$(to_emoji "$OPENSPEC_STATUS")"
   replace_between "$INFRA_FILE" "gitnexus-version" "$GITNEXUS_VERSION"

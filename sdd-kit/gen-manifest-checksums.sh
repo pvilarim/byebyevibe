@@ -44,11 +44,11 @@ fi
 # SDD_PYTHON: env value trusted as-is; else resolve by capability (kit floor 3.8).
 # Unquoted expansions are deliberate — "py -3" is two words (fix-install-python-boundary D1/D3).
 if [[ -z "${SDD_PYTHON:-}" ]]; then
-  for _cand in "python3" "python" "py -3"; do
+  for _cand in "python3" "python3.14" "python3.13" "python" "py -3" "/usr/bin/python3"; do
     if $_cand -c 'import sys; raise SystemExit(0 if sys.version_info >= (3, 8) else 1)' 2>/dev/null; then SDD_PYTHON="$_cand"; break; fi
   done
 fi
-[[ -n "${SDD_PYTHON:-}" ]] || { echo "ERROR: no usable Python interpreter (tried: python3, python, py -3; kit minimum 3.8)." >&2; exit 1; }
+[[ -n "${SDD_PYTHON:-}" ]] || { echo "ERROR: no usable Python interpreter (tried: python3, python3.14, python3.13, python, py -3, /usr/bin/python3; kit minimum 3.8)." >&2; exit 1; }
 
 # Single Python invocation processes the entire MANIFEST (avoids heredoc-in-loop issues)
 $SDD_PYTHON - "$MANIFEST" "$KIT_DIR" "$SHA256_CMD" "$CHECK_ONLY" << 'PY'

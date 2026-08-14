@@ -17,6 +17,31 @@ _sha256() {
     echo ""
   fi
 }
+
+# ensure_gitignore_entry <entry> — idempotently guarantee one line in the target's
+# .gitignore (create the file when absent, never duplicate an existing entry).
+# verify-infra.sh has always FAILed consumers for a missing `.sdd/runtime` entry that
+# nothing in the install ever wrote: a check guaranteed to fail everywhere, invisible
+# because verify-infra exits 0 without a TTY (sdd-fail-loud, design D12).
+ensure_gitignore_entry() {
+  local entry="$1"
+  local gi="$REPO_ROOT/.gitignore"
+  if $DRY_RUN; then
+    echo "  PLAN [GITIGNORE] $entry"
+    return 0
+  fi
+  if [[ -f "$gi" ]] && grep -qxF "$entry" "$gi"; then
+    return 0
+  fi
+  # Command substitution drops a trailing newline, so a non-empty result means the
+  # file does not end in one — append a separator before our entry.
+  if [[ -s "$gi" && -n "$(tail -c 1 "$gi")" ]]; then
+    printf '\n' >> "$gi"
+  fi
+  printf '%s\n' "$entry" >> "$gi"
+  echo "  GITIGNORE +$entry"
+}
+
 PROFILE=""
 DRY_RUN=false
 REPO_ROOT="."
@@ -102,8 +127,12 @@ inject_language_policy() {
     return 0
   fi
   if [[ ! -f "$project_md" ]]; then
-    echo "  WARN openspec/project.md missing — add Language policy after openspec init"
-    return 0
+    # The MANIFEST now ships templates/openspec/project.md, so absence here can only mean
+    # the copy loop failed to apply that entry. Warning and continuing turned a broken
+    # install into a reported success (sdd-fail-loud).
+    echo "ERROR: openspec/project.md absent after the template copy — the language policy could not be injected and the install is incomplete." >&2
+    echo "       Expected the MANIFEST entry 'openspec/project.md' to have created it. Nothing further was written." >&2
+    exit 1
   fi
 
   local tmp
@@ -222,10 +251,18 @@ if ! $SKIP_PREFLIGHT; then
     exit 1
   fi
   echo "==> Phase 0 — repo preflight (preflight-sdd.sh --repo)..."
+  PREFLIGHT_ARGS=(--repo --repo-root "$REPO_ROOT" --profile "$PROFILE")
+  # Hub mode: the target has no kit of its own, so preflight's sdd-kit presence check
+  # would FAIL and abort an install that is perfectly valid — the kit is right here.
+  # KIT_DIR is <kit-root>/sdd-kit, so its parent is the source kit root that
+  # preflight's --kit-root expects (fix-consumer-install D2).
+  if [[ ! -d "$REPO_ROOT/sdd-kit" ]]; then
+    PREFLIGHT_ARGS+=(--kit-root "$(dirname "$KIT_DIR")")
+  fi
   # Capture stdout: preflight --repo emits exactly one machine-readable line,
   # SDD_PYTHON=<candidate> (human output is on stderr). A child's `export`
   # cannot reach this parent — the stdout line is the transport (design D3).
-  SDD_PYTHON_LINE="$(bash "$PREFLIGHT_SCRIPT" --repo --repo-root "$REPO_ROOT" --profile "$PROFILE")" || {
+  SDD_PYTHON_LINE="$(bash "$PREFLIGHT_SCRIPT" "${PREFLIGHT_ARGS[@]}")" || {
     echo "ERROR: repo preflight FAILED — aborting before template copy." >&2
     exit 1
   }
@@ -239,7 +276,7 @@ else
   echo "==> Phase 0 — repo preflight skipped (--skip-preflight)"
   # Same resolution inline (SDD_PYTHON from the environment is trusted as-is).
   if [[ -z "${SDD_PYTHON:-}" ]]; then
-    for _cand in "python3" "python" "py -3"; do
+    for _cand in "python3" "python3.14" "python3.13" "python" "py -3" "/usr/bin/python3"; do
       # deliberate word split ("py -3" is two words) — do not quote
       if $_cand -c 'import sys; raise SystemExit(0 if sys.version_info >= (3, 8) else 1)' 2>/dev/null; then
         SDD_PYTHON="$_cand"
@@ -248,7 +285,7 @@ else
     done
   fi
   if [[ -z "${SDD_PYTHON:-}" ]]; then
-    echo "ERROR: no usable Python interpreter (tried: python3, python, py -3; kit minimum 3.8)." >&2
+    echo "ERROR: no usable Python interpreter (tried: python3, python3.14, python3.13, python, py -3, /usr/bin/python3; kit minimum 3.8)." >&2
     exit 1
   fi
   export SDD_PYTHON
@@ -351,8 +388,27 @@ merge_agents_profile() {
   fi
 
   if [[ -f "$dest_path" ]]; then
-    echo "  KEEP AGENTS.md (exists — merge manually or delete for fresh install)"
-    return 0
+    # D9: bootstrap snapshots AGENTS.md existence before ANY phase runs. "0" means the
+    # file did not exist then, so whatever is there now was written by openspec init or
+    # a knowledge CLI — tool output, not the operator's. Relocate it to the gitignored
+    # routing file rather than appending it to AGENTS.md, which must stay lean and free
+    # of gitnexus:start blocks (sdd-post-install-verification). Unset (install.sh run
+    # standalone) keeps the historical KEEP: no snapshot, no guessing.
+    if [[ "${SDD_AGENTS_PREEXISTED:-}" == "0" ]]; then
+      local generated="$REPO_ROOT/AGENTS.tools-generated.md"
+      if [[ -s "$generated" ]]; then
+        printf '\n' >> "$generated"
+        cat "$dest_path" >> "$generated"
+      else
+        cat "$dest_path" > "$generated"
+      fi
+      rm -f "$dest_path"
+      ensure_gitignore_entry "AGENTS.tools-generated.md"
+      echo "  MOVE AGENTS.md -> AGENTS.tools-generated.md (tool-generated since bootstrap start)"
+    else
+      echo "  KEEP AGENTS.md (exists — merge manually or delete for fresh install)"
+      return 0
+    fi
   fi
 
   local tmp merged
@@ -388,16 +444,15 @@ else
   REALPATH_M=false
 fi
 
-# Counter, not exit status: process substitution does not propagate its exit
-# code, so an interpreter failure would otherwise be a silent zero-file
-# "success" (design D5). tr strips the CR Python emits on Windows stdout,
-# which read -r would otherwise leave glued to the last field (design D4).
-APPLIED_COUNT=0
-while IFS=$'\t' read -r src dest merge sha256; do
-  [[ -n "$src" ]] || continue
-  apply_file "$src" "$dest" "$merge" "$sha256"
-  APPLIED_COUNT=$((APPLIED_COUNT + 1))
-done < <($SDD_PYTHON - "$MANIFEST" "$PROFILE" << 'PY' | tr -d '\r'
+# Temp-file transport, not process substitution: a heredoc feeding `< <(...)` is
+# unreliable on bash 3.2 (macOS ships 3.2.57), and process substitution discards the
+# generator's exit status, so an interpreter failure arrived as an empty stream — a
+# silent zero-file "success" (design D5, sdd-fail-loud). Writing to a file lets the
+# status be checked before a single entry is applied.
+MANIFEST_RAW="$(mktemp)"
+MANIFEST_TSV="$(mktemp)"
+MANIFEST_RC=0
+$SDD_PYTHON - "$MANIFEST" "$PROFILE" > "$MANIFEST_RAW" << 'PY' || MANIFEST_RC=$?
 import sys, re
 manifest_path, profile = sys.argv[1:3]
 text = open(manifest_path).read()
@@ -426,7 +481,25 @@ for e in entries:
         continue
     print(f"{e['source']}\t{e['path']}\t{e.get('merge','COPY')}\t{e.get('sha256','')}")
 PY
-)
+
+if [[ "$MANIFEST_RC" -ne 0 ]]; then
+  echo "ERROR: MANIFEST entry generation failed (exit $MANIFEST_RC, interpreter: $SDD_PYTHON) — nothing was installed." >&2
+  rm -f "$MANIFEST_RAW" "$MANIFEST_TSV"
+  exit 1
+fi
+
+# CR strip on the metadata stream only, never on file content: Python emits CRLF on
+# Windows stdout and read -r would leave the CR glued to the last field (design D4).
+tr -d '\r' < "$MANIFEST_RAW" > "$MANIFEST_TSV"
+rm -f "$MANIFEST_RAW"
+
+APPLIED_COUNT=0
+while IFS=$'\t' read -r src dest merge sha256; do
+  [[ -n "$src" ]] || continue
+  apply_file "$src" "$dest" "$merge" "$sha256"
+  APPLIED_COUNT=$((APPLIED_COUNT + 1))
+done < "$MANIFEST_TSV"
+rm -f "$MANIFEST_TSV"
 
 if [[ "$APPLIED_COUNT" -eq 0 ]]; then
   echo "ERROR: no templates applied — the MANIFEST parse produced an empty list (unusable interpreter or malformed MANIFEST). Nothing was installed." >&2
@@ -434,6 +507,9 @@ if [[ "$APPLIED_COUNT" -eq 0 ]]; then
 fi
 
 inject_language_policy
+
+# Session-coordination runtime state is machine-local and must never be committed.
+ensure_gitignore_entry ".sdd/runtime/"
 
 print_day1_operate_tip() {
   # Day-1 operate reminder (pointers only — NEVER invokes help/onboard here)
@@ -454,41 +530,91 @@ print_day1_operate_tip() {
 }
 
 print_optional_addons_teaser() {
-  # Optional entry points (pointers only — NEVER invoked here):
-  #   install-ui-module.sh · install-probity-module.sh · sdd-metrics.sh · guide §2.12
+  # Optional entry points (pointers only — NEVER invoked here). Copy shape: what you get
+  # if you install it, and when to skip — a name plus a section number told nobody
+  # anything (consumer-defects §9, "Decisão 2").
+  local remotes prefix
+  # Guarded: install.sh runs under `set -euo pipefail` and `git remote` exits 128 in a
+  # target that is not a git repository — unguarded, it would kill the install here.
+  remotes="$(git remote -v 2>/dev/null || true)"
+  prefix=""
+  $DRY_RUN && prefix="PLAN — "
+
+  # Module scripts are printed from $KIT_DIR: they are NOT MANIFEST entries, so no copy of
+  # them exists in the target on the hub-mode path. sdd-metrics.sh IS installed, so it is
+  # referenced relative to the repo root.
   echo ""
-  if $DRY_RUN; then
-    if [[ "$CHAT_LANG" == "pt-BR" ]]; then
-      echo "PLAN — Complementos opcionais (somente lembrete; NÃO instalados neste dry-run):"
-      echo "  · UI (C1-UI)     → guia §2.11 · sdd-kit/install-ui-module"
-      echo "  · Probity (G2)   → guia §2.16 · sdd-kit/install-probity-module"
-      echo "  · CI gates       → guia §2.12 · proteção de branch (manual)"
-      echo "  · Métricas (G4)  → guia §2.17 · scripts/sdd-metrics"
-      echo "  (ponteiros apenas — rode depois do checklist §2.8 se fizer sentido)"
-    else
-      echo "PLAN — Optional add-ons (informational only; NOT installed in this dry-run):"
-      echo "  · UI (C1-UI)     → guide §2.11 · sdd-kit/install-ui-module"
-      echo "  · Probity (G2)   → guide §2.16 · sdd-kit/install-probity-module"
-      echo "  · CI gates       → guide §2.12 · branch protection (manual)"
-      echo "  · Metrics (G4)   → guide §2.17 · scripts/sdd-metrics"
-      echo "  (pointers only — run after checklist §2.8 if they fit)"
-    fi
-    return 0
-  fi
   if [[ "$CHAT_LANG" == "pt-BR" ]]; then
-    echo "Complementos opcionais (ponteiros apenas — não instalados agora):"
-    echo "  · UI (C1-UI)     → guia §2.11 · sdd-kit/install-ui-module"
-    echo "  · Probity (G2)   → guia §2.16 · sdd-kit/install-probity-module"
-    echo "  · CI gates       → guia §2.12 · proteção de branch (manual)"
-    echo "  · Métricas (G4)  → guia §2.17 · scripts/sdd-metrics"
-    echo "  Rode depois do checklist §2.8 se fizer sentido. Sem menu; sem auto-install."
+    echo "${prefix}Complementos opcionais — nada disto foi instalado agora."
+    echo ""
+    echo "  MÓDULO DE UI"
+    echo "    Se o seu projeto tem tela — site, app, painel — e você não quer que a IA"
+    echo "    invente um botão diferente em cada página, instale o módulo de UI, e tenha"
+    echo "    um padrão visual escrito que a IA lê antes de mexer no visual."
+    echo "    Pule se: este repo não tem front-end."
+    echo "      bash $KIT_DIR/install-ui-module.sh --detect"
+    echo ""
+    echo "  PROBITY — teste antes do código"
+    echo "    Se você quer garantir que a IA escreva o teste primeiro (e não um \"teste\""
+    echo "    depois que tudo já está pronto e passando), instale o Probity, e tenha um"
+    echo "    bloqueio automático: a IA não consegue escrever o código sem um teste"
+    echo "    falhando antes."
+    echo "    Pule se: este projeto ainda não roda testes."
+    echo "      bash $KIT_DIR/install-probity-module.sh --detect"
+    echo ""
+    echo "  TRAVAS DE CI — passo manual no GitHub, não é um módulo"
+    if [[ -n "$remotes" ]]; then
+      echo "    Se o código vai para o GitHub e outra pessoa vai mexer nele, ligue a"
+      echo "    proteção de branch, e tenha o merge barrado quando spec ou tarefa"
+      echo "    estiverem fora do padrão. O robô já foi instalado"
+      echo "    (.github/workflows/sdd-gates.yml); falta ligar a proteção no GitHub."
+      echo "    Pule se: ninguém além de você vai abrir PR neste repo."
+    else
+      echo "    O robô já foi instalado (.github/workflows/sdd-gates.yml), mas este repo"
+      echo "    não tem remote: as travas ficam INERTES até existir um remote no GitHub e"
+      echo "    a proteção de branch ser ligada lá — as duas coisas são manuais."
+    fi
+    echo ""
+    echo "  MÉTRICAS"
+    echo "    Se você já fechou umas cinco mudanças e quer saber onde o tempo está indo,"
+    echo "    rode o relatório, e tenha tempo por mudança e quanto virou retrabalho."
+    echo "    Pule no primeiro dia: sem histórico não há o que medir."
+    echo "      bash scripts/sdd-metrics.sh"
   else
-    echo "Optional add-ons (pointers only — not installed now):"
-    echo "  · UI (C1-UI)     → guide §2.11 · sdd-kit/install-ui-module"
-    echo "  · Probity (G2)   → guide §2.16 · sdd-kit/install-probity-module"
-    echo "  · CI gates       → guide §2.12 · branch protection (manual)"
-    echo "  · Metrics (G4)   → guide §2.17 · scripts/sdd-metrics"
-    echo "  Run after checklist §2.8 if they fit. No menu; no auto-install."
+    echo "${prefix}Optional add-ons — none of this was installed just now."
+    echo ""
+    echo "  UI MODULE"
+    echo "    If your project has a screen — site, app, dashboard — and you do not want the"
+    echo "    AI inventing a different button on every page, install the UI module, and get"
+    echo "    a written visual standard the AI reads before touching anything visual."
+    echo "    Skip if: this repo has no front-end."
+    echo "      bash $KIT_DIR/install-ui-module.sh --detect"
+    echo ""
+    echo "  PROBITY — test before code"
+    echo "    If you want the AI to write the test first (not a \"test\" bolted on once"
+    echo "    everything already works), install Probity, and get an automatic block: the"
+    echo "    AI cannot write the code without a failing test in front of it."
+    echo "    Skip if: this project does not run tests yet."
+    echo "      bash $KIT_DIR/install-probity-module.sh --detect"
+    echo ""
+    echo "  CI GATES — a manual GitHub step, not a module"
+    if [[ -n "$remotes" ]]; then
+      echo "    If the code goes to GitHub and someone else will touch it, turn on branch"
+      echo "    protection, and get merges blocked when a spec or task is off-standard."
+      echo "    The robot is already installed (.github/workflows/sdd-gates.yml); enabling"
+      echo "    the protection on GitHub is what is left."
+      echo "    Skip if: nobody but you will ever open a PR here."
+    else
+      echo "    The robot is already installed (.github/workflows/sdd-gates.yml), but this"
+      echo "    repo has no remote: the gates stay INERT until a GitHub remote exists and"
+      echo "    branch protection is enabled there — both are manual steps."
+    fi
+    echo ""
+    echo "  METRICS"
+    echo "    If you have closed five or so changes and want to know where the time went,"
+    echo "    run the report, and get time per change and how much became rework."
+    echo "    Skip on day one: no history, nothing to measure."
+    echo "      bash scripts/sdd-metrics.sh"
   fi
 }
 

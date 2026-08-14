@@ -61,7 +61,9 @@ fi
 
 # CI gates (G1): workflow instalado + template no hub (add-sdd-ci-gates-workflow)
 run_check "sdd-gates workflow" test -f "$REPO_ROOT/.github/workflows/sdd-gates.yml"
-if [[ -d "$REPO_ROOT/sdd-kit/templates" ]]; then
+# Hub identity is the explicit .sdd-hub marker, never directory shape (fix-consumer-install D1):
+# a consumer holding a full copy of sdd-kit/ has templates/ too, and used to be misread as the hub.
+if [[ -f "$REPO_ROOT/.sdd-hub" ]]; then
   run_check "sdd-gates template" test -f "$REPO_ROOT/sdd-kit/templates/.github/workflows/sdd-gates.yml"
 fi
 
@@ -121,15 +123,20 @@ else
   echo "INFO: AGENTS.md not present — language placeholder check skipped"
 fi
 
-if [[ -f "$REPO_ROOT/openspec/project.md" ]]; then
-  if [[ -d "$REPO_ROOT/sdd-kit/templates" ]]; then
-    echo "INFO: hub distribution repo — Language policy in project.md skipped (grandfathered per sdd-language-policy)"
-  elif grep -q '## Language policy' "$REPO_ROOT/openspec/project.md" \
-     && grep -q 'chat_language\|docs_language\|code_language' "$REPO_ROOT/openspec/project.md"; then
-    echo "OK: openspec/project.md Language policy present"
-  else
-    echo "WARN: openspec/project.md missing Language policy section (add after install — see guide §2.1.1)" >&2
-  fi
+# Consumers: blocking. The kit ships openspec/project.md with the policy block, so a
+# missing file or a missing block means the install did not do what it reported
+# (sdd-fail-loud). The hub keeps its grandfathered skip, keyed on the .sdd-hub marker.
+if [[ -f "$REPO_ROOT/.sdd-hub" ]]; then
+  echo "INFO: hub distribution repo — Language policy in project.md skipped (grandfathered per sdd-language-policy)"
+elif [[ ! -f "$REPO_ROOT/openspec/project.md" ]]; then
+  echo "FAIL: openspec/project.md absent — Language policy check cannot run (the kit ships this file; see guide §2.1.1)" >&2
+  ((FAILURES++)) || true
+elif grep -q '## Language policy' "$REPO_ROOT/openspec/project.md" \
+   && grep -q 'chat_language\|docs_language\|code_language' "$REPO_ROOT/openspec/project.md"; then
+  echo "OK: openspec/project.md Language policy present"
+else
+  echo "FAIL: openspec/project.md missing Language policy section (see guide §2.1.1)" >&2
+  ((FAILURES++)) || true
 fi
 
 # Soft WARN: phase-0 Preflight never stamped (non-blocking — do not increment FAILURES)
