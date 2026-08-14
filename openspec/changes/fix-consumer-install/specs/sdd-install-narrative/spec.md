@@ -18,8 +18,13 @@ Every install surface that presents the profile choice (guide §1.6 canonical co
 
 #### Scenario: Profile and language questions stay separate
 
-- **WHEN** the operator answers the profile question
-- **THEN** the language axes are presented as an independent question per `sdd-language-policy`, not folded into the profile choice
+- **WHEN** the operator answers the profile question with `chat_language` set to pt-BR
+- **THEN** the profile copy renders in pt-BR without altering or merging into the three language-axes prompts
+
+#### Scenario: No jargon in profile descriptions
+
+- **WHEN** a lay operator reads any profile option description
+- **THEN** no option requires understanding internal terms such as pattern pointers, MANIFEST entries, or verification scripts to make the choice
 
 ### Requirement: Post-install optional add-ons teaser
 

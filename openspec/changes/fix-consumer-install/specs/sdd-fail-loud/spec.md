@@ -6,7 +6,7 @@
 
 Every install, bootstrap, upgrade, or verification step in the kit and its distributed scripts MUST, when it cannot execute its intended check or action, either (a) fail the run with a non-zero exit and a message naming what did not happen, or (b) — only where the step is explicitly declared optional or best-effort by a spec — emit an explicit statement that the step did not run and why. Reporting success, remaining silent, or downgrading a not-run mandatory step to a warning while exiting zero is forbidden.
 
-This is the normative home of the vacuous-pass family observed six times in the 1.14.0 cycle: the zero-file install that printed "Done.", the release-readiness check that compared nothing, the `flock` acquisition that silently never held a lock, the silenced `openspec init` failure, the `verify.sh` language check skipped when `project.md` was absent, and the bootstrap that treated a failed payload install as WARN and exited 0. New gates and checks MUST be designed against this requirement.
+This is the normative home of the vacuous-pass family observed seven times in the 1.14.0 cycle: the zero-file install that printed "Done.", the release-readiness check that compared nothing, the `flock` acquisition that silently never held a lock, the silenced `openspec init` failure, the `verify.sh` language check skipped when `project.md` was absent, the bootstrap that treated a failed payload install as WARN and exited 0, and the `.sdd/runtime` gitignore check that failed in every consumer forever because nothing in the install ever wrote the entry — masked by an advisory exit code. New gates and checks MUST be designed against this requirement.
 
 #### Scenario: Mandatory step failure is fatal to the caller
 

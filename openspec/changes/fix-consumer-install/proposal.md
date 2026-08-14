@@ -23,7 +23,7 @@ Ordered — item 1 is a prerequisite for the smoke test (item 10) not to fail fo
 10. **The gate that proves everything** — consumer install smoke test in `sdd-gates.yml`: temp repo outside the checkout, end-to-end APP-profile install, asserting every APP MANIFEST entry applied (not just exit 0), `sdd-kit/verify.sh` exit 0, `openspec validate --all --strict` exit 0, and `openspec/project.md` present with the language-policy block. Catches defects 1, 2, 3, 4, 5, 7 on its own. Includes a hub-mode variation for defect 1.
 11. **Optional add-ons message** rewritten in the "If you need X, install Y, and get Z / Skip if…" formula (ready copy in consumer-defects §9.2). "CI gates" stops being listed as a module: it is a manual GitHub step, and the message detects an empty `git remote -v` and says so.
 
-Cross-cutting: the recurring failure family — *a step that cannot run reports success* (6 known instances: empty install pre-1.14.0, vacuous readiness, `flock`, `openspec init`, `verify.sh` without `project.md`, bootstrap WARN) — becomes a **transversal requirement** in a new capability instead of six point fixes.
+Cross-cutting: the recurring failure family — *a step that cannot run reports success* (7 known instances: empty install pre-1.14.0, vacuous readiness, `flock`, `openspec init`, `verify.sh` without `project.md`, bootstrap WARN, and the `.sdd/runtime` gitignore check that no install ever satisfies — found by this change's own adversarial pass) — becomes a **transversal requirement** in a new capability instead of point fixes.
 
 ## Capabilities
 

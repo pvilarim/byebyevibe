@@ -4,7 +4,7 @@
 
 ### Requirement: Hub context is identified by an explicit marker
 
-The distribution hub repository MUST carry a marker file `.sdd-hub` at its repository root, committed in the hub only. The marker MUST NOT be listed in the MANIFEST, MUST NOT live inside `sdd-kit/`, and MUST NOT be part of the release tarball footprint, so no acquisition path can deliver it to a consumer. Every kit script that branches on "am I running in the hub?" (parity checks, grandfathering skips, readiness hub-only claims) MUST test for this marker and MUST NOT infer hub identity from directory shape (e.g. the presence of `sdd-kit/templates/`), because in APP-profile consumers that directory legitimately exists.
+The distribution hub repository MUST carry a marker file `.sdd-hub` at its repository root, committed in the hub only. The marker MUST NOT be listed in the MANIFEST, MUST NOT live inside `sdd-kit/`, and MUST NOT be part of the release tarball footprint, so neither the release-download nor the lightweight-fetch acquisition path can deliver it to a consumer (a full hub clone does contain it — by definition: the clone *is* the hub). Every kit script that branches on "am I running in the hub?" (parity checks, grandfathering skips, readiness hub-only claims) MUST test for this marker and MUST NOT infer hub identity from directory shape (e.g. the presence of `sdd-kit/templates/`), because in APP-profile consumers that directory legitimately exists.
 
 #### Scenario: Consumer with a full copied kit is not mistaken for the hub
 
@@ -18,7 +18,7 @@ The distribution hub repository MUST carry a marker file `.sdd-hub` at its repos
 
 ### Requirement: Kit ships a project.md template
 
-The MANIFEST MUST include an entry delivering `openspec/project.md` from `sdd-kit/templates/openspec/project.md` with `merge: MERGE` (copy when absent, keep the operator's file when present) for all profiles. The template MUST contain a minimal constitution skeleton (Purpose, Stack, Conventions, Constraints) with explicit fill-me placeholders and MUST contain the `<!-- SDD_LANGUAGE_POLICY_START -->` / `<!-- SDD_LANGUAGE_POLICY_END -->` anchor markers so language-policy injection always has its target. This entry exists because non-interactive `openspec init` does not generate `project.md`, which left the `sdd-language-policy` capability without a persistence target in every 1.14.0 APP install.
+The MANIFEST MUST include an entry delivering `openspec/project.md` from `sdd-kit/templates/openspec/project.md` with `merge: MERGE` (copy when absent, keep the operator's file when present) for all profiles. The template MUST contain a minimal constitution skeleton (Purpose, Stack, Conventions, Constraints, and a Cross-references section pointing to the installed guide and the kit, per the constitution requirement in `sdd-post-install-verification`) with explicit fill-me placeholders, and MUST contain the **full `## Language policy` block — heading included — surrounding** the `<!-- SDD_LANGUAGE_POLICY_START -->` / `<!-- SDD_LANGUAGE_POLICY_END -->` anchor markers: the injection's marker branch replaces only between the markers and never emits the heading. The template MUST NOT contain the literal string `DOCS_SPECS` anywhere: `verify-task-patterns.sh` reads `project.md` first for profile detection, and the literal would flip every consumer into fail-closed DOCS_SPECS mode. This entry exists because non-interactive `openspec init` does not generate `project.md`, which left the `sdd-language-policy` capability without a persistence target in every 1.14.0 APP install.
 
 #### Scenario: Greenfield install materializes project.md
 
@@ -57,12 +57,17 @@ This reverts the 2026-08-05 decision (`simplify-install-profiles`, "never receiv
 
 ### Requirement: bootstrap-sdd.sh treats kit payload install failure as fatal
 
-When the `sdd-kit/install.sh` phase of `scripts/bootstrap-sdd.sh` exits non-zero, the bootstrap MUST exit non-zero with an error stating that the payload was not installed. A payload that was not copied is not a warning (per `sdd-fail-loud`). The optional-continue behavior for GitNexus and Graphify phases is unaffected: those integrations are optional; the kit payload is the reason the command exists.
+When the `sdd-kit/install.sh` phase of `scripts/bootstrap-sdd.sh` exits non-zero **or cannot run at all** (no installer found in either the target or the source root), the bootstrap MUST exit non-zero with an error stating that the payload was not installed. A payload that was not copied is not a warning, whether the phase failed or was skipped (per `sdd-fail-loud`). The optional-continue behavior for GitNexus and Graphify phases is unaffected: those integrations are optional; the kit payload is the reason the command exists.
 
 #### Scenario: Failed install fails the bootstrap
 
 - **WHEN** `sdd-kit/install.sh` exits 1 during `bash scripts/bootstrap-sdd.sh <target>`
 - **THEN** the bootstrap exits non-zero and does not print its completion message
+
+#### Scenario: Missing installer in both roots fails the bootstrap
+
+- **WHEN** neither the target nor the bootstrap's source root carries `sdd-kit/install.sh`
+- **THEN** the bootstrap exits non-zero naming the missing payload installer, instead of warning and completing
 
 #### Scenario: GitNexus failure still does not abort
 
@@ -80,17 +85,40 @@ The `openspec init` invocation in `scripts/bootstrap-sdd.sh` MUST NOT suppress i
 
 ### Requirement: AGENTS.md merge distinguishes operator files from tool-generated files
 
-`scripts/bootstrap-sdd.sh` MUST record whether `AGENTS.md` existed in the target before its tool phases (GitNexus/Graphify) run, and MUST communicate that fact to `sdd-kit/install.sh` (e.g. via an exported variable). When `install.sh`'s AGENTS.md merge finds an existing file that did **not** pre-exist the tool phases, it MUST treat the content as tool-generated: write the kit AGENTS.md for the resolved profile and re-append the tool-injected content, instead of keeping the file untouched. The C1 phase order (OpenSpec → GitNexus → Graphify → `install.sh`) MUST NOT change. When `install.sh` runs standalone (no snapshot available), the existing KEEP behavior for pre-existing files stands — without a snapshot the installer must not guess.
+`scripts/bootstrap-sdd.sh` MUST record whether `AGENTS.md` existed in the target at bootstrap start, before any phase runs, and MUST communicate that fact to `sdd-kit/install.sh` (e.g. via an exported variable). When `install.sh`'s AGENTS.md merge finds an existing file that did **not** pre-exist the bootstrap, it MUST treat the content as tool-generated: write the kit AGENTS.md for the resolved profile and relocate the tool-injected content to `AGENTS.tools-generated.md` (the gitignored tool-output file mandated by `sdd-post-install-verification`), instead of keeping the file untouched. The resulting `AGENTS.md` MUST satisfy the existing lean-entry-point requirement — in particular it MUST NOT contain the `<!-- gitnexus:start -->` block and MUST respect the line cap. The C1 phase order (OpenSpec → GitNexus → Graphify → `install.sh`) MUST NOT change. When `install.sh` runs standalone (no snapshot available), the existing KEEP behavior for pre-existing files stands — without a snapshot the installer must not guess.
 
 #### Scenario: GitNexus-created AGENTS.md does not suppress the kit's
 
 - **WHEN** the target had no `AGENTS.md`, `gitnexus analyze` created one during bootstrap, and the kit install phase runs
-- **THEN** the resulting `AGENTS.md` contains the kit's profile content and preserves the GitNexus-injected block, and the installer does not report `KEEP`
+- **THEN** the resulting `AGENTS.md` contains the kit's profile content without the GitNexus block, the tool-injected content is preserved in `AGENTS.tools-generated.md`, and the installer does not report `KEEP`
 
 #### Scenario: Operator-authored AGENTS.md is still kept
 
 - **WHEN** the target repository already had an `AGENTS.md` before bootstrap started
 - **THEN** the merge keeps the operator's file per existing MERGE semantics
+
+### Requirement: Installer provisions the runtime gitignore entry
+
+`sdd-kit/install.sh` MUST idempotently ensure that the target repository's `.gitignore` contains the `.sdd/runtime/` entry (creating or appending to `.gitignore` when needed, never duplicating the line). This closes the seventh fail-loud instance: `verify-infra.sh` checks for that entry, but nothing in the install ever wrote it, so every fresh consumer failed the check forever — masked only by verify-infra's advisory exit code.
+
+#### Scenario: Fresh install provisions the entry
+
+- **WHEN** a C1 install completes in a repository with no `.gitignore`
+- **THEN** `.gitignore` exists and contains `.sdd/runtime/`
+
+#### Scenario: Existing gitignore is appended, not duplicated
+
+- **WHEN** the install runs twice in a repository whose `.gitignore` already carries the entry
+- **THEN** the entry appears exactly once and the rest of the operator's `.gitignore` is untouched
+
+### Requirement: Module install scripts keep hub parity coverage
+
+With their MANIFEST self-copy entries removed, `sdd-kit/install-ui-module.sh` and `sdd-kit/install-probity-module.sh` lose sha256 coverage (checksum tooling iterates MANIFEST `source:` fields). `scripts/verify-release-readiness.sh` MUST therefore extend its hub parity check to the two live↔template pairs (`sdd-kit/install-ui-module.sh` ↔ `sdd-kit/templates/install-ui-module.sh`, `sdd-kit/install-probity-module.sh` ↔ `sdd-kit/templates/install-probity-module.sh`), failing on drift, so the module scripts cannot silently diverge from what the kit distributes.
+
+#### Scenario: Drifted module script fails readiness
+
+- **WHEN** `sdd-kit/install-ui-module.sh` differs from `sdd-kit/templates/install-ui-module.sh` and `bash scripts/verify-release-readiness.sh` runs in the hub
+- **THEN** the parity check reports FAIL and the script exits non-zero
 
 ### Requirement: In-place file edits are portable across sed variants
 
@@ -102,6 +130,36 @@ Kit and distributed scripts MUST NOT use `sed -i`: BSD and GNU forms of the flag
 - **THEN** no call site remains in `scripts/preflight-sdd.sh`, `scripts/verify-infra.sh`, `sdd-kit/install-ui-module.sh`, or their template mirrors
 
 ## MODIFIED Requirements
+
+### Requirement: bootstrap-sdd.sh resolves preflight and kit from its own source repo
+
+When the target repo lacks `scripts/preflight-sdd.sh` and `sdd-kit/templates/scripts/preflight-sdd.sh`, `bootstrap-sdd.sh` MUST fall back to the corresponding script under its own source root (the repo containing the running script, resolved from the script's own path). When the target repo lacks `sdd-kit/install.sh`, the script MUST run the source root's `sdd-kit/install.sh` with `--repo <target>` instead of warning and skipping the payload phase. Target-local copies MUST take precedence when present. When neither the target nor the source root provides the needed file, the bootstrap MUST exit non-zero naming the missing file — warn-and-continue here is the zero-payload silent failure `sdd-fail-loud` forbids.
+
+#### Scenario: Greenfield target installs payload from hub
+
+- **WHEN** `bash <hub>/scripts/bootstrap-sdd.sh <greenfield-target> --profile APP` runs and the target has no `sdd-kit/`
+- **THEN** preflight and `install.sh` resolve from the hub clone, and the target receives the payload copy in one command
+
+#### Scenario: Target-local kit wins
+
+- **WHEN** the target repo carries its own `sdd-kit/install.sh`
+- **THEN** bootstrap uses the target's copy, preserving consumer self-bootstrap behavior
+
+### Requirement: An empty template list aborts the install
+
+`sdd-kit/install.sh` MUST verify that the profile-filtered template list it consumed was non-empty, and MUST exit non-zero when it was not. It MUST NOT report completion, and MUST NOT print its next-steps guidance, after applying zero files.
+
+This check is retained as defense in depth even though the template list is now transported through a temporary file whose producer's exit status is checked explicitly (per the Python-to-shell boundary requirement): an interpreter that exits zero while emitting an empty or unusable list would still be indistinguishable from a successful run without it.
+
+#### Scenario: Zero templates applied
+
+- **WHEN** `install.sh` completes its template loop having applied no files
+- **THEN** it exits non-zero with a message stating that no templates were applied, and does not print the completion or next-steps output
+
+#### Scenario: Normal install is unaffected
+
+- **WHEN** `install.sh` applies at least one template for the selected profile
+- **THEN** the check passes and the install proceeds to its completion output
 
 ### Requirement: verify.sh validates MANIFEST sha256 parity in hub context
 
@@ -177,6 +235,26 @@ In hub context — identified by the explicit `.sdd-hub` marker at the repositor
 
 - **WHEN** an agent is prompted to install SDD in a foreign repository
 - **THEN** the guide directs it to `sdd-kit/install.sh` with profile flag rather than extracting §12 code blocks for scripts
+
+#### Scenario: Operator learns install scopes before second project
+
+- **WHEN** an operator reads §1.6 asking whether a second project requires full reinstallation
+- **THEN** the install-scope table shows machine-once vs repo-copied vs repo-generated scope, and the hub→destination command shows how to install into a new target folder with one command
+
+#### Scenario: Scope table is single-sourced
+
+- **WHEN** any other canonical surface (kit README, day-1 doc) mentions install scope
+- **THEN** it links to guide §1.6 with at most a three-sentence summary, without duplicating the full table
+
+#### Scenario: Lay operator answers the profile question
+
+- **WHEN** a first-time operator with no SDD vocabulary reads the §1.6 profile block
+- **THEN** the copy lets them choose by answering whether the repository will hold application code, and tells them the complete framework installs either way
+
+#### Scenario: Hub content clarified at decision time
+
+- **WHEN** an operator browsing the hub's specs wonders whether their project must receive them
+- **THEN** the §1.6 profile copy states the hub's specs and development history are ByeByeVibe's own and are never copied to target projects, while the operator guide is delivered
 
 #### Scenario: Guide-delivery statement replaces the blanket exclusion
 
