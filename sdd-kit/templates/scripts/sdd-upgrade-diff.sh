@@ -12,11 +12,11 @@ cd "$REPO_ROOT"
 # SDD_PYTHON: env value trusted as-is; else resolve by capability (kit floor 3.8).
 # Unquoted expansions are deliberate — "py -3" is two words (fix-install-python-boundary D1/D3).
 if [[ -z "${SDD_PYTHON:-}" ]]; then
-  for _cand in "python3" "python" "py -3"; do
+  for _cand in "python3" "python3.14" "python3.13" "python" "py -3" "/usr/bin/python3"; do
     if $_cand -c 'import sys; raise SystemExit(0 if sys.version_info >= (3, 8) else 1)' 2>/dev/null; then SDD_PYTHON="$_cand"; break; fi
   done
 fi
-[[ -n "${SDD_PYTHON:-}" ]] || { echo "ERROR: no usable Python interpreter (tried: python3, python, py -3; kit minimum 3.8)." >&2; exit 1; }
+[[ -n "${SDD_PYTHON:-}" ]] || { echo "ERROR: no usable Python interpreter (tried: python3, python3.14, python3.13, python, py -3, /usr/bin/python3; kit minimum 3.8)." >&2; exit 1; }
 
 GUIDE_VERSION=""
 if [[ -f openspec/project.md ]]; then
@@ -33,9 +33,14 @@ CURATED_DESTS=()
 CURATED_SOURCES=()
 MANIFEST="sdd-kit/MANIFEST.yaml"
 if [[ -f "$MANIFEST" ]]; then
-  while IFS=$'\t' read -r dest src; do
-    [[ -n "$dest" ]] && CURATED_DESTS+=("$dest") && CURATED_SOURCES+=("${src:-$dest}")
-  done < <($SDD_PYTHON - <<'PY' "$MANIFEST" | tr -d '\r'
+  # Temp-file transport, not process substitution: a heredoc feeding `< <(...)` is
+  # unreliable on bash 3.2 (macOS), and process substitution hides the generator's exit
+  # status — a failed parse would yield an empty inventory and a clean-looking diff
+  # (sdd-fail-loud).
+  INVENTORY_RAW="$(mktemp)"
+  INVENTORY_TSV="$(mktemp)"
+  INVENTORY_RC=0
+  $SDD_PYTHON - "$MANIFEST" > "$INVENTORY_RAW" << 'PY' || INVENTORY_RC=$?
 import sys, re
 text = open(sys.argv[1]).read()
 entries, block = [], None
@@ -52,7 +57,21 @@ if block and "path" in block: entries.append(block)
 for e in entries:
     print(f"{e['path']}\t{e.get('source','')}")
 PY
-)
+
+  if [[ "$INVENTORY_RC" -ne 0 ]]; then
+    echo "ERROR: MANIFEST inventory generation failed (exit $INVENTORY_RC, interpreter: $SDD_PYTHON) — no diff was produced." >&2
+    rm -f "$INVENTORY_RAW" "$INVENTORY_TSV"
+    exit 1
+  fi
+
+  # CR strip on the metadata stream only (Windows CRLF on Python stdout).
+  tr -d '\r' < "$INVENTORY_RAW" > "$INVENTORY_TSV"
+  rm -f "$INVENTORY_RAW"
+
+  while IFS=$'\t' read -r dest src; do
+    [[ -n "$dest" ]] && CURATED_DESTS+=("$dest") && CURATED_SOURCES+=("${src:-$dest}")
+  done < "$INVENTORY_TSV"
+  rm -f "$INVENTORY_TSV"
   echo "Inventory source: sdd-kit/MANIFEST.yaml (${#CURATED_DESTS[@]} files)"
 else
   CURATED_DESTS=(

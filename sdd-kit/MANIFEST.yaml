@@ -19,7 +19,7 @@ profiles: [APP, DOCS_SPECS, HYBRID]
 files:
   - path: scripts/verify-infra.sh
     source: templates/scripts/verify-infra.sh
-    sha256: "968f65f430d47b9a75dea2c2546051de8626c6361e273cea28cddb6ba3d6dec1"
+    sha256: "406c8aebc2a71960efc852edff49ae7ea8b69f5095fec962e133be39943eac6a"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -x scripts/verify-infra.sh"
@@ -33,14 +33,14 @@ files:
 
   - path: scripts/verify-release-readiness.sh
     source: templates/scripts/verify-release-readiness.sh
-    sha256: "7d45957908dba7fb763eac856b5f12d0ea023b9bf1a5955f12ad5b1f8820bd0b"
+    sha256: "935f8273fb88ccd2089d4c8d5188e2544070170251bbe8f16f88d42a81081a9d"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -x scripts/verify-release-readiness.sh"
 
   - path: scripts/sdd-session-lib.sh
     source: templates/scripts/sdd-session-lib.sh
-    sha256: "e74fbb6050eeefb80ebe5bac2067dd09854c70a617c207e03934b387b7df475f"
+    sha256: "57a24c9d2bd7e34baad5af9bb4923b529f29c5f76f011b8b0e16ff8f597632b5"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f scripts/sdd-session-lib.sh"
@@ -68,7 +68,7 @@ files:
 
   - path: scripts/sdd-session-heartbeat.sh
     source: templates/scripts/sdd-session-heartbeat.sh
-    sha256: "43d434e5f271022380a100cfecb77328029f929c50d85c019c56ab99dadaa2d0"
+    sha256: "d5f75b5081c3588c2c9c56ea1075f6a1fadae13a5a59ce137d70dcb5f1f06095"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -x scripts/sdd-session-heartbeat.sh"
@@ -82,7 +82,7 @@ files:
 
   - path: scripts/sdd-upgrade-diff.sh
     source: templates/scripts/sdd-upgrade-diff.sh
-    sha256: "d9fe0b34da5fef542c8b8e10e5ab02b8e399d5149b8d66d9f4e819aff7e04cfd"
+    sha256: "2355579f0632961372d357cf849aa161b2bd68615a9a3a34996e5b332afd43ef"
     merge: MERGE
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -x scripts/sdd-upgrade-diff.sh"
@@ -96,21 +96,21 @@ files:
 
   - path: scripts/bootstrap-sdd.sh
     source: templates/scripts/bootstrap-sdd.sh
-    sha256: "ad797d92adbcb402fa7723f419c986db199980f5a9553f8637b2f97e4b546786"
+    sha256: "369d82461610fd5d1dc1cdef78c9da6af019bab46a13b0f29f1d6c6d1dcecfb8"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -x scripts/bootstrap-sdd.sh"
 
   - path: scripts/preflight-sdd.sh
     source: templates/scripts/preflight-sdd.sh
-    sha256: "3e9ceb3873278c9ffe9e786b6b6d999ebc9443e646b15a03aecfa34444ac8254"
+    sha256: "e475ee9c27f8a09de9f2a04165e8df646a4c2c16632ae4b3d1520e38329afcb9"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -x scripts/preflight-sdd.sh"
 
   - path: .github/workflows/sdd-gates.yml
     source: templates/.github/workflows/sdd-gates.yml
-    sha256: "bbd1960c7f6cec244f54233837a8f83dc8998264271639de2ae9931a119cfec5"
+    sha256: "7326bf67327d42aed6407a93b776dd9bb0b239736b86cf4d78adc114fedc93bb"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f .github/workflows/sdd-gates.yml"
@@ -185,6 +185,15 @@ files:
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test $(wc -l < AGENTS.md) -le 150"
 
+  # MERGE, never COPY: an operator's constitution is theirs. The kit only guarantees the
+  # file exists with the language-policy anchors, which inject_language_policy rewrites.
+  - path: openspec/project.md
+    source: templates/openspec/project.md
+    sha256: "aa7f72328223f8df26b1b6faf45db0a1104bf6d98815a4c297326ccc16688c6b"
+    merge: MERGE
+    profiles: [APP, DOCS_SPECS, HYBRID]
+    gate: "test -f openspec/project.md && grep -q 'SDD_LANGUAGE_POLICY_START' openspec/project.md"
+
   - path: openspec/infra.md
     source: templates/openspec/infra.md
     sha256: "029615ef1842f93490f84645f6e7c27fe75efcdf6d9f020cc17d8c7a6bcc5a46"
@@ -199,13 +208,19 @@ files:
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f openspec/changes/_template/proposal.md && grep -q '**Issue:**' openspec/changes/_template/proposal.md"
 
-  - path: sdd-kit/install-ui-module.sh
-    source: templates/install-ui-module.sh
-    sha256: "f0949af9ad96fe003d96a3667e55da2ec641d4804864cc6383eb63a4050e8c09"
+  # Without a parseable requirement under _template/specs/, `openspec validate --all
+  # --strict` fails in every fresh install (the operator's proven workaround, now shipped).
+  - path: openspec/changes/_template/specs/example-capability/spec.md
+    source: templates/openspec/changes/_template/specs/example-capability/spec.md
+    sha256: "401788f67b514838a18e4128203513f8b970901e3ab221e83541a67df69b846a"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
-    gate: "test -x sdd-kit/install-ui-module.sh"
+    gate: "test -f openspec/changes/_template/specs/example-capability/spec.md && grep -q '## ADDED Requirements' openspec/changes/_template/specs/example-capability/spec.md"
 
+  # NOTE (1.15.0): the UI module script is NOT a MANIFEST entry. The kit *ships* it
+  # inside sdd-kit/ (tarball); an entry copying templates/install-ui-module.sh onto
+  # sdd-kit/install-ui-module.sh is src==dest on the canonical path and aborted the
+  # whole install. Hub↔template drift is covered by verify-release-readiness.sh instead.
   - path: doc/design/000-impeccable-design-system-guia.md
     source: templates/doc/design/000-impeccable-design-system-guia.md
     sha256: "8b1c48f4a4d4c0ae012fa43702eda723dd4f99323a0477cf8069a20d0079f972"
@@ -243,20 +258,10 @@ files:
 
   # Probity module (G2) — APP/HYBRID only. Pilot on APP worktree required before
   # enabling as default in consumer repos (see openspec/changes/add-probity-tdd-module/piloto-nota.md).
-  - path: sdd-kit/install-probity-module.sh
-    source: templates/install-probity-module.sh
-    sha256: "5dd5832aecaccb48f79be864adf1f5801eb008cec77deb3d74c4415ceb4b03da"
-    merge: COPY
-    profiles: [APP, DOCS_SPECS, HYBRID]
-    gate: "test -x sdd-kit/install-probity-module.sh"
-
-  - path: sdd-kit/templates/probity.config.ts
-    source: templates/probity.config.ts
-    sha256: "a348ed5f817226442bcb8a9c80bbb60f91f32f9f5c229db30a9b82a2206179d2"
-    merge: COPY
-    profiles: [APP, HYBRID]
-    gate: "test -f sdd-kit/templates/probity.config.ts && grep -q enforceTdd sdd-kit/templates/probity.config.ts"
-
+  # NOTE (1.15.0): neither install-probity-module.sh nor templates/probity.config.ts is a
+  # MANIFEST entry — same src==dest reason as the UI module above. Both ship inside
+  # sdd-kit/ via the tarball; install-probity-module.sh reads the config template
+  # straight from the kit. Drift is covered by verify-release-readiness.sh.
   - path: doc/design/004-probity-module-install.md
     source: templates/doc/design/004-probity-module-install.md
     sha256: "08f1f3c2d7a2f5ca2df788fdb1e9b1312186d4ed4107d04c0596ad569856c479"
@@ -292,6 +297,16 @@ files:
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f .claude/commands/opsx/help.md && grep -qE 'opsx:help|/opsx:help|openspec-help' .claude/commands/opsx/help.md"
+
+  # Restores the 2026-06-17 founding intent (guide delivered to consumers), reverting the
+  # 2026-08-05 non-distribution decision: what must never be copied is the hub's own
+  # openspec/ specs and development history — an operator guide is neither.
+  - path: doc/byebyevibe-guide.md
+    source: templates/doc/byebyevibe-guide.md
+    sha256: "d3b25b6a3fc3cfe48c650d1d43fce707b0d6b78c76bc1d09b1aebf4adfd6c559"
+    merge: COPY
+    profiles: [APP, DOCS_SPECS, HYBRID]
+    gate: "test -s doc/byebyevibe-guide.md && grep -q 'Guide version' doc/byebyevibe-guide.md"
 
   - path: doc/sdd-operator-day1.md
     source: templates/doc/sdd-operator-day1.md

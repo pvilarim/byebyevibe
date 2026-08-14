@@ -3,6 +3,22 @@
 # Usage: bash sdd-kit/install-ui-module.sh [--detect] [--dry-run] [--apply] [--yes] [--repo PATH]
 set -euo pipefail
 
+# Python resolution (fix-consumer-install D11/9f): these helpers invoked the literal name
+# `python3`, which does not exist on Windows consumers and often not on macOS either —
+# already a violation of the live "resolve an interpreter by capability" requirement.
+# SDD_PYTHON from the environment is trusted as-is. Unquoted expansions are deliberate:
+# "py -3" is two words.
+if [[ -z "${SDD_PYTHON:-}" ]]; then
+  for _cand in "python3" "python3.14" "python3.13" "python" "py -3" "/usr/bin/python3"; do
+    if $_cand -c 'import sys; raise SystemExit(0 if sys.version_info >= (3, 8) else 1)' 2>/dev/null; then SDD_PYTHON="$_cand"; break; fi
+  done
+fi
+if [[ -z "${SDD_PYTHON:-}" ]]; then
+  echo "ERROR: no usable Python interpreter (tried: python3, python3.14, python3.13, python, py -3, /usr/bin/python3; kit minimum 3.8)." >&2
+  exit 1
+fi
+export SDD_PYTHON
+
 KIT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 TEMPLATES_DIR="$KIT_DIR/templates/doc/design"
 DRY_RUN=false
@@ -136,9 +152,12 @@ update_project_ui_stack() {
   fi
 
   if grep -q '^UI stack:' "$project" 2>/dev/null; then
-    sed -i "s/^UI stack:.*/UI stack: $stack/" "$project"
+    # Temp file + mv, never in-place editing (portable on GNU and BSD alike, no probe).
+    local _tmp
+    _tmp="$(mktemp)"
+    sed "s/^UI stack:.*/UI stack: $stack/" "$project" > "$_tmp" && mv "$_tmp" "$project"
   elif grep -q '^## Stack' "$project"; then
-  python3 - <<'PY' "$project" "$stack"
+  $SDD_PYTHON - <<'PY' "$project" "$stack"
 import sys, re
 path, stack = sys.argv[1], sys.argv[2]
 text = open(path).read()
@@ -168,7 +187,7 @@ update_infra_md() {
     return 0
   fi
 
-  python3 - <<'PY' "$infra" "$stack" "$impeccable_status"
+  $SDD_PYTHON - <<'PY' "$infra" "$stack" "$impeccable_status"
 import sys, re
 path, stack, impeccable = sys.argv[1:4]
 text = open(path).read()

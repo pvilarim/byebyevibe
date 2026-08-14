@@ -101,6 +101,101 @@ jobs:
           echo "greenfield files installed: $count"
           test "$count" -ge 20
 
+      # fix-consumer-install (design D7) — consumer install smoke test.
+      # The greenfield step above proves an empty target survives; this one proves the
+      # payload a real adopter receives is complete and self-consistent.
+      #
+      # DELIBERATELY NOT PROVISIONED: gitnexus and graphify. Do NOT "fix" this job by
+      # adding them. verify-infra.sh is advisory by design — without a TTY and without
+      # --write it exits 0 regardless of its internal FAILs — so installing the knowledge
+      # CLIs would add the job's entire flake surface (npm/onnxruntime, uv, grammar
+      # builds) and change no assertion here.
+      # What assertion (2) genuinely covers is verify.sh's own blocking checks: the
+      # workflow-template check, the consumer language-policy check (blocking since
+      # 1.15.0), and release readiness. Never pre-seed artifacts to make a check pass.
+      - name: Consumer install smoke test (blocking)
+        timeout-minutes: 6
+        run: |
+          set -euo pipefail
+
+          # Enumerates every destination the MANIFEST promises for a profile and asserts
+          # each one exists. Derived at run time — a hardcoded count goes stale on the
+          # next entry added, and "enumerated 0" is a failure, never a pass.
+          cat > "${{ runner.temp }}/assert_entries.py" <<'PY'
+          import os, re, sys
+          manifest, profile = sys.argv[1], sys.argv[2]
+          text = open(manifest).read()
+          entries, block = [], None
+          for line in text.splitlines():
+              if line.strip().startswith("- path:"):
+                  if block and "path" in block:
+                      entries.append(block)
+                  block = {"path": line.split(":", 1)[1].strip()}
+              elif block is not None:
+                  m = re.match(r"\s+(\w+):\s*(.+)", line)
+                  if m:
+                      k, v = m.group(1), m.group(2).strip().strip('"')
+                      if k == "profiles":
+                          block["profiles"] = re.findall(r"\w+", v)
+                      elif k in ("source", "merge", "path"):
+                          block[k] = v
+          if block and "path" in block:
+              entries.append(block)
+          wanted = [e["path"] for e in entries
+                    if profile in e.get("profiles", ["APP", "DOCS_SPECS", "HYBRID"])]
+          if not wanted:
+              raise SystemExit("FAIL: enumerated 0 %s-profile entries — this check verified nothing" % profile)
+          missing = [p for p in wanted if not os.path.exists(p)]
+          if missing:
+              raise SystemExit("FAIL: %d of %d %s-profile destinations missing:\n  %s"
+                               % (len(missing), len(wanted), profile, "\n  ".join(missing)))
+          print("OK: all %d %s-profile MANIFEST destinations present" % (len(wanted), profile))
+          PY
+
+          KIT="$GITHUB_WORKSPACE/sdd-kit"
+          ASSERT="${{ runner.temp }}/assert_entries.py"
+
+          # --- Variation A: canonical consumer (tarball layout — whole sdd-kit/ in the repo)
+          A="${{ runner.temp }}/consumer-a"
+          rm -rf "$A"; mkdir -p "$A"
+          cp -R sdd-kit "$A/"
+          cd "$A"
+          git init -q .
+          git -c user.email=ci@example.com -c user.name=CI commit -q --allow-empty -m "initial commit"
+          bash sdd-kit/install.sh --profile APP --chat-lang en --docs-lang en --code-lang en
+
+          echo "--- A1: every APP-profile MANIFEST destination applied"
+          python3 "$ASSERT" sdd-kit/MANIFEST.yaml APP
+
+          echo "--- A2: sdd-kit/verify.sh exit 0"
+          bash sdd-kit/verify.sh
+
+          echo "--- A3: openspec validate --all --strict exit 0"
+          npx --yes @fission-ai/openspec@1.3.1 validate --all --strict --no-interactive
+
+          echo "--- A4: openspec/project.md carries the materialized language policy"
+          grep -q '^## Language policy' openspec/project.md
+          grep -q '<!-- SDD_LANGUAGE_POLICY_START -->' openspec/project.md
+          grep -q '<!-- SDD_LANGUAGE_POLICY_END -->' openspec/project.md
+
+          # --- Variation B: hub-mode consumer (no kit in the target; installed from the
+          # checkout). No verify.sh here: a hub-mode consumer has no local kit to run it
+          # with until the single-acquisition-path work lands.
+          B="${{ runner.temp }}/consumer-b"
+          rm -rf "$B"; mkdir -p "$B"
+          git -C "$B" init -q .
+          git -C "$B" -c user.email=ci@example.com -c user.name=CI commit -q --allow-empty -m "initial commit"
+          bash "$KIT/install.sh" --repo "$B" --profile APP --chat-lang en --docs-lang en --code-lang en
+          cd "$B"
+
+          echo "--- B1: hub-mode install applied every APP-profile destination"
+          python3 "$ASSERT" "$KIT/MANIFEST.yaml" APP
+
+          echo "--- B2: hub-mode openspec/project.md carries the language policy"
+          grep -q '^## Language policy' openspec/project.md
+          grep -q '<!-- SDD_LANGUAGE_POLICY_START -->' openspec/project.md
+          grep -q '<!-- SDD_LANGUAGE_POLICY_END -->' openspec/project.md
+
       # D4 — report-only: verify.sh orquestra verify-infra.sh, que marca FAIL
       # para CLIs de conhecimento (GitNexus/Graphify) ausentes no runner e muta
       # openspec/infra.md. O resultado é reportado sem bloquear o merge; a

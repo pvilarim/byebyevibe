@@ -82,6 +82,17 @@ SOURCE_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$REPO"
 REPO="$(pwd)"
 
+# AGENTS.md snapshot (D9) — taken before ANY phase runs, because `openspec init` and
+# the knowledge CLIs create or append to AGENTS.md themselves. Run last in C1 order
+# (which MUST NOT change), install.sh cannot tell a tool-generated AGENTS.md from an
+# operator's own file and used to KEEP the tool output; this variable can.
+if [[ -f "$REPO/AGENTS.md" ]]; then
+  SDD_AGENTS_PREEXISTED=1
+else
+  SDD_AGENTS_PREEXISTED=0
+fi
+export SDD_AGENTS_PREEXISTED
+
 # Phase 0 — Preflight (full --all) before OpenSpec unless --skip-preflight
 if ! $SKIP_PREFLIGHT; then
   PREFLIGHT_SCRIPT=""
@@ -243,7 +254,21 @@ if command -v openspec &>/dev/null; then
 else
   npm install -g @fission-ai/openspec@latest
 fi
-openspec init --tools "cursor,claude" "$REPO" 2>/dev/null || openspec init --tools "cursor,claude"
+# Diagnostics are captured, never discarded (D10, sdd-fail-loud): the first attempt's
+# stderr used to go to /dev/null, so the likelier failure was invisible and the abort
+# that followed named no culprit.
+OPENSPEC_INIT_LOG="$(mktemp)"
+if ! openspec init --tools "cursor,claude" "$REPO" >"$OPENSPEC_INIT_LOG" 2>&1; then
+  echo "WARN: 'openspec init <target>' failed — retrying in the current directory. Output was:" >&2
+  cat "$OPENSPEC_INIT_LOG" >&2
+  if ! openspec init --tools "cursor,claude" >>"$OPENSPEC_INIT_LOG" 2>&1; then
+    echo "ERROR: openspec init failed (both the explicit-target and current-directory invocations) — aborting bootstrap." >&2
+    cat "$OPENSPEC_INIT_LOG" >&2
+    rm -f "$OPENSPEC_INIT_LOG"
+    exit 1
+  fi
+fi
+rm -f "$OPENSPEC_INIT_LOG"
 
 banner gitnexus
 echo "==> GitNexus (optional — does not abort bootstrap on failure)..."
@@ -306,11 +331,17 @@ if [[ -n "$KIT_INSTALL" ]]; then
   if [[ "$CHAT_LANG" == "pt-BR" || "$CHAT_LANG" == "en" ]]; then
     INSTALL_ARGS+=(--chat-lang "$CHAT_LANG")
   fi
+  # Fatal, not WARN (D2, sdd-fail-loud): the payload is the reason this command exists.
+  # GitNexus/Graphify stay optional above — they are integrations, not the kit itself.
   bash "$KIT_INSTALL" "${INSTALL_ARGS[@]}" || {
-    echo "WARN: sdd-kit/install.sh failed — run manually after editing project.md profile"
+    echo "ERROR: sdd-kit/install.sh failed — the SDD payload was NOT installed. Bootstrap aborted." >&2
+    echo "       Fix the reported cause and re-run, or run '$KIT_INSTALL --profile $PROFILE --repo $REPO' manually." >&2
+    exit 1
   }
 else
-  echo "WARN: sdd-kit/install.sh not found (target or source) — copy kit from hub or run after add-sdd-install-kit"
+  echo "ERROR: sdd-kit/install.sh not found (neither in the target nor in $SOURCE_ROOT) — no payload could be installed. Bootstrap aborted." >&2
+  echo "       Copy the kit from the hub (or run bootstrap from a hub clone) and re-run." >&2
+  exit 1
 fi
 
 echo ""

@@ -2,6 +2,22 @@
 # Shared helpers for SDD session coordination — see openspec/changes/add-sdd-session-coordination/
 set -euo pipefail
 
+# Python resolution (fix-consumer-install D11/9f): these helpers invoked the literal name
+# `python3`, which does not exist on Windows consumers and often not on macOS either —
+# already a violation of the live "resolve an interpreter by capability" requirement.
+# SDD_PYTHON from the environment is trusted as-is. Unquoted expansions are deliberate:
+# "py -3" is two words.
+if [[ -z "${SDD_PYTHON:-}" ]]; then
+  for _cand in "python3" "python3.14" "python3.13" "python" "py -3" "/usr/bin/python3"; do
+    if $_cand -c 'import sys; raise SystemExit(0 if sys.version_info >= (3, 8) else 1)' 2>/dev/null; then SDD_PYTHON="$_cand"; break; fi
+  done
+fi
+if [[ -z "${SDD_PYTHON:-}" ]]; then
+  echo "ERROR: no usable Python interpreter (tried: python3, python3.14, python3.13, python, py -3, /usr/bin/python3; kit minimum 3.8)." >&2
+  exit 1
+fi
+export SDD_PYTHON
+
 sdd_session_repo_root() {
   cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd
 }
@@ -28,7 +44,7 @@ sdd_session_uuid() {
   if command -v uuidgen &>/dev/null; then
     uuidgen | tr '[:upper:]' '[:lower:]'
   else
-    python3 - <<'PY'
+    $SDD_PYTHON - <<'PY'
 import uuid
 print(uuid.uuid4())
 PY
@@ -43,7 +59,7 @@ sdd_session_is_pid_alive() {
 
 sdd_session_heartbeat_age_seconds() {
   local heartbeat="$1"
-  python3 - <<'PY' "$heartbeat"
+  $SDD_PYTHON - <<'PY' "$heartbeat"
 import sys
 from datetime import datetime, timezone
 
@@ -61,7 +77,7 @@ PY
 
 sdd_session_read_json_field() {
   local file="$1" field="$2"
-  python3 - <<'PY' "$file" "$field"
+  $SDD_PYTHON - <<'PY' "$file" "$field"
 import json, sys
 path, field = sys.argv[1], sys.argv[2]
 try:
@@ -79,7 +95,7 @@ PY
 
 sdd_session_write_json() {
   local file="$1"
-  python3 - <<'PY' "$file"
+  $SDD_PYTHON - <<'PY' "$file"
 import json, os, sys
 path = sys.argv[1]
 payload = {
@@ -108,10 +124,21 @@ sdd_session_start_lock_holder() {
     fi
   fi
 
-  (
-    flock -x 200
-    while true; do sleep 3600; done
-  ) 200>"$LOCK_FILE" &
+  # flock is best-effort (D11/9e): it does not exist on macOS, and Git Bash on Windows
+  # ships without it. Letting the subshell fail invisibly made the advisory lock look
+  # held when it never was. The PID-file mechanism below is the guaranteed layer and is
+  # unchanged — it is what actually blocks a second apply on the same worktree.
+  if command -v flock &>/dev/null; then
+    (
+      flock -x 200
+      while true; do sleep 3600; done
+    ) 200>"$LOCK_FILE" &
+  else
+    echo "INFO: flock is not available on this platform — the advisory lock was not taken; the PID-file check is the active guard." >&2
+    (
+      while true; do sleep 3600; done
+    ) &
+  fi
   echo $! > "$LOCK_HOLDER_PID_FILE"
 }
 

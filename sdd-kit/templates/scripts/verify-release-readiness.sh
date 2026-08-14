@@ -16,11 +16,11 @@ FAILURES=0
 # SDD_PYTHON: env value trusted as-is; else resolve by capability (kit floor 3.8).
 # Unquoted expansions are deliberate — "py -3" is two words (fix-install-python-boundary D1/D3).
 if [[ -z "${SDD_PYTHON:-}" ]]; then
-  for _cand in "python3" "python" "py -3"; do
+  for _cand in "python3" "python3.14" "python3.13" "python" "py -3" "/usr/bin/python3"; do
     if $_cand -c 'import sys; raise SystemExit(0 if sys.version_info >= (3, 8) else 1)' 2>/dev/null; then SDD_PYTHON="$_cand"; break; fi
   done
 fi
-[[ -n "${SDD_PYTHON:-}" ]] || { echo "ERROR: no usable Python interpreter (tried: python3, python, py -3; kit minimum 3.8)." >&2; exit 1; }
+[[ -n "${SDD_PYTHON:-}" ]] || { echo "ERROR: no usable Python interpreter (tried: python3, python3.14, python3.13, python, py -3, /usr/bin/python3; kit minimum 3.8)." >&2; exit 1; }
 
 # Compare one version string declared in prose against its MANIFEST authority.
 # Degrades per design D3: file absent -> INFO skip; claim missing or unparseable -> WARN;
@@ -91,8 +91,9 @@ else
   echo "INFO: sdd-kit/MANIFEST.yaml absent — version sync checks skipped"
 fi
 
-# Kit integrity parity check (hub only — skipped in consumer repos without templates/)
-if [[ -d "$REPO_ROOT/sdd-kit/templates" ]] && [[ -f "$REPO_ROOT/sdd-kit/MANIFEST.yaml" ]]; then
+# Kit integrity parity check (hub only — keyed on the explicit .sdd-hub marker, never on
+# directory shape: a consumer with a full kit copy has templates/ too, fix-consumer-install D1).
+if [[ -f "$REPO_ROOT/.sdd-hub" ]] && [[ -f "$REPO_ROOT/sdd-kit/MANIFEST.yaml" ]]; then
   echo ""
   echo "==> kit-integrity (hub only)"
 
@@ -192,10 +193,14 @@ PY
       echo "OK: kit-integrity"
     fi
   fi
+else
+  echo ""
+  echo "==> kit-integrity (hub only)"
+  echo "INFO: skipped: not the hub (no .sdd-hub marker) — template checksums are a hub-only fact"
 fi
 
 # Hub drift gate: live scripts/ must match sdd-kit/templates/scripts/ (hub only — D8)
-if [[ -d "$REPO_ROOT/sdd-kit/templates/scripts" ]]; then
+if [[ -f "$REPO_ROOT/.sdd-hub" ]] && [[ -d "$REPO_ROOT/sdd-kit/templates/scripts" ]]; then
   echo ""
   echo "==> hub scripts↔templates parity (hub only)"
   DRIFT=0
@@ -207,11 +212,33 @@ if [[ -d "$REPO_ROOT/sdd-kit/templates/scripts" ]]; then
       ((DRIFT++)) || true
     fi
   done
+  # Pairs outside templates/scripts/. The guide mirror is new in 1.15.0 (D6). The two
+  # module scripts lost their only sha256 coverage when their src==dest MANIFEST entries
+  # were deleted (D3) — without this loop their drift would be undetectable.
+  for _pair in \
+    "doc/byebyevibe-guide.md:sdd-kit/templates/doc/byebyevibe-guide.md" \
+    "sdd-kit/install-ui-module.sh:sdd-kit/templates/install-ui-module.sh" \
+    "sdd-kit/install-probity-module.sh:sdd-kit/templates/install-probity-module.sh"; do
+    _live="${_pair%%:*}"
+    _tmpl="${_pair##*:}"
+    if [[ ! -f "$REPO_ROOT/$_live" || ! -f "$REPO_ROOT/$_tmpl" ]]; then
+      echo "FAIL: parity pair incomplete: $_live / $_tmpl (one side missing — nothing to compare)" >&2
+      ((DRIFT++)) || true
+    elif ! diff -q "$REPO_ROOT/$_live" "$REPO_ROOT/$_tmpl" >/dev/null; then
+      echo "FAIL: drift: $_live differs from $_tmpl" >&2
+      ((DRIFT++)) || true
+    fi
+  done
+
   if [[ "$DRIFT" -eq 0 ]]; then
     echo "OK: hub parity"
   else
     ((FAILURES+=DRIFT)) || true
   fi
+else
+  echo ""
+  echo "==> hub scripts↔templates parity (hub only)"
+  echo "INFO: skipped: not the hub (no .sdd-hub marker) — nothing to compare against"
 fi
 
 echo ""

@@ -101,6 +101,10 @@ log_human() {
 # NAMES, never paths; "py -3" is two words, so every expansion of
 # $SDD_PYTHON is deliberately unquoted — do not "fix" the quoting.
 # SDD_PYTHON from the environment is trusted as-is (no re-probing).
+# Candidate order: version-suffixed rungs give macOS real alternatives (an unsuffixed
+# `python3` often does not exist there), and `/usr/bin/python3` comes last because it may
+# be the Xcode CLT shim — probing it can be slow or trigger a GUI prompt, so it is only
+# reached once every other rung has failed.
 SDD_PYTHON="${SDD_PYTHON:-}"
 SDD_PYTHON_VERSION=""
 resolve_python() {
@@ -109,7 +113,7 @@ resolve_python() {
     return 0
   fi
   local c v
-  for c in "python3" "python" "py -3"; do
+  for c in "python3" "python3.14" "python3.13" "python" "py -3" "/usr/bin/python3"; do
     # Probe by execution (command -v cannot probe a two-word candidate and
     # succeeds for the Windows Store alias stub, which is not a Python).
     v="$($c -c 'import sys; print("%d.%d.%d" % sys.version_info[:3])' 2>/dev/null)" || true
@@ -221,7 +225,7 @@ check_host() {
       record_check "python-graphify" "WARN" "Python ${SDD_PYTHON_VERSION} meets the kit floor (3.8) but Graphify requires 3.10 — defer Graphify (guide §2.9.4) or upgrade Python"
     fi
   else
-    record_check "python" "FAIL" "no usable Python interpreter (tried: python3, python, py -3; kit minimum 3.8)"
+    record_check "python" "FAIL" "no usable Python interpreter (tried: python3, python3.14, python3.13, python, py -3, /usr/bin/python3; kit minimum 3.8)"
   fi
 
   # uv — WARN (bootstrap may install later)
@@ -371,7 +375,7 @@ check_repo() {
   if resolve_python; then
     record_check "python" "OK" "${SDD_PYTHON} ${SDD_PYTHON_VERSION} (resolved — install runtime)"
   else
-    record_check "python" "FAIL" "no usable Python interpreter (tried: python3, python, py -3; kit minimum 3.8) — install.sh cannot run"
+    record_check "python" "FAIL" "no usable Python interpreter (tried: python3, python3.14, python3.13, python, py -3, /usr/bin/python3; kit minimum 3.8) — install.sh cannot run"
   fi
 }
 
@@ -382,7 +386,11 @@ replace_between() {
   # Escape sed specials in value minimally
   local escaped
   escaped="$(printf '%s' "$value" | sed -e 's/[&|\\]/\\&/g')"
-  sed -i "s|<!-- ${marker} -->.*<!-- /${marker} -->|<!-- ${marker} -->${escaped}<!-- /${marker} -->|" "$file"
+  # Temp file + mv, never in-place editing: GNU sed takes an optional suffix where
+  # BSD/macOS requires one, so no single in-place form is correct on both. No probe needed.
+  local _tmp
+  _tmp="$(mktemp)"
+  sed "s|<!-- ${marker} -->.*<!-- /${marker} -->|<!-- ${marker} -->${escaped}<!-- /${marker} -->|" "$file" > "$_tmp" && mv "$_tmp" "$file"
 }
 
 stamp_infra() {

@@ -9,11 +9,11 @@ MANIFEST="$KIT_DIR/MANIFEST.yaml"
 # SDD_PYTHON: env value trusted as-is; else resolve by capability (kit floor 3.8).
 # Unquoted expansions are deliberate — "py -3" is two words (fix-install-python-boundary D1/D3).
 if [[ -z "${SDD_PYTHON:-}" ]]; then
-  for _cand in "python3" "python" "py -3"; do
+  for _cand in "python3" "python3.14" "python3.13" "python" "py -3" "/usr/bin/python3"; do
     if $_cand -c 'import sys; raise SystemExit(0 if sys.version_info >= (3, 8) else 1)' 2>/dev/null; then SDD_PYTHON="$_cand"; break; fi
   done
 fi
-[[ -n "${SDD_PYTHON:-}" ]] || { echo "ERROR: no usable Python interpreter (tried: python3, python, py -3; kit minimum 3.8)." >&2; exit 1; }
+[[ -n "${SDD_PYTHON:-}" ]] || { echo "ERROR: no usable Python interpreter (tried: python3, python3.14, python3.13, python, py -3, /usr/bin/python3; kit minimum 3.8)." >&2; exit 1; }
 
 # _sha256 <file> — returns lowercase hex sha256 digest, or empty string if unavailable
 _sha256() {
@@ -135,10 +135,13 @@ classify() {
 
 # Task 1.2 — dry-run Python block: extract profiles and filter (or show all with [all-profiles])
 echo "--- File classification ---"
-while IFS=$'\t' read -r src dest merge label; do
-  [[ -n "$dest" ]] || continue
-  classify "$dest" "$merge" "$src" "$label"
-done < <($SDD_PYTHON - <<'PY' "$MANIFEST" "$PROFILE" | tr -d '\r'
+# Temp-file transport, not process substitution: a heredoc feeding `< <(...)` is
+# unreliable on bash 3.2 (macOS), and process substitution hides the generator's exit
+# status — an interpreter failure would classify zero files and look clean (sdd-fail-loud).
+CLASSIFY_RAW="$(mktemp)"
+CLASSIFY_TSV="$(mktemp)"
+CLASSIFY_RC=0
+$SDD_PYTHON - "$MANIFEST" "$PROFILE" > "$CLASSIFY_RAW" << 'PY' || CLASSIFY_RC=$?
 import sys, re
 manifest_path = sys.argv[1]
 profile = sys.argv[2] if len(sys.argv) > 2 else ""
@@ -167,7 +170,22 @@ for e in entries:
         label = "all-profiles"
     print(f"{e.get('source','')}\t{e['path']}\t{e.get('merge','COPY')}\t{label}")
 PY
-)
+
+if [[ "$CLASSIFY_RC" -ne 0 ]]; then
+  echo "ERROR: file-classification generation failed (exit $CLASSIFY_RC, interpreter: $SDD_PYTHON) — no classification was produced." >&2
+  rm -f "$CLASSIFY_RAW" "$CLASSIFY_TSV"
+  exit 1
+fi
+
+# CR strip on the metadata stream only (Windows CRLF on Python stdout).
+tr -d '\r' < "$CLASSIFY_RAW" > "$CLASSIFY_TSV"
+rm -f "$CLASSIFY_RAW"
+
+while IFS=$'\t' read -r src dest merge label; do
+  [[ -n "$dest" ]] || continue
+  classify "$dest" "$merge" "$src" "$label"
+done < "$CLASSIFY_TSV"
+rm -f "$CLASSIFY_TSV"
 
 REPORT_DIR="$REPO_ROOT/openspec/changes/upgrade-sdd-v${TO_VER}"
 REPORT_FILE="$REPORT_DIR/UPGRADE_REPORT.md"
@@ -237,7 +255,50 @@ if $APPLY; then
   echo ""
   echo "--- Applying COPY files only (profile: $PROFILE) ---"
 
-  # apply Python block: filter by profiles, emit sha256 as 4th TSV field
+  # apply Python block: filter by profiles, emit sha256 as 4th TSV field.
+  # Temp-file transport, not process substitution — see the classification block above.
+  APPLY_RAW="$(mktemp)"
+  APPLY_TSV="$(mktemp)"
+  APPLY_RC=0
+  $SDD_PYTHON - "$MANIFEST" "$PROFILE" > "$APPLY_RAW" << 'PY' || APPLY_RC=$?
+import sys, re
+manifest_path = sys.argv[1]
+profile = sys.argv[2]
+text = open(manifest_path).read()
+entries, block = [], None
+for line in text.splitlines():
+    if line.strip().startswith("- path:"):
+        if block and "path" in block: entries.append(block)
+        block = {"path": line.split(":",1)[1].strip()}
+    elif block is not None:
+        m = re.match(r"\s+(\w+):\s*(.+)", line)
+        if m:
+            k, v = m.group(1), m.group(2).strip().strip('"')
+            if k == "profiles":
+                block["profiles"] = re.findall(r"\w+", v)
+            elif k in ("source", "merge", "path"):
+                block[k] = v
+            elif k == "sha256":
+                block["sha256"] = v
+if block and "path" in block: entries.append(block)
+for e in entries:
+    entry_profiles = e.get("profiles", ["APP", "DOCS_SPECS", "HYBRID"])
+    if profile not in entry_profiles:
+        continue
+    if e.get("merge") == "COPY":
+        print(f"{e.get('source','')}\t{e['path']}\t{e.get('merge','COPY')}\t{e.get('sha256','')}")
+PY
+
+  if [[ "$APPLY_RC" -ne 0 ]]; then
+    echo "ERROR: apply-list generation failed (exit $APPLY_RC, interpreter: $SDD_PYTHON) — no file was upgraded." >&2
+    rm -f "$APPLY_RAW" "$APPLY_TSV"
+    exit 1
+  fi
+
+  # CR strip on the metadata stream only (Windows CRLF on Python stdout).
+  tr -d '\r' < "$APPLY_RAW" > "$APPLY_TSV"
+  rm -f "$APPLY_RAW"
+
   while IFS=$'\t' read -r src dest merge sha256; do
     [[ -n "$dest" ]] || continue
     [[ "$merge" == "COPY" ]] || continue
@@ -267,34 +328,7 @@ if $APPLY; then
     cp "$KIT_DIR/$src" "$REPO_ROOT/$dest"
     [[ "$dest" == *.sh ]] && chmod +x "$REPO_ROOT/$dest"
     echo "  APPLIED $dest"
-  done < <($SDD_PYTHON - "$MANIFEST" "$PROFILE" << 'PY' | tr -d '\r'
-import sys, re
-manifest_path = sys.argv[1]
-profile = sys.argv[2]
-text = open(manifest_path).read()
-entries, block = [], None
-for line in text.splitlines():
-    if line.strip().startswith("- path:"):
-        if block and "path" in block: entries.append(block)
-        block = {"path": line.split(":",1)[1].strip()}
-    elif block is not None:
-        m = re.match(r"\s+(\w+):\s*(.+)", line)
-        if m:
-            k, v = m.group(1), m.group(2).strip().strip('"')
-            if k == "profiles":
-                block["profiles"] = re.findall(r"\w+", v)
-            elif k in ("source", "merge", "path"):
-                block[k] = v
-            elif k == "sha256":
-                block["sha256"] = v
-if block and "path" in block: entries.append(block)
-for e in entries:
-    entry_profiles = e.get("profiles", ["APP", "DOCS_SPECS", "HYBRID"])
-    if profile not in entry_profiles:
-        continue
-    if e.get("merge") == "COPY":
-        print(f"{e.get('source','')}\t{e['path']}\t{e.get('merge','COPY')}\t{e.get('sha256','')}")
-PY
-)
+  done < "$APPLY_TSV"
+  rm -f "$APPLY_TSV"
   echo "Apply complete. Run: bash sdd-kit/verify.sh"
 fi
