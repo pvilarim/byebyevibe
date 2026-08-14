@@ -2,7 +2,7 @@
 
 **GitNexus + Graphify + OpenSpec, integrated in Cursor and VS Code + Claude Code**
 
-> **Canonical install guide (v1.15.0)** — use in any Git repository, manually or via an AI agent. Payloads in `sdd-kit/`; procedure in this document.
+> **Canonical install guide (v1.15.1)** — use in any Git repository, manually or via an AI agent. Payloads in `sdd-kit/`; procedure in this document.
 
 ## How to use this document
 
@@ -19,7 +19,7 @@
 | **SDD metrics (G4)** | `bash scripts/sdd-metrics.sh` — §2.17 (mode C; no DevLake) |
 
 - **`AGENTS.md` pattern:** aligned with [agents.md](https://agents.md/) + TLC workshop (Context Engineering, on-demand loading).
-- **Guide version:** 1.15.0 — see [Guide changelog](#guide-changelog).
+- **Guide version:** 1.15.1 — see [Guide changelog](#guide-changelog).
 - **Versioned payload:** `sdd-kit/MANIFEST.yaml` — see §1.6 and `sdd-kit/README.md`.
 - **Does not replace** `openspec/project.md` (project constitution) or specs in `openspec/specs/`.
 
@@ -3106,6 +3106,16 @@ bash scripts/verify-task-patterns.sh   # Pattern: paths exist; DOCS_SPECS withou
 ---
 
 ## Guide changelog
+
+### 1.15.1 (2026-08-14)
+
+**Change `fix-upgrade-realpath`** — repairs `sdd-kit/upgrade.sh`, which could not deliver the 1.15.0 payload at all. The C2 upgrade path had no gate of its own: `install.sh` gained a greenfield smoke test in 1.14.0 and a consumer smoke test in 1.15.0, while `upgrade.sh` kept a `realpath` call whose equivalent defect had already been fixed in `install.sh` one release earlier.
+
+- **`--apply` no longer aborts on a destination whose parent does not exist** — the traversal guard used plain `realpath --no-symlinks`, which requires every leading path component to already exist. Any MANIFEST entry creating a new directory killed the run mid-apply, leaving the repository half-upgraded. This is **not** macOS-specific: it reproduces on GNU coreutils. Concretely, upgrading any pre-1.15.0 install to 1.15.0 aborted on `openspec/changes/_template/specs/`, a directory none of them have. The call now uses `-m` with the same `posixpath.normpath` fallback `install.sh` has carried since 1.14.0, probed once. `..` is still resolved and traversal is still blocked.
+- **BSD/macOS realpath covered by the same change** — `--no-symlinks` is a GNU long option that macOS realpath does not accept at all, so one fix repairs both failures. This was recorded as out of scope in 1.15.0 and pulled forward, because the upgrade tool is exactly what the existing installed base needs.
+- **New blocking gate: C2 upgrade smoke test** — `sdd-gates` now installs, regresses one directory to the pre-1.15.0 shape, and runs a full dry-run to approve to `--apply` cycle, asserting the exact path that used to abort. The defect survived precisely because no gate ever exercised `upgrade.sh`.
+
+**Housekeeping** — the stale `[MANUAL ACTION REQUIRED]` block is removed from `README.md`: the repository rename it asked for was completed long ago.
 
 ### 1.15.0 (2026-08-13)
 

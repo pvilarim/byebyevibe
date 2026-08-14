@@ -141,21 +141,6 @@ We **compose** OpenSpec; we don't replace it.
 | [`sdd-kit/README.md`](./sdd-kit/README.md) | EN | Kit scenarios & commands |
 | [`doc/avaliacoes/2026-07-26-sdd-discovery-positioning.md`](./doc/avaliacoes/2026-07-26-sdd-discovery-positioning.md) | EN | Market / SEO / backlog decisions |
 
-## [MANUAL ACTION REQUIRED] — GitHub rename, About & topics
-
-Settings are not in git. After merge, the operator should:
-
-1. **Rename repo** (Settings → General → Repository name): `gitnexus-graphify-openspec` → **`byebyevibe`**
-2. Update local remotes: `git remote set-url origin git@github.com:pvilarim/byebyevibe.git` (or HTTPS)
-3. Set **About** and **Topics** (below)
-4. Optional **Homepage**: `https://pedrocodeart.netlify.app/`
-
-**About:**
-
-> ByeByeVibe — Spec-Driven Development (SDD) install kit from vibe coding to shippable AI engineering. Control plane (OpenSpec + graphs + gates) for Cursor & Claude Code. Not a Next.js starter.
-
-**Topics:** `vibe-coding` · `spec-driven-development` · `context-engineering` · `agentic-coding` · `claude-code` · `cursor`
-
 ## Maintainer
 
 Pedro Vilarim — [LinkedIn](https://www.linkedin.com/in/pedrovilarim/) · [Portfolio](https://pedrocodeart.netlify.app/)

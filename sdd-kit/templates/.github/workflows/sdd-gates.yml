@@ -196,6 +196,38 @@ jobs:
           grep -q '<!-- SDD_LANGUAGE_POLICY_START -->' openspec/project.md
           grep -q '<!-- SDD_LANGUAGE_POLICY_END -->' openspec/project.md
 
+      # C2 upgrade smoke test. install.sh had a greenfield gate and a consumer gate;
+      # upgrade.sh had neither, which is why a `realpath` call that aborts on any
+      # destination whose parent does not exist yet survived in it long after the same
+      # defect was fixed in install.sh. Regressing one directory is enough to reproduce
+      # the real case: every pre-1.15.0 install lacks openspec/changes/_template/specs/.
+      - name: Upgrade smoke test (blocking)
+        timeout-minutes: 4
+        run: |
+          set -euo pipefail
+          VER=$(grep -E '^version:' sdd-kit/MANIFEST.yaml | head -1 | sed 's/.*"\(.*\)".*/\1/')
+          U="${{ runner.temp }}/upgrade"
+          rm -rf "$U"; mkdir -p "$U"
+          cp -R sdd-kit "$U/"
+          cd "$U"
+          git init -q .
+          git -c user.email=ci@example.com -c user.name=CI commit -q --allow-empty -m "initial commit"
+          git checkout -q -b work    # --apply refuses the default branch without --force
+          bash sdd-kit/install.sh --profile APP --chat-lang en --docs-lang en --code-lang en >/dev/null
+
+          # Regress to the pre-1.15.0 shape: this directory is what --apply must recreate.
+          rm -rf openspec/changes/_template/specs
+
+          bash sdd-kit/upgrade.sh --from 1.0.0 --to "$VER" --profile APP --dry-run >/dev/null
+          RPT="openspec/changes/upgrade-sdd-v${VER}/UPGRADE_REPORT.md"
+          sed 's/- \[ \] Upgrade approved/- [x] Upgrade approved/' "$RPT" > "$RPT.tmp"
+          mv "$RPT.tmp" "$RPT"
+          bash sdd-kit/upgrade.sh --from 1.0.0 --to "$VER" --profile APP --apply
+
+          # Exit code alone is not enough — assert the path that used to abort.
+          test -f openspec/changes/_template/specs/example-capability/spec.md
+          echo "OK: upgrade recreated a destination whose parent did not exist"
+
       # D4 — report-only: verify.sh orquestra verify-infra.sh, que marca FAIL
       # para CLIs de conhecimento (GitNexus/Graphify) ausentes no runner e muta
       # openspec/infra.md. O resultado é reportado sem bloquear o merge; a

@@ -26,6 +26,14 @@ _sha256() {
     echo ""
   fi
 }
+# Probe GNU `realpath -m` once; the macOS fallback lives at the call site (design D6,
+# mirroring install.sh). BSD/macOS realpath has neither -m nor --no-symlinks.
+if realpath -m --no-symlinks / >/dev/null 2>&1; then
+  REALPATH_M=true
+else
+  REALPATH_M=false
+fi
+
 FROM_VER=""
 TO_VER=""
 DRY_RUN=false
@@ -303,7 +311,19 @@ PY
     [[ -n "$dest" ]] || continue
     [[ "$merge" == "COPY" ]] || continue
     [[ -f "$KIT_DIR/$src" ]] || continue
-    dest_path="$(realpath --no-symlinks "$REPO_ROOT/$dest")"
+    # -m: canonicalise a destination whose parent does not exist YET. Plain `realpath`
+    # requires every leading component to exist, so --apply aborted on any entry that
+    # creates a new directory — e.g. openspec/changes/_template/specs/ when upgrading a
+    # pre-1.15.0 install, which made the upgrade to 1.15.0 impossible. `--no-symlinks`
+    # is additionally a GNU long option that BSD/macOS realpath does not have at all,
+    # so the fallback covers both failures. `..` is still resolved, so the prefix check
+    # below keeps catching escapes. Same form as install.sh (design D6).
+    if $REALPATH_M; then
+      dest_path="$(realpath -m --no-symlinks "$REPO_ROOT/$dest")"
+    else
+      # $SDD_PYTHON unquoted by convention: "py -3" is two words
+      dest_path="$($SDD_PYTHON -c 'import posixpath,sys; print(posixpath.normpath(sys.argv[1]))' "$REPO_ROOT/$dest")"
+    fi
     [[ "$dest_path" == "$REPO_ROOT"/* ]] || {
       echo "ERROR: path traversal blocked: $dest" >&2
       exit 1
