@@ -1,4 +1,4 @@
-# ByeByeVibe — sdd-kit v1.14.0
+# ByeByeVibe — sdd-kit v1.15.0
 
 **ByeByeVibe** is the public name of this project. This folder (`sdd-kit/`) is the versioned **install payload** — commands and paths stay `sdd-kit/*`.
 

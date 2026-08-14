@@ -11,8 +11,8 @@
 # The `gate:` field is documentary metadata only — the suggested verification
 # command for manual or CI use. It MUST NOT be executed via `eval` or any
 # equivalent by install.sh, upgrade.sh, or any other script.
-version: "1.14.0"
-guide_version: "1.14.0"
+version: "1.15.0"
+guide_version: "1.15.0"
 min_openspec: "1.3.1"
 profiles: [APP, DOCS_SPECS, HYBRID]
 
@@ -303,7 +303,7 @@ files:
   # openspec/ specs and development history — an operator guide is neither.
   - path: doc/byebyevibe-guide.md
     source: templates/doc/byebyevibe-guide.md
-    sha256: "d3b25b6a3fc3cfe48c650d1d43fce707b0d6b78c76bc1d09b1aebf4adfd6c559"
+    sha256: "28a9dfa3a9cf6fcdf5b0570bd0df7163e85d917967aa7ff54c12eacfc90d1ea2"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -s doc/byebyevibe-guide.md && grep -q 'Guide version' doc/byebyevibe-guide.md"

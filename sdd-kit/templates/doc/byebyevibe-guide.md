@@ -2,7 +2,7 @@
 
 **GitNexus + Graphify + OpenSpec, integrated in Cursor and VS Code + Claude Code**
 
-> **Canonical install guide (v1.14.0)** — use in any Git repository, manually or via an AI agent. Payloads in `sdd-kit/`; procedure in this document.
+> **Canonical install guide (v1.15.0)** — use in any Git repository, manually or via an AI agent. Payloads in `sdd-kit/`; procedure in this document.
 
 ## How to use this document
 
@@ -19,7 +19,7 @@
 | **SDD metrics (G4)** | `bash scripts/sdd-metrics.sh` — §2.17 (mode C; no DevLake) |
 
 - **`AGENTS.md` pattern:** aligned with [agents.md](https://agents.md/) + TLC workshop (Context Engineering, on-demand loading).
-- **Guide version:** 1.14.0 — see [Guide changelog](#guide-changelog).
+- **Guide version:** 1.15.0 — see [Guide changelog](#guide-changelog).
 - **Versioned payload:** `sdd-kit/MANIFEST.yaml` — see §1.6 and `sdd-kit/README.md`.
 - **Does not replace** `openspec/project.md` (project constitution) or specs in `openspec/specs/`.
 
@@ -3106,6 +3106,28 @@ bash scripts/verify-task-patterns.sh   # Pattern: paths exist; DOCS_SPECS withou
 ---
 
 ## Guide changelog
+
+### 1.15.0 (2026-08-13)
+
+**Change `fix-consumer-install`** — repairs the consumer install path end to end. One root cause under all seven defects: **the hub validated itself.** Every hub/consumer branch was a directory-shaped guess, so a consumer holding a full copy of `sdd-kit/` read as the hub and skipped the checks written for it; and every "cannot run" state reported success instead of failing. A 1.14.0 install completed, printed `Done.`, and left the operator without a guide, without a constitution, and with a validation that could not pass.
+
+- **Hub identity is now an explicit marker** — `.sdd-hub` at the hub root, deliberately **not** a MANIFEST entry and **not** inside `sdd-kit/`, so no acquisition path can deliver it to a consumer. The four identity-by-directory sites (`verify.sh` workflow-template demand and language grandfathering; `verify-release-readiness.sh` kit-integrity and scripts parity) test the marker instead, and consumers get an explicit `skipped: not the hub` line rather than silence. Any directory heuristic would have broken again the moment consumers carry the whole kit.
+- **BEHAVIOUR CHANGE: the consumer language-policy check is blocking.** A missing `openspec/project.md`, or one without the policy block, is now FAIL in `verify.sh` — previously a WARN and, when the file was absent entirely, a silent skip. Existing installs in that state will redden; that state was always a defect, reported green.
+- **Hub-mode installs deliver the payload** — `install.sh` derives `--kit-root` from its own location when the target has no `sdd-kit/`, so preflight stops failing a valid install. Defect 1 was a hub-mode run exiting 0 having applied zero files.
+- **BEHAVIOUR CHANGE: a failed kit install aborts the bootstrap.** `bootstrap-sdd.sh` treated `install.sh` failure — and a missing installer — as WARN and exited 0. Both are now fatal, naming what did not happen. GitNexus and Graphify stay non-fatal: they are integrations, the payload is the reason the command exists.
+- **`openspec init` failures are audible** — the first attempt's stderr was discarded to `/dev/null`, hiding the likelier failure, and the abort that followed named no culprit. Both invocations are now captured and reported.
+- **`AGENTS.md` survives the tool phases** — C1 order is unchanged; instead `bootstrap-sdd.sh` snapshots whether `AGENTS.md` existed **before any phase ran** and exports `SDD_AGENTS_PREEXISTED`. Content written by `openspec init` or a knowledge CLI is relocated to the gitignored `AGENTS.tools-generated.md` rather than shadowing the kit profile — the entry point stays lean and free of `gitnexus:start` blocks.
+- **Three self-copying MANIFEST entries deleted** — entries whose destination was inside `sdd-kit/` were `src == dest` copies on the canonical tarball path, and one of them aborted the install outright. The files still ship inside the kit; hub↔template drift is now covered by release-readiness parity, which is also extended to the two module scripts that lost their only sha256 coverage.
+- **The kit ships a constitution and a valid change template** — `openspec/project.md` (MERGE, so an operator's own file is never overwritten) carries the full `## Language policy` block around its anchors, and `_template/` gains a parseable placeholder delta. Without them, `openspec validate --all --strict` could not pass in a fresh install and the language policy had nowhere to land.
+- **The operator guide is delivered again** — mirrored into the kit and copied to consumers, reverting the 2026-08-05 non-distribution decision and restoring the 2026-06-17 founding design. What must never be copied is the hub's own `openspec/` specs and development history; an operator guide is neither, and every pointer in the install output referred to a file the operator did not have.
+- **`.sdd/runtime/` is written to `.gitignore`** — `verify-infra.sh` had always checked for that entry and nothing in the install ever wrote it, so the check failed in every consumer forever, masked by verify-infra's advisory exit code.
+- **Add-ons message rewritten** — each module now says what installing it gets you and when to skip it, instead of a name and a section number. CI gates are presented as the manual GitHub step they are, and when the repo has no remote the message says the gates are inert until one exists.
+- **macOS portability by construction** — eight in-place `sed` sites become temp-file + `mv`; five heredoc-in-process-substitution feeds become temp-file transport whose exit status is actually checked; the guide's checksum recipes compare digests explicitly instead of relying on `sha256sum -c`; the interpreter cascade gains version-suffixed rungs across eleven files; `flock` is declared best-effort with the PID-file check named as the active guard; and eight hardcoded `python3` call sites — which also broke Windows consumers — gain proper resolution. None of this is probed: the chosen forms are correct on both toolchains.
+- **The gate that proves it** — a blocking consumer install smoke test in `sdd-gates`, in two variations (canonical tarball layout and hub-mode), asserting every APP-profile MANIFEST destination (enumerated at run time, never a hardcoded count), `verify.sh` exit 0, strict validation, and the materialized language policy. The knowledge CLIs are deliberately **not** provisioned and a workflow comment says why: `verify-infra.sh` is advisory by design, so installing them would buy zero gate strength for the job's entire flake surface.
+
+**New capability `sdd-fail-loud`** — a transversal requirement that any install, bootstrap, upgrade, or verification step which cannot execute must either fail the run or state explicitly that it did not run and why. Seven instances of this family shipped in the 1.14.0 cycle; naming the rule is what stops the eighth.
+
+**Existing installations need repair, not upgrade.** The four known installs predate this fix and `upgrade.sh` is itself affected; re-acquire the footprint and overwrite rather than upgrading in place.
 
 ### 1.14.0 (2026-08-06)
 
