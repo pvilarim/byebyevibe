@@ -297,14 +297,14 @@ Para a união posterior. Nada aqui deve ser proposto sem cruzar com o resultado 
 
 | Item | Estado nesta sessão | Sessão paralela | Ação na união |
 |---|---|---|---|
-| **macOS: `sha256sum` ausente na receita §1.6** | Severidade **subiu para bloqueante** com D1 — antes era "um dos dois caminhos falha", agora é "o único caminho falha em metade das plataformas" | `[SESSÃO-MAC]` diagnóstico enviado, aguardando resposta | Verificar se lá já há correção proposta; se sim, **esta sessão só reclassifica a severidade** |
+| **macOS: `sha256sum` ausente na receita §1.6** | Severidade **subiu para bloqueante** com D1 | `[SESSÃO-MAC]` **fechada** — §17 retratou a ausência; dump 2026-08-14 confirma `-c` em Darwin 25. 1.15.0 já compara digestos sem depender de `-c` | **Não bloqueia D1.** A receita portátil já existe; o que bloqueia o Mac desta operadora é o vetor agente (init sem `install.sh`), não o checksum |
 | **Verificação do resultado contra o MANIFEST (pós-instalação)** | Observado: `kit-integrity` é hoje hub-only por depender de `sdd-kit/templates/`; com D2 ele passa a rodar em todo consumidor — ganho acidental a confirmar | `[SESSÃO-MAC]` tratando | Confirmar se o ganho é desejado ou vira ruído |
 | **Detectar que o kit já está instalado** | Confirmado que não existe detecção; com D2 vira trivial (`sdd-kit/MANIFEST.yaml` presente → C2) | `[SESSÃO-MAC]` tratando | Unir com o fluxo do §7 |
 | **Windows: garantir Git Bash e não PowerShell** | Levantado, não investigado. A receita exige Git Bash; agentes no Windows usam PowerShell por padrão | `[SESSÃO-MAC]` tratando | Provável requisito para o `INSTALL.md` do tarball |
 | **`flock` ausente em Windows e macOS** | Não tocado aqui | Registrado em `explore-python-onboarding-ux` §6 | Independente — não conflita |
 | **#364 (reduzir dependência de Python no install)** | Não tocado aqui | Pré-requisito registrado em `explore-python-onboarding-ux` §1 | Verificar se D1/D2 mudam o desenho de #364 (o `INSTALL.md` no tarball pode reduzir a superfície) |
 | **`merge: MERGE` preserva script defeituoso** | Respondido por D7 (§6.6) | Pergunta aberta em `explore-python-onboarding-ux` §11 | **Esta sessão fecha a pergunta daquela** |
-| **Base instalada** | Quarta instalação (Windows, 1.14.0, payload incompleto) | Três instalações pré-1.14.0 assumidas lá | Atualizar o cabeçalho de lá para quatro |
+| **Base instalada** | Quarta (Windows, 1.14.0, payload incompleto) + quinta no dump Mac 2026-08-14 (`mvp-viabilidade`, Cursor prompt, kit 1.14.0, init-only) | Cabeçalho de `explore-python-onboarding-ux` atualizado em §19 | Reparar por re-aquisição do tarball 1.15.1, não por `upgrade.sh` |
 
 ---
 
@@ -350,8 +350,8 @@ Para a união posterior. Nada aqui deve ser proposto sem cruzar com o resultado 
 ## 10. Ordem de execução proposta
 
 ```
-  0 ──▶ [SESSÃO-MAC] checksum portátil          ← bloqueante para metade
-                                                  dos usuários sob D1
+  0 ──▶ [SESSÃO-MAC] checksum portátil          ← FECHADO (1.15.0 + dump
+                                                  2026-08-14). Não bloqueia.
   1 ──▶ detecção de hub por marcador explícito  ← pré-requisito de D2;
         (defeitos 4 e 5)                          senão instala certo e
                                                   reprova na conferência
@@ -372,7 +372,7 @@ Para a união posterior. Nada aqui deve ser proposto sem cruzar com o resultado 
 
 ## 11. O que continua sem resposta
 
-- **A receita funciona no macOS?** `[SESSÃO-MAC]`. Sob D1, é o único caminho — logo, bloqueante.
+- **A receita funciona no macOS?** `[SESSÃO-MAC]` **fechada.** `sha256sum -c` e `shasum -c` funcionam no Darwin 25 medido; 1.15.0 já não depende de `-c`. O dump de 2026-08-14 + declaração da operadora (instalou pelo **prompt do Cursor**) mostram o buraco real: o agente corre `openspec init` e para — `install.sh` não corre. Isso é D1+D5+D6, não um patch de checksum. Ver `explore-python-onboarding-ux` §19.
 - **Uma pergunta de idioma ou três?** §5.5. Recomendação registrada, decisão não tomada.
 - **O que acontece quando o usuário recusa a comparação do §6?** Semântica do "não" indefinida.
 - **Como o `INSTALL.md` garante Git Bash no Windows?** `[SESSÃO-MAC]`.

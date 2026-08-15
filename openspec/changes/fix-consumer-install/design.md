@@ -148,8 +148,8 @@ New spec `sdd-fail-loud` with one transversal requirement: any install/verify/bo
 
 ## Open Questions
 
-- Does `/sbin/sha256sum` on macOS 26 support `-c`? (§17.1 left it open — moot for the recipe after 9c, recorded for completeness.)
+- ~~Does `/sbin/sha256sum` on macOS 26 support `-c`?~~ — **yes** (dump 2026-08-14 block B). Still moot for the recipe after 9c.
 - Guide §2.8's "optional add-ons at a glance" block still frames CI gates as one of four add-ons while the new teaser calls it a manual step — messaging divergence between surfaces, no spec violation; align the glance wording opportunistically when the guide is next edited.
-- Does probing `/usr/bin/python3` on a CLT-less Mac trigger the GUI prompt during the cascade? (Untestable from Windows; rung placed last to minimize exposure.)
-- OpenSpec 1.8.0 vs `min_openspec` 1.3.1 — five minors of untested drift (N8). Not gated here; candidate for a dedicated compatibility check in 1.16.0.
+- Does probing `/usr/bin/python3` on a CLT-less Mac trigger the GUI prompt during the cascade? **Won't test** — this operator has CLT 3.9.6 and python.org 3.14 in front (`explore-python-onboarding-ux` §19). Rung stays last. Do not block a release.
+- OpenSpec 1.8.0 vs `min_openspec` 1.3.1 — dump 2026-08-14: `openspec init` 1.8.0 **exits 0** and does **not** create `project.md`. Not a 1.8.0 regression; D4 (shipped template) is the fix. Dedicated compatibility check remains 1.16.0 if desired.
 - ~~Adversarial pass (mandatory, post-propose / pre-apply)~~ — **executed 2026-08-13**, three clean-context agents (gates / deltas-vs-specs / design-vs-code). Findings: 2 spec-contradiction blockers, 11 defective gates of 26, 1 task on the wrong file, D7's verify-infra premise false, a 7th fail-loud instance, 8 unlisted hardcoded `python3` sites. All corrections folded into this document, the deltas, and tasks.md in the same revision that carries this line.
