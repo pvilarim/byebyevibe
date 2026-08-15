@@ -2,7 +2,7 @@
 
 **Date:** 2026-08-07 · **Phase:** explore (no change proposed yet)
 **Audience assumption:** initial users have little development experience. Every platform is **Windows or macOS** — no Linux, no WSL assumed.
-**Installed base (operator-confirmed):** exactly **three** existing installations, **all on versions before 1.14.0**. Small enough that repair can be a direct conversation rather than a documented migration — but see §13, which questions whether a macOS install could have completed at all.
+**Installed base (operator-confirmed):** the original three pre-1.14.0 installs; plus the Windows 1.14.0 incomplete payload in `explore-consumer-install-defects`; plus the macOS Cursor-mediated 1.14.0 bootstrap in §19 (`mvp-viabilidade` — same Mac operator, new repo). All need **repair**, not upgrade. Hub has already tagged **v1.15.0** and **v1.15.1**.
 **Trigger:** operator request to make the missing-Python case friendly: warn without blocking, remind at the end, link the official download, and state which version to install.
 
 ---
@@ -579,8 +579,110 @@ This is no longer "Python onboarding UX". macOS support was never real, and it i
 
 ## 18. Open questions
 
-- **Is §12 correct — did any macOS install ever complete before 1.14.0?** Ask the three known operators which platform they used and whether the install finished. This single answer decides whether the repair procedure needs a macOS branch.
-- **Does the resolver's first probe trigger the Xcode CLT GUI prompt on a Mac without CLT installed?** If it does, polite detection on macOS needs its own handling. Untestable from Windows.
-- **Should session coordination degrade or be stated as best-effort?** §6 argues degrade loudly. Given that `flock` is absent on every target platform, the honest options are "make it work everywhere" or "say plainly it is best-effort". Pretending is the one option to reject.
-- **Can an `awk` MANIFEST parser (#364) be trusted to gate the install?** A shape check is likely required so a format drift cannot produce a silent partial parse — the same failure class 1.14.0 eliminated. And it must solve §7 without an interpreter.
-- **How should the MANIFEST express "preserve local edits, but this version is mandatory"?** Needed before the next bugfix that lands in a `MERGE` file.
+Status after the second Mac dump (§19). **No further probe will be sent** — two diagnostics is the cap.
+
+- **Is §12 correct — did any macOS install ever complete before 1.14.0?** **Closed enough for release.** §17 confirmed BSD `realpath` rejects both GNU flags with no Homebrew coreutils on that machine. The second dump is a 1.14.0 Cursor-mediated bootstrap and cannot speak to pre-1.14.0 history. Repair procedure: treat Mac the same as Windows — re-acquire the latest footprint and overwrite; no Mac-specific upgrade branch.
+- **Does the resolver's first probe trigger the Xcode CLT GUI prompt on a Mac without CLT installed?** **Won't test.** This operator has CLT (`/usr/bin/python3` = 3.9.6) and a python.org 3.14 in front. The 1.15.0 cascade already places `/usr/bin/python3` last. Leave the residual risk recorded; do not block a release on it.
+- **Should session coordination degrade or be stated as best-effort?** **Closed in 1.15.0** (`fix-consumer-install` D11 9e). `flock` was confirmed absent in §17; the second dump did not retest it. Shipped: one INFO line, PID-file is the active guard.
+- **Can an `awk` MANIFEST parser (#364) be trusted to gate the install?** **Unchanged — #364 / 1.16.0.** Second dump shows stock Mac `awk`, `paste -sd`, `find -not` work. Not a 1.15.x release item.
+- **How should the MANIFEST express "preserve local edits, but this version is mandatory"?** **Unchanged — not Mac.** `explore-agent-mediated-install` D7 already answered the comparison UX; vocabulary gap remains for a later change.
+
+---
+
+## 19. Second Mac dump — 2026-08-14 — session closed
+
+**No third probe.** Two diagnostics is the cap. This section is the evidence record for a release decision.
+
+**Operator statement (2026-08-15):** she installed **directly from a Cursor prompt**, not from guide §1.6 / `bootstrap-sdd.sh`. That is the install vector. The dump is a second targeted probe (blocks A–J) sent after §17; the probe script itself was never committed.
+
+**Machine / repo (from the dump, not from a new question):**
+
+| Fact | Value |
+|---|---|
+| bash | 3.2.57(1)-release `arm64-apple-darwin25` (macOS 26 family). Homebrew bash **not** installed |
+| Kit in the repo | **1.14.0**, checksums OK (45/45) |
+| Branch | `cursor/initial-sdd-bootstrap` — **no commits** |
+| OpenSpec | **1.8.0**; `init` exit 0; created `openspec/{changes,config.yaml,specs}`; **no `project.md`** |
+| GitNexus slug in `AGENTS.md` | `mvp-viabilidade` (55 symbols claimed; `gitnexus status` still says not indexed) |
+| `AGENTS.md` | 42 lines; GitNexus block present; **kit content absent** |
+| Staged files | only `.claude/commands/opsx/*` and `.claude/skills/*` from `openspec init` |
+| Local patches section | empty |
+| Python now | `python3` / `python3.14` = python.org Framework **3.14**; `python3.12` present; brew `python3.11`; `/usr/bin/python3` = CLT **3.9.6**; unsuffixed `python` and `py` absent |
+
+This is **not** the mixed 1.13-tarball + 1.14-scripts + local-patches state of §17.6. It is a later Cursor-mediated bootstrap that stopped after `openspec init` + a GitNexus injection. `install.sh` did not apply the kit payload (or left no trace of having done so).
+
+Hub context at the time of this record: `fix-consumer-install` is applied (29/29) and **v1.15.0 / v1.15.1 are already tagged**. The operator's repo is still on 1.14.0.
+
+### 19.1 What each block decided
+
+| Block | Finding | Release consequence |
+|---|---|---|
+| **A** bash 3.2 | A1 (no pipe) and A2 (with pipe) both `linhas=2 exit=0` | The "pipe is the 3.2 trigger" hypothesis is **false** on this host. N1 as originally reported (heredoc-inside-process-substitution failure) is **not reproduced** by this test. The 1.15.0 temp-file rewrite stays: process substitution still swallows the generator's exit code (`sdd-fail-loud`). Do **not** add a bash-version gate. Do **not** require Homebrew bash. |
+| **B** `sha256sum -c` | `/sbin/sha256sum -c` exit 0; `shasum -c` exit 0 | design.md Q1 **closed**. Portable digest compare in 1.15.0 remains correct (does not depend on `-c`). |
+| **C** `sed -i` | GNU form exit 1; BSD form exit 0; no leftover files | N2 **confirmed**. 1.15.0 temp+`mv` is the right fix. |
+| **D** path without Python | existing `/tmp` → `/private/tmp` exit 0; missing path exit 1; `realpath -q` and `readlink -f` exit 1 | §4.3 / #364 **confirmed**: no `-m`, no GNU `readlink -f`. Darwin `/tmp` → `/private/tmp` means any traversal guard must normalise both sides. 1.15.0 already falls back to `posixpath.normpath` when `-m` is absent. Not a new 1.15.x patch. |
+| **E** interpreter cascade | version-suffixed rungs exist; `python` / `py` do not | N7 **confirmed structurally**. This machine is no longer S4 — resolver 1.15.0 would pick `python3` → **3.14** (S5). Messaging that says "Mac stock = 3.9, Graphify will not run" would be **wrong for this operator today**. |
+| **F** gate tools | `paste -sd`, `od`, `cmp`, `grep -qF`, `find -not`, `mktemp -d`, `date -u` ok; brew present | Common gates are fine on this Mac. `awk BINMODE: 1` is ambiguous without the probe script — do not introduce gawk-only `BINMODE` (already a 1.15.0 design constraint). `flock` was not retested; §17 stands. |
+| **G** `openspec init` | exit 0, no `project.md` | N4 **reframed**. Init did not fail — it succeeded without a constitution. Silencing stderr was the wrong bug. The 1.15.0 `project.md` MERGE template (D4) is the fix. OpenSpec 1.8.0 vs pin 1.3.1: init itself works; do not block 1.15.x on N8. |
+| **H** GitNexus | "Repository not indexed" with and without a commit | N6 **out of scope** (already a 1.15.0 non-goal). Softer wording than §17's `fatal: HEAD` — do not chase. |
+| **I** `AGENTS.md` | kit content = 0; GitNexus block = 1 | N3 **reconfirmed** on a second repo. 1.15.0 `SDD_AGENTS_PREEXISTED` is the fix — and it only runs if **bootstrap** runs. A Cursor prompt that only calls `openspec init` never hits it. |
+| **J** repo | no commits; only init-generated `.claude/` staged; kit 1.14.0 | Confirms the vector: **agent stopped at OpenSpec init**. Payload install did not complete. |
+
+### 19.2 What this does *not* justify
+
+- A 1.15.2 (or 1.16.0) whose only Mac story is "more bash/sed/realpath patches". Those shipped in **1.15.0** (portability by construction) and **1.15.1** (`upgrade.sh` BSD `realpath`).
+- Another diagnostic prompt to this operator.
+- A bash 5 / Homebrew bash prerequisite.
+- Gating install on OpenSpec 1.8.0 compatibility beyond what 1.15.0 already does (loud init + shipped `project.md`).
+
+### 19.3 What a *new* release must actually fix
+
+The operator's install vector is the one `explore-agent-mediated-install` already named: paste the hub URL into Cursor and ask the agent to install.
+
+```
+  o que ela fez                         o que 1.15.0 conserta
+  ─────────────                         ─────────────────────
+  prompt Cursor no repo                 scripts portáteis (sed, MANIFEST
+       │                                via ficheiro, cascade, flock,
+       ▼                                project.md template, AGENTS snapshot)
+  agente encontra o hub
+  README / AGENTS.md do hub
+       │
+       ▼
+  openspec init  ──▶  .claude/ + openspec/ sem project.md
+  gitnexus analyze ──▶ AGENTS.md = bloco GitNexus
+  install.sh        ──▶ NÃO CORREU
+```
+
+1.15.0/1.15.1 already make `install.sh` / `bootstrap-sdd.sh` safe on this Mac **if they run**. They did not run.
+
+The next release that changes *her* outcome is therefore **not more portability**. It is the agent-mediated path (already scoped as 1.16.0 in `fix-consumer-install` non-goals and decided in `explore-agent-mediated-install` D1–D6):
+
+1. **Single acquisition:** latest release tarball, not "clone the hub and improvise".
+2. **Agent instructions the agent will actually see first** (`README.md` + tarball `INSTALL.md`): download tarball → verify digest → `install.sh` (or `bootstrap-sdd.sh`). **Stopping after `openspec init` is a failed install.**
+3. **Hub `AGENTS.md` must not hijack** an agent that opened the repo to install a consumer (D6).
+4. **Confirmation block** the human sees (profile + languages + kit version) before writes (D3/D4).
+
+### 19.4 Repair of *this* operator — no probe, no `upgrade.sh`
+
+Same rule as §11 / 1.15.0 changelog: existing installs need **repair**, not upgrade. For `mvp-viabilidade`:
+
+- Re-acquire **v1.15.1** (`byebyevibe-kit.tar.gz` from `releases/latest`).
+- Run `sdd-kit/install.sh` in that repo (payload + `project.md` template + language block + kit `AGENTS.md`).
+- Do **not** send another diagnostic. A single repair prompt to her Cursor session is enough — that is an install instruction, not a third probe.
+
+### 19.5 Closed vs left for 1.16.0
+
+| Item | Status |
+|---|---|
+| sha256sum `-c` on macOS 26 | Closed — works; portable compare still required |
+| N1 pipe-as-3.2-trigger | Closed — false on this host |
+| N2 `sed -i` | Closed — confirmed; shipped 1.15.0 |
+| N3 `AGENTS.md` | Closed as a script defect (1.15.0); **reopened as an agent-path defect** (init-only) |
+| N4 `openspec init` | Closed as silence; reframed as "succeeds without `project.md`" — shipped template 1.15.0 |
+| N6 GitNexus / no commit | Recorded, out of scope |
+| N7 cascade | Closed — 1.15.0 rungs match this machine |
+| N8 OpenSpec 1.8.0 | Init works; no 1.15.x gate |
+| CLT GUI prompt | Won't test — do not block release |
+| §12 pre-1.14.0 history | Closed enough — one repair procedure for all platforms |
+| Agent stops at `openspec init` | **The remaining Mac-install bug. 1.16.0.** |
