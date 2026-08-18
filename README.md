@@ -2,6 +2,16 @@
 
 **From vibe coding to shippable AI engineering.**
 
+<p align="center">
+  <img src="byebyevibe.png" alt="ByeByeVibe — from vibe coding to shippable AI engineering. Spec-Driven Development control plane: OpenSpec, Graphify, GitNexus, and the /opsx explore-propose-apply-archive loop." width="100%">
+</p>
+
+<p align="center">
+  <a href="https://github.com/pvilarim/byebyevibe/releases/latest"><img src="https://img.shields.io/github/v/release/pvilarim/byebyevibe" alt="GitHub Release"></a>
+  <a href="https://github.com/pvilarim/byebyevibe/actions/workflows/sdd-gates.yml"><img src="https://github.com/pvilarim/byebyevibe/actions/workflows/sdd-gates.yml/badge.svg" alt="SDD Gates"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
+</p>
+
 **ByeByeVibe** is the public name of this project. The install payload lives in [`sdd-kit/`](./sdd-kit/).
 
 An **installable toolkit for AI-assisted development** on **Cursor** and **Claude Code** — the missing operating system between your coding agent and a maintainable repo. Specs, code & knowledge graphs, CI gates, and session discipline, packaged so you don't invent process from scratch.
@@ -126,7 +136,7 @@ If you need a vibe *template*, use one — then install this kit on top.
 
 ## Stack & companions
 
-We **compose** OpenSpec; we don't replace it.
+We **compose** OpenSpec; we don't replace it. Composed CLIs keep their own licenses — see [`NOTICE.md`](./NOTICE.md); GitNexus is PolyForm Noncommercial (not MIT).
 
 - [OpenSpec](https://github.com/Fission-AI/OpenSpec) · [GitNexus](https://github.com/abhigyanpatwari/GitNexus) · [Graphify](https://github.com/Graphify-Labs/graphify) · [agents.md](https://agents.md/)
 - Install kit: [`sdd-kit/`](./sdd-kit/) · Constitution: [`openspec/project.md`](./openspec/project.md)
@@ -140,6 +150,8 @@ We **compose** OpenSpec; we don't replace it.
 | [`doc/sdd-operator-day1.md`](./doc/sdd-operator-day1.md) | EN | Day-1 operator map (`/opsx:help`) |
 | [`sdd-kit/README.md`](./sdd-kit/README.md) | EN | Kit scenarios & commands |
 | [`doc/avaliacoes/2026-07-26-sdd-discovery-positioning.md`](./doc/avaliacoes/2026-07-26-sdd-discovery-positioning.md) | EN | Market / SEO / backlog decisions |
+| [`LICENSE`](./LICENSE) | EN | MIT — this repository |
+| [`NOTICE.md`](./NOTICE.md) | EN | Licenses of composed tools |
 
 ## Maintainer
 

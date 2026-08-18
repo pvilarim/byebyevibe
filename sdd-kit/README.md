@@ -24,6 +24,8 @@ Versioned payload for reproducible SDD stack install (scripts, rules, skeletons)
 
 Discovery / hero: hub root [`README.md`](../README.md) (EN). Full procedure: [`doc/byebyevibe-guide.md`](../doc/byebyevibe-guide.md) §2.0b. Didactic narrative (What / Why / Without it + optional add-ons glance): guide **§2.1** and the block after **§2.8**.
 
+**License.** Payload files in this folder are MIT (same grant as the hub [`LICENSE`](../LICENSE)). ByeByeVibe MIT does **not** relicense composed CLIs. **GitNexus** is PolyForm Noncommercial 1.0.0 (not MIT; their terms do not cover commercial use of GitNexus). Other recorded SPDX ids (2026-08-17): OpenSpec MIT, Graphify Apache-2.0; optional Probity MIT and Impeccable Apache-2.0; CI OSV-Scanner Apache-2.0; APP Renovate AGPL-3.0. Hub [`NOTICE.md`](../NOTICE.md) has the full table — this paragraph is the kit-only / lightweight-fetch warning.
+
 ## Scenarios
 
 | Code | Situation | Scope | Entry command |
