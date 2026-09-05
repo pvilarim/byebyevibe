@@ -6,7 +6,7 @@
 | **Change** | `explore-astra-orchestrator` (type E — exploration) |
 | **Issue** | — (no duplicate open issue; adjacent: [#349](https://github.com/pvilarim/byebyevibe/issues/349) multi-agent PR review; draft [PR #383](https://github.com/pvilarim/byebyevibe/pull/383) Pi harness) |
 | **Objective** | Register the uploaded Astra orchestration plan as a **possibility of implementation**, map it onto the existing control plane, and judge whether it can happen with today's Cursor models — without waiting for GPT-6 / Astra public launch |
-| **Decision (this explore)** | **Possibility, not commitment.** Fit is high as *protocol + tools*. Fit is low as *new runtime / single-session phase machine*. Current models are already sufficient to run the loop **one phase at a time**. GPT-6 is not a blocker. |
+| **Decision (this explore)** | **Possibility, not commitment.** Fit is high as *protocol + tools*. Fit is low as *new runtime / single-session phase machine*. Current models are already sufficient to run the loop **one phase at a time**. GPT-6 is not a blocker. Research-only folder (no `proposal.md`) so `openspec validate --all --strict` matches other Type E explores. |
 | **Sources** | Uploaded plan (operator); `openspec/project.md`; `openspec/infra.md`; `openspec/specs/`; `AGENTS.md`; guide `doc/byebyevibe-guide.md` §3–§4; `doc/avaliacoes/` (Deer, LifeOS, TencentDB, Graft, G6); `doc/i18n/CURSOR-AUTOMATIONS.md`; this session's Graphify/GitNexus/GitHub probes |
 
 ## Executive verdict
@@ -306,7 +306,7 @@ These do not yield to a smarter model:
 
 ### 6.3 Is a later `/opsx:propose` warranted?
 
-**Warranted only as a narrow spike**, not as "implement Astra." Candidate scopes (pick one later):
+**Warranted only as a narrow spike**, not as "implement Astra." This explore does **not** ship `proposal.md` (OpenSpec spec-driven schema would then require spec deltas and fail `sdd-gates`; other Type E folders are research-only). A later propose session writes its own `proposal.md`. Candidate scopes (pick one later):
 
 | Spike | Type | What | What it is not |
 |-------|------|------|----------------|
