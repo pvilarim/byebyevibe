@@ -294,6 +294,20 @@ Roadmap sequence (the pilot-protocol proposal now exists; later items remain can
 6. Propose optional Astra adoption as a separate install/upgrade UX change, preserving the standard ByeByeVibe workflow for users who do not opt in, defining a migration path from older non-orchestrated releases, and making capability messages user friendly.
 7. Expand automation and model routing only from measured results; interactive controls and distributed coordination are separate scope decisions.
 
+### Registered release track
+
+The next release should be planned as an evidence-backed orchestration release, not as an immediate default-runtime replacement. The release train remains blocked until each step below has a reviewed artifact, deterministic gates, and any applicable product-validation evidence:
+
+1. `evaluate-astra-orchestration-readiness` closes the current research by converting the archived pilot package into a concrete next proposal scope. Exit criterion: one recommended proposal prompt, host-adapter assumption, pilot consumer/task placeholder, and explicit non-default adoption boundary.
+2. `add-astra-phase-run-contract` defines the bounded phase-run contract: demand map, dependency edges, approval references, worktree/session ownership, knowledge-tool freshness triggers, restart semantics, and run receipts. Exit criterion: specs and guide text make Astra a coordinator of authorized phase runs while OpenSpec remains the specification authority.
+3. `pilot-astra-orchestration-run` executes or records the bounded pilot using the archived protocol and product-validation templates. Exit criterion: registration, run records, decision report, cost/effort observations, failure handling, and comparison against the current operator-coordinated baseline.
+4. `add-control-panel-artifact` specifies and publishes the read-only control panel artifact. Exit criterion: dashboard data contract, source-backed status model, phase/status separation, findings/release timeline, unknown-data handling, and no state-changing controls unless separately approved.
+5. `review-astra-pilot-results` performs the post-pilot proposal review. Exit criterion: adoption, defer, or narrow-follow-up decision backed by pilot evidence; no claim of superiority, savings, or default orchestration without measured support.
+6. `add-optional-astra-orchestration-mode` defines install/upgrade UX only if the review supports adoption. Exit criterion: standard ByeByeVibe remains default and fully usable, Astra mode is explicit opt-in, capability detection is honest, rollback is documented, and legacy non-orchestrated installs are not silently converted.
+7. `prepare-astra-orchestration-release` updates release notes, guide/kit references, manifest checksums if payloads change, and final gates. Exit criterion: `openspec validate --all --strict`, task-pattern verification, kit verification, release-readiness verification, and an explicit operator decision before cutting a tag.
+
+Minimum releasable wording before a successful pilot: "Astra orchestration pilot package and control-panel artifact." Minimum releasable wording after a successful pilot and adoption proposal: "optional Astra orchestration mode." "Astra as the system orchestrator" is reserved for a later release only if the standard workflow boundary, approval model, persistence model, and measured pilot evidence all support that claim.
+
 Working assumption for the next discussion: human-reviewed proposals, automatic execution of already-authorized bounded actions, no new hub runtime, dashboard observation first. Still open: first host (local Codex, Cursor Cloud, or API companion), consumer pilot repository/task, allowed concurrency and budget, exact recorded approval mechanism, and whether the desired long-lived Astra supervisor should prompt a deliberate constitutional amendment. These are product/design choices for propose, not reasons to block this research revision.
 
 ## Recommended disposition
