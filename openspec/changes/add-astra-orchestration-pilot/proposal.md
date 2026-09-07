@@ -10,6 +10,8 @@ ByeByeVibe has phase-local agents and documented parallel automation patterns, b
 - Provide three reusable Markdown templates under `doc/experiments/templates/`: experiment registration, run evidence, and decision report. Each distinguishes declared intent, observed execution, and missing evidence.
 - Add an index at `doc/experiments/README.md` for discovery and link the protocol to the consolidated research.
 - Define a consumer handoff: local Codex is the initial host candidate, subject to verifying Astra/tool access; a selected APP consumer supplies actual tasks/tests, a reviewed consumer change, accepted thresholds, and a numeric budget before any run.
+- Require hidden-reference H1 assessment, a passed functional stage before comparisons, pre-registered sampling and accounting rules, and explicit fallback/recovery decisions. Documentation gates include adversarial scenario walkthroughs, not just heading checks.
+- Require a post-pilot proposal review grounded in all trial evidence. Any later adoption remains optional: preserve the standard workflow and prohibit silently converting older releases through routine C2 upgrades. Installation, legacy migration, dashboard and production routing remain separate follow-up scopes.
 - Prepare the experiment; do not execute APP tasks or generate claimed measurements in this DOCS_SPECS hub. A full scheduler and dashboard remain later evidence-driven proposals.
 
 ## Capabilities

@@ -268,7 +268,7 @@ Stage 2 compares A (operator-coordinated sequential reference), B (Astra-directe
 
 Record total cost per accepted result, elapsed time, operator minutes, retries/rework, integration defects, and recovery failures. Costs include coordinator, workers, reviewers, retries, integration, and tools; missing usage stays unknown. H3 is observational unless a later controlled study is approved, so do not infer causality from consultation logs alone. A 20% time-reduction target is an illustrative candidate only; the operator must record actual quality, cost, and productivity thresholds before execution. No target or savings claim is adopted retrospectively.
 
-Decisions after the pilot may be: sequential Astra coordination, selective parallelism, recovery infrastructure first, mixed-model routing, instrumentation before dashboard, or no adoption. This protocol exists to choose among those paths; success is not defined as proving Astra should be adopted.
+Decisions after the pilot may be: sequential Astra coordination, selective parallelism, recovery infrastructure first, mixed-model routing, instrumentation before dashboard, or no adoption. This protocol exists to choose among those paths; success is not defined as proving Astra should be adopted. After pilot execution, run a deliberate post-pilot proposal review before creating any definitive adoption proposal. That review must consume the pilot's run records, decision report, defects, costs, operator interventions, capability gaps, and unchanged standard-workflow evidence, then state how the definitive proposal should be improved or whether it should be deferred.
 
 ### Recorded later demand: optional Astra adoption
 
@@ -290,8 +290,9 @@ Roadmap sequence (the pilot-protocol proposal now exists; later items remain can
 2. Propose a bounded phase-run and dependency contract with one chosen host adapter, artifact/approval references, worktree ownership, index triggers, and restart semantics. Clarify the supervisor's relationship to the one-session rule explicitly.
 3. Pilot two independent streams plus a dependent integration using available tools, recording run receipts and model usage where exposed. This should precede an autonomous control dashboard.
 4. Propose a read-only dashboard using the observed data contract; add findings through the existing issue/review surface. The dashboard can proceed alongside pilot refinements once the data contract is stable.
-5. Propose optional Astra adoption as a separate install/upgrade UX change, preserving the standard ByeByeVibe workflow for users who do not opt in, defining a migration path from older non-orchestrated releases, and making capability messages user friendly.
-6. Expand automation and model routing only from measured results; interactive controls and distributed coordination are separate scope decisions.
+5. Perform the post-pilot proposal review: use the observed pilot results to refine the definitive orchestration/adoption proposal, including scope, install UX, migration, dashboard, model routing, and knowledge-tool triggers.
+6. Propose optional Astra adoption as a separate install/upgrade UX change, preserving the standard ByeByeVibe workflow for users who do not opt in, defining a migration path from older non-orchestrated releases, and making capability messages user friendly.
+7. Expand automation and model routing only from measured results; interactive controls and distributed coordination are separate scope decisions.
 
 Working assumption for the next discussion: human-reviewed proposals, automatic execution of already-authorized bounded actions, no new hub runtime, dashboard observation first. Still open: first host (local Codex, Cursor Cloud, or API companion), consumer pilot repository/task, allowed concurrency and budget, exact recorded approval mechanism, and whether the desired long-lived Astra supervisor should prompt a deliberate constitutional amendment. These are product/design choices for propose, not reasons to block this research revision.
 
