@@ -118,6 +118,7 @@ After completing all artifacts, summarize:
 When creating `tasks.md`, follow `doc/byebyevibe-guide.md` §12.10:
 
 - **Gate** (required): deterministic shell command per verifiable task; exit 0 = done
+- **Evidence** (when behavior-changing semantics apply): point to product-validation plan/run evidence or a justified semantic walkthrough/N/A; structural Gates alone do not prove product acceptance
 - **Pattern** (recommended for code): repo-relative path to existing file; confirm it exists before finalize
 - **Skill** (cross-repo or long patterns): `- **Skill:** <name>` instead of `repo:path` in tasks
 - Max **15 lines** of code per task; longer patterns → skill or archived change reference
