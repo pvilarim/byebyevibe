@@ -3003,9 +3003,9 @@ sdd-kit/templates/
 
 **Do not** extract scripts from this guide's markdown — copy from `sdd-kit/templates/` or run `sdd-kit/install.sh`.
 
-### 12.10 Template `openspec/changes/<id>/tasks.md` (patterns and gates)
+### 12.10 Template `openspec/changes/<id>/tasks.md` (patterns, gates and semantic evidence)
 
-Atomic tasks with structured sub-bullets. **Decisions** live in `design.md` (§12.3); **verifiable steps** live here.
+Atomic tasks with structured sub-bullets. **Decisions** live in `design.md` (§12.3); **verifiable steps** live here. For behavior-changing work, deterministic Gates are supplemented by applicable semantic evidence following [`doc/experiments/product-validation.md`](experiments/product-validation.md).
 
 #### 3-level anchoring model
 
@@ -3037,9 +3037,12 @@ Atomic tasks with structured sub-bullets. **Decisions** live in `design.md` (§1
 |------------|-------------|-------|
 | **Pattern** | Recommended for code; optional for docs | Path **relative to the current repo** |
 | **Gate** | **Yes** on any verifiable task | Shell command; exit 0 = done |
+| **Evidence** | Required when behavior-changing semantics apply | Product-validation plan/run path, semantic walkthrough or justified N/A |
 | **Invariants** | If spec applies | OpenSpec requirement ID |
 | **Forbidden** | Optional | Anti-patterns (R4) |
 | **Skill** | Cross-repo or long pattern | See below |
+
+`Gate` remains mandatory and deterministic. A behavior-changing task is complete only when the Gate exits 0 and every required semantic scenario has current passing evidence for the affected revision. Failed, not-run or stale affected evidence keeps the task unchecked. Not-applicable scenarios must be explicit and justified. Documentation-only work can use semantic walkthroughs; runtime or browser evidence is required only when relevant.
 
 #### DOCS_SPECS profile — repo boundary (normative rule)
 

@@ -194,7 +194,8 @@ bash scripts/sdd-session-release.sh
 
 - Read `doc/byebyevibe-guide.md` §12.10 when executing enriched tasks
 - Before the **first task that modifies code**: run GitNexus impact (or read the `Pattern` file in full)
-- For each task with `- **Gate:**`: run the gate command; mark `- [x]` only on exit 0
+- For each task with `- **Gate:**`: run the gate command; mark `- [x]` only on exit 0 and, when behavior-changing semantic scenarios apply, current passing evidence for the affected revision
+- Treat failed, not-run or stale affected semantic evidence as incomplete; justified N/A scenarios must be explicit
 - If a `Pattern` path does not exist: **pause**, report broken pointer, suggest updating `tasks.md`
 - **DOCS_SPECS:** do not implement APP `src/` code in this repo — pause and recommend an OpenSpec change in the APP repo
 
