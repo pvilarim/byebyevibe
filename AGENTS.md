@@ -14,7 +14,7 @@ See `./openspec/project.md` (stack, conventions, constraints). **Do not duplicat
 | `npx openspec list` | Active OpenSpec changes |
 | `npx openspec new change "<id>"` | Create change (CLI) |
 | `npx openspec validate <id>` | Validate change |
-| `/opsx:propose` · `/opsx:apply` · `/opsx:archive` | Workflow Cursor/Claude |
+| `/opsx:explore` · `/opsx:propose` · `/opsx:apply` · `/opsx:archive` | OpenSpec workflows for all agents, including Codex (see below) |
 | `/opsx:help` | Day-1 operator tutorial (ByeByeVibe control plane) |
 | `npx gitnexus status` | Code index status |
 | `npx gitnexus analyze --force` | Reindex after changes |
@@ -127,6 +127,16 @@ If ambiguous between two types, **ASK**. **NEVER** assume Type A by default.
 - `npx gitnexus analyze --force` — update code graph
 
 ## Integrations
+
+### Codex OpenSpec workflow
+
+Codex MUST follow the same OpenSpec procedure as Cursor and Claude. The agent interface does not exempt it from task classification, workflow instructions, proposal review, validation gates, or session coordination (R11).
+
+- Before executing a phase, read `.claude/commands/opsx/<phase>.md` and any skill it references; the corresponding `.cursor/commands/opsx-<phase>.md` is an alternative entry point. Supported phases are `explore`, `propose`, `apply`, and `archive`.
+- If the interface does not expose `/opsx:*` as native commands, execute the repository workflow instructions with the available tools and the OpenSpec CLI. Do not send slash commands to the shell or claim that a native command was invoked. Missing slash-command UI alone does not mean OpenSpec is missing; check `openspec/infra.md` and the CLI before suggesting installation.
+- Announce the active phase and change-id when applicable. Follow the A-E matrix: exploration does not authorize implementation; required proposal review must precede apply; archive requires the workflow's completion and validation checks. Do not combine propose and apply in a way that skips review. Types A/B retain their documented direct-edit or bug-fix pipelines.
+- When handing off an OpenSpec next step, start the copyable prompt with `/opsx:explore <topic>`, `/opsx:propose <description>`, `/opsx:apply <change-id>`, or `/opsx:archive <change-id>`, as appropriate. Include the actual change-id when known, prerequisites, and any unresolved gate. For an A/B task outside a change, state the applicable pipeline instead of inventing a change or requiring all four phases.
+- Keep durable phase state in `openspec/changes/` and repository handoff artifacts. Resume from those artifacts in the next session, preserving existing work and authorization.
 
 **GitNexus** — Public repo **ByeByeVibe** (target slug `byebyevibe`; legacy index may remain `gitnexus-graphify-openspec` until reindex). Before editing symbols: `gitnexus_impact`. Before commit: `gitnexus_detect_changes`. Detail: `.claude/skills/gitnexus/gitnexus-impact-analysis/SKILL.md`.
 
