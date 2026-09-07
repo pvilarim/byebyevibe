@@ -1190,6 +1190,14 @@ If your regeneration mismatches the published `.sha256`, compare your `git --ver
 
 **Rollback:** before the first cut, reverting the commit suffices — the workflow holds no state and nothing depends on a Release existing. After a cut, the yank policy above governs: "delete the tag and the Release" applies only to a version that never finished publishing.
 
+### 2.19 Astra phase-run coordination (optional contract)
+
+Astra may optionally coordinate demand and launch bounded, separately authorized OpenSpec phase sessions. It does not replace OpenSpec: specifications, reviewed change artifacts, explicit approvals and durable handoffs remain authoritative. Each coordinated `explore`, `propose`, `apply` or `archive` runs in a new phase session and retains the existing session registration/check/release rules.
+
+The canonical [phase-run contract](experiments/astra-phase-run-contract.md) defines demand/dependency records, immutable admission, approval validity, writer ownership, knowledge freshness, restart/idempotency and durable receipts. A consumer that adopts it copies the [demand-map](experiments/templates/astra-demand-map.md) and [phase-run receipt](experiments/templates/astra-phase-run-receipt.md) into a reviewed, consumer-owned evidence root and pins the hub contract revision. Receipts are read-only evidence projections; they cannot approve, merge, archive or release work.
+
+This section does not install or enable Astra, migrate existing repositories, select model routing, execute a pilot, implement dashboard controls, cut a release or create a tag. Those actions require separate reviewed changes. If Astra is disabled, unavailable or declined, use the unchanged standard path directly: `/opsx:explore` → `/opsx:propose` → `/opsx:apply` → `/opsx:archive`.
+
 ### 2.9 Upgrading an existing installation
 
 Use when the repository **already has** OpenSpec, GitNexus, and/or Graphify configured and the goal is to **upgrade** to a new guide or tool version — **do not** repeat §2 as a greenfield install.
