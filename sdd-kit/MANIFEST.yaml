@@ -303,7 +303,7 @@ files:
   # openspec/ specs and development history — an operator guide is neither.
   - path: doc/byebyevibe-guide.md
     source: templates/doc/byebyevibe-guide.md
-    sha256: "f03f78d081d01fe0c8d4c4dafbb188fc72638e9c9ca92ac32f9847f022d51ef8"
+    sha256: "5273ff8969dbd32645407a9dc9ce5a99270e2fd1fff3729758dc4b27dd9f9c91"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -s doc/byebyevibe-guide.md && grep -q 'Guide version' doc/byebyevibe-guide.md"

@@ -1547,6 +1547,8 @@ bash scripts/sdd-session-status.sh
 
 The `/graphify --update` feedback arrow is what makes the system **cumulative**: each archived spec enters the knowledge graph and becomes available for future tasks.
 
+**Orchestrator.** The agent in **this** phase chair (`/opsx:explore` | `/opsx:propose` | `/opsx:apply` | `/opsx:archive`) is the orchestrator — not a second runtime, and not a process that spans phases in one chat. Versioned artifacts (`openspec/changes/<id>/`) are session memory; a human or Cursor Automation is the scheduler between phases (new chat + Session Handoff). Gates are VALIDATE with evidence (`openspec validate`, `sdd-gates`), not a chat assertion of "done". See the [Astra orchestrator evaluation](avaliacoes/2026-09-05-astra-orchestrator.md).
+
 ---
 
 ## 4. Master table (question 3)
