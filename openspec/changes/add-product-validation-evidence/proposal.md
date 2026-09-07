@@ -27,6 +27,6 @@ The `pedrocode.art` rendering prototype exposed a practical gap between passing 
 
 - Documentation and templates under `doc/experiments/`; guide §12.10; existing hub propose/apply skill bodies and command mirrors where those instructions are duplicated.
 - No consumer application changes in this hub. The approved portfolio version stays in its original repository, without an automatic commit or deployment.
-- No CI workflow change, G4 script change, installer, kit payload/version update, mandatory dependency, new always-on rule or central runtime. Consumer use is manual and explicitly selected; distribution through the kit is a separate follow-up.
+- No CI workflow change, G4 script change, installer, kit version update, mandatory dependency, new always-on rule or central runtime. The required guide edit is mirrored into the existing kit guide payload with its checksum to preserve hub parity; the product-validation protocol/templates are not added to the kit. Consumer use remains manual and explicitly selected; broader kit distribution is a separate follow-up.
 - Astra remains experimental and optional. Its active change is not modified or archived; this proposal does not authorize installation, legacy migration, dashboard adoption or production model routing.
 - Proposal only: implementation tasks remain unchecked until a separately authorized apply.

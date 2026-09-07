@@ -47,4 +47,4 @@ No failed row remains open.
 
 - Graphify and GitNexus were consulted but stale/degraded; direct current files supplied the authoritative evidence for this documentation-only apply.
 - The portfolio raw artifacts are local to `C:/apps/pedrocode.art` and not committed in this hub.
-- No kit payload, CI workflow, G4 metrics script, installer, consumer APP code, Astra activation, commit or archive was performed.
+- No product-validation protocol/template payload, CI workflow, G4 metrics script, installer, consumer APP code, Astra activation or archive was performed. The existing kit guide mirror and its manifest checksum were synchronized to satisfy release-readiness parity; no kit version or installer behavior changed.

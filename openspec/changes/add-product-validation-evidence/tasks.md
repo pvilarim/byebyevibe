@@ -12,11 +12,11 @@
 
 ## 2. Standard workflow guidance
 
-- [x] 2.1 Link the protocol/templates in the experiments index and guide §12.10; update hub propose/apply skill mirrors and duplicated commands with the semantic-evidence completion rule.
+- [x] 2.1 Link the protocol/templates in the experiments index and guide §12.10; update hub propose/apply skill mirrors and duplicated commands with the semantic-evidence completion rule; synchronize the existing kit guide mirror and checksum required by release readiness.
   - **Pattern:** `doc/experiments/README.md`, `doc/byebyevibe-guide.md`, `.cursor/skills/openspec-propose/SKILL.md`, `.cursor/skills/openspec-apply-change/SKILL.md`
   - **Gate:** `npx openspec validate add-product-validation-evidence --strict --no-interactive && bash scripts/verify-task-patterns.sh`
   - **Evidence:** Inventory `.cursor/skills/` and `.claude/skills/` propose/apply bodies plus `.cursor/commands/opsx-propose.md`, `.cursor/commands/opsx-apply.md`, `.claude/commands/opsx/propose.md`, `.claude/commands/opsx/apply.md`; verify pointers or equivalent guidance in each actual copy and record the review. Preserve deterministic Gate and existing handoff/approval semantics.
-  - **Invariants:** No kit payload, CI, G4, consumer application or installer changes; no new always-on rule.
+  - **Invariants:** No product-validation protocol/template payload, CI, G4, consumer application or installer changes; no kit version change or new always-on rule. Only the existing guide mirror and its manifest checksum may change for required parity.
 
 ## 3. Case evidence and semantic validation
 
