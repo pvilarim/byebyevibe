@@ -1,1 +1,1 @@
-PLACEHOLDER_LOAD_FROM_/tmp/byebyevibe/doc/byebyevibe-guide.md
+LOAD_FROM_FILE:/tmp/byebyevibe/doc/byebyevibe-guide.md
