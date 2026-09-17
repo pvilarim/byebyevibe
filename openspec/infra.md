@@ -84,6 +84,19 @@ Payload source: `sdd-kit/templates/` (do not extract scripts from markdown §12)
 
 Fail-closed on `openspec validate --all --strict` (pinned `@fission-ai/openspec@1.3.1` = `min_openspec`), `verify-task-patterns.sh`, and **OSV-Scanner** when a lockfile is present. No skill/rule — automatic out-of-band. Operation: `doc/byebyevibe-guide.md` §2.12.
 
+## Automated PR review
+
+| Component | Status | Verify with |
+|-----------|--------|-------------|
+| Workflow `automated-pr-review` | ✅ hub-first | `test -f .github/workflows/automated-pr-review.yml` |
+| Deterministic checker | ✅ | `bash scripts/pr-review-check.sh --self-test` |
+| Consolidated report | ✅ | `bash scripts/pr-review-report.sh --self-test` |
+| Action pin | `3b8197d3d486006dd4af54613517f21ac6ac625e` (# v1.0.227) | `grep -E 'anthropics/claude-code-action@[0-9a-f]{40}' .github/workflows/automated-pr-review.yml` |
+| Auth secret names | `[MANUAL ACTION]` `ANTHROPIC_API_KEY` or `CLAUDE_CODE_OAUTH_TOKEN` | GitHub → Settings → Secrets (names only) |
+| Core C1/C2 | not shipped | no MANIFEST entry; see change `consumer-distribution.md` |
+
+Automatic non-draft `pull_request` review (deterministic blocking + advisory LLM). Operation: `doc/byebyevibe-guide.md` §2.19. Disabling the workflow or its authentication leaves `sdd-gates` and manual review skills usable.
+
 ## Supply Chain
 
 | Component | Status | Verify with |
