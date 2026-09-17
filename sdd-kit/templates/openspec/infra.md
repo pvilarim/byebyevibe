@@ -23,6 +23,8 @@
 | GitNexus | <!-- gitnexus-version -->—<!-- /gitnexus-version --> | <!-- gitnexus-status -->❌<!-- /gitnexus-status --> | `gitnexus status` |
 | Graphify | <!-- graphify-version -->—<!-- /graphify-version --> | <!-- graphify-status -->❌<!-- /graphify-status --> | `test -f graphify-out/GRAPH_REPORT.md` |
 
+GitNexus is licensed under PolyForm Noncommercial 1.0.0 — **not MIT**. Installing or using GitNexus is accepting *their* terms; that license does not cover commercial use of the GitNexus software (they offer a separate Enterprise product). ByeByeVibe’s MIT license does not change that.
+
 ## MCP Servers
 
 > Names only — dynamic auth is not committed. Confirm with `mcp_get_tools` in the session.
