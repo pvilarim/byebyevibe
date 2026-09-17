@@ -50,11 +50,11 @@ pr-review-report.sh --self-test PASSED
 
 | Field | Value |
 |-------|--------|
-| Apply PR | draft — URL filled after open |
+| Apply PR | draft https://github.com/pvilarim/byebyevibe/pull/393 |
 | Workflow run | skipped while draft; fill after `ready_for_review` |
-| Base SHA | fill from PR |
-| Head SHA | fill from PR |
+| Base SHA | `4620d66c27190b9f50f1e158b79a6c30f5e80c80` (master) |
+| Head SHA | `fdac1b6fec62bab596993b8800f755e49c34ec33` (pre-URL-fill; refresh after this commit) |
 | Permissions observed | fill from run |
 | Reviewer disposition | pending |
 
-Task 4.1 stays unchecked until the live rows above are populated.
+Task 4.1 stays unchecked until live Actions URLs, permissions, and reviewer disposition are populated.
