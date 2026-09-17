@@ -196,7 +196,7 @@ files:
 
   - path: openspec/infra.md
     source: templates/openspec/infra.md
-    sha256: "029615ef1842f93490f84645f6e7c27fe75efcdf6d9f020cc17d8c7a6bcc5a46"
+    sha256: "a2917475916f2432663f41da7a7c77dfd8dc4975fd86c1b329a939681d707aea"
     merge: MERGE
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -f openspec/infra.md"
@@ -303,7 +303,7 @@ files:
   # openspec/ specs and development history — an operator guide is neither.
   - path: doc/byebyevibe-guide.md
     source: templates/doc/byebyevibe-guide.md
-    sha256: "f09a8e221a023f239567eaba3046a2b87824f461da1692e875ec72be04a545de"
+    sha256: "4afbe2a5551d53a3c428c23a33689b08978ca41b44f79fb4c90bc6bfa802988b"
     merge: COPY
     profiles: [APP, DOCS_SPECS, HYBRID]
     gate: "test -s doc/byebyevibe-guide.md && grep -q 'Guide version' doc/byebyevibe-guide.md"
