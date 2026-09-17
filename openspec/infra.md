@@ -20,8 +20,10 @@
 | Component | Version | Status | Verify with |
 |-----------|---------|--------|-------------|
 | OpenSpec | <!-- openspec-version -->1.3.1<!-- /openspec-version --> | <!-- openspec-status -->✅<!-- /openspec-status --> | `openspec list` |
-| GitNexus | <!-- gitnexus-version -->1.6.9<!-- /gitnexus-version --> | <!-- gitnexus-status -->✅<!-- /gitnexus-status --> | `gitnexus status` |
+| GitNexus | <!-- gitnexus-version -->1.6.12<!-- /gitnexus-version --> | <!-- gitnexus-status -->✅<!-- /gitnexus-status --> | `gitnexus status` |
 | Graphify | <!-- graphify-version -->graphify 0.9.31<!-- /graphify-version --> | <!-- graphify-status -->✅<!-- /graphify-status --> | `test -f graphify-out/GRAPH_REPORT.md` |
+
+GitNexus is licensed under PolyForm Noncommercial 1.0.0 — **not MIT**. Installing or using GitNexus is accepting *their* terms; that license does not cover commercial use of the GitNexus software (they offer a separate Enterprise product). ByeByeVibe’s MIT license does not change that. See [`NOTICE.md`](../NOTICE.md).
 
 ## MCP Servers
 
