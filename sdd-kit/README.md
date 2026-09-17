@@ -111,6 +111,8 @@ Dependency updates: `templates/renovate.json` (conservative preset) installs to 
 
 > `[MANUAL ACTION REQUIRED]` For the gate to **block merge in practice**, the operator must enable branch protection on the repository (Settings → Branches → require status check "SDD Gates"). See `doc/byebyevibe-guide.md` §2.12.
 
+The hub also ships `.github/workflows/automated-pr-review.yml` (issue #349). It is **not** a C1/C2 payload: `install.sh` / `upgrade.sh` do not copy it, and no MANIFEST entry enables a credentialed paid review. Operators who want the same pipeline in a consumer repo must copy it explicitly after a separately reviewed change. See [`doc/automated-pr-review.md`](../doc/automated-pr-review.md).
+
 ## Agent tooling installed automatically (C1)
 
 `install.sh` copies these from `templates/` to both agent directories (`.claude/` and `.cursor/`) on every profile — no extra step, no manual copy:
